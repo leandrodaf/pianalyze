@@ -3,18 +3,21 @@ package store
 import (
 	"slices"
 	"sync"
+	"sync/atomic"
 )
 
 // State mantém o estado compartilhado do pipeline.
+// PressedNotes é protegido por mutex (slice não é atomicamente atualizável).
+// LastNoteTime usa atomic.Uint64 para acesso sem lock — é uma escrita/leitura de uint64 puro.
 type State struct {
 	mu           sync.RWMutex
 	PressedNotes []int
-	LastNoteTime uint64
+	lastNoteTime atomic.Uint64
 }
 
-// NewPipelineState inicializa o estado do pipeline.
+// NewPipelineState inicializa o estado com capacidade pré-alocada para 10 notas simultâneas.
 func NewPipelineState() *State {
-	return &State{PressedNotes: []int{}}
+	return &State{PressedNotes: make([]int, 0, 10)}
 }
 
 // AddNote adiciona uma nota ao conjunto de notas pressionadas, ignorando duplicatas.
@@ -47,16 +50,12 @@ func (ps *State) GetPressedNotes() []int {
 	return out
 }
 
-// UpdateLastNoteTime atualiza o timestamp da última nota.
+// UpdateLastNoteTime atualiza o timestamp da última nota via operação atômica.
 func (ps *State) UpdateLastNoteTime(timestamp uint64) {
-	ps.mu.Lock()
-	defer ps.mu.Unlock()
-	ps.LastNoteTime = timestamp
+	ps.lastNoteTime.Store(timestamp)
 }
 
-// GetLastNoteTime retorna o timestamp da última nota.
+// GetLastNoteTime retorna o timestamp da última nota via operação atômica.
 func (ps *State) GetLastNoteTime() uint64 {
-	ps.mu.RLock()
-	defer ps.mu.RUnlock()
-	return ps.LastNoteTime
+	return ps.lastNoteTime.Load()
 }

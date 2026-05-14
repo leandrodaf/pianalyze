@@ -18,16 +18,13 @@ func NewNoteIdentifierStage(logger *zap.Logger) *NoteIdentifierStage {
 	return &NoteIdentifierStage{logger: logger}
 }
 
-func (s *NoteIdentifierStage) Process(ctx *pipelinectx.PipelineContext, state *store.State) error {
-	pressedNotes := state.GetPressedNotes()
-
-	if len(pressedNotes) > 0 {
-		ctx.CurrentKey = midi.GetNoteName(pressedNotes[len(pressedNotes)-1])
+func (s *NoteIdentifierStage) Process(ctx *pipelinectx.PipelineContext, _ *store.State) error {
+	if len(ctx.PressedNotes) > 0 {
+		ctx.CurrentKey = midi.GetNoteName(ctx.PressedNotes[len(ctx.PressedNotes)-1])
 		s.logger.Info(constants.MsgStatePressedNotes, zap.String("note", ctx.CurrentKey))
 	} else {
 		ctx.CurrentKey = ""
 		s.logger.Debug(constants.MsgNoNotesPressed)
 	}
-
 	return nil
 }

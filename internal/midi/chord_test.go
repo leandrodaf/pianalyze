@@ -4,6 +4,38 @@ import (
 	"testing"
 )
 
+func BenchmarkGetChordName_Major(b *testing.B) {
+	notes := []int{60, 64, 67} // C major root position
+	b.ReportAllocs()
+	for b.Loop() {
+		GetChordName(notes)
+	}
+}
+
+func BenchmarkGetChordName_MajorInversion(b *testing.B) {
+	notes := []int{64, 67, 72} // C major 1st inversion
+	b.ReportAllocs()
+	for b.Loop() {
+		GetChordName(notes)
+	}
+}
+
+func BenchmarkGetChordName_Dominant9th(b *testing.B) {
+	notes := []int{67, 71, 74, 77, 81} // G dominant 9th
+	b.ReportAllocs()
+	for b.Loop() {
+		GetChordName(notes)
+	}
+}
+
+func BenchmarkGetChordName_NoMatch(b *testing.B) {
+	notes := []int{60, 61, 62} // não é acorde
+	b.ReportAllocs()
+	for b.Loop() {
+		GetChordName(notes)
+	}
+}
+
 func TestGetChordName_MajorRootPosition(t *testing.T) {
 	name, inversion, root, found := GetChordName([]int{60, 64, 67}) // C4, E4, G4
 	if !found {

@@ -9,7 +9,8 @@ import (
 	"go.uber.org/zap"
 )
 
-// NoteStateUpdaterStage updates the set of pressed notes based on incoming MIDI events.
+// NoteStateUpdaterStage updates the set of pressed notes and captures a snapshot into the
+// context so all subsequent stages share one consistent copy without extra copies.
 type NoteStateUpdaterStage struct {
 	logger *zap.Logger
 }
@@ -48,5 +49,8 @@ func (s *NoteStateUpdaterStage) Process(ctx *pipelinectx.PipelineContext, state 
 			zap.Int("velocity", int(event.Velocity)))
 	}
 
+	// Snapshot taken once here; NoteIdentifier, ChordIdentifier and FinalStage read this
+	// field directly instead of calling GetPressedNotes() again.
+	ctx.PressedNotes = state.GetPressedNotes()
 	return nil
 }
