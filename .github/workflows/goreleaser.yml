@@ -54,15 +54,15 @@ jobs:
       # Explicit per-OS build — no variable expansion tricks for build tags.
       - name: Build binary (Linux)
         if: runner.os == 'Linux'
-        run: go build -tags webkit2_41 -trimpath -ldflags "-s -w" -o pianalyze .
+        run: go build -tags webkit2_41,production -trimpath -ldflags "-s -w" -o pianalyze .
 
       - name: Build binary (macOS)
         if: runner.os == 'macOS'
-        run: go build -trimpath -ldflags "-s -w" -o pianalyze .
+        run: go build -tags production -trimpath -ldflags "-s -w" -o pianalyze .
 
       - name: Build binary (Windows)
         if: runner.os == 'Windows'
-        run: go build -trimpath -ldflags "-s -w" -o pianalyze.exe .
+        run: go build -tags production -trimpath -ldflags "-s -w" -o pianalyze.exe .
 
       # ── Archive ──────────────────────────────────────────────────────────────
 
