@@ -24,8 +24,6 @@ jobs:
             os: ubuntu-latest
           - name: darwin
             os: macos-latest
-          - name: darwin-amd64
-            os: macos-13
           - name: windows
             os: windows-latest
     runs-on: ${{ matrix.os }}
