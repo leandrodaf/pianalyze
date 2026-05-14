@@ -22,15 +22,17 @@ builds:
 archives:
   - id: default
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-    format: tar.gz
-    builds:
+    formats:
+      - tar.gz
+    ids:
       - build-all-platforms
     files:
       - LICENSE*
       - README*
     format_overrides:
       - goos: windows
-        format: zip
+        formats:
+          - zip
 
 checksum:
   name_template: "checksums.txt"
