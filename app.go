@@ -3,6 +3,7 @@ package main
 
 import (
 	"context"
+	"strings"
 	"sync"
 
 	"github.com/leandrodaf/midi/v2/sdk/contracts"
@@ -75,15 +76,37 @@ func (a *App) shutdown(_ context.Context) {
 	_ = a.StopCapture()
 }
 
-// ListDevices returns the available MIDI input devices.
+// ListDevices returns available MIDI input devices, filtered to subdevice 0 of
+// each physical port (manufacturer ends with ",0" or contains no ",") to avoid
+// listing every sub-device of the same hardware card. Falls back to the full
+// list when nothing matches the filter.
 func (a *App) ListDevices() ([]DeviceInfo, error) {
 	devices, err := a.midiClient.ListDevices()
 	if err != nil {
 		return nil, err
 	}
-	result := make([]DeviceInfo, len(devices))
+
+	type indexed struct {
+		originalIdx int
+		d           contracts.DeviceInfo
+	}
+
+	var visible []indexed
 	for i, d := range devices {
-		result[i] = DeviceInfo{ID: i, Name: d.Name, Manufacturer: d.Manufacturer}
+		if strings.HasSuffix(d.Manufacturer, ",0") || !strings.Contains(d.Manufacturer, ",") {
+			visible = append(visible, indexed{i, d})
+		}
+	}
+	if len(visible) == 0 {
+		visible = make([]indexed, len(devices))
+		for i, d := range devices {
+			visible[i] = indexed{i, d}
+		}
+	}
+
+	result := make([]DeviceInfo, len(visible))
+	for i, v := range visible {
+		result[i] = DeviceInfo{ID: v.originalIdx, Name: v.d.Name, Manufacturer: v.d.Manufacturer}
 	}
 	return result, nil
 }
