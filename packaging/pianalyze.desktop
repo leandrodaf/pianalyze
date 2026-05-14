@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Pianalyze
+Comment=Real-time MIDI capture and piano learning
+Exec=/usr/bin/pianalyze
+Icon=pianalyze
+Terminal=false
+Type=Application
+Categories=Audio;Music;Education;
+Keywords=piano;midi;music;learning;
+StartupNotify=true

@@ -10,7 +10,6 @@ permissions:
 
 jobs:
   # ── Per-platform native builds ─────────────────────────────────────────────
-  # CGO cross-compilation is not supported; each OS compiles its own binary.
   build:
     name: Build / ${{ matrix.name }}
     strategy:
@@ -19,13 +18,11 @@ jobs:
         include:
           - name: linux-amd64
             os: ubuntu-latest
-            go-tags: webkit2_41
+            nfpm-arch: amd64
           - name: darwin-arm64
             os: macos-latest
-            go-tags: ""
           - name: windows-amd64
             os: windows-latest
-            go-tags: ""
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -54,15 +51,20 @@ jobs:
         working-directory: frontend
         run: npm ci && npm run build
 
-      - name: Build binary
-        shell: bash
-        run: |
-          TAGS="${{ matrix.go-tags }}"
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            go build ${TAGS:+-tags "$TAGS"} -trimpath -ldflags "-s -w" -o pianalyze.exe .
-          else
-            go build ${TAGS:+-tags "$TAGS"} -trimpath -ldflags "-s -w" -o pianalyze .
-          fi
+      # Explicit per-OS build — no variable expansion tricks for build tags.
+      - name: Build binary (Linux)
+        if: runner.os == 'Linux'
+        run: go build -tags webkit2_41 -trimpath -ldflags "-s -w" -o pianalyze .
+
+      - name: Build binary (macOS)
+        if: runner.os == 'macOS'
+        run: go build -trimpath -ldflags "-s -w" -o pianalyze .
+
+      - name: Build binary (Windows)
+        if: runner.os == 'Windows'
+        run: go build -trimpath -ldflags "-s -w" -o pianalyze.exe .
+
+      # ── Archive ──────────────────────────────────────────────────────────────
 
       - name: Package (Linux / macOS)
         if: runner.os != 'Windows'
@@ -82,12 +84,29 @@ jobs:
           Compress-Archive -Path pianalyze.exe -DestinationPath $archive
           "ARCHIVE=$archive" | Out-File -FilePath $env:GITHUB_ENV -Append
 
+      # ── .deb package (Linux only) ─────────────────────────────────────────
+
+      - name: Build .deb (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
+          VERSION="${GITHUB_REF_NAME#v}" \
+          NFPM_ARCH="${{ matrix.nfpm-arch }}" \
+            nfpm package --packager deb --config nfpm.yaml \
+              --target "pianalyze_${GITHUB_REF_NAME#v}_${{ matrix.nfpm-arch }}.deb"
+          echo "DEB=pianalyze_${GITHUB_REF_NAME#v}_${{ matrix.nfpm-arch }}.deb" >> "$GITHUB_ENV"
+
+      # ── Upload ───────────────────────────────────────────────────────────────
+
       - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.name }}
-          path: ${{ env.ARCHIVE }}
+          path: |
+            ${{ env.ARCHIVE }}
+            ${{ env.DEB }}
 
-  # ── Collect all archives, generate checksums, publish GitHub Release ────────
+  # ── Collect all archives and publish GitHub Release ────────────────────────
   release:
     name: Release
     needs: build
