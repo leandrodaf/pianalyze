@@ -1,6 +1,6 @@
 module github.com/leandrodaf/pianalyze
 
-go 1.23.2
+go 1.26.0
 
 require (
 	github.com/leandrodaf/midi v1.0.2
