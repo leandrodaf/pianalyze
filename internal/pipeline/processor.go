@@ -14,6 +14,16 @@ type Processor struct {
 
 // NewProcessor initializes a Processor with the five analysis stages in the required order.
 func NewProcessor(logger *zap.Logger) *Processor {
+	return newProcessor(logger, stages.NewFinalStage(logger))
+}
+
+// NewProcessorWithEmitter creates a Processor whose FinalStage calls emitter after each event.
+// Used by the Wails app to push MIDIState to the frontend.
+func NewProcessorWithEmitter(logger *zap.Logger, emitter func(ctx *pipelinectx.PipelineContext)) *Processor {
+	return newProcessor(logger, stages.NewFinalStageWithEmitter(logger, emitter))
+}
+
+func newProcessor(logger *zap.Logger, finalStage *stages.FinalStage) *Processor {
 	state := store.NewPipelineState()
 	p := NewPipeline[pipelinectx.PipelineContext, store.State](state)
 
@@ -22,7 +32,7 @@ func NewProcessor(logger *zap.Logger) *Processor {
 	p.AddStage(stages.NewIntervalCalculatorStage(logger))
 	p.AddStage(stages.NewNoteIdentifierStage(logger))
 	p.AddStage(stages.NewChordIdentifierStage(logger))
-	p.AddStage(stages.NewFinalStage(logger))
+	p.AddStage(finalStage)
 
 	return &Processor{pipeline: p}
 }
