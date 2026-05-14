@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo_icon.png" alt="Pianalyze" width="180"/>
+</p>
+
 # Pianalyze
 
 ## Overview

@@ -62,6 +62,13 @@ jobs:
           CGO_LDFLAGS: "-framework UniformTypeIdentifiers"
         run: go build -tags production -trimpath -ldflags "-s -w" -o pianalyze .
 
+      - name: Embed icon (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@latest
+          goversioninfo -o resource_windows_amd64.syso versioninfo.json
+
       - name: Build binary (Windows)
         if: runner.os == 'Windows'
         run: go build -tags production -trimpath -ldflags "-s -w" -o pianalyze.exe .

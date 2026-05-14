@@ -24,3 +24,18 @@ contents:
 
   - src: packaging/pianalyze.desktop
     dst: /usr/share/applications/pianalyze.desktop
+
+  - src: build/linux/icons/hicolor/16x16/apps/pianalyze.png
+    dst: /usr/share/icons/hicolor/16x16/apps/pianalyze.png
+  - src: build/linux/icons/hicolor/32x32/apps/pianalyze.png
+    dst: /usr/share/icons/hicolor/32x32/apps/pianalyze.png
+  - src: build/linux/icons/hicolor/48x48/apps/pianalyze.png
+    dst: /usr/share/icons/hicolor/48x48/apps/pianalyze.png
+  - src: build/linux/icons/hicolor/64x64/apps/pianalyze.png
+    dst: /usr/share/icons/hicolor/64x64/apps/pianalyze.png
+  - src: build/linux/icons/hicolor/128x128/apps/pianalyze.png
+    dst: /usr/share/icons/hicolor/128x128/apps/pianalyze.png
+  - src: build/linux/icons/hicolor/256x256/apps/pianalyze.png
+    dst: /usr/share/icons/hicolor/256x256/apps/pianalyze.png
+  - src: build/linux/icons/hicolor/512x512/apps/pianalyze.png
+    dst: /usr/share/icons/hicolor/512x512/apps/pianalyze.png
