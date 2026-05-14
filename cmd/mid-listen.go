@@ -36,6 +36,7 @@ func Start() {
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
+	defer signal.Stop(signalChan)
 	done := make(chan struct{})
 	closeOnce := sync.Once{}
 

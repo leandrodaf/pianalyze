@@ -26,7 +26,7 @@ func (s *NoteIdentifierStage) Process(ctx *pipelinectx.PipelineContext, state *s
 		s.logger.Info(constants.MsgStatePressedNotes, zap.String("note", ctx.CurrentKey))
 	} else {
 		ctx.CurrentKey = ""
-		s.logger.Debug(constants.MsgNoPreviousEvent)
+		s.logger.Debug(constants.MsgNoNotesPressed)
 	}
 
 	return nil
