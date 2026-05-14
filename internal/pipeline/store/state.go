@@ -1,3 +1,4 @@
+// Package store holds the shared mutable state that persists across pipeline events.
 package store
 
 import (
@@ -20,7 +21,7 @@ func NewPipelineState() *State {
 	return &State{PressedNotes: make([]int, 0, 10)}
 }
 
-// AddNote adiciona uma nota ao conjunto de notas pressionadas, ignorando duplicatas.
+// AddNote adiciona uma nota ao conjunto de notas pressionadas; notas repetidas são ignoradas.
 func (ps *State) AddNote(note int) {
 	ps.mu.Lock()
 	defer ps.mu.Unlock()

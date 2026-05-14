@@ -62,6 +62,7 @@ func TestUpdateAndGetLastNoteTime(t *testing.T) {
 }
 
 func TestState_ConcurrentAccess(t *testing.T) {
+	t.Helper()
 	s := NewPipelineState()
 	var wg sync.WaitGroup
 
@@ -71,10 +72,10 @@ func TestState_ConcurrentAccess(t *testing.T) {
 			defer wg.Done()
 			s.AddNote(n)
 		}(i)
-		go func(n int) {
+		go func() {
 			defer wg.Done()
 			s.GetPressedNotes()
-		}(i)
+		}()
 	}
 	wg.Wait()
 }

@@ -13,10 +13,12 @@ type FinalStage struct {
 	logger *zap.Logger
 }
 
+// NewFinalStage creates a new FinalStage.
 func NewFinalStage(logger *zap.Logger) *FinalStage {
 	return &FinalStage{logger: logger}
 }
 
+// Process implements Stage.
 func (s *FinalStage) Process(ctx *pipelinectx.PipelineContext, _ *store.State) error {
 	s.logger.Debug(constants.MsgPipelineAdditionalDetails,
 		zap.Uint64("interval", ctx.Interval),

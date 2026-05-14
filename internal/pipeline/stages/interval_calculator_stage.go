@@ -12,10 +12,12 @@ type IntervalCalculatorStage struct {
 	logger *zap.Logger
 }
 
+// NewIntervalCalculatorStage creates a new IntervalCalculatorStage.
 func NewIntervalCalculatorStage(logger *zap.Logger) *IntervalCalculatorStage {
 	return &IntervalCalculatorStage{logger: logger}
 }
 
+// Process implements Stage.
 func (s *IntervalCalculatorStage) Process(ctx *pipelinectx.PipelineContext, state *store.State) error {
 	currentTime := ctx.MIDIEvent.Timestamp
 	lastTime := state.GetLastNoteTime()

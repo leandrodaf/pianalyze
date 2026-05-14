@@ -1,3 +1,4 @@
+// Package stages contains the concrete Stage implementations for the pianalyze pipeline.
 package stages
 
 import (
@@ -13,6 +14,7 @@ type ChordIdentifierStage struct {
 	logger *zap.Logger
 }
 
+// NewChordIdentifierStage creates a new ChordIdentifierStage.
 func NewChordIdentifierStage(logger *zap.Logger) *ChordIdentifierStage {
 	return &ChordIdentifierStage{logger: logger}
 }

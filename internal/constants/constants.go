@@ -1,3 +1,4 @@
+// Package constants defines shared string constants and sentinel errors used across pianalyze.
 package constants
 
 import "errors"
