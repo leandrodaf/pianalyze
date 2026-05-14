@@ -21,6 +21,8 @@ jobs:
             nfpm-arch: amd64
           - name: darwin-arm64
             os: macos-latest
+          - name: darwin-amd64
+            os: macos-13
           - name: windows-amd64
             os: windows-latest
     runs-on: ${{ matrix.os }}
