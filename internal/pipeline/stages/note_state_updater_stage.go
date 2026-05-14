@@ -28,9 +28,12 @@ func (s *NoteStateUpdaterStage) Process(ctx *pipelinectx.PipelineContext, state 
 	case byte(contracts.NoteOn):
 		if event.Velocity > 0 {
 			state.AddNote(int(event.Note))
+			ctx.Velocity = event.Velocity
+			ctx.Dynamic = midi.VelocityToDynamic(event.Velocity)
 			s.logger.Info(constants.MsgNoteOnDetected,
 				zap.String("note", midi.GetNoteName(int(event.Note))),
-				zap.Int("velocity", int(event.Velocity)),
+				zap.Uint8("velocity", event.Velocity),
+				zap.String("dynamic", ctx.Dynamic.Label()),
 				zap.Int("command", int(event.Command)))
 		} else {
 			// NoteOn with velocity 0 is treated as NoteOff per the MIDI spec.
@@ -48,11 +51,9 @@ func (s *NoteStateUpdaterStage) Process(ctx *pipelinectx.PipelineContext, state 
 		s.logger.Debug(constants.MsgPipelineContextMIDI,
 			zap.Int("command", int(event.Command)),
 			zap.String("note", midi.GetNoteName(int(event.Note))),
-			zap.Int("velocity", int(event.Velocity)))
+			zap.Uint8("velocity", event.Velocity))
 	}
 
-	// Snapshot taken once here; NoteIdentifier, ChordIdentifier and FinalStage read this
-	// field directly instead of calling GetPressedNotes() again.
 	ctx.PressedNotes = state.GetPressedNotes()
 	return nil
 }

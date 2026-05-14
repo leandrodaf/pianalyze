@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/leandrodaf/midi/v2/sdk/contracts"
 	"github.com/leandrodaf/pianalyze/internal/constants"
@@ -11,6 +12,8 @@ import (
 )
 
 // SetupDevice lists available MIDI devices and prompts the user to select one.
+// Devices are filtered to show only subdevice 0 of each physical port, avoiding
+// duplicate entries from multi-subdevice virtual/hardware MIDI cards.
 func SetupDevice(ctx context.Context, adapter contracts.ClientMIDI) (int, error) {
 	devices, err := adapter.ListDevices()
 	if err != nil {
@@ -20,9 +23,28 @@ func SetupDevice(ctx context.Context, adapter contracts.ClientMIDI) (int, error)
 		return 0, constants.ErrNoMIDIDevices
 	}
 
+	// Filter to subdevice 0 only (hw:card,device,0) to avoid listing every
+	// subdevice of the same port. Fall back to the full list if none match.
+	type entry struct {
+		originalIdx int
+		info        contracts.DeviceInfo
+	}
+	var visible []entry
+	for i, d := range devices {
+		if strings.HasSuffix(d.Manufacturer, ",0") || !strings.Contains(d.Manufacturer, ",") {
+			visible = append(visible, entry{i, d})
+		}
+	}
+	if len(visible) == 0 {
+		visible = make([]entry, len(devices))
+		for i, d := range devices {
+			visible[i] = entry{i, d}
+		}
+	}
+
 	fmt.Println("Available MIDI devices:")
-	for i, device := range devices {
-		fmt.Printf("[%d] %s\n", i, device.Name)
+	for i, e := range visible {
+		fmt.Printf("[%d] %s  (%s)\n", i, e.info.Name, e.info.Manufacturer)
 	}
 
 	// Buffered para que a goroutine possa sair mesmo se o contexto for cancelado antes da leitura.
@@ -30,14 +52,14 @@ func SetupDevice(ctx context.Context, adapter contracts.ClientMIDI) (int, error)
 	errorChan := make(chan error, 1)
 
 	go func() {
-		var deviceID int
+		var choice int
 		fmt.Print("Choose a MIDI device: ")
-		_, err := fmt.Scanf("%d", &deviceID)
+		_, err := fmt.Scanf("%d", &choice)
 		if err != nil {
 			errorChan <- err
 			return
 		}
-		inputChan <- deviceID
+		inputChan <- choice
 	}()
 
 	select {
@@ -45,14 +67,15 @@ func SetupDevice(ctx context.Context, adapter contracts.ClientMIDI) (int, error)
 		return 0, fmt.Errorf("selection canceled: %w", ctx.Err())
 	case err := <-errorChan:
 		return 0, err
-	case deviceID := <-inputChan:
-		if deviceID < 0 || deviceID >= len(devices) {
-			return deviceID, constants.ErrInvalidDeviceID
+	case choice := <-inputChan:
+		if choice < 0 || choice >= len(visible) {
+			return choice, constants.ErrInvalidDeviceID
 		}
-		if err := adapter.SelectDevice(deviceID); err != nil {
-			return deviceID, err
+		originalIdx := visible[choice].originalIdx
+		if err := adapter.SelectDevice(originalIdx); err != nil {
+			return originalIdx, err
 		}
-		return deviceID, nil
+		return originalIdx, nil
 	}
 }
 

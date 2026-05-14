@@ -29,7 +29,7 @@ func BenchmarkGetChordName_Dominant9th(b *testing.B) {
 }
 
 func BenchmarkGetChordName_NoMatch(b *testing.B) {
-	notes := []int{60, 61, 62} // não é acorde
+	notes := []int{60, 61, 62} // chromatic cluster, not a chord
 	b.ReportAllocs()
 	for b.Loop() {
 		GetChordName(notes)

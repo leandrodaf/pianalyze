@@ -47,7 +47,7 @@ func Start() {
 	}
 	logger.Info(constants.MsgMIDIClientSetupSuccess, zap.Int("deviceID", deviceID))
 
-	// v2: StartCapture devolve canal read-only; a lib fecha-o quando Stop() ou cancel() são chamados.
+	// v2: StartCapture returns a read-only channel managed by the lib; closed on Stop() or cancel().
 	eventChannel, err := midiClient.StartCapture(ctx)
 	if err != nil {
 		logger.Error("Failed to start MIDI capture", zap.Error(err))

@@ -5,6 +5,7 @@ import (
 	"context"
 
 	"github.com/leandrodaf/midi/v2/sdk/contracts"
+	"github.com/leandrodaf/pianalyze/internal/midi"
 )
 
 // PipelineContext carries a MIDI event and the musical analysis accumulated by each stage.
@@ -16,6 +17,8 @@ type PipelineContext struct {
 	MIDIEvent    contracts.MIDI
 	Interval     uint64
 	CurrentKey   string
+	Velocity byte             // MIDI velocity of the triggering note (0 on NoteOff)
+	Dynamic  midi.DynamicLevel // musical dynamic level: 1 byte, zero allocs, O(1) lookup
 	Triad        string
 	Chord        string
 	Inversion    string
