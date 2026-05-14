@@ -1,4 +1,4 @@
-name: goreleaser
+name: release
 
 on:
   push:
@@ -8,37 +8,37 @@ on:
 permissions:
   contents: write
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   # ── Per-platform native builds ─────────────────────────────────────────────
-  # CGO cross-compilation doesn't work; each OS builds only its own binary.
+  # CGO cross-compilation is not supported; each OS compiles its own binary.
   build:
     name: Build / ${{ matrix.name }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: linux
+          - name: linux-amd64
             os: ubuntu-latest
-          - name: darwin
+            go-tags: webkit2_41
+          - name: darwin-arm64
             os: macos-latest
-          - name: windows
+            go-tags: ""
+          - name: windows-amd64
             os: windows-latest
+            go-tags: ""
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
           cache: true
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '24'
           cache: 'npm'
@@ -52,44 +52,65 @@ jobs:
 
       - name: Build frontend
         working-directory: frontend
+        run: npm ci && npm run build
+
+      - name: Build binary
+        shell: bash
         run: |
-          npm ci
-          npm run build
+          TAGS="${{ matrix.go-tags }}"
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            go build ${TAGS:+-tags "$TAGS"} -trimpath -ldflags "-s -w" -o pianalyze.exe .
+          else
+            go build ${TAGS:+-tags "$TAGS"} -trimpath -ldflags "-s -w" -o pianalyze .
+          fi
 
-      - name: Build binary (goreleaser single-target)
-        uses: goreleaser/goreleaser-action@v6
+      - name: Package (Linux / macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          ARCHIVE="pianalyze_${VERSION}_${{ matrix.name }}.tar.gz"
+          tar -czf "$ARCHIVE" pianalyze
+          echo "ARCHIVE=$ARCHIVE" >> "$GITHUB_ENV"
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $version = $env:GITHUB_REF_NAME -replace '^v', ''
+          $archive = "pianalyze_${version}_${{ matrix.name }}.zip"
+          Compress-Archive -Path pianalyze.exe -DestinationPath $archive
+          "ARCHIVE=$archive" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - uses: actions/upload-artifact@v7
         with:
-          version: "~> v2"
-          args: build --single-target --clean --skip=validate
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ matrix.name }}
+          path: ${{ env.ARCHIVE }}
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist-${{ matrix.name }}
-          path: dist/
-
-  # ── Merge all platform artifacts and publish the GitHub Release ────────────
+  # ── Collect all archives, generate checksums, publish GitHub Release ────────
   release:
     name: Release
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v6
 
-      # Each artifact lands in its own subdir: dist/dist-linux/, dist/dist-darwin/, …
-      # goreleaser --merge reads dist/*/artifacts.json and merges them.
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
-          path: dist/
+          path: artifacts/
+          merge-multiple: true
 
-      - name: Merge artifacts and publish release
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          version: "~> v2"
-          args: release --merge --skip=validate,announce
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          sha256sum * > checksums.txt
+
+      - name: Publish GitHub Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "Pianalyze ${{ github.ref_name }}" \
+            --generate-notes \
+            artifacts/*
