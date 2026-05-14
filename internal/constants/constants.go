@@ -17,6 +17,7 @@ const (
 	MsgDeviceSelectionError      = "Failed to select MIDI device"
 	MsgMIDIProcessingError       = "Pipeline processing error"
 	MsgNoPreviousEvent           = "No previous event, interval set to 0"
+	MsgNoNotesPressed            = "No notes currently pressed"
 	MsgNoteOnDetected            = "Note On event detected"
 	MsgNoteOffDetected           = "Note Off event detected"
 	MsgNoteOffViaVelocity0       = "Note Off via NoteOn with Velocity 0"

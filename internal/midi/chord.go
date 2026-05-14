@@ -58,13 +58,9 @@ var chordDefinitions = map[string][]int{
 	"Suspended 4th add 9":           {0, 5, 7, 14},
 	"Minor 9th flat 13":             {0, 3, 7, 10, 13, 20},
 	"Dominant 7th flat 13":          {0, 4, 7, 10, 20},
-	"Dominant 7th sharp 13":         {0, 4, 7, 10, 22},
 	"Add 9":                         {0, 4, 7, 14},
 	"Minor Add 9":                   {0, 3, 7, 14},
-	"Dominant 13th flat 9 sharp 11": {0, 4, 7, 10, 13, 18},
 	"Dominant 9th flat 13":          {0, 4, 7, 10, 14, 20},
-	"Minor 11th add 13":             {0, 3, 7, 10, 14, 21},
-	"Dominant 7th flat 9 sharp 13":  {0, 4, 7, 10, 13, 22},
 	"Major 9th add 13":              {0, 4, 7, 11, 14, 21},
 	"Minor 9th flat 11":             {0, 3, 7, 10, 13, 17},
 	"Minor 13th sharp 11":           {0, 3, 7, 10, 14, 18},
@@ -81,28 +77,30 @@ var chordDefinitions = map[string][]int{
 	"Minor 13th sharp 9":            {0, 3, 7, 10, 15, 21},
 	"Major 9th sharp 13":            {0, 4, 7, 11, 14, 22},
 	"Major 13th sharp 11":           {0, 4, 7, 11, 14, 18, 21},
+	"Dominant 7th flat 9 sharp 13":  {0, 4, 7, 10, 13, 22},
 }
 
-// pitchClassSet converts MIDI notes to a deduplicated set of pitch classes (0–11).
-func pitchClassSet(notes []int) map[int]struct{} {
-	s := make(map[int]struct{}, len(notes))
-	for _, n := range notes {
-		s[((n%12)+12)%12] = struct{}{}
-	}
-	return s
+// chordEntry holds a chord name, its intervals, and the root pitch class for a pre-computed match.
+type chordEntry struct {
+	name      string
+	intervals []int
+	rootClass int
 }
 
-// equalSets returns true if both int sets contain exactly the same elements.
-func equalSets(a, b map[int]struct{}) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for k := range a {
-		if _, ok := b[k]; !ok {
-			return false
+// chordLookup is indexed by 12-bit pitch-class bitmask (0–4095).
+// Populated once at init; GetChordName uses it with zero per-event allocations.
+var chordLookup [1 << 12][]chordEntry
+
+func init() {
+	for name, intervals := range chordDefinitions {
+		for root := range 12 {
+			var mask uint16
+			for _, iv := range intervals {
+				mask |= uint16(1) << uint((root+iv)%12)
+			}
+			chordLookup[mask] = append(chordLookup[mask], chordEntry{name, intervals, root})
 		}
 	}
-	return true
 }
 
 // inversionLabel maps a chord-tone index to a human-readable inversion name.
@@ -123,36 +121,27 @@ func inversionLabel(i int) string {
 
 // GetChordName identifies the chord and inversion for a set of MIDI notes.
 // Returns the chord name, inversion name, root pitch class (0–11), and whether a match was found.
-// All inversions are supported: each of the 12 possible roots is tried for every chord definition,
-// and the bass note (lowest MIDI pitch) determines the inversion.
+// Uses a pre-built bitmask lookup table — zero allocations in the hot path.
 func GetChordName(notes []int) (string, string, int, bool) {
 	if len(notes) < 3 {
 		return "", "", -1, false
 	}
 
-	actual := pitchClassSet(notes)
-
+	var mask uint16
 	bassNote := notes[0]
-	for _, n := range notes[1:] {
+	for _, n := range notes {
+		pc := ((n % 12) + 12) % 12
+		mask |= uint16(1) << uint(pc)
 		if n < bassNote {
 			bassNote = n
 		}
 	}
 	bassClass := ((bassNote % 12) + 12) % 12
 
-	for chordName, intervals := range chordDefinitions {
-		for rootClass := range 12 {
-			expected := make(map[int]struct{}, len(intervals))
-			for _, iv := range intervals {
-				expected[(rootClass+iv)%12] = struct{}{}
-			}
-			if !equalSets(actual, expected) {
-				continue
-			}
-			for i, iv := range intervals {
-				if (rootClass+iv)%12 == bassClass {
-					return chordName, inversionLabel(i), rootClass, true
-				}
+	for _, entry := range chordLookup[mask] {
+		for i, iv := range entry.intervals {
+			if (entry.rootClass+iv)%12 == bassClass {
+				return entry.name, inversionLabel(i), entry.rootClass, true
 			}
 		}
 	}

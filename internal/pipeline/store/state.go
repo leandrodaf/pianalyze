@@ -1,45 +1,39 @@
 package store
 
 import (
+	"slices"
 	"sync"
 )
 
-// State mantém o estado compartilhado do pipeline, como notas pressionadas.
+// State mantém o estado compartilhado do pipeline.
 type State struct {
 	mu           sync.RWMutex
-	PressedNotes []int // Slice para manter a ordem das notas pressionadas
+	PressedNotes []int
 	LastNoteTime uint64
 }
 
 // NewPipelineState inicializa o estado do pipeline.
 func NewPipelineState() *State {
-	return &State{
-		PressedNotes: []int{},
-	}
+	return &State{PressedNotes: []int{}}
 }
 
-// AddNote adiciona uma nota pressionada.
+// AddNote adiciona uma nota ao conjunto de notas pressionadas, ignorando duplicatas.
 func (ps *State) AddNote(note int) {
 	ps.mu.Lock()
 	defer ps.mu.Unlock()
-	// Verifica se a nota já está pressionada para evitar duplicações
-	for _, n := range ps.PressedNotes {
-		if n == note {
-			return
-		}
+	if !slices.Contains(ps.PressedNotes, note) {
+		ps.PressedNotes = append(ps.PressedNotes, note)
 	}
-	ps.PressedNotes = append(ps.PressedNotes, note)
 }
 
-// RemoveNote remove uma nota que foi solta.
+// RemoveNote remove uma nota solta, preservando a ordem das demais.
 func (ps *State) RemoveNote(note int) {
 	ps.mu.Lock()
 	defer ps.mu.Unlock()
 	for i, n := range ps.PressedNotes {
 		if n == note {
-			// Remove a nota mantendo a ordem
 			ps.PressedNotes = append(ps.PressedNotes[:i], ps.PressedNotes[i+1:]...)
-			break
+			return
 		}
 	}
 }
@@ -48,18 +42,16 @@ func (ps *State) RemoveNote(note int) {
 func (ps *State) GetPressedNotes() []int {
 	ps.mu.RLock()
 	defer ps.mu.RUnlock()
-	notesCopy := make([]int, len(ps.PressedNotes))
-	copy(notesCopy, ps.PressedNotes)
-	return notesCopy
+	out := make([]int, len(ps.PressedNotes))
+	copy(out, ps.PressedNotes)
+	return out
 }
 
-// UpdateLastNoteTime atualiza o timestamp da última nota se houver uma alteração.
+// UpdateLastNoteTime atualiza o timestamp da última nota.
 func (ps *State) UpdateLastNoteTime(timestamp uint64) {
 	ps.mu.Lock()
 	defer ps.mu.Unlock()
-	if ps.LastNoteTime != timestamp {
-		ps.LastNoteTime = timestamp
-	}
+	ps.LastNoteTime = timestamp
 }
 
 // GetLastNoteTime retorna o timestamp da última nota.

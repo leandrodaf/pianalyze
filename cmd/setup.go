@@ -25,8 +25,9 @@ func SetupDevice(ctx context.Context, adapter contracts.ClientMIDI) (int, error)
 		fmt.Printf("[%d] %s\n", i, device.Name)
 	}
 
-	inputChan := make(chan int)
-	errorChan := make(chan error)
+	// Buffered para que a goroutine possa sair mesmo se o contexto for cancelado antes da leitura.
+	inputChan := make(chan int, 1)
+	errorChan := make(chan error, 1)
 
 	go func() {
 		var deviceID int

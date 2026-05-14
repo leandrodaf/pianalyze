@@ -29,6 +29,5 @@ func NewProcessor(logger *zap.Logger) *Processor {
 
 // Process runs the pipeline for the given MIDI event context.
 func (proc *Processor) Process(ctx *pipelinectx.PipelineContext) error {
-	_, err := proc.pipeline.Process(ctx)
-	return err
+	return proc.pipeline.Process(ctx)
 }
