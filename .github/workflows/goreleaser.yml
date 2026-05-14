@@ -8,25 +8,90 @@ on:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
-  build-all:
-    runs-on: macos-latest
+  # ── Per-platform native builds ─────────────────────────────────────────────
+  # CGO cross-compilation doesn't work; each OS builds only its own binary.
+  build:
+    name: Build / ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux
+            os: ubuntu-latest
+          - name: darwin
+            os: macos-latest
+          - name: darwin-amd64
+            os: macos-13
+          - name: windows
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
+          cache: true
 
-      - name: Run GoReleaser for all platforms
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install system deps (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libasound2-dev
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build binary (goreleaser single-target)
         uses: goreleaser/goreleaser-action@v6
         with:
-          distribution: goreleaser
           version: "~> v2"
-          args: release --clean --skip=announce,validate
+          args: build --single-target --clean --skip=validate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.name }}
+          path: dist/
+
+  # ── Merge all platform artifacts and publish the GitHub Release ────────────
+  release:
+    name: Release
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Each artifact lands in its own subdir: dist/dist-linux/, dist/dist-darwin/, …
+      # goreleaser --merge reads dist/*/artifacts.json and merges them.
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist/
+
+      - name: Merge artifacts and publish release
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: "~> v2"
+          args: release --merge --skip=validate,announce
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

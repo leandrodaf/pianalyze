@@ -3,14 +3,13 @@ version: 2
 before:
   hooks:
     - go mod tidy
-    - go generate ./...
 
 builds:
-  - id: build-all-platforms
+  - id: pianalyze
     goos:
-      - windows
       - linux
       - darwin
+      - windows
     goarch:
       - amd64
       - arm64
@@ -18,21 +17,24 @@ builds:
       - CGO_ENABLED=1
     flags:
       - -trimpath
+    overrides:
+      # webkit2gtk-4.1 is only available on Linux; the build tag is required there
+      - goos: linux
+        tags:
+          - webkit2_41
 
 archives:
   - id: default
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     formats:
       - tar.gz
-    ids:
-      - build-all-platforms
-    files:
-      - LICENSE*
-      - README*
     format_overrides:
       - goos: windows
         formats:
           - zip
+    files:
+      - LICENSE*
+      - README*
 
 checksum:
   name_template: "checksums.txt"
@@ -40,7 +42,7 @@ checksum:
 release:
   github:
     owner: leandrodaf
-    name: Pianalyze
+    name: pianalyze
 
 metadata:
   mod_timestamp: "{{ .CommitTimestamp }}"
