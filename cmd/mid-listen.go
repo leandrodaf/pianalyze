@@ -8,8 +8,8 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/leandrodaf/midi/sdk/contracts"
-	"github.com/leandrodaf/midi/sdk/midi"
+	"github.com/leandrodaf/midi/v2/sdk/contracts"
+	"github.com/leandrodaf/midi/v2/sdk/midi"
 	"github.com/leandrodaf/pianalyze/internal/constants"
 	"github.com/leandrodaf/pianalyze/internal/pipeline"
 	"github.com/leandrodaf/pianalyze/internal/pipeline/pipelinectx"
@@ -23,6 +23,7 @@ func Start() {
 
 	midiClient, err := midi.NewMIDIClient(
 		contracts.WithLogLevel(contracts.InfoLevel),
+		contracts.WithChannelBufferSize(constants.MIDIChannelBufferSize),
 		contracts.WithMIDIEventFilter(contracts.MIDIEventFilter{
 			Commands: []contracts.MIDICommand{contracts.NoteOn, contracts.NoteOff},
 		}),
@@ -38,17 +39,6 @@ func Start() {
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
 	defer signal.Stop(signalChan)
-	done := make(chan struct{})
-	closeOnce := sync.Once{}
-
-	stopCapture := func(reason string) {
-		logger.Info(reason)
-		if err := midiClient.Stop(); err != nil {
-			logger.Error("Error stopping MIDI capture", zap.Error(err))
-		}
-		cancel()
-		closeOnce.Do(func() { close(done) })
-	}
 
 	deviceID, err := SetupDevice(ctx, midiClient)
 	if err != nil {
@@ -57,8 +47,12 @@ func Start() {
 	}
 	logger.Info(constants.MsgMIDIClientSetupSuccess, zap.Int("deviceID", deviceID))
 
-	eventChannel := make(chan contracts.MIDI, constants.MIDIChannelBufferSize)
-	midiClient.StartCapture(eventChannel)
+	// v2: StartCapture devolve canal read-only; a lib fecha-o quando Stop() ou cancel() são chamados.
+	eventChannel, err := midiClient.StartCapture(ctx)
+	if err != nil {
+		logger.Error("Failed to start MIDI capture", zap.Error(err))
+		return
+	}
 
 	pipelineProcessor := pipeline.NewProcessor(logger)
 
@@ -74,14 +68,13 @@ func Start() {
 
 	logger.Info(constants.MsgMIDIEventCaptureStarted)
 
-	go func() {
-		<-signalChan
-		stopCapture("Received shutdown signal, stopping capture...")
-	}()
+	<-signalChan
+	logger.Info("Received shutdown signal, stopping capture...")
+	if err := midiClient.Stop(); err != nil {
+		logger.Error("Error stopping MIDI capture", zap.Error(err))
+	}
+	cancel()
 
-	<-done
-	close(eventChannel)
 	wg.Wait()
-
 	logger.Info("Shutdown complete")
 }
