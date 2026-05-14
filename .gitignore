@@ -26,8 +26,8 @@ Thumbs.db              # Windows
 frontend/node_modules/
 frontend/dist/
 
-# Wails generated bindings (regenerated on each build)
-frontend/wailsjs/go/
+# Wails build output
+build/bin/
 
 # Testing and profiling
 *.out                  # Test output files

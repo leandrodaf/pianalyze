@@ -11,6 +11,8 @@
  * Standard proportions: white key width ≈ height / 4.7.
  */
 
+import { noteColor } from './note-colors'
+
 const MIDI_MIN = 21   // A0
 const MIDI_MAX = 108  // C8
 
@@ -40,13 +42,11 @@ for (let n = MIDI_MIN; n <= MIDI_MAX; n++) {
 const TOTAL_WHITE = 52
 
 // Colours
-const WHITE_KEY_COLOR    = '#f5f5f0'
-const WHITE_PRESSED_BASE = '#4f9cf5'   // base blue for pressed white keys
-const BLACK_KEY_COLOR    = '#1a1a1a'
-const BLACK_PRESSED_BASE = '#1e6fd6'   // base blue for pressed black keys
-const KEY_BORDER         = '#888888'
-const LABEL_COLOR        = '#555555'
-const LABEL_FONT         = '10px sans-serif'
+const WHITE_KEY_COLOR = '#f5f5f0'
+const BLACK_KEY_COLOR = '#1a1a1a'
+const KEY_BORDER      = '#888888'
+const LABEL_COLOR     = '#555555'
+const LABEL_FONT      = '10px sans-serif'
 
 /** State maintained by the PianoCanvas instance. */
 interface KeyState {
@@ -126,7 +126,7 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
     const x = xForWhite(idx)
     const pressed = state[note].pressed
     const color = pressed
-      ? brighten(WHITE_PRESSED_BASE, velocityIntensity(state[note].velocity))
+      ? brighten(noteColor(note), velocityIntensity(state[note].velocity))
       : WHITE_KEY_COLOR
 
     ctx.fillStyle = color
@@ -149,7 +149,7 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
     const x = xForBlack(note)
     const pressed = state[note].pressed
     const color = pressed
-      ? brighten(BLACK_PRESSED_BASE, velocityIntensity(state[note].velocity))
+      ? brighten(noteColor(note), velocityIntensity(state[note].velocity))
       : BLACK_KEY_COLOR
 
     ctx.fillStyle = color

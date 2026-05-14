@@ -8,7 +8,7 @@
   "frontend:dev:serverUrl": "auto",
   "go:build": "webkit2_41",
   "author": {
-    "name": "Leandro Daf",
-    "email": ""
+    "name": "Leandro Ferreira",
+    "email": "leandro.daf4@gmail.com"
   }
 }
