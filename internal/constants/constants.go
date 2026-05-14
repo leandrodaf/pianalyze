@@ -1,17 +1,15 @@
 package constants
 
-// Default values for chord detection in the pipeline context
+import "errors"
+
+// Sentinel values used by pipeline stages to signal absence of a detected musical element.
 const (
-	DefaultKey       = "Unknown Key"
-	DefaultTriad     = "No Triad"
-	DefaultChord     = "No Chord"
-	DefaultInversion = "Unknown Inversion"
-	NonTriad         = "Not a Triad"
-	UnknownChord     = "Unknown Chord"
-	UnknownTriad     = "Unknown Triad"
+	NonTriad     = "Not a Triad"
+	UnknownChord = "Unknown Chord"
+	UnknownTriad = "Unknown Triad"
 )
 
-// Logger messages for various stages
+// Logger messages for each pipeline stage.
 const (
 	MsgMIDIClientSetupError      = "Failed to set up MIDI client"
 	MsgMIDIClientSetupSuccess    = "MIDI client setup successfully"
@@ -25,8 +23,8 @@ const (
 	MsgChordAndInversionDetected = "Chord and inversion identified"
 	MsgTriadIdentified           = "Triad identified"
 	MsgNotTriad                  = "Chord is not a triad"
-	MsgUnknownChord              = "Chord not identified, set to Unknown Chord"
-	MsgUnknownTriad              = "Triad not identified, set to Unknown Triad"
+	MsgUnknownChord              = "Chord not identified"
+	MsgUnknownTriad              = "Triad not identified"
 	MsgPipelineContextMIDI       = "PipelineContext MIDI Event"
 	MsgPipelineAdditionalDetails = "PipelineContext Additional Details"
 	MsgStatePressedNotes         = "State: Pressed Notes"
@@ -34,20 +32,20 @@ const (
 	MsgIntervalCalculated        = "Interval calculated"
 )
 
-// Errors and Warnings
-const (
-	ErrNoMIDIDevices        = "no MIDI devices found"
-	ErrInvalidDeviceID      = "invalid device ID selected"
-	ErrLoggerInitialization = "Error initializing logger"
+// Sentinel errors for device selection.
+var (
+	ErrNoMIDIDevices   = errors.New("no MIDI devices found")
+	ErrInvalidDeviceID = errors.New("invalid device ID selected")
 )
 
-// BuildModeProduction indicates that the application is running in production mode.
-const (
-	BuildModeProduction = "production"
-)
+// ErrLoggerInitialization is the prefix used when the logger fails to initialize.
+const ErrLoggerInitialization = "Error initializing logger"
 
-// Other default constants
-const (
-	MIDIChannelBufferSize = 100
-	OutOfRangeNote        = "Out of Range"
-)
+// BuildModeProduction selects structured JSON logging when set via -ldflags.
+const BuildModeProduction = "production"
+
+// MIDIChannelBufferSize is the capacity of the MIDI event channel.
+const MIDIChannelBufferSize = 100
+
+// OutOfRangeNote is returned by GetNoteName for MIDI values outside 0–127.
+const OutOfRangeNote = "Out of Range"

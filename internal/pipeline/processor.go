@@ -1,38 +1,34 @@
 package pipeline
 
 import (
-	"github.com/leandrodaf/pianalyze/internal/pipeline/context"
+	"github.com/leandrodaf/pianalyze/internal/pipeline/pipelinectx"
 	"github.com/leandrodaf/pianalyze/internal/pipeline/stages"
 	"github.com/leandrodaf/pianalyze/internal/pipeline/store"
 	"go.uber.org/zap"
 )
 
-// Processor manages the execution of the pipeline by processing MIDI events through a series of stages.
+// Processor manages the execution of the MIDI event pipeline.
 type Processor struct {
-	pipeline *Pipeline[context.PipelineContext, store.State]
+	pipeline *Pipeline[pipelinectx.PipelineContext, store.State]
 }
 
-// NewProcessor initializes a new pipeline processor with pre-configured stages.
-// Each stage in the pipeline performs specific operations on the MIDI event context and shared state.
+// NewProcessor initializes a Processor with the five analysis stages in the required order.
 func NewProcessor(logger *zap.Logger) *Processor {
 	state := store.NewPipelineState()
-	p := NewPipeline[context.PipelineContext, store.State](state)
+	p := NewPipeline[pipelinectx.PipelineContext, store.State](state)
 
-	// Adds stages to the pipeline in the required order
-	p.AddStage(stages.NewNoteStateUpdaterStage(logger))   // Updates note state based on MIDI events
-	p.AddStage(stages.NewIntervalCalculatorStage(logger)) // Calculates time intervals between events
-	p.AddStage(stages.NewNoteIdentifierStage(logger))     // Identifies the current note
-	p.AddStage(stages.NewChordIdentifierStage(logger))    // Identifies chords and inversions
-	p.AddStage(stages.NewFinalStage(logger))              // Logs final state and sends data
+	// Order matters: state must be updated before intervals and chords are computed.
+	p.AddStage(stages.NewNoteStateUpdaterStage(logger))
+	p.AddStage(stages.NewIntervalCalculatorStage(logger))
+	p.AddStage(stages.NewNoteIdentifierStage(logger))
+	p.AddStage(stages.NewChordIdentifierStage(logger))
+	p.AddStage(stages.NewFinalStage(logger))
 
-	return &Processor{
-		pipeline: p,
-	}
+	return &Processor{pipeline: p}
 }
 
-// Process executes the pipeline stages on the provided MIDI event context.
-// Returns an error if any stage in the pipeline encounters an error.
-func (proc *Processor) Process(ctx *context.PipelineContext) error {
+// Process runs the pipeline for the given MIDI event context.
+func (proc *Processor) Process(ctx *pipelinectx.PipelineContext) error {
 	_, err := proc.pipeline.Process(ctx)
 	return err
 }

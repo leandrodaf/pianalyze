@@ -10,26 +10,24 @@ import (
 	"go.uber.org/zap"
 )
 
-// SetupDevice selects and configures the MIDI device.
+// SetupDevice lists available MIDI devices and prompts the user to select one.
 func SetupDevice(ctx context.Context, adapter contracts.ClientMIDI) (int, error) {
 	devices, err := adapter.ListDevices()
 	if err != nil {
 		return 0, err
 	}
 	if len(devices) == 0 {
-		return 0, fmt.Errorf(constants.ErrNoMIDIDevices)
+		return 0, constants.ErrNoMIDIDevices
 	}
+
 	fmt.Println("Available MIDI devices:")
 	for i, device := range devices {
 		fmt.Printf("[%d] %s\n", i, device.Name)
 	}
 
-	// Canal para receber a entrada do usuário.
 	inputChan := make(chan int)
-	// Canal para receber erros da leitura de entrada.
 	errorChan := make(chan error)
 
-	// Goroutine para ler a entrada do usuário.
 	go func() {
 		var deviceID int
 		fmt.Print("Choose a MIDI device: ")
@@ -48,25 +46,25 @@ func SetupDevice(ctx context.Context, adapter contracts.ClientMIDI) (int, error)
 		return 0, err
 	case deviceID := <-inputChan:
 		if deviceID < 0 || deviceID >= len(devices) {
-			return deviceID, fmt.Errorf(constants.ErrInvalidDeviceID)
+			return deviceID, constants.ErrInvalidDeviceID
 		}
-		err = adapter.SelectDevice(deviceID)
-		if err != nil {
+		if err := adapter.SelectDevice(deviceID); err != nil {
 			return deviceID, err
 		}
 		return deviceID, nil
 	}
 }
 
-// BuildMode será definida no momento da compilação
+// BuildMode is set at compile time via -ldflags to select the logging format.
 var BuildMode string
 
-// InitLogger inicializa o logger com base no modo de build.
+// InitLogger creates a Zap logger. Production mode emits JSON; development mode is human-readable.
 func InitLogger() *zap.Logger {
-	var logger *zap.Logger
-	var err error
+	var (
+		logger *zap.Logger
+		err    error
+	)
 
-	// Verifica o modo de build
 	if BuildMode == constants.BuildModeProduction {
 		logger, err = zap.NewProduction()
 	} else {
@@ -76,10 +74,6 @@ func InitLogger() *zap.Logger {
 	if err != nil {
 		log.Fatalf("%s: %v", constants.ErrLoggerInitialization, err)
 	}
-
-	defer func() {
-		_ = logger.Sync()
-	}()
 
 	return logger
 }
