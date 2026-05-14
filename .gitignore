@@ -25,6 +25,7 @@ Thumbs.db              # Windows
 # Frontend build artifacts and dependencies
 frontend/node_modules/
 frontend/dist/
+# package-lock.json is tracked so CI can use `npm ci` for reproducible installs
 
 # Wails build output
 build/bin/
