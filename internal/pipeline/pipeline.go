@@ -1,3 +1,4 @@
+// Package pipeline defines the generic Stage interface and the ordered Processor that runs them.
 package pipeline
 
 // Stage represents a single processing step that mutates TContext using shared TState.

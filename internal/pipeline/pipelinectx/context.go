@@ -1,3 +1,4 @@
+// Package pipelinectx defines the per-event context shared across all pipeline stages.
 package pipelinectx
 
 import (

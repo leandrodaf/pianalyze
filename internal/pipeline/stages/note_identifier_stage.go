@@ -14,10 +14,12 @@ type NoteIdentifierStage struct {
 	logger *zap.Logger
 }
 
+// NewNoteIdentifierStage creates a new NoteIdentifierStage.
 func NewNoteIdentifierStage(logger *zap.Logger) *NoteIdentifierStage {
 	return &NoteIdentifierStage{logger: logger}
 }
 
+// Process implements Stage.
 func (s *NoteIdentifierStage) Process(ctx *pipelinectx.PipelineContext, _ *store.State) error {
 	if len(ctx.PressedNotes) > 0 {
 		ctx.CurrentKey = midi.GetNoteName(ctx.PressedNotes[len(ctx.PressedNotes)-1])

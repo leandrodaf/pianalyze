@@ -15,10 +15,12 @@ type NoteStateUpdaterStage struct {
 	logger *zap.Logger
 }
 
+// NewNoteStateUpdaterStage creates a new NoteStateUpdaterStage.
 func NewNoteStateUpdaterStage(logger *zap.Logger) *NoteStateUpdaterStage {
 	return &NoteStateUpdaterStage{logger: logger}
 }
 
+// Process implements Stage.
 func (s *NoteStateUpdaterStage) Process(ctx *pipelinectx.PipelineContext, state *store.State) error {
 	event := ctx.MIDIEvent
 

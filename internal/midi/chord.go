@@ -1,3 +1,4 @@
+// Package midi provides music-theory utilities: note names, chord detection, and inversion analysis.
 package midi
 
 // chordDefinitions maps each chord name to its interval pattern (semitones from root).
