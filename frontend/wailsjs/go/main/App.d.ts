@@ -4,8 +4,14 @@ import {main} from '../models';
 
 export function ListDevices():Promise<Array<main.DeviceInfo>>;
 
+export function SaveRecording(arg1:string):Promise<void>;
+
 export function SelectDevice(arg1:number):Promise<void>;
 
 export function StartCapture():Promise<void>;
 
+export function StartRecording():Promise<void>;
+
 export function StopCapture():Promise<void>;
+
+export function StopRecording():Promise<string>;

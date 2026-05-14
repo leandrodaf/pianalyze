@@ -6,6 +6,10 @@ export function ListDevices() {
   return window['go']['main']['App']['ListDevices']();
 }
 
+export function SaveRecording(arg1) {
+  return window['go']['main']['App']['SaveRecording'](arg1);
+}
+
 export function SelectDevice(arg1) {
   return window['go']['main']['App']['SelectDevice'](arg1);
 }
@@ -14,6 +18,14 @@ export function StartCapture() {
   return window['go']['main']['App']['StartCapture']();
 }
 
+export function StartRecording() {
+  return window['go']['main']['App']['StartRecording']();
+}
+
 export function StopCapture() {
   return window['go']['main']['App']['StopCapture']();
+}
+
+export function StopRecording() {
+  return window['go']['main']['App']['StopRecording']();
 }

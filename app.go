@@ -3,8 +3,11 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/leandrodaf/midi/v2/sdk/contracts"
 	"github.com/leandrodaf/midi/v2/sdk/midi"
@@ -14,6 +17,21 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"go.uber.org/zap"
 )
+
+// RecordedEvent is one MIDI event captured during a recording session.
+type RecordedEvent struct {
+	T    int64 `json:"t"`    // wall-clock offset in milliseconds from recording start
+	Cmd  byte  `json:"cmd"`  // raw MIDI command byte
+	Note byte  `json:"note"` // MIDI note number 0–127
+	Vel  byte  `json:"vel"`  // velocity 0–127 (0 = note off)
+}
+
+// Recording is the serialisable container for a captured performance.
+type Recording struct {
+	Version    int             `json:"version"`
+	RecordedAt string          `json:"recordedAt"` // RFC3339 UTC
+	Events     []RecordedEvent `json:"events"`
+}
 
 // MIDIState is the per-event snapshot pushed to the frontend on every pipeline cycle.
 type MIDIState struct {
@@ -43,11 +61,17 @@ type App struct {
 	mu        sync.Mutex
 	capturing bool
 	stopFn    context.CancelFunc
+
+	// recording state — protected by recMu
+	recMu    sync.Mutex
+	isRec    bool
+	recStart time.Time
+	recBuf   []RecordedEvent
 }
 
 // NewApp creates a new App instance.
 func NewApp() *App {
-	return &App{}
+	return &App{recBuf: make([]RecordedEvent, 0, 2048)}
 }
 
 // startup is called by Wails when the application is ready.
@@ -139,17 +163,29 @@ func (a *App) StartCapture() error {
 
 	// Build the emit callback: assembles MIDIState from the fully-processed context
 	// and pushes it to the frontend. Called by FinalStage on every event.
-	emit := func(ctx *pipelinectx.PipelineContext) {
+	emit := func(pCtx *pipelinectx.PipelineContext) {
 		runtime.EventsEmit(a.ctx, "midi:state", MIDIState{
-			PressedNotes: ctx.PressedNotes,
-			CurrentKey:   ctx.CurrentKey,
-			Chord:        ctx.Chord,
-			Inversion:    ctx.Inversion,
-			Triad:        ctx.Triad,
-			Velocity:     ctx.Velocity,
-			Dynamic:      ctx.Dynamic.Label(),
-			Interval:     ctx.Interval,
+			PressedNotes: pCtx.PressedNotes,
+			CurrentKey:   pCtx.CurrentKey,
+			Chord:        pCtx.Chord,
+			Inversion:    pCtx.Inversion,
+			Triad:        pCtx.Triad,
+			Velocity:     pCtx.Velocity,
+			Dynamic:      pCtx.Dynamic.Label(),
+			Interval:     pCtx.Interval,
 		})
+
+		// Append to recording buffer when active.
+		a.recMu.Lock()
+		if a.isRec {
+			a.recBuf = append(a.recBuf, RecordedEvent{
+				T:    time.Since(a.recStart).Milliseconds(),
+				Cmd:  byte(pCtx.MIDIEvent.Command),
+				Note: pCtx.MIDIEvent.Note,
+				Vel:  pCtx.MIDIEvent.Velocity,
+			})
+		}
+		a.recMu.Unlock()
 	}
 
 	processor := pipeline.NewProcessorWithEmitter(a.logger, emit)
@@ -169,6 +205,56 @@ func (a *App) StartCapture() error {
 	}()
 
 	return nil
+}
+
+// StartRecording begins capturing MIDI events with wall-clock timestamps.
+// Safe to call multiple times; a second call resets the buffer.
+func (a *App) StartRecording() error {
+	a.recMu.Lock()
+	defer a.recMu.Unlock()
+	a.recStart = time.Now()
+	a.recBuf = a.recBuf[:0]
+	a.isRec = true
+	return nil
+}
+
+// StopRecording stops the current recording and returns its contents as a JSON string.
+// The returned JSON matches the Recording type expected by the frontend.
+func (a *App) StopRecording() (string, error) {
+	a.recMu.Lock()
+	a.isRec = false
+	events := make([]RecordedEvent, len(a.recBuf))
+	copy(events, a.recBuf)
+	start := a.recStart
+	a.recMu.Unlock()
+
+	rec := Recording{
+		Version:    1,
+		RecordedAt: start.UTC().Format(time.RFC3339),
+		Events:     events,
+	}
+	data, err := json.Marshal(rec)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
+// SaveRecording opens a native OS save-file dialog and writes the JSON recording
+// to the path chosen by the user. Returns nil if the user cancels.
+func (a *App) SaveRecording(jsonData string) error {
+	path, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
+		Title:           "Save Pianalyze Recording",
+		DefaultFilename: "recording.pia",
+		Filters: []runtime.FileFilter{
+			{DisplayName: "Pianalyze Recording (*.pia)", Pattern: "*.pia"},
+			{DisplayName: "JSON (*.json)", Pattern: "*.json"},
+		},
+	})
+	if err != nil || path == "" {
+		return err
+	}
+	return os.WriteFile(path, []byte(jsonData), 0o644)
 }
 
 // StopCapture halts MIDI capture and tears down the pipeline goroutine.

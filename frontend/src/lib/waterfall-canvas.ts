@@ -10,6 +10,8 @@
  */
 
 import { noteColor } from './note-colors'
+import type { NoteInterval } from './recording-types'
+import { GRADE_TOLERANCE_MS } from './recording-types'
 
 // ── Piano key geometry ──────────────────────────────────────────────────────
 
@@ -43,10 +45,13 @@ const BASS_BOT_IDX   = WHITE_IDX[43]  // 13
 const BASS_TOP_IDX   = WHITE_IDX[57]  // 21
 
 const SCROLL_PX_PER_SEC = 120
-const NOW_X_RATIO = 0.82
-const LEFT_MARGIN = 54
+const NOW_X_RATIO   = 0.82   // live mode: "now" cursor position
+const JUDGE_X_RATIO = 0.18   // practice mode: judgment line position
+const LEFT_MARGIN   = 54
 
 // ── Types ────────────────────────────────────────────────────────────────────
+
+// ── Live-mode bar ────────────────────────────────────────────────────────────
 
 interface Bar {
   note: number
@@ -56,9 +61,57 @@ interface Bar {
   name: string
 }
 
+// ── Practice-mode types ───────────────────────────────────────────────────────
+
+type PracticeGrade = 'perfect' | 'good' | 'ok' | 'miss' | 'wrong'
+
+interface PracticeBar {
+  iv: NoteInterval
+  grade?: PracticeGrade
+  graded: boolean
+}
+
+interface GradeBadge {
+  text: string
+  color: string
+  y: number
+  startT: number  // performance.now() when created
+}
+
+const GRADE_FADE_MS = 1300
+
+const GRADE_TEXT: Record<PracticeGrade, string> = {
+  perfect: 'Perfect!',
+  good:    'Good',
+  ok:      'OK',
+  miss:    'Miss',
+  wrong:   'Wrong',
+}
+const GRADE_COLOR: Record<PracticeGrade, string> = {
+  perfect: '#ffd700',
+  good:    '#4ec080',
+  ok:      '#f0a830',
+  miss:    '#e04040',
+  wrong:   '#e04040',
+}
+
+// ── Public interface ──────────────────────────────────────────────────────────
+
 export interface WaterfallCanvas {
+  /** Live mode: note pressed. */
   noteOn(note: number, velocity: number): void
+  /** Live mode: note released. */
   noteOff(note: number): void
+
+  /** Switch to practice mode with the given recording intervals. */
+  enablePractice(intervals: NoteInterval[]): void
+  /** Return to live mode. */
+  disablePractice(): void
+  /** Update the current playback position (practice mode). */
+  setPracticeTime(ms: number): void
+  /** Record a grade for a student note press and show a badge. */
+  showGrade(note: number, grade: PracticeGrade): void
+
   resize(w: number, h: number): void
   destroy(): void
 }
@@ -89,7 +142,8 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     wKeyH = (H - bottomPad * 2) / (TOTAL_WHITE - 1)
     barHwhite = Math.max(wKeyH * 0.82, 4)
     barHblack = Math.max(wKeyH * 0.55, 3)
-    nowX = LEFT_MARGIN + (W - LEFT_MARGIN) * NOW_X_RATIO
+    nowX   = LEFT_MARGIN + (W - LEFT_MARGIN) * NOW_X_RATIO
+    judgeX = LEFT_MARGIN + (W - LEFT_MARGIN) * JUDGE_X_RATIO
   }
 
   /** Y coordinate of a MIDI note's centre on the piano-key axis. */
@@ -162,6 +216,122 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     for (const idx of slots) {
       const y = Math.round(idxY(idx)) + 0.5
       ctx.beginPath(); ctx.moveTo(lx, y); ctx.lineTo(lx + lw, y); ctx.stroke()
+    }
+  }
+
+  // ── Practice mode state ───────────────────────────────────────────────────────
+
+  let practiceActive = false
+  let practiceBars: PracticeBar[] = []
+  let practiceMs = 0
+  let gradeBadges: GradeBadge[] = []
+  let judgeX = 0  // recomputed in computeLayout
+
+  function msToX(ms: number): number {
+    return judgeX + (ms - practiceMs) * (SCROLL_PX_PER_SEC / 1000)
+  }
+
+  function drawJudgmentLine() {
+    // Golden glow line
+    ctx.save()
+    ctx.strokeStyle = 'rgba(255, 210, 50, 0.85)'
+    ctx.lineWidth = 2
+    ctx.shadowColor = '#FFD700'
+    ctx.shadowBlur = 10
+    ctx.beginPath()
+    ctx.moveTo(judgeX, 0)
+    ctx.lineTo(judgeX, H)
+    ctx.stroke()
+    ctx.restore()
+
+    // Small circles on middle staff lines
+    for (const midi of [71, 50]) {
+      ctx.fillStyle = 'rgba(255, 230, 80, 0.9)'
+      ctx.beginPath()
+      ctx.arc(judgeX, pitchY(midi), Math.max(wKeyH * 0.6, 3.5), 0, Math.PI * 2)
+      ctx.fill()
+    }
+  }
+
+  function drawPracticeBars() {
+    for (const pb of practiceBars) {
+      const left  = msToX(pb.iv.startMs)
+      const right = msToX(pb.iv.endMs)
+      if (right < LEFT_MARGIN || left > W) continue
+
+      const cx = Math.max(left, LEFT_MARGIN)
+      const cw = Math.min(right, W) - cx
+      if (cw <= 0) continue
+
+      drawLedgerLines(pb.iv.note, cx, cw)
+
+      const bh = barH(pb.iv.note)
+      const cy = pitchY(pb.iv.note) - bh / 2
+
+      // Color: graded notes use grade color; upcoming = note color; past = dim
+      let color = noteColor(pb.iv.note)
+      let alpha = 0.85
+      if (pb.graded && pb.grade) {
+        color = GRADE_COLOR[pb.grade]
+        alpha = left < judgeX ? 0.45 : 0.85
+      } else if (right < judgeX) {
+        alpha = 0.30  // missed / not yet graded past bar
+      }
+
+      ctx.globalAlpha = alpha
+      ctx.fillStyle = color
+      ctx.beginPath()
+      ctx.roundRect(cx, cy, cw, bh, Math.min(bh / 2, 6))
+      ctx.fill()
+      ctx.globalAlpha = 1
+
+      if (cw > 18 && bh > 7) {
+        const fs = Math.max(Math.min(Math.round(bh * 0.70), 12), 9)
+        ctx.font = `bold ${fs}px sans-serif`
+        ctx.fillStyle = '#ffffff'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText(NOTE_NAMES[pb.iv.note % 12], cx + Math.min(cw / 2, 18), cy + bh / 2)
+      }
+    }
+    ctx.globalAlpha = 1
+    ctx.textBaseline = 'alphabetic'
+  }
+
+  function drawGradeBadges() {
+    const now = performance.now()
+    ctx.textAlign = 'left'
+    ctx.textBaseline = 'middle'
+
+    for (let i = gradeBadges.length - 1; i >= 0; i--) {
+      const b = gradeBadges[i]
+      const elapsed = now - b.startT
+      if (elapsed > GRADE_FADE_MS) { gradeBadges.splice(i, 1); continue }
+
+      const alpha = Math.max(0, 1 - elapsed / GRADE_FADE_MS)
+      const rise  = (elapsed / GRADE_FADE_MS) * 35
+
+      ctx.globalAlpha = alpha
+      ctx.font = `bold ${Math.max(Math.round(wKeyH * 1.2), 12)}px sans-serif`
+      ctx.fillStyle = b.color
+      ctx.fillText(b.text, judgeX + 10, b.y - rise)
+    }
+    ctx.globalAlpha = 1
+    ctx.textBaseline = 'alphabetic'
+  }
+
+  function checkMissedNotes() {
+    for (const pb of practiceBars) {
+      if (!pb.graded && pb.iv.startMs + GRADE_TOLERANCE_MS < practiceMs) {
+        pb.graded = true
+        pb.grade = 'miss'
+        gradeBadges.push({
+          text: GRADE_TEXT.miss,
+          color: GRADE_COLOR.miss,
+          y: pitchY(pb.iv.note),
+          startT: performance.now(),
+        })
+      }
     }
   }
 
@@ -279,18 +449,28 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     drawBackground()
     drawStaves()
     drawClefs()
-    drawBars()
-    drawNowLine()
+    if (practiceActive) {
+      drawPracticeBars()
+      drawJudgmentLine()
+      drawGradeBadges()
+    } else {
+      drawBars()
+      drawNowLine()
+    }
   }
 
   function loop() {
     const now = performance.now()
     const dt = Math.min((now - lastT) / 1000, 0.1)
     lastT = now
-    totalScrolled += SCROLL_PX_PER_SEC * dt
 
-    for (let i = bars.length - 1; i >= 0; i--) {
-      if (barScreenX(bars[i]).right < LEFT_MARGIN) bars.splice(i, 1)
+    if (!practiceActive) {
+      totalScrolled += SCROLL_PX_PER_SEC * dt
+      for (let i = bars.length - 1; i >= 0; i--) {
+        if (barScreenX(bars[i]).right < LEFT_MARGIN) bars.splice(i, 1)
+      }
+    } else {
+      checkMissedNotes()
     }
 
     draw()
@@ -319,6 +499,44 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       if (!bar) return
       bar.releaseScrolled = totalScrolled
       activeNotes.delete(note)
+    },
+
+    enablePractice(intervals: NoteInterval[]) {
+      practiceBars = intervals.map(iv => ({ iv, graded: false }))
+      gradeBadges = []
+      practiceMs = 0
+      practiceActive = true
+    },
+
+    disablePractice() {
+      practiceActive = false
+      practiceBars = []
+      gradeBadges = []
+    },
+
+    setPracticeTime(ms: number) {
+      practiceMs = ms
+    },
+
+    showGrade(note: number, grade: PracticeGrade) {
+      // Mark the closest ungraded bar for this note
+      let closest: PracticeBar | null = null
+      let bestDelta = Infinity
+      for (const pb of practiceBars) {
+        if (pb.graded || pb.iv.note !== note) continue
+        const d = Math.abs(pb.iv.startMs - practiceMs)
+        if (d < bestDelta) { bestDelta = d; closest = pb }
+      }
+      if (closest) {
+        closest.graded = true
+        closest.grade = grade
+      }
+      gradeBadges.push({
+        text:   GRADE_TEXT[grade],
+        color:  GRADE_COLOR[grade],
+        y:      pitchY(note),
+        startT: performance.now(),
+      })
     },
 
     resize(w: number, h: number) {
