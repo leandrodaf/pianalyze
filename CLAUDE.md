@@ -5,14 +5,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-# Run
-go run main.go
+# Run (Wails dev mode — hot-reload frontend + Go)
+wails dev -tags webkit2_41
 
-# Build
-go build
+# Build desktop binary → build/bin/pianalyze
+wails build -tags webkit2_41
 
 # Tests (with race detector)
-go test -race ./...
+go test -race -tags webkit2_41 ./...
 
 # Single package test
 go test -race ./internal/midi/
@@ -21,7 +21,7 @@ go test -race ./internal/midi/
 go test -bench=. -benchmem ./internal/midi/
 
 # Lint
-golangci-lint run ./...
+golangci-lint run --build-tags webkit2_41 ./...
 
 # Generate (required before release builds)
 go generate ./...
