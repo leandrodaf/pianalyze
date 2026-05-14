@@ -7,21 +7,21 @@ import (
 	"sync/atomic"
 )
 
-// State mantém o estado compartilhado do pipeline.
-// PressedNotes é protegido por mutex (slice não é atomicamente atualizável).
-// LastNoteTime usa atomic.Uint64 para acesso sem lock — é uma escrita/leitura de uint64 puro.
+// State holds the shared pipeline state.
+// PressedNotes is protected by a mutex (slices cannot be updated atomically).
+// lastNoteTime uses atomic.Uint64 — a single primitive read/write needs no lock.
 type State struct {
 	mu           sync.RWMutex
 	PressedNotes []int
 	lastNoteTime atomic.Uint64
 }
 
-// NewPipelineState inicializa o estado com capacidade pré-alocada para 10 notas simultâneas.
+// NewPipelineState initialises State with capacity pre-allocated for 10 simultaneous notes.
 func NewPipelineState() *State {
 	return &State{PressedNotes: make([]int, 0, 10)}
 }
 
-// AddNote adiciona uma nota ao conjunto de notas pressionadas; notas repetidas são ignoradas.
+// AddNote adds a note to the pressed set; duplicate notes are ignored.
 func (ps *State) AddNote(note int) {
 	ps.mu.Lock()
 	defer ps.mu.Unlock()
@@ -30,7 +30,7 @@ func (ps *State) AddNote(note int) {
 	}
 }
 
-// RemoveNote remove uma nota solta, preservando a ordem das demais.
+// RemoveNote removes a released note, preserving the order of the remaining ones.
 func (ps *State) RemoveNote(note int) {
 	ps.mu.Lock()
 	defer ps.mu.Unlock()
@@ -42,7 +42,7 @@ func (ps *State) RemoveNote(note int) {
 	}
 }
 
-// GetPressedNotes retorna uma cópia das notas atualmente pressionadas.
+// GetPressedNotes returns a snapshot copy of the currently pressed notes.
 func (ps *State) GetPressedNotes() []int {
 	ps.mu.RLock()
 	defer ps.mu.RUnlock()
@@ -51,12 +51,12 @@ func (ps *State) GetPressedNotes() []int {
 	return out
 }
 
-// UpdateLastNoteTime atualiza o timestamp da última nota via operação atômica.
+// UpdateLastNoteTime stores the timestamp of the last note event atomically.
 func (ps *State) UpdateLastNoteTime(timestamp uint64) {
 	ps.lastNoteTime.Store(timestamp)
 }
 
-// GetLastNoteTime retorna o timestamp da última nota via operação atômica.
+// GetLastNoteTime returns the timestamp of the last note event atomically.
 func (ps *State) GetLastNoteTime() uint64 {
 	return ps.lastNoteTime.Load()
 }

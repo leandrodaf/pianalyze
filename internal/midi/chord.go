@@ -4,7 +4,7 @@ package midi
 // chordDefinitions maps each chord name to its interval pattern (semitones from root).
 // Intervals above 11 span multiple octaves; comparison is performed mod 12.
 var chordDefinitions = map[string][]int{
-	// Tríades básicas
+	// Triads
 	"Major":         {0, 4, 7},
 	"Minor":         {0, 3, 7},
 	"Augmented":     {0, 4, 8},
@@ -49,7 +49,7 @@ var chordDefinitions = map[string][]int{
 	"Dominant 13th flat 9":  {0, 4, 7, 10, 13, 17, 21},
 	"Dominant 13th sharp 9": {0, 4, 7, 10, 15, 17, 21},
 
-	// Tensões adicionais e variações
+	// Extended voicings and alterations
 	"Minor 6/9":                     {0, 3, 7, 9, 14},
 	"6/9":                           {0, 4, 7, 9, 14},
 	"Minor 7th flat 5":              {0, 3, 6, 10},

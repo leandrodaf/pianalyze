@@ -23,6 +23,8 @@ func (s *FinalStage) Process(ctx *pipelinectx.PipelineContext, _ *store.State) e
 	s.logger.Debug(constants.MsgPipelineAdditionalDetails,
 		zap.Uint64("interval", ctx.Interval),
 		zap.String("currentKey", ctx.CurrentKey),
+		zap.Uint8("velocity", ctx.Velocity),
+		zap.String("dynamic", ctx.Dynamic.Label()),
 		zap.String("triad", ctx.Triad),
 		zap.String("chord", ctx.Chord),
 		zap.String("inversion", ctx.Inversion),
