@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/leandrodaf/midi/sdk/contracts"
+	"github.com/leandrodaf/midi/v2/sdk/contracts"
 	"github.com/leandrodaf/pianalyze/internal/constants"
 	"go.uber.org/zap"
 )

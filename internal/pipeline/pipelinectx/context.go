@@ -4,7 +4,7 @@ package pipelinectx
 import (
 	"context"
 
-	"github.com/leandrodaf/midi/sdk/contracts"
+	"github.com/leandrodaf/midi/v2/sdk/contracts"
 )
 
 // PipelineContext carries a MIDI event and the musical analysis accumulated by each stage.

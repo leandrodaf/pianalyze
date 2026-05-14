@@ -1,7 +1,7 @@
 package stages
 
 import (
-	"github.com/leandrodaf/midi/sdk/contracts"
+	"github.com/leandrodaf/midi/v2/sdk/contracts"
 	"github.com/leandrodaf/pianalyze/internal/constants"
 	"github.com/leandrodaf/pianalyze/internal/midi"
 	"github.com/leandrodaf/pianalyze/internal/pipeline/pipelinectx"
