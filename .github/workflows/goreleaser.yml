@@ -58,6 +58,8 @@ jobs:
 
       - name: Build binary (macOS)
         if: runner.os == 'macOS'
+        env:
+          MACOSX_DEPLOYMENT_TARGET: "11.0"
         run: go build -tags production -trimpath -ldflags "-s -w" -o pianalyze .
 
       - name: Build binary (Windows)
