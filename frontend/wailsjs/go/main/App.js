@@ -14,6 +14,10 @@ export function GetDefaultSavePath() {
   return window['go']['main']['App']['GetDefaultSavePath']();
 }
 
+export function ImportAnyFile() {
+  return window['go']['main']['App']['ImportAnyFile']();
+}
+
 export function ImportScoreFile() {
   return window['go']['main']['App']['ImportScoreFile']();
 }

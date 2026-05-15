@@ -69,6 +69,20 @@ export namespace main {
 	        this.manufacturer = source["manufacturer"];
 	    }
 	}
+	export class ImportResult {
+	    kind: string;
+	    data: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ImportResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.kind = source["kind"];
+	        this.data = source["data"];
+	    }
+	}
 	export class RecordingSummary {
 	    path: string;
 	    filename: string;
