@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte'
   import { EventsOn } from '../../wailsjs/runtime/runtime'
-  import { ListDevices, SelectDevice, StartCapture, StopCapture, LoadRecordingFile } from '../../wailsjs/go/main/App'
+  import { ListDevices, SelectDevice, StartCapture, StopCapture, LoadRecordingFile, ImportScoreFile } from '../../wailsjs/go/main/App'
   import type { main } from '../../wailsjs/go/models'
   import { exerciseStore, exercisesByCategory } from '../stores/exercises'
   import { LOCALE_NAMES, locale, t, type Locale } from '../lib/i18n'
@@ -167,6 +167,30 @@
     }
   }
 
+  async function openImportScore() {
+    if (!onImportRecording) return
+    toolsError = ''
+    try {
+      const jsonStr = await ImportScoreFile()
+      if (!jsonStr) return // user cancelled
+      let rec: Recording
+      try {
+        rec = JSON.parse(jsonStr) as Recording
+      } catch {
+        toolsError = $t('error.import.score.parse')
+        return
+      }
+      if (!rec.events || rec.events.length === 0) {
+        toolsError = $t('error.import.score.empty')
+        return
+      }
+      onImportRecording(rec)
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error)
+      toolsError = msg || $t('error.import.score.parse')
+    }
+  }
+
   function handleStartRecording() {
     onStartRecording?.()
   }
@@ -311,6 +335,10 @@
         <button class="tool-btn" on:click={openImportPicker} disabled={!onImportRecording}>
           <span class="tool-icon">📂</span>
           <span>{$t('tools.import')}</span>
+        </button>
+        <button class="tool-btn" on:click={openImportScore} disabled={!onImportRecording}>
+          <span class="tool-icon">🎼</span>
+          <span>{$t('tools.import.score')}</span>
         </button>
       </div>
       {#if toolsError}<p class="error-text">{toolsError}</p>{/if}

@@ -6,6 +6,7 @@ import (
 	"compress/gzip"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -617,6 +618,50 @@ func (a *App) LoadRecordingFile() (string, error) {
 		return "", err
 	}
 	migrateRecordingMap(rec)
+
+	out, err := json.Marshal(rec)
+	if err != nil {
+		return "", err
+	}
+	return string(out), nil
+}
+
+// ImportScoreFile opens a file dialog for MusicXML / MXL files, converts the
+// selected score to the Recording v2 JSON format, and returns it as a string
+// ready for the frontend to display or save.
+func (a *App) ImportScoreFile() (string, error) {
+	path, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "Import Score File",
+		Filters: []runtime.FileFilter{
+			{DisplayName: "MusicXML / MXL (*.xml;*.musicxml;*.mxl)", Pattern: "*.xml;*.musicxml;*.mxl"},
+		},
+	})
+	if err != nil || path == "" {
+		return "", err
+	}
+
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return "", fmt.Errorf("read file: %w", err)
+	}
+
+	xmlData := raw
+	ext := strings.ToLower(filepath.Ext(path))
+	if ext == ".mxl" {
+		xmlData, err = extractMXL(raw)
+		if err != nil {
+			return "", fmt.Errorf("extract MXL: %w", err)
+		}
+	}
+
+	rec, err := convertMusicXML(xmlData, path)
+	if err != nil {
+		return "", err
+	}
+
+	if len(rec.Events) == 0 {
+		return "", fmt.Errorf("score contains no playable notes")
+	}
 
 	out, err := json.Marshal(rec)
 	if err != nil {

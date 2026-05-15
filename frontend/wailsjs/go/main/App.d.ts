@@ -9,6 +9,8 @@ export function DeleteRecording(arg1:string):Promise<void>;
 
 export function GetDefaultSavePath():Promise<string>;
 
+export function ImportScoreFile():Promise<string>;
+
 export function ListDevices():Promise<Array<main.DeviceInfo>>;
 
 export function ListRecordings(arg1:string):Promise<Array<main.RecordingSummary>>;
