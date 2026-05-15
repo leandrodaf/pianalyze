@@ -41,11 +41,11 @@ for (let n = MIDI_MIN; n <= MIDI_MAX; n++) {
 
 const TOTAL_WHITE = 52
 
-// Colours
-const WHITE_KEY_COLOR = '#f5f5f0'
-const BLACK_KEY_COLOR = '#1a1a1a'
-const KEY_BORDER      = '#888888'
-const LABEL_COLOR     = '#555555'
+// Colours — warm cream white keys and deep black keys (mirrors sightread).
+const WHITE_KEY_COLOR = 'rgb(255,253,240)'
+const BLACK_KEY_COLOR = '#0d0d0d'
+const KEY_BORDER      = 'rgba(0,0,0,0.35)'
+const LABEL_COLOR     = 'rgba(0,0,0,0.38)'
 const LABEL_FONT      = '10px sans-serif'
 
 /** State maintained by the PianoCanvas instance. */
@@ -124,18 +124,32 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
   function drawWhiteKey(note: number) {
     const idx = whiteIndex[note]
     const x = xForWhite(idx)
+    const kw = wW - 1
+    const kh = wH - 1
     const pressed = state[note].pressed
+    const radius = Math.max(kw * 0.18, 2)
+
+    // Rounded bottom corners (like sightread)
+    ctx.beginPath()
+    ctx.moveTo(x, 0)
+    ctx.lineTo(x + kw, 0)
+    ctx.lineTo(x + kw, kh - radius)
+    ctx.quadraticCurveTo(x + kw, kh, x + kw - radius, kh)
+    ctx.lineTo(x + radius, kh)
+    ctx.quadraticCurveTo(x, kh, x, kh - radius)
+    ctx.closePath()
+
     const color = pressed
       ? brighten(noteColor(note), velocityIntensity(state[note].velocity))
       : WHITE_KEY_COLOR
-
     ctx.fillStyle = color
-    ctx.fillRect(x, 0, wW - 1, wH - 1)
+    ctx.fill()
+
     ctx.strokeStyle = KEY_BORDER
     ctx.lineWidth = 0.5
-    ctx.strokeRect(x, 0, wW - 1, wH - 1)
+    ctx.stroke()
 
-    // Note label on the lowest C of each octave
+    // Octave label on each C
     if (note % 12 === 0) {
       const octave = Math.floor(note / 12) - 1
       ctx.fillStyle = LABEL_COLOR
@@ -148,12 +162,23 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
   function drawBlackKey(note: number) {
     const x = xForBlack(note)
     const pressed = state[note].pressed
-    const color = pressed
-      ? brighten(noteColor(note), velocityIntensity(state[note].velocity))
-      : BLACK_KEY_COLOR
 
-    ctx.fillStyle = color
-    ctx.fillRect(x, 0, bW, bH)
+    if (pressed) {
+      ctx.fillStyle = brighten(noteColor(note), velocityIntensity(state[note].velocity))
+      ctx.fillRect(x, 0, bW, bH)
+    } else {
+      // Gradient to give the black key a subtle 3-D depth (lighter top edge → deep body).
+      const grad = ctx.createLinearGradient(x, 0, x + bW, 0)
+      grad.addColorStop(0,   '#1c1c1c')
+      grad.addColorStop(0.3, '#0d0d0d')
+      grad.addColorStop(1,   '#111111')
+      ctx.fillStyle = grad
+      ctx.fillRect(x, 0, bW, bH)
+
+      // Subtle highlight on top edge
+      ctx.fillStyle = 'rgba(255,255,255,0.06)'
+      ctx.fillRect(x + 1, 0, bW - 2, Math.max(bH * 0.12, 3))
+    }
   }
 
   function drawAll() {

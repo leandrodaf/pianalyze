@@ -34,7 +34,9 @@
       }
 
       if (state.practice) {
-        waterfall.setPracticeTime(state.positionMs)
+        // Offset by lead time so positionMs=0 shows the first notes at the right edge,
+        // not already on the golden line.
+        waterfall.setPracticeTime(state.positionMs - waterfall.getLeadTime() * 1000)
       }
     })
 

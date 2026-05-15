@@ -75,10 +75,10 @@
     align-items: center;
     gap: 0.35rem;
     padding: 0.3rem 0.75rem;
-    background: #1e2535;
-    border: 1px solid #2a3550;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
     border-radius: 4px;
-    color: #ccd;
+    color: rgba(255,255,255,0.75);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -86,7 +86,7 @@
     transition: background 0.15s, border-color 0.15s;
   }
 
-  .rec-btn:hover { background: #253045; border-color: #3a4560; }
+  .rec-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
 
   .rec-btn.recording {
     background: rgba(220, 40, 40, 0.18);
@@ -121,15 +121,15 @@
 
   .save-btn {
     padding: 0.3rem 0.65rem;
-    background: #1a3020;
-    border: 1px solid #2a5035;
+    background: rgba(123,95,240,0.15);
+    border: 1px solid rgba(123,95,240,0.35);
     border-radius: 4px;
-    color: #4ec080;
+    color: #b89af4;
     font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.15s;
   }
 
-  .save-btn:hover { background: #203828; }
+  .save-btn:hover { background: rgba(123,95,240,0.25); }
 </style>
