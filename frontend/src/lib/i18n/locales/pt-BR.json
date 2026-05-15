@@ -48,7 +48,7 @@
   "brand.subtitle": "Ferramenta de análise de piano",
   "lang.label": "Idioma",
   "tools.label": "FERRAMENTAS",
-  "tools.import": "Importar .pia",
+  "tools.import": "Importar arquivo",
   "tools.import.score": "Importar Partitura",
   "tools.record": "REC",
   "common.by": "por",

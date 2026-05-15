@@ -706,6 +706,94 @@ func scoreFilename(title string) string {
 	return safe + "_" + time.Now().UTC().Format("20060102_150405") + ".pia"
 }
 
+// ── Unified import ────────────────────────────────────────────────────────────
+
+// ImportResult is returned by ImportAnyFile to tell the frontend what happened.
+type ImportResult struct {
+	Kind string `json:"kind"` // "recording" — load into playback | "score" — saved to library
+	Data string `json:"data"` // "recording" → Recording JSON | "score" → saved file path
+}
+
+// ImportAnyFile opens a single file dialog that accepts all supported import
+// formats.  The correct handler is selected by file extension:
+//
+//   .pia / .json             → read, migrate v1→v2, return JSON (kind="recording")
+//   .xml / .musicxml / .mxl  → convert MusicXML, save to library (kind="score")
+//
+// Returns (nil, nil) when the user cancels.
+func (a *App) ImportAnyFile() (*ImportResult, error) {
+	filePath, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "Import File",
+		Filters: []runtime.FileFilter{
+			{
+				DisplayName: "All supported (*.pia;*.json;*.xml;*.musicxml;*.mxl)",
+				Pattern:     "*.pia;*.json;*.xml;*.musicxml;*.mxl",
+			},
+			{DisplayName: "Pianalyze Recording (*.pia)", Pattern: "*.pia"},
+			{DisplayName: "MusicXML / MXL Score (*.xml;*.musicxml;*.mxl)", Pattern: "*.xml;*.musicxml;*.mxl"},
+		},
+	})
+	if err != nil || filePath == "" {
+		return nil, err
+	}
+
+	raw, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("read file: %w", err)
+	}
+
+	ext := strings.ToLower(filepath.Ext(filePath))
+	switch ext {
+	case ".xml", ".musicxml", ".mxl":
+		xmlData := raw
+		if ext == ".mxl" {
+			xmlData, err = extractMXL(raw)
+			if err != nil {
+				return nil, fmt.Errorf("extract MXL: %w", err)
+			}
+		}
+		rec, err := convertMusicXML(xmlData, filePath)
+		if err != nil {
+			return nil, err
+		}
+		if len(rec.Events) == 0 {
+			return nil, fmt.Errorf("score contains no playable notes")
+		}
+		out, err := json.Marshal(rec)
+		if err != nil {
+			return nil, err
+		}
+		title := ""
+		if rec.Meta != nil {
+			title = rec.Meta.Title
+		}
+		savedPath := filepath.Join(a.GetDefaultSavePath(), scoreFilename(title))
+		if err := os.WriteFile(savedPath, out, 0o644); err != nil {
+			return nil, fmt.Errorf("save to library: %w", err)
+		}
+		return &ImportResult{Kind: "score", Data: savedPath}, nil
+
+	default: // .pia / .json
+		data := raw
+		if len(raw) >= 2 && raw[0] == 0x1f && raw[1] == 0x8b {
+			data, err = gunzip(raw)
+			if err != nil {
+				return nil, err
+			}
+		}
+		var rec map[string]any
+		if err := json.Unmarshal(data, &rec); err != nil {
+			return nil, err
+		}
+		migrateRecordingMap(rec)
+		out, err := json.Marshal(rec)
+		if err != nil {
+			return nil, err
+		}
+		return &ImportResult{Kind: "recording", Data: string(out)}, nil
+	}
+}
+
 // ── Grading API (called by frontend practice engine) ─────────────────────────
 
 // LoadPracticeIntervals replaces the set of expected note intervals used for

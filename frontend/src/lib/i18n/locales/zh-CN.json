@@ -48,7 +48,7 @@
   "brand.subtitle": "钢琴分析工具",
   "lang.label": "语言",
   "tools.label": "工具",
-  "tools.import": "导入 .pia",
+  "tools.import": "导入文件",
   "tools.import.score": "导入乐谱",
   "tools.record": "录音",
   "common.by": "作者",

@@ -48,7 +48,7 @@
   "brand.subtitle": "Piano Analysis Tool",
   "lang.label": "Language",
   "tools.label": "TOOLS",
-  "tools.import": "Import .pia",
+  "tools.import": "Import file",
   "tools.import.score": "Import Score",
   "tools.record": "REC",
   "common.by": "by",
