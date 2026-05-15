@@ -26,9 +26,10 @@
   }
   function fmtKey(k: string): string { return KEY_DISPLAY[k] ?? k }
 
-  type Page = 'home' | 'prep' | 'playing'
+  type Page = 'home' | 'playing'
 
   let page: Page = 'home'
+  let prepActive = false   // shows prep banner instead of top-bar; both use same playing layout
   let deviceReady = false
   let activeExercise: Exercise | null = null
 
@@ -96,25 +97,26 @@
           }
         }
         prepStore.activate(keys)
-        page = 'prep'
+        prepActive = true
       } else {
-        page = 'playing'
+        prepActive = false
       }
     } else {
       clearLoadedRecording()
-      page = 'playing'
+      prepActive = false
     }
+    page = 'playing'
   }
 
   function handlePrepComplete() {
+    prepActive = false
     prepStore.deactivate()
-    page = 'playing'
     play()
   }
 
   function handlePrepSkip() {
+    prepActive = false
     prepStore.deactivate()
-    page = 'playing'
   }
 
   function handleImportRecording(recording: Recording) {
@@ -133,14 +135,9 @@
   function goHome() {
     stop()
     clearLoop()
-    activeExercise = null
-    page = 'home'
-  }
-
-  function goHomeFromPrep() {
-    activeExercise = null
+    prepActive = false
     prepStore.deactivate()
-    clearLoadedRecording()
+    activeExercise = null
     page = 'home'
   }
 </script>
@@ -155,44 +152,38 @@
     onStartRecording={handleStartRecording}
   />
 
-{:else if page === 'prep'}
-  <div class="layout">
-    <PrepBanner onComplete={handlePrepComplete} onSkip={handlePrepSkip} onBack={goHomeFromPrep} />
-    <div class="waterfall-area">
-      <NoteWaterfall />
-    </div>
-    <div class="timeline-area"><Timeline /></div>
-    <div class="controls-bar"><ControlsBar /></div>
-    <div class="piano-area"><Piano /></div>
-  </div>
-
 {:else}
+  <!-- Single playing layout — never unmounts on prep↔playing transition -->
   <div class="layout">
 
-    <!-- Top bar -->
-    <div class="top-bar">
-      <button class="home-btn" on:click={goHome} title={$t('nav.home')}>
-        {$t('app.back')}
-      </button>
-      {#if activeExercise}
-        <div class="exercise-tag">
-          <span class="exercise-icon">{activeExercise.style.icon}</span>
-          <span class="exercise-name">{activeExercise.title}</span>
-          <span class="exercise-diff">{activeExercise.subtitle}</span>
-        </div>
-      {:else}
-        <span class="freeplay-tag">🎧 {$t('app.freeplay')}</span>
-      {/if}
-      {#if recBpm || recTimeSig || recKey}
-        <div class="meta-chips">
-          {#if recTimeSig}<span class="meta-chip">{recTimeSig}</span>{/if}
-          {#if recBpm}<span class="meta-chip">{recBpm} BPM</span>{/if}
-          {#if recKey}<span class="meta-chip">{fmtKey(recKey)}</span>{/if}
-        </div>
-      {/if}
-    </div>
+    <!-- Swap only the top bar between prep banner and normal top bar -->
+    {#if prepActive}
+      <PrepBanner onComplete={handlePrepComplete} onSkip={handlePrepSkip} onBack={goHome} />
+    {:else}
+      <div class="top-bar">
+        <button class="home-btn" on:click={goHome} title={$t('nav.home')}>
+          {$t('app.back')}
+        </button>
+        {#if activeExercise}
+          <div class="exercise-tag">
+            <span class="exercise-icon">{activeExercise.style.icon}</span>
+            <span class="exercise-name">{activeExercise.title}</span>
+            <span class="exercise-diff">{activeExercise.subtitle}</span>
+          </div>
+        {:else}
+          <span class="freeplay-tag">🎧 {$t('app.freeplay')}</span>
+        {/if}
+        {#if recBpm || recTimeSig || recKey}
+          <div class="meta-chips">
+            {#if recTimeSig}<span class="meta-chip">{recTimeSig}</span>{/if}
+            {#if recBpm}<span class="meta-chip">{recBpm} BPM</span>{/if}
+            {#if recKey}<span class="meta-chip">{fmtKey(recKey)}</span>{/if}
+          </div>
+        {/if}
+      </div>
+    {/if}
 
-    <!-- Scrolling staff + notes -->
+    <!-- Waterfall, timeline, controls and piano stay mounted permanently -->
     <div class="waterfall-area">
       <NoteWaterfall />
 
@@ -218,19 +209,11 @@
       </div>
     </div>
 
-    <div class="timeline-area">
-      <Timeline />
-    </div>
+    <div class="timeline-area"><Timeline /></div>
 
-    <!-- Controls bar -->
-    <div class="controls-bar">
-      <ControlsBar />
-    </div>
+    <div class="controls-bar"><ControlsBar /></div>
 
-    <!-- Piano keyboard -->
-    <div class="piano-area">
-      <Piano />
-    </div>
+    <div class="piano-area"><Piano /></div>
 
   </div>
 {/if}

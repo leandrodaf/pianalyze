@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { midiStore } from '../stores/midi'
   import { prepStore } from '../stores/prep'
 
   export let onComplete: () => void
@@ -13,20 +12,11 @@
   $: count = $prepStore.confirmedKeys.size
   $: pct   = total > 0 ? (count / total) * 100 : 0
 
+  // Piano.svelte handles confirmation; we just watch for completion
   $: if (!done && count >= total && total > 0) {
     done = true
     setTimeout(onComplete, 750)
   }
-
-  onMount(() => {
-    const unsubMidi = midiStore.subscribe(state => {
-      if (done) return
-      for (const n of state.pressedNotes) {
-        prepStore.confirm(n)
-      }
-    })
-    return () => unsubMidi()
-  })
 </script>
 
 <div class="prep-banner">

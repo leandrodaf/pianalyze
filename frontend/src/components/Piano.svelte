@@ -22,13 +22,15 @@
     })
     ro.observe(container)
 
-    const unsubMidi = midiStore.subscribe(state => {
-      piano?.updateKeys(state.pressedNotes, state.velocity)
-    })
-
+    // Mirrors prep guide state into piano keys and handles confirmation.
+    // Piano owns this so there's no async reactive chain.
     const unsubPrep = prepStore.subscribe(prep => {
       if (!piano) return
-      if (!prep.active) return
+      if (!prep.active) {
+        // Clear prep guides when prep ends; playback subscription takes over
+        piano.setGuideNotes(new Map())
+        return
+      }
       const guide = new Map<number, string>()
       for (const [n, c] of prep.requiredKeys) {
         if (!prep.confirmedKeys.has(n)) guide.set(n, c)
@@ -37,14 +39,25 @@
       piano.setFingerMap(new Map())
     })
 
+    const unsubMidi = midiStore.subscribe(state => {
+      if (!piano) return
+      // Show all pressed keys regardless of mode
+      piano.updateKeys(state.pressedNotes, state.velocity)
+
+      // In prep mode, confirm required keys that are now pressed
+      const prep = get(prepStore)
+      if (prep.active) {
+        for (const n of state.pressedNotes) {
+          prepStore.confirm(n)
+        }
+      }
+    })
+
     const unsubPlayback = playbackStore.subscribe(state => {
       if (!piano) return
-
-      // Prep mode owns the guide notes
-      if (get(prepStore).active) return
+      if (get(prepStore).active) return  // prep owns guide notes
 
       const guide = new Map<number, string>()
-
       if (state.recording) {
         const practiceMs = state.positionMs - DEFAULT_LEAD_TIME_SEC * 1000
         for (const iv of $noteIntervals) {
@@ -55,15 +68,14 @@
           }
         }
       }
-
       piano.setGuideNotes(guide)
       piano.setFingerMap(new Map())
     })
 
     return () => {
       ro.disconnect()
-      unsubMidi()
       unsubPrep()
+      unsubMidi()
       unsubPlayback()
     }
   })
