@@ -307,7 +307,7 @@ func (a *App) handleEvent(pCtx *pipelinectx.PipelineContext) {
 func (a *App) gradeEvent(pCtx *pipelinectx.PipelineContext) {
 	note := int(pCtx.MIDIEvent.Note)
 	if pCtx.MIDIEvent.Velocity > 0 {
-		if res, ok := a.grader.NoteOn(note); ok {
+		if res, ok := a.grader.NoteOn(note, pCtx.MIDIEvent.Velocity); ok {
 			runtime.EventsEmit(a.ctx, "grade:result", res)
 		}
 	} else {
