@@ -61,8 +61,8 @@ export function computeLayout(W: number, H: number, leadTimeSec: number): Waterf
   // Shrink wKeyH to fit the extra gap without clipping the top/bottom keys
   const wKeyH     = (H - bottomPad * 2) / (TOTAL_WHITE - 1 + HAND_GAP_EXTRA_SLOTS)
   const handGapPx = wKeyH * HAND_GAP_EXTRA_SLOTS
-  const barHwhite = Math.max(wKeyH * 0.82, 4)
-  const barHblack = Math.max(wKeyH * 0.55, 3)
+  const barHwhite = Math.max(wKeyH * 1.10, 6)
+  const barHblack = Math.max(wKeyH * 0.78, 5)
   const nowX      = LEFT_MARGIN + (W - LEFT_MARGIN) * LINE_X_RATIO
   const judgeX    = nowX
   const practiceScrollPxPerSec = (W - judgeX) / leadTimeSec

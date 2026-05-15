@@ -41,6 +41,8 @@ interface PracticeBar {
   iv: NoteInterval
   grade?: PracticeGrade
   graded: boolean
+  holding: boolean       // student is currently holding this note
+  holdFraction?: number  // 0–1, set on release; < 1 means released early
 }
 
 interface GradeBadge {
@@ -51,8 +53,9 @@ interface GradeBadge {
 }
 
 const GRADE_FADE_MS = 1300
+const MISS_WINDOW_MS = 600  // how late before we mark a note as missed
 
-const GRADE_TEXT: Record<PracticeGrade, string> = {
+let gradeText: Record<PracticeGrade, string> = {
   perfect: 'Perfect!',
   good:    'Good',
   ok:      'OK',
@@ -76,6 +79,9 @@ export interface WaterfallCanvas {
   disablePractice(): void
   setPracticeTime(ms: number): void
   showGrade(note: number, grade: PracticeGrade): void
+  noteHeld(note: number): void
+  noteReleased(note: number, holdFraction: number): void
+  setGradeLabels(labels: Partial<Record<PracticeGrade, string>>): void
   setLeadTime(seconds: number): void
   getLeadTime(): number
   setSpeed(multiplier: number): void
@@ -129,11 +135,11 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   function checkMissedNotes() {
     if (!gradingEnabled) return
     for (const pb of practiceBars) {
-      if (!pb.graded && pb.iv.startMs + GRADE_TOLERANCE_MS < practiceMs) {
+      if (!pb.graded && pb.iv.startMs + MISS_WINDOW_MS < practiceMs) {
         pb.graded = true
         pb.grade = 'miss'
         gradeBadges.push({
-          text:   GRADE_TEXT.miss,
+          text:   gradeText.miss,
           color:  GRADE_COLOR.miss,
           y:      pitchY(pb.iv.note, layout),
           startT: performance.now(),
@@ -235,16 +241,27 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   }
 
   function drawClefs() {
+    ctx.save()
+    // Clip to the margin strip so clef glyphs never bleed into the note area
+    ctx.beginPath()
+    ctx.rect(0, 0, LEFT_MARGIN - 2, H)
+    ctx.clip()
+
     ctx.fillStyle = 'rgba(255,255,255,0.28)'
     ctx.textAlign = 'center'
+    const cx = LEFT_MARGIN * 0.46   // slightly left of center to add breathing room
+
     const g4y = pitchY(67, layout)
-    ctx.font = `${Math.round(layout.wKeyH * 9)}px serif`
+    ctx.font = `${Math.round(layout.wKeyH * 7)}px serif`
     ctx.textBaseline = 'bottom'
-    ctx.fillText('𝄞', LEFT_MARGIN / 2, g4y + layout.wKeyH * 4.2)
+    ctx.fillText('𝄞', cx, g4y + layout.wKeyH * 3.5)
+
     const f3y = pitchY(53, layout)
-    ctx.font = `${Math.round(layout.wKeyH * 4.5)}px serif`
+    ctx.font = `${Math.round(layout.wKeyH * 4)}px serif`
     ctx.textBaseline = 'middle'
-    ctx.fillText('𝄢', LEFT_MARGIN / 2, f3y - layout.wKeyH * 0.5)
+    ctx.fillText('𝄢', cx, f3y - layout.wKeyH * 0.3)
+
+    ctx.restore()
     ctx.textBaseline = 'alphabetic'
   }
 
@@ -441,6 +458,34 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
         ctx.fillText(dyn, dynX, cy + 1)
       }
 
+      // ── Hold feedback ─────────────────────────────────────────────────────
+      const barLeft  = Math.max(left, LEFT_MARGIN)
+      const barRight = Math.min(right, W)
+      const barW     = barRight - barLeft
+
+      if (pb.holding && barW > 0) {
+        // Bright progress fill: from bar start up to current practiceMs
+        const fillRight = Math.min(msToX(practiceMs), barRight)
+        const fillW = fillRight - barLeft
+        if (fillW > 0) {
+          ctx.globalAlpha = 0.55
+          ctx.fillStyle = 'rgba(255,255,255,0.85)'
+          ctx.fillRect(barLeft, cy, fillW, bh)
+          ctx.globalAlpha = 1
+        }
+      } else if (!pb.holding && pb.holdFraction != null && pb.holdFraction < 0.50) {
+        // Grey remainder: student released early
+        const releaseMs = pb.iv.startMs + (pb.iv.endMs - pb.iv.startMs) * pb.holdFraction
+        const greyLeft  = Math.max(msToX(releaseMs), barLeft)
+        const greyRight = barRight
+        if (greyRight > greyLeft) {
+          ctx.globalAlpha = 0.60
+          ctx.fillStyle = 'rgba(90,90,90,0.80)'
+          ctx.fillRect(greyLeft, cy, greyRight - greyLeft, bh)
+          ctx.globalAlpha = 1
+        }
+      }
+
       // Articulation indicator
       const art = pb.iv.articulation
       if (art && bh > 6) {
@@ -556,7 +601,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     },
 
     enablePractice(intervals: NoteInterval[], grading = false) {
-      practiceBars = intervals.map(iv => ({ iv, graded: false }))
+      practiceBars = intervals.map(iv => ({ iv, graded: false, holding: false }))
       gradeBadges = []
       practiceMs = 0
       practiceActive = true
@@ -572,10 +617,49 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     setPracticeTime(ms: number) {
       // Seeking backward — reset all grades so colors refresh
       if (ms < practiceMs - 500) {
-        for (const pb of practiceBars) { pb.graded = false; pb.grade = undefined }
+        for (const pb of practiceBars) {
+          pb.graded = false
+          pb.grade = undefined
+          pb.holding = false
+          pb.holdFraction = undefined
+        }
         gradeBadges = []
       }
       practiceMs = ms
+    },
+
+    noteHeld(note: number) {
+      // Find the soonest ungraded bar for this note near practiceMs and mark as held
+      let closest: PracticeBar | null = null
+      let bestDelta = Infinity
+      for (const pb of practiceBars) {
+        if (pb.iv.note !== note || pb.graded) continue
+        const d = Math.abs(pb.iv.startMs - practiceMs)
+        if (d < bestDelta) { bestDelta = d; closest = pb }
+      }
+      if (closest) closest.holding = true
+    },
+
+    noteReleased(note: number, holdFraction: number) {
+      // Primary: bar was properly tracked via noteHeld
+      for (const pb of practiceBars) {
+        if (pb.iv.note === note && pb.holding) {
+          pb.holding = false
+          pb.holdFraction = holdFraction
+          return
+        }
+      }
+      // Fallback: note was pressed outside grading tolerance so noteHeld was
+      // never called, but the Go side still computed a holdFraction.
+      // Apply it to the closest bar so early-release grey still renders.
+      let closest: PracticeBar | null = null
+      let bestDelta = Infinity
+      for (const pb of practiceBars) {
+        if (pb.iv.note !== note) continue
+        const d = Math.abs(pb.iv.startMs - practiceMs)
+        if (d < bestDelta) { bestDelta = d; closest = pb }
+      }
+      if (closest) closest.holdFraction = holdFraction
     },
 
     showGrade(note: number, grade: PracticeGrade) {
@@ -588,11 +672,15 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       }
       if (closest) { closest.graded = true; closest.grade = grade }
       gradeBadges.push({
-        text:   GRADE_TEXT[grade],
+        text:   gradeText[grade],
         color:  GRADE_COLOR[grade],
         y:      pitchY(note, layout),
         startT: performance.now(),
       })
+    },
+
+    setGradeLabels(labels: Partial<Record<PracticeGrade, string>>) {
+      gradeText = { ...gradeText, ...labels }
     },
 
     setLeadTime(seconds: number) {
