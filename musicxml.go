@@ -498,8 +498,7 @@ func extractMXL(data []byte) ([]byte, error) {
 		if err := xml.NewDecoder(rc).Decode(&c); err == nil && len(c.Rootfiles) > 0 {
 			rootFile = c.Rootfiles[0].FullPath
 		}
-		rc.Close()
-		break
+		rc.Close() //nolint:errcheck
 	}
 
 	for _, f := range r.File {
@@ -519,7 +518,7 @@ func extractMXL(data []byte) ([]byte, error) {
 		if err != nil {
 			return nil, fmt.Errorf("read MXL entry %q: %w", name, err)
 		}
-		defer rc.Close()
+		defer rc.Close() //nolint:errcheck
 		return io.ReadAll(rc)
 	}
 	return nil, fmt.Errorf("no MusicXML content found in MXL archive")

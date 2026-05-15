@@ -901,26 +901,13 @@ func (a *App) StopCapture() error {
 
 // ── Internal helpers ──────────────────────────────────────────────────────────
 
-// writeGzip compresses data with gzip and writes it to path (V3).
-func writeGzip(path string, data []byte) error {
-	var buf bytes.Buffer
-	gz := gzip.NewWriter(&buf)
-	if _, err := gz.Write(data); err != nil {
-		return err
-	}
-	if err := gz.Close(); err != nil {
-		return err
-	}
-	return os.WriteFile(path, buf.Bytes(), 0o644)
-}
-
 // gunzip decompresses gzip-encoded data (V3).
 func gunzip(data []byte) ([]byte, error) {
 	r, err := gzip.NewReader(bytes.NewReader(data))
 	if err != nil {
 		return nil, err
 	}
-	defer r.Close()
+	defer r.Close() //nolint:errcheck
 	return io.ReadAll(r)
 }
 
