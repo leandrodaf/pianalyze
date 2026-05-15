@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { playbackStore, play, pause, stop, rewind, setSpeed, toggleLoop } from '../stores/playback'
+  import { playbackStore, play, pause, stop, rewind, setSpeed, toggleLoop, seekTo, setLoop } from '../stores/playback'
+  import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
 
+  const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
   const SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2] as const
 
   $: s = $playbackStore
@@ -9,6 +11,16 @@
   $: speed = s.speedMultiplier
   $: loopEnabled = s.loopEnabled
   $: hasLoop = s.loopStart != null && s.loopEnd != null && s.loopEnd > s.loopStart
+  $: sections = s.recording?.sections ?? []
+
+  function goToSection(idx: number) {
+    const sec = sections[idx]
+    if (!sec) return
+    const next = sections[idx + 1]
+    const endMs = next ? next.startMs : Math.max(0, s.durationMs - LEAD_MS)
+    setLoop(sec.startMs + LEAD_MS, endMs + LEAD_MS)
+    seekTo(sec.startMs + LEAD_MS)
+  }
 </script>
 
 <div class="controls-bar">
@@ -51,6 +63,16 @@
   >
     🔁
   </button>
+  {#if sections.length > 0}
+    <div class="sep"></div>
+    <div class="group sections-group">
+      {#each sections as sec, i}
+        <button class="section-pill" on:click={() => goToSection(i)} title="Ir para {sec.name}">
+          {sec.name}
+        </button>
+      {/each}
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -129,6 +151,30 @@
 
   .loop-btn {
     font-size: 0.9rem;
+  }
+
+  .sections-group {
+    flex-wrap: nowrap;
+    overflow: hidden;
+    max-width: 240px;
+  }
+  .section-pill {
+    height: 22px;
+    padding: 0 0.5rem;
+    background: rgba(255,210,50,0.08);
+    border: 1px solid rgba(255,210,50,0.2);
+    border-radius: 11px;
+    color: rgba(255,210,50,0.7);
+    font-size: 0.68rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    white-space: nowrap;
+  }
+  .section-pill:hover {
+    background: rgba(255,210,50,0.16);
+    border-color: rgba(255,210,50,0.45);
+    color: rgba(255,210,50,1);
   }
 
   .sep {

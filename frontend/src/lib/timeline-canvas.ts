@@ -8,7 +8,7 @@
  * where LEAD_MS and PAST_MS are derived from the waterfall's constants so the
  * two views are always in sync.
  */
-import type { NoteInterval } from './recording-types'
+import type { NoteInterval, Section } from './recording-types'
 import { DEFAULT_LEAD_TIME_SEC, LINE_X_RATIO } from './waterfall-layout'
 
 const RIGHT_MIN  = 60   // C4
@@ -31,6 +31,7 @@ export interface TimelineCanvas {
   setLoop(start: number, end: number): void
   clearLoop(): void
   setLoopEnabled(enabled: boolean): void
+  setSections(sections: Section[]): void
   resize(w: number, h: number): void
   destroy(): void
   xToMs(x: number): number
@@ -43,6 +44,7 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
   let W = canvas.width
   let H = canvas.height
   let intervals: NoteInterval[] = []
+  let sections: Section[] = []
   let positionMs = 0
   let durationMs = 0
   let loopStart: number | null = null
@@ -116,6 +118,24 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
         ctx.fillText(label, lx, rulerTop + RULER_H * 0.55)
       }
     }
+
+    // Section markers
+    for (const sec of sections) {
+      const sx = msToX(sec.startMs)
+      if (sx < 2 || sx > W - 2) continue
+      ctx.save()
+      ctx.strokeStyle = 'rgba(255,210,80,0.55)'
+      ctx.lineWidth   = 1
+      ctx.setLineDash([3, 3])
+      ctx.beginPath(); ctx.moveTo(sx, rulerTop); ctx.lineTo(sx, rulerTop + RULER_H); ctx.stroke()
+      ctx.setLineDash([])
+      ctx.restore()
+      ctx.font        = 'bold 7px sans-serif'
+      ctx.fillStyle   = 'rgba(255,210,80,0.85)'
+      ctx.textAlign   = 'left'
+      ctx.textBaseline = 'top'
+      ctx.fillText(sec.name, sx + 2, rulerTop + 1)
+    }
   }
 
   function drawTrack(
@@ -124,6 +144,7 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
     top: number,
     bot: number,
     color: string,
+    handFilter: 'left' | 'right',
   ) {
     const h = bot - top
     ctx.fillStyle = 'rgba(255,255,255,0.04)'
@@ -132,7 +153,11 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
     const range = midiMax - midiMin
     ctx.fillStyle = color
     for (const iv of intervals) {
-      if (iv.note < midiMin || iv.note > midiMax) continue
+      const inTrack = iv.hand
+        ? iv.hand === handFilter
+        : (handFilter === 'right' ? iv.note >= RIGHT_MIN && iv.note <= RIGHT_MAX
+                                   : iv.note >= LEFT_MIN  && iv.note <= LEFT_MAX)
+      if (!inTrack) continue
       const x1 = msToX(iv.startMs)
       const x2 = msToX(iv.endMs)
       const bw = Math.max(x2 - x1, 1)
@@ -147,8 +172,8 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
     ctx.clearRect(0, 0, W, H)
     const { rTop, rBot, lTop, lBot, rulerTop } = getTrackBounds()
 
-    drawTrack(RIGHT_MIN, RIGHT_MAX, rTop, rBot, 'rgba(123,95,240,0.75)')
-    drawTrack(LEFT_MIN,  LEFT_MAX,  lTop, lBot, 'rgba(240,138,91,0.75)')
+    drawTrack(RIGHT_MIN, RIGHT_MAX, rTop, rBot, 'rgba(123,95,240,0.75)', 'right')
+    drawTrack(LEFT_MIN,  LEFT_MAX,  lTop, lBot, 'rgba(240,138,91,0.75)', 'left')
     drawRuler(rulerTop)
 
     if (durationMs <= 0) return
@@ -204,6 +229,9 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
   return {
     setIntervals(ivs) {
       intervals = ivs
+    },
+    setSections(s) {
+      sections = s
     },
     setPosition(ms) {
       positionMs = ms

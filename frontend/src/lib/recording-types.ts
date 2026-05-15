@@ -4,6 +4,9 @@ export type Finger = 1 | 2 | 3 | 4 | 5
 /** Which hand plays the note. */
 export type Hand = 'left' | 'right'
 
+export type Dynamic = 'pp' | 'p' | 'mp' | 'mf' | 'f' | 'ff'
+export type Articulation = 'legato' | 'staccato' | 'tenuto' | 'accent'
+
 /** Named section marker within a recording (e.g. "Subida", "Descida"). */
 export interface Section {
   /** Display name shown in the UI (e.g. loop region selector). */
@@ -21,6 +24,8 @@ export interface NoteInterval {
   finger?: Finger
   /** Which hand plays this note (optional — absent = not specified). */
   hand?: Hand
+  dynamic?: Dynamic
+  articulation?: Articulation
 }
 
 /** Maximum ms offset between student input and expected note to count as correct. */
@@ -39,6 +44,10 @@ export interface RecordedEvent {
   finger?: Finger
   /** Which hand plays this note (only on note-on events, optional). */
   hand?: Hand
+  /** Prescribed dynamic marking (how loud to play — optional, only on note-on). */
+  dynamic?: Dynamic
+  /** Articulation marking (how to play the note — optional, only on note-on). */
+  articulation?: Articulation
 }
 
 export interface Recording {

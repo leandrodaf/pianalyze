@@ -47,10 +47,17 @@
       timeline?.setIntervals(ivs)
     })
 
+    const unsubSections = playbackStore.subscribe(state => {
+      if (!timeline) return
+      const secs = state.recording?.sections ?? []
+      timeline.setSections(secs)
+    })
+
     return () => {
       ro.disconnect()
       unsubPlayback()
       unsubIntervals()
+      unsubSections()
       timeline?.destroy()
     }
   })

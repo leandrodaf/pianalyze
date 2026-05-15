@@ -196,6 +196,17 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     ctx.textBaseline = 'middle'
     ctx.fillText('C4', LEFT_MARGIN / 2, c4y)
     ctx.textBaseline = 'alphabetic'
+
+    // Hand zone labels in the gap
+    const gapCenterY = (idxY(TREBLE_BOT_IDX, layout) + idxY(BASS_TOP_IDX, layout)) / 2
+    const labelFs = Math.max(Math.round(layout.wKeyH * 0.85), 7)
+    ctx.font = `bold ${labelFs}px sans-serif`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillStyle = 'rgba(185,154,244,0.45)'
+    ctx.fillText('MD', LEFT_MARGIN / 2, gapCenterY - layout.handGapPx * 0.25)
+    ctx.fillStyle = 'rgba(240,138,91,0.45)'
+    ctx.fillText('ME', LEFT_MARGIN / 2, gapCenterY + layout.handGapPx * 0.25)
   }
 
   function drawStaves() {
@@ -347,6 +358,49 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
           ctx.fillText(NOTE_NAMES[pb.iv.note % 12], cx + Math.min(cw / 2, 18), cy + bh / 2)
         }
       }
+
+      // Prescribed dynamic label
+      const dyn = pb.iv.dynamic
+      if (dyn && cw > 16 && bh > 6) {
+        const dynFs = Math.max(Math.min(Math.round(bh * 0.55), 9), 6)
+        ctx.font = `italic bold ${dynFs}px serif`
+        ctx.fillStyle = 'rgba(255,255,255,0.55)'
+        ctx.textAlign = 'right'
+        ctx.textBaseline = 'top'
+        const dynX = Math.min(cx + cw - 3, W - 2)
+        ctx.fillText(dyn, dynX, cy + 1)
+      }
+
+      // Articulation indicator
+      const art = pb.iv.articulation
+      if (art && bh > 6) {
+        const dotR = Math.max(Math.min(bh * 0.22, 4), 2)
+        const artX = cx + Math.min(cw / 2, 12)
+        const artY = cy - dotR - 2
+        ctx.textBaseline = 'middle'
+        if (art === 'staccato') {
+          ctx.beginPath()
+          ctx.arc(artX, artY, dotR, 0, Math.PI * 2)
+          ctx.fillStyle = 'rgba(255,255,255,0.65)'
+          ctx.fill()
+        } else if (art === 'accent') {
+          const afs = Math.max(Math.round(bh * 0.7), 7)
+          ctx.font = `bold ${afs}px sans-serif`
+          ctx.fillStyle = 'rgba(255,255,255,0.65)'
+          ctx.textAlign = 'left'
+          ctx.fillText('>', cx + 1, cy + bh / 2)
+        } else if (art === 'tenuto') {
+          ctx.strokeStyle = 'rgba(255,255,255,0.55)'
+          ctx.lineWidth = 1.5
+          const tw = Math.min(cw * 0.5, 10)
+          ctx.beginPath()
+          ctx.moveTo(artX - tw / 2, artY)
+          ctx.lineTo(artX + tw / 2, artY)
+          ctx.stroke()
+        }
+      }
+
+      ctx.globalAlpha = 1
     }
     ctx.globalAlpha = 1
     ctx.textBaseline = 'alphabetic'

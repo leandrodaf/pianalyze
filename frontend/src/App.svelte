@@ -12,6 +12,15 @@
   import { t } from './lib/i18n'
   import Toast from './components/Toast.svelte'
 
+  const KEY_DISPLAY: Record<string, string> = {
+    'C': 'Dó M', 'G': 'Sol M', 'D': 'Ré M', 'A': 'Lá M',
+    'E': 'Mi M', 'B': 'Si M', 'F': 'Fá M', 'F#': 'F# M',
+    'Bb': 'Sib M', 'Eb': 'Mib M',
+    'Am': 'Lá m', 'Em': 'Mi m', 'Dm': 'Ré m', 'Gm': 'Sol m',
+    'Cm': 'Dó m', 'Bm': 'Si m', 'Fm': 'Fá m',
+  }
+  function fmtKey(k: string): string { return KEY_DISPLAY[k] ?? k }
+
   type Page = 'home' | 'playing'
 
   let page: Page = 'home'
@@ -27,6 +36,11 @@
   $: isTriad   = triad && triad !== 'Not a Triad'
   $: fillRatio = velocity / 127
   $: barColor  = dynamicColor(dynamic)
+
+  $: rec = $playbackStore.recording
+  $: recBpm = rec?.bpm
+  $: recTimeSig = rec?.timeSignature
+  $: recKey = rec?.keySignature
 
   function dynamicColor(d: string): string {
     switch (d) {
@@ -120,6 +134,13 @@
         </div>
       {:else}
         <span class="freeplay-tag">🎧 {$t('app.freeplay')}</span>
+      {/if}
+      {#if recBpm || recTimeSig || recKey}
+        <div class="meta-chips">
+          {#if recTimeSig}<span class="meta-chip">{recTimeSig}</span>{/if}
+          {#if recBpm}<span class="meta-chip">{recBpm} BPM</span>{/if}
+          {#if recKey}<span class="meta-chip">{fmtKey(recKey)}</span>{/if}
+        </div>
       {/if}
     </div>
 
@@ -236,6 +257,24 @@
     font-size: 0.82rem;
     color: rgba(255,255,255,0.45);
     font-weight: 500;
+  }
+
+  .meta-chips {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-left: auto;
+  }
+  .meta-chip {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 0.1rem 0.5rem;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
   }
 
   /* ── Waterfall ───────────────────────────────────────────────────────────── */
