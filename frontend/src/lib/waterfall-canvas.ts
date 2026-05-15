@@ -79,6 +79,7 @@ export interface WaterfallCanvas {
   setLeadTime(seconds: number): void
   getLeadTime(): number
   setSpeed(multiplier: number): void
+  setBpm(bpm: number | null): void
   resize(w: number, h: number): void
   destroy(): void
 }
@@ -103,6 +104,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   let practiceBars: PracticeBar[] = []
   let practiceMs = 0
   let gradeBadges: GradeBadge[] = []
+  let currentBpm: number | null = null
 
   function refreshLayout() {
     layout = computeLayout(W, H, leadTimeSec)
@@ -245,8 +247,21 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     ctx.textBaseline = 'alphabetic'
   }
 
+  // Returns 0 (bottom/press) → 1 (top/apex) → 0 (bottom/press) per beat.
+  function beatLift(): number {
+    if (!practiceActive || !currentBpm || currentBpm <= 0) return 0
+    const beatMs  = 60000 / currentBpm
+    const phase   = (((practiceMs % beatMs) + beatMs) % beatMs) / beatMs  // 0–1
+    const t       = phase * 2 - 1   // -1 → 1
+    return 1 - t * t                 // parabola: 0 at edges, 1 at apex
+  }
+
   function drawGoldenLine() {
-    const x = layout.nowX
+    const x    = layout.nowX
+    const lift = beatLift()
+    const maxH = layout.wKeyH * 2.8
+
+    // Golden line
     ctx.save()
     ctx.strokeStyle = 'rgba(255, 210, 50, 0.9)'
     ctx.lineWidth = 2
@@ -254,13 +269,34 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     ctx.shadowBlur = 16
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke()
     ctx.restore()
+
     for (const midi of [71, 50]) {
+      const baseY  = pitchY(midi, layout)
+      const ballY  = baseY - lift * maxH
+      const r      = Math.max(layout.wKeyH * 0.6, 3.5)
+
+      // Shadow on the golden line — grows as ball rises
+      if (lift > 0.04) {
+        const shadowA = lift * 0.35
+        const shadowW = r * (1 + lift * 0.9)
+        ctx.save()
+        ctx.fillStyle = `rgba(0,0,0,${shadowA})`
+        ctx.beginPath()
+        ctx.ellipse(x, baseY, shadowW, r * 0.28, 0, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.restore()
+      }
+
+      // Ball: squished at bottom (wider+shorter), round at apex
+      const rx = r * (1 + (1 - lift) * 0.30)
+      const ry = r * (1 - (1 - lift) * 0.22)
+
       ctx.save()
       ctx.fillStyle = 'rgba(255, 230, 80, 0.95)'
       ctx.shadowColor = '#FFD700'
-      ctx.shadowBlur = 10
+      ctx.shadowBlur = 8 + lift * 8
       ctx.beginPath()
-      ctx.arc(x, pitchY(midi, layout), Math.max(layout.wKeyH * 0.6, 3.5), 0, Math.PI * 2)
+      ctx.ellipse(x, ballY, rx, ry, 0, 0, Math.PI * 2)
       ctx.fill()
       ctx.restore()
     }
@@ -530,6 +566,10 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
 
     setSpeed(multiplier: number) {
       speedMultiplier = Number.isFinite(multiplier) && multiplier > 0 ? multiplier : 1
+    },
+
+    setBpm(bpm: number | null) {
+      currentBpm = bpm && bpm > 0 ? bpm : null
     },
 
     resize(w: number, h: number) {

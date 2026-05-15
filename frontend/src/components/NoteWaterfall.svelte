@@ -34,6 +34,7 @@
       }
 
       waterfall.setSpeed(state.speedMultiplier)
+      waterfall.setBpm(state.recording?.bpm ?? null)
 
       if (state.practice) {
         // Offset by lead time so positionMs=0 shows the first notes at the right edge,
