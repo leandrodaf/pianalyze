@@ -8,10 +8,11 @@
  *                 and graded against the recording.
  */
 
-import { writable, readable, get } from 'svelte/store'
+import { writable, get } from 'svelte/store'
 import { midiStore } from './midi'
 import type { Recording, RecordedEvent, NoteInterval } from '../lib/recording-types'
 import { GRADE_TOLERANCE_MS } from '../lib/recording-types'
+import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-canvas'
 
 export type GradeResult = 'perfect' | 'good' | 'ok' | 'miss' | 'wrong'
 
@@ -125,7 +126,8 @@ export function loadRecording(recording: Recording): void {
   const intervals = buildIntervals(recording.events)
   noteIntervals.set(intervals)
   const last = recording.events[recording.events.length - 1]
-  const durationMs = last ? last.t + 800 : 0
+  // Extend duration so the last notes have time to travel from the right edge to the golden line
+  const durationMs = last ? last.t + DEFAULT_LEAD_TIME_SEC * 1000 + 500 : 0
   playbackStore.update(s => ({ ...s, status: 'idle', positionMs: 0, durationMs, recording }))
 }
 

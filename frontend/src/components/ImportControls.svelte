@@ -102,27 +102,27 @@
 
   .icon-btn {
     padding: 0.3rem 0.55rem;
-    background: #1e2535;
-    border: 1px solid #2a3550;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
     border-radius: 4px;
-    color: #aab;
+    color: rgba(255,255,255,0.6);
     font-size: 0.85rem;
     cursor: pointer;
     transition: background 0.15s;
     line-height: 1;
   }
 
-  .icon-btn:hover:not(:disabled) { background: #253045; color: #ccd; }
-  .icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .icon-btn:hover:not(:disabled) { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.9); }
+  .icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
   .sep {
     width: 1px; height: 18px;
-    background: #2a3550;
+    background: rgba(255,255,255,0.1);
   }
 
   .progress-wrap {
     width: 120px; height: 4px;
-    background: #1e2535;
+    background: rgba(255,255,255,0.08);
     border-radius: 2px;
     overflow: hidden;
     flex-shrink: 0;
@@ -130,7 +130,7 @@
 
   .progress-fill {
     height: 100%;
-    background: #4ec080;
+    background: #7b5ff0;
     border-radius: 2px;
     transition: width 0.1s linear;
   }
@@ -138,16 +138,16 @@
   .time {
     font-size: 0.72rem;
     font-variant-numeric: tabular-nums;
-    color: #7a8aaa;
+    color: rgba(255,255,255,0.35);
     white-space: nowrap;
   }
 
-  .dur { color: #4a5a70; }
+  .dur { color: rgba(255,255,255,0.2); }
 
   .practice-btn { font-size: 0.9rem; }
   .practice-btn.active {
     background: rgba(255, 215, 0, 0.12);
-    border-color: #c8a800;
+    border-color: rgba(255, 215, 0, 0.5);
     color: #ffd700;
   }
 </style>

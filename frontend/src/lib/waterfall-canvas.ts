@@ -44,10 +44,10 @@ const TREBLE_TOP_IDX = WHITE_IDX[77]  // 33
 const BASS_BOT_IDX   = WHITE_IDX[43]  // 13
 const BASS_TOP_IDX   = WHITE_IDX[57]  // 21
 
-const SCROLL_PX_PER_SEC = 120
-const NOW_X_RATIO   = 0.82   // live mode: "now" cursor position
-const JUDGE_X_RATIO = 0.18   // practice mode: judgment line position
-const LEFT_MARGIN   = 54
+const LIVE_SCROLL_PX_PER_SEC        = 120   // live mode bar scroll speed
+const LINE_X_RATIO                  = 0.15  // golden line position — always left, both modes
+const LEFT_MARGIN                   = 54
+export const DEFAULT_LEAD_TIME_SEC  = 4     // seconds for notes to travel right-edge → golden line
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -112,6 +112,11 @@ export interface WaterfallCanvas {
   /** Record a grade for a student note press and show a badge. */
   showGrade(note: number, grade: PracticeGrade): void
 
+  /** Set how many seconds ahead notes appear before reaching the golden line (default 4). */
+  setLeadTime(seconds: number): void
+  /** Returns the current lead time in seconds. */
+  getLeadTime(): number
+
   resize(w: number, h: number): void
   destroy(): void
 }
@@ -135,15 +140,17 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   let barHblack = 0  // bar height for accidentals (thinner)
   let bottomPad = 0
   let nowX = 0
+  let leadTimeSec = DEFAULT_LEAD_TIME_SEC
+  let practiceScrollPxPerSec = 0   // computed: (W - nowX) / leadTimeSec
 
   function computeLayout() {
     bottomPad = H * 0.02
-    // Distribute 52 white-key slots over the available height
     wKeyH = (H - bottomPad * 2) / (TOTAL_WHITE - 1)
     barHwhite = Math.max(wKeyH * 0.82, 4)
     barHblack = Math.max(wKeyH * 0.55, 3)
-    nowX   = LEFT_MARGIN + (W - LEFT_MARGIN) * NOW_X_RATIO
-    judgeX = LEFT_MARGIN + (W - LEFT_MARGIN) * JUDGE_X_RATIO
+    nowX   = LEFT_MARGIN + (W - LEFT_MARGIN) * LINE_X_RATIO
+    judgeX = nowX   // same line, always
+    practiceScrollPxPerSec = (W - judgeX) / leadTimeSec
   }
 
   /** Y coordinate of a MIDI note's centre on the piano-key axis. */
@@ -166,6 +173,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   }
 
   function barScreenX(bar: Bar): { left: number; right: number } {
+    // Live mode: bars grow LEFTWARD — right edge anchored at nowX, left trails left over time
     const left  = nowX - (totalScrolled - bar.pressScrolled)
     const right = bar.releaseScrolled < 0
       ? nowX
@@ -211,7 +219,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     const lw = Math.min(bw + 8, wKeyH * 2.2)
     const lx = barX + (bw - lw) / 2
 
-    ctx.strokeStyle = '#505068'
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)'
     ctx.lineWidth = 1
     for (const idx of slots) {
       const y = Math.round(idxY(idx)) + 0.5
@@ -228,28 +236,30 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   let judgeX = 0  // recomputed in computeLayout
 
   function msToX(ms: number): number {
-    return judgeX + (ms - practiceMs) * (SCROLL_PX_PER_SEC / 1000)
+    return judgeX + (ms - practiceMs) * (practiceScrollPxPerSec / 1000)
   }
 
   function drawJudgmentLine() {
-    // Golden glow line
     ctx.save()
-    ctx.strokeStyle = 'rgba(255, 210, 50, 0.85)'
+    ctx.strokeStyle = 'rgba(255, 210, 50, 0.9)'
     ctx.lineWidth = 2
     ctx.shadowColor = '#FFD700'
-    ctx.shadowBlur = 10
+    ctx.shadowBlur = 16
     ctx.beginPath()
     ctx.moveTo(judgeX, 0)
     ctx.lineTo(judgeX, H)
     ctx.stroke()
     ctx.restore()
 
-    // Small circles on middle staff lines
     for (const midi of [71, 50]) {
-      ctx.fillStyle = 'rgba(255, 230, 80, 0.9)'
+      ctx.save()
+      ctx.fillStyle = 'rgba(255, 230, 80, 0.95)'
+      ctx.shadowColor = '#FFD700'
+      ctx.shadowBlur = 10
       ctx.beginPath()
       ctx.arc(judgeX, pitchY(midi), Math.max(wKeyH * 0.6, 3.5), 0, Math.PI * 2)
       ctx.fill()
+      ctx.restore()
     }
   }
 
@@ -338,21 +348,58 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   // ── Main drawing ─────────────────────────────────────────────────────────────
 
   function drawBackground() {
-    ctx.fillStyle = '#0d1a28'
+    ctx.fillStyle = '#0f1014'
     ctx.fillRect(0, 0, W, H)
 
-    // Faint highlight bands over each staff zone
-    ctx.fillStyle = 'rgba(255,255,255,0.016)'
+    // Treble staff zone — subtle purple tint (right hand)
     const trebleTop = idxY(TREBLE_TOP_IDX) - wKeyH
     const trebleBot = idxY(TREBLE_BOT_IDX) + wKeyH
-    const bassTop   = idxY(BASS_TOP_IDX)   - wKeyH
-    const bassBot   = idxY(BASS_BOT_IDX)   + wKeyH
+    ctx.fillStyle = 'rgba(123,95,240,0.07)'
     ctx.fillRect(LEFT_MARGIN, trebleTop, W - LEFT_MARGIN, trebleBot - trebleTop)
-    ctx.fillRect(LEFT_MARGIN, bassTop,   W - LEFT_MARGIN, bassBot   - bassTop)
+
+    // Bass staff zone — subtle orange tint (left hand)
+    const bassTop = idxY(BASS_TOP_IDX) - wKeyH
+    const bassBot = idxY(BASS_BOT_IDX) + wKeyH
+    ctx.fillStyle = 'rgba(240,138,91,0.07)'
+    ctx.fillRect(LEFT_MARGIN, bassTop, W - LEFT_MARGIN, bassBot - bassTop)
+  }
+
+  function drawHandSeparator() {
+    const c4y = Math.round(pitchY(60)) + 0.5
+
+    // Gradient band filling the gap between the two staves
+    const bandTop = idxY(TREBLE_BOT_IDX) - wKeyH * 0.4
+    const bandBot = idxY(BASS_TOP_IDX)   + wKeyH * 0.4
+    const grad = ctx.createLinearGradient(0, bandBot, 0, bandTop)
+    grad.addColorStop(0, 'rgba(240,138,91,0.10)')
+    grad.addColorStop(1, 'rgba(123,95,240,0.10)')
+    ctx.fillStyle = grad
+    ctx.fillRect(LEFT_MARGIN, bandTop, W - LEFT_MARGIN, bandBot - bandTop)
+
+    // Dashed middle-C line
+    ctx.save()
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)'
+    ctx.lineWidth = 1
+    ctx.setLineDash([6, 5])
+    ctx.beginPath()
+    ctx.moveTo(LEFT_MARGIN, c4y)
+    ctx.lineTo(W, c4y)
+    ctx.stroke()
+    ctx.setLineDash([])
+    ctx.restore()
+
+    // "C4" label on the left margin
+    const fs = Math.max(Math.round(wKeyH * 0.75), 7)
+    ctx.fillStyle = 'rgba(255,255,255,0.22)'
+    ctx.font = `bold ${fs}px sans-serif`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText('C4', LEFT_MARGIN / 2, c4y)
+    ctx.textBaseline = 'alphabetic'
   }
 
   function drawStaves() {
-    ctx.strokeStyle = '#3a4060'
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)'
     ctx.lineWidth = 1
 
     for (const n of TREBLE_LINES) {
@@ -366,17 +413,18 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
 
     // Hand labels
     const fs = Math.max(Math.round(wKeyH * 0.9), 8)
-    ctx.fillStyle = '#3d4a6a'
-    ctx.font = `${fs}px sans-serif`
     ctx.textAlign = 'left'
     ctx.textBaseline = 'bottom'
+    ctx.font = `bold ${fs}px sans-serif`
+    ctx.fillStyle = 'rgba(185,154,244,0.45)'
     ctx.fillText('RIGHT HAND', LEFT_MARGIN, idxY(TREBLE_TOP_IDX) - wKeyH - 2)
+    ctx.fillStyle = 'rgba(240,138,91,0.45)'
     ctx.fillText('LEFT HAND',  LEFT_MARGIN, idxY(BASS_TOP_IDX)   - wKeyH - 2)
     ctx.textBaseline = 'alphabetic'
   }
 
   function drawClefs() {
-    ctx.fillStyle = '#5060a0'
+    ctx.fillStyle = 'rgba(255,255,255,0.28)'
     ctx.textAlign = 'center'
 
     // Treble (𝄞): curl wraps around G4 (second line from bottom)
@@ -395,16 +443,24 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   }
 
   function drawNowLine() {
-    ctx.strokeStyle = 'rgba(80,220,100,0.5)'
+    ctx.save()
+    ctx.strokeStyle = 'rgba(255, 210, 50, 0.85)'
     ctx.lineWidth = 2
+    ctx.shadowColor = '#FFD700'
+    ctx.shadowBlur = 16
     ctx.beginPath(); ctx.moveTo(nowX, 0); ctx.lineTo(nowX, H); ctx.stroke()
+    ctx.restore()
 
-    // White circles on the middle line of each staff (B4=71 and D3=50)
+    // Glowing circles on the middle line of each staff (B4=71 and D3=50)
     for (const midi of [71, 50]) {
-      ctx.fillStyle = 'rgba(255,255,255,0.85)'
+      ctx.save()
+      ctx.fillStyle = 'rgba(255, 230, 80, 0.95)'
+      ctx.shadowColor = '#FFD700'
+      ctx.shadowBlur = 10
       ctx.beginPath()
-      ctx.arc(nowX, pitchY(midi), Math.max(wKeyH * 0.55, 3), 0, Math.PI * 2)
+      ctx.arc(nowX, pitchY(midi), Math.max(wKeyH * 0.6, 3.5), 0, Math.PI * 2)
       ctx.fill()
+      ctx.restore()
     }
   }
 
@@ -430,7 +486,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       ctx.fill()
       ctx.globalAlpha = 1
 
-      // Note name label (right-aligned, inside visible bar)
+      // Note name label (right-aligned, just inside the right edge of the bar)
       if (cw > 20 && bh > 7) {
         const fs = Math.max(Math.min(Math.round(bh * 0.70), 12), 9)
         ctx.font = `bold ${fs}px sans-serif`
@@ -447,6 +503,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
 
   function draw() {
     drawBackground()
+    drawHandSeparator()
     drawStaves()
     drawClefs()
     if (practiceActive) {
@@ -465,7 +522,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     lastT = now
 
     if (!practiceActive) {
-      totalScrolled += SCROLL_PX_PER_SEC * dt
+      totalScrolled += LIVE_SCROLL_PX_PER_SEC * dt
       for (let i = bars.length - 1; i >= 0; i--) {
         if (barScreenX(bars[i]).right < LEFT_MARGIN) bars.splice(i, 1)
       }
@@ -537,6 +594,15 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
         y:      pitchY(note),
         startT: performance.now(),
       })
+    },
+
+    setLeadTime(seconds: number) {
+      leadTimeSec = Math.max(1, Math.min(seconds, 10))
+      computeLayout()
+    },
+
+    getLeadTime() {
+      return leadTimeSec
     },
 
     resize(w: number, h: number) {
