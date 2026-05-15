@@ -103,8 +103,19 @@
 
   onMount(() => connectMidiStore())
 
-  // Auto-apply skill level preset whenever it changes and a recording is loaded.
-  $: if ($settingsStore.skillLevel && $playbackStore.recording) {
+  // Auto-apply skill level preset only when a NEW recording is loaded, not on
+  // every store update (which would override manual speed changes).
+  let _lastAutoRec: unknown = null
+  $: if ($settingsStore.skillLevel && $playbackStore.recording && $playbackStore.recording !== _lastAutoRec) {
+    _lastAutoRec = $playbackStore.recording
+    setDifficultyPreset($settingsStore.skillLevel)
+  }
+
+  // Also re-apply when the user explicitly changes their skill level in Settings
+  // while a recording is already loaded (manual speed changes are cleared intentionally here).
+  let _lastSkillLevel = $settingsStore.skillLevel
+  $: if ($settingsStore.skillLevel !== _lastSkillLevel && $playbackStore.recording) {
+    _lastSkillLevel = $settingsStore.skillLevel
     setDifficultyPreset($settingsStore.skillLevel)
   }
 
