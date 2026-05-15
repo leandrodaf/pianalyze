@@ -63,12 +63,27 @@
 
   // ── Save path ──────────────────────────────────────────────────────────────
   let pathLoading = false
+  let pathError = ''
+  let localSavePath = ''
+
+  // Keep localSavePath in sync with store (one-way, user edits override)
+  $: if (!pathLoading) localSavePath = $settingsStore.savePath
+
+  function commitPath() {
+    settingsStore.patch({ savePath: localSavePath.trim() })
+  }
 
   async function handlePickDirectory() {
     pathLoading = true
+    pathError = ''
     try {
       const dir = await PickSaveDirectory($t('settings.savepath.dialog'))
-      if (dir) settingsStore.patch({ savePath: dir })
+      if (dir) {
+        localSavePath = dir
+        settingsStore.patch({ savePath: dir })
+      }
+    } catch (e: unknown) {
+      pathError = e instanceof Error ? e.message : String(e)
     } finally {
       pathLoading = false
     }
@@ -76,7 +91,9 @@
 
   async function handleResetPath() {
     const def = await GetDefaultSavePath()
+    localSavePath = def
     settingsStore.patch({ savePath: def })
+    pathError = ''
   }
 </script>
 
@@ -205,19 +222,33 @@
     <section class="settings-section">
       <div class="section-label">{$t('settings.savepath')}</div>
       <p class="section-hint">{$t('settings.savepath.hint')}</p>
-      <div class="savepath-row">
-        <span class="savepath-value" title={$settingsStore.savePath || $t('settings.savepath.default')}>
-          {$settingsStore.savePath || $t('settings.savepath.default')}
-        </span>
-        <button class="sp-btn" on:click={handlePickDirectory} disabled={pathLoading}>
-          {pathLoading ? '⟳' : $t('settings.savepath.change')}
+      <div class="import-row">
+        <input
+          class="url-input"
+          type="text"
+          placeholder={$t('settings.savepath.default')}
+          bind:value={localSavePath}
+          on:blur={commitPath}
+          on:keydown={e => e.key === 'Enter' && commitPath()}
+          disabled={pathLoading}
+        />
+        <button
+          class="load-btn"
+          on:click={handlePickDirectory}
+          disabled={pathLoading}
+          title={$t('settings.savepath.change')}
+        >
+          {#if pathLoading}<span class="spin">⟳</span>{:else}📂{/if}
         </button>
-        {#if $settingsStore.savePath}
-          <button class="sp-btn sp-btn-reset" on:click={handleResetPath} title={$t('settings.savepath.reset')}>
-            ↩
-          </button>
+        {#if localSavePath}
+          <button
+            class="load-btn load-btn-reset"
+            on:click={handleResetPath}
+            title={$t('settings.savepath.reset')}
+          >↩</button>
         {/if}
       </div>
+      {#if pathError}<p class="error-text">{pathError}</p>{/if}
     </section>
 
   </div>
@@ -398,54 +429,15 @@
   .load-btn:hover:not(:disabled) { background: rgba(99,102,241,0.4); }
   .load-btn:disabled { opacity: 0.4; cursor: default; }
 
-  .error-text { font-size: 0.72rem; color: #f87171; margin: 4px 0 0; }
-  .success-text { font-size: 0.85rem; color: #4ade80; margin: 4px 0 0; }
-
-  .savepath-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .savepath-value {
-    flex: 1;
-    font-size: 0.73rem;
-    color: rgba(255,255,255,0.5);
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 4px;
-    padding: 0.3rem 0.55rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: 0;
-  }
-
-  .sp-btn {
-    padding: 0.3rem 0.65rem;
-    background: rgba(123,95,240,0.15);
-    border: 1px solid rgba(123,95,240,0.35);
-    border-radius: 4px;
-    color: #b89af4;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.15s;
-    flex-shrink: 0;
-  }
-
-  .sp-btn:hover:not(:disabled) { background: rgba(123,95,240,0.28); }
-  .sp-btn:disabled { opacity: 0.4; cursor: default; }
-
-  .sp-btn-reset {
+  .load-btn-reset {
     background: rgba(255,255,255,0.05);
     border-color: rgba(255,255,255,0.12);
     color: rgba(255,255,255,0.5);
   }
+  .load-btn-reset:hover:not(:disabled) { background: rgba(255,255,255,0.1) !important; }
 
-  .sp-btn-reset:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
+  .error-text { font-size: 0.72rem; color: #f87171; margin: 4px 0 0; }
+  .success-text { font-size: 0.85rem; color: #4ade80; margin: 4px 0 0; }
 
   .spin { display: inline-block; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
