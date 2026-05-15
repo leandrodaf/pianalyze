@@ -72,7 +72,7 @@ const GRADE_COLOR: Record<PracticeGrade, string> = {
 export interface WaterfallCanvas {
   noteOn(note: number, velocity: number): void
   noteOff(note: number): void
-  enablePractice(intervals: NoteInterval[]): void
+  enablePractice(intervals: NoteInterval[], grading?: boolean): void
   disablePractice(): void
   setPracticeTime(ms: number): void
   showGrade(note: number, grade: PracticeGrade): void
@@ -101,10 +101,10 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   const activeNotes = new Map<number, Bar>()
 
   let practiceActive = false
+  let gradingEnabled = false
   let practiceBars: PracticeBar[] = []
   let practiceMs = 0
   let gradeBadges: GradeBadge[] = []
-  let currentBpm: number | null = null
 
   function refreshLayout() {
     layout = computeLayout(W, H, leadTimeSec)
@@ -127,6 +127,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   }
 
   function checkMissedNotes() {
+    if (!gradingEnabled) return
     for (const pb of practiceBars) {
       if (!pb.graded && pb.iv.startMs + GRADE_TOLERANCE_MS < practiceMs) {
         pb.graded = true
@@ -247,19 +248,9 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     ctx.textBaseline = 'alphabetic'
   }
 
-  // Returns 0 (bottom/press) → 1 (top/apex) → 0 (bottom/press) per beat.
-  function beatLift(): number {
-    if (!practiceActive || !currentBpm || currentBpm <= 0) return 0
-    const beatMs  = 60000 / currentBpm
-    const phase   = (((practiceMs % beatMs) + beatMs) % beatMs) / beatMs  // 0–1
-    const t       = phase * 2 - 1   // -1 → 1
-    return 1 - t * t                 // parabola: 0 at edges, 1 at apex
-  }
-
   function drawGoldenLine() {
-    const x    = layout.nowX
-    const lift = beatLift()
-    const maxH = layout.wKeyH * 2.8
+    const x = layout.nowX
+    const r = Math.max(layout.wKeyH * 0.6, 3.5)
 
     // Golden line
     ctx.save()
@@ -270,27 +261,89 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke()
     ctx.restore()
 
-    for (const midi of [71, 50]) {
-      const baseY  = pitchY(midi, layout)
-      const ballY  = baseY - lift * maxH
-      const r      = Math.max(layout.wKeyH * 0.6, 3.5)
+    if (!practiceActive || practiceBars.length === 0) {
+      for (const midi of [71, 50]) {
+        const by = pitchY(midi, layout)
+        ctx.save()
+        ctx.fillStyle = 'rgba(255, 230, 80, 0.95)'
+        ctx.shadowColor = '#FFD700'
+        ctx.shadowBlur = 8
+        ctx.beginPath(); ctx.arc(x, by, r, 0, Math.PI * 2); ctx.fill()
+        ctx.restore()
+      }
+      return
+    }
 
-      // Shadow on the golden line — grows as ball rises
+    const leadMs = DEFAULT_LEAD_TIME_SEC * 1000
+
+    for (const hand of ['right', 'left'] as const) {
+      const notes = practiceBars
+        .filter(pb => pb.iv.hand
+          ? pb.iv.hand === hand
+          : hand === 'right' ? pb.iv.note >= HAND_SPLIT : pb.iv.note < HAND_SPLIT)
+        .sort((a, b) => a.iv.startMs - b.iv.startMs)
+      if (notes.length === 0) continue
+
+      let prevIdx = -1
+      let nextIdx = -1
+      for (let i = 0; i < notes.length; i++) {
+        if (notes[i].iv.startMs <= practiceMs) prevIdx = i
+        else if (nextIdx === -1) nextIdx = i
+      }
+
+      let baseY: number
+      let lift = 0
+      let arcH: number
+
+      if (prevIdx === -1) {
+        // ── Initial fall from top to first note ──────────────────────────────
+        // practiceMs starts at -leadMs; first note is at notes[0].iv.startMs
+        const firstNoteMs = notes[0].iv.startMs
+        const fallDuration = firstNoteMs + leadMs          // total fall window
+        const elapsed     = practiceMs + leadMs            // how much has elapsed
+        const fallPhase   = fallDuration > 0
+          ? Math.max(0, Math.min(1, elapsed / fallDuration))
+          : 1
+        const eased = fallPhase * fallPhase                // gravity: slow→fast
+
+        baseY = pitchY(notes[0].iv.note, layout)
+        arcH  = Math.max(0, baseY - r * 2)                // full fall height
+        lift  = 1 - eased                                  // 1=top, 0=landed
+      } else if (nextIdx >= 0) {
+        // ── Parabolic bounce between consecutive notes ────────────────────────
+        const prev = notes[prevIdx]
+        const next = notes[nextIdx]
+        const span = next.iv.startMs - prev.iv.startMs
+        const phase = span > 0
+          ? Math.max(0, Math.min(1, (practiceMs - prev.iv.startMs) / span))
+          : 0
+        baseY = pitchY(prev.iv.note, layout) +
+                (pitchY(next.iv.note, layout) - pitchY(prev.iv.note, layout)) * phase
+        arcH  = layout.wKeyH * 3.0
+        lift  = 4 * phase * (1 - phase)
+      } else {
+        // ── After last note ───────────────────────────────────────────────────
+        baseY = pitchY(notes[prevIdx].iv.note, layout)
+        arcH  = 0
+        lift  = 0
+      }
+
+      const ballY = baseY - lift * arcH
+
+      // Shadow under ball on the golden line — grows as ball rises
       if (lift > 0.04) {
-        const shadowA = lift * 0.35
         const shadowW = r * (1 + lift * 0.9)
         ctx.save()
-        ctx.fillStyle = `rgba(0,0,0,${shadowA})`
+        ctx.fillStyle = `rgba(0,0,0,${lift * 0.35})`
         ctx.beginPath()
         ctx.ellipse(x, baseY, shadowW, r * 0.28, 0, 0, Math.PI * 2)
         ctx.fill()
         ctx.restore()
       }
 
-      // Ball: squished at bottom (wider+shorter), round at apex
+      // Ball: squished at impact (lift≈0), round at apex (lift≈1)
       const rx = r * (1 + (1 - lift) * 0.30)
       const ry = r * (1 - (1 - lift) * 0.22)
-
       ctx.save()
       ctx.fillStyle = 'rgba(255, 230, 80, 0.95)'
       ctx.shadowColor = '#FFD700'
@@ -321,14 +374,14 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       ctx.fill()
       ctx.globalAlpha = 1
 
-      if (cw > 20 && bh > 7) {
-        const fs = Math.max(Math.min(Math.round(bh * 0.70), 12), 9)
+      if (cw > 14 && bh > 7) {
+        const fs = Math.max(Math.min(Math.round(bh * 0.88), 20), 10)
         ctx.font = `bold ${fs}px sans-serif`
         ctx.fillStyle = '#ffffff'
-        ctx.textAlign = 'right'
+        ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
-        const rx = Math.min(cx + cw - 4, layout.nowX - 3)
-        if (rx > cx + 6) ctx.fillText(bar.name, rx, cy + bh / 2)
+        const mx = cx + Math.min(cw / 2, layout.nowX - cx - 4)
+        if (mx > cx + 2) ctx.fillText(bar.name, mx, cy + bh / 2)
       }
     }
     ctx.globalAlpha = 1
@@ -366,33 +419,14 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       ctx.fill()
       ctx.globalAlpha = 1
 
-      if (cw > 10 && bh > 7) {
-        const finger = pb.iv.finger
-        if (finger) {
-          // Finger number in a small circle
-          const r = Math.max(Math.min(bh * 0.44, 10), 5)
-          const fx = Math.min(cx + cw / 2, layout.judgeX - r - 2)
-          const fy = cy + bh / 2
-          if (fx - r > cx) {
-            ctx.beginPath()
-            ctx.arc(fx, fy, r, 0, Math.PI * 2)
-            ctx.fillStyle = 'rgba(0,0,0,0.45)'
-            ctx.fill()
-            const fs = Math.max(Math.round(r * 1.3), 7)
-            ctx.font = `bold ${fs}px sans-serif`
-            ctx.fillStyle = '#ffffff'
-            ctx.textAlign = 'center'
-            ctx.textBaseline = 'middle'
-            ctx.fillText(String(finger), fx, fy)
-          }
-        } else if (cw > 18) {
-          const fs = Math.max(Math.min(Math.round(bh * 0.70), 12), 9)
-          ctx.font = `bold ${fs}px sans-serif`
-          ctx.fillStyle = '#ffffff'
-          ctx.textAlign = 'center'
-          ctx.textBaseline = 'middle'
-          ctx.fillText(NOTE_NAMES[pb.iv.note % 12], cx + Math.min(cw / 2, 18), cy + bh / 2)
-        }
+      if (cw > 14 && bh > 7) {
+        const noteName = NOTE_NAMES[pb.iv.note % 12]
+        const noteFs = Math.max(Math.min(Math.round(bh * 0.88), 20), 10)
+        ctx.font = `bold ${noteFs}px sans-serif`
+        ctx.fillStyle = '#ffffff'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText(noteName, cx + cw / 2, cy + bh / 2)
       }
 
       // Prescribed dynamic label
@@ -521,11 +555,12 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       activeNotes.delete(note)
     },
 
-    enablePractice(intervals: NoteInterval[]) {
+    enablePractice(intervals: NoteInterval[], grading = false) {
       practiceBars = intervals.map(iv => ({ iv, graded: false }))
       gradeBadges = []
       practiceMs = 0
       practiceActive = true
+      gradingEnabled = grading
     },
 
     disablePractice() {
@@ -535,6 +570,11 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     },
 
     setPracticeTime(ms: number) {
+      // Seeking backward — reset all grades so colors refresh
+      if (ms < practiceMs - 500) {
+        for (const pb of practiceBars) { pb.graded = false; pb.grade = undefined }
+        gradeBadges = []
+      }
       practiceMs = ms
     },
 
@@ -568,8 +608,8 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       speedMultiplier = Number.isFinite(multiplier) && multiplier > 0 ? multiplier : 1
     },
 
-    setBpm(bpm: number | null) {
-      currentBpm = bpm && bpm > 0 ? bpm : null
+    setBpm(_bpm: number | null) {
+      // reserved for future use
     },
 
     resize(w: number, h: number) {

@@ -112,9 +112,13 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
   const initialState = get(playbackStore)
   const durationMs = initialState.durationMs
   const speed = initialState.speedMultiplier
+  // In review mode the waterfall renders bars with LEAD_MS preview, so MIDI events
+  // must be delayed by the same amount so the keyboard fires exactly when the bar
+  // reaches the golden line.
+  const reviewOffset = initialState.practice ? 0 : DEFAULT_LEAD_TIME_SEC * 1000
 
   for (const ev of events) {
-    const delay = ev.t - fromMs
+    const delay = ev.t - fromMs + reviewOffset
     if (delay < 0) continue
 
     const tid = setTimeout(() => {

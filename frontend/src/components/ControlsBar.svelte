@@ -105,9 +105,14 @@
     class:active={loopEnabled}
     disabled={!hasLoop}
     on:click={toggleLoop}
-    title={loopEnabled ? 'Disable loop' : 'Enable loop (Shift+drag on timeline to set region)'}
+    title={loopEnabled ? 'Desativar loop' : 'Ativar loop (arraste na timeline para definir região)'}
   >
-    🔁
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="17 1 21 5 17 9"/>
+      <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+      <polyline points="7 23 3 19 7 15"/>
+      <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+    </svg>
   </button>
   {#if sections.length > 0}
     <div class="sep"></div>
@@ -196,7 +201,7 @@
   }
 
   .loop-btn {
-    font-size: 0.9rem;
+    padding: 0 0.45rem;
   }
 
   /* ── BPM control ─────────────────────────────────────────────────────────── */
@@ -234,7 +239,7 @@
 
   .bpm-display {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 3px;
     padding: 0 0.3rem;
     height: 26px;
@@ -252,10 +257,10 @@
   }
 
   .bpm-value {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.88);
-    letter-spacing: -0.02em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.01em;
     font-variant-numeric: tabular-nums;
   }
   .bpm-unit {

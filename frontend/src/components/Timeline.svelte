@@ -1,14 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { createTimelineCanvas } from '../lib/timeline-canvas'
-  import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-canvas'
   import { playbackStore, noteIntervals, seekTo, setLoop, clearLoop } from '../stores/playback'
-
-  // The waterfall offsets practiceMs by –leadTimeSec:
-  //   practiceMs = positionMs − LEAD_MS
-  // So everything in the mini timeline must work in "music time" (= practiceMs),
-  // converting back to positionMs when writing to the store.
-  const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
 
   let container: HTMLDivElement
   let canvasEl: HTMLCanvasElement
@@ -17,7 +10,7 @@
   // Plain drag = select loop range (auto-enables loop), click = seek, dbl-click = clear loop
   const DRAG_THRESHOLD_PX = 5
   let mouseDownX = -1
-  let loopAnchor = -1   // in music time (ms)
+  let loopAnchor = -1   // in positionMs
   let isDragging = false
 
   onMount(() => {
@@ -31,12 +24,11 @@
 
     const unsubPlayback = playbackStore.subscribe(state => {
       if (!timeline) return
-      // Convert positionMs → music time so needle aligns with the golden bar
-      timeline.setPosition(Math.max(0, state.positionMs - LEAD_MS))
+      // Everything in positionMs space — timeline-canvas offsets intervals internally
+      timeline.setPosition(state.positionMs)
       timeline.setDuration(state.durationMs)
-      // Convert loop store values (positionMs) back to music time for display
       if (state.loopStart != null && state.loopEnd != null) {
-        timeline.setLoop(state.loopStart - LEAD_MS, state.loopEnd - LEAD_MS)
+        timeline.setLoop(state.loopStart, state.loopEnd)
       } else {
         timeline.clearLoop()
       }
@@ -62,7 +54,7 @@
     }
   })
 
-  /** Returns the music time (ms) under the cursor — matches what the golden bar shows. */
+  /** Returns positionMs under the cursor. */
   function getMs(e: MouseEvent): number {
     if (!timeline || !canvasEl) return 0
     const rect = canvasEl.getBoundingClientRect()
@@ -92,18 +84,15 @@
       const lo = Math.min(loopAnchor, ms)
       const hi = Math.max(loopAnchor, ms)
       if (hi - lo > 50) {
-        // Store needs positionMs values → add LEAD_MS offset
-        setLoop(lo + LEAD_MS, hi + LEAD_MS)
-        // Seek so golden bar sits at lo — user sees what will be played there
-        seekTo(lo + LEAD_MS)
+        setLoop(lo, hi)
+        seekTo(lo)
       }
     }
   }
 
   function handleMouseUp(e: MouseEvent) {
     if (!isDragging) {
-      // Click: seek so the golden bar lands on the clicked music time
-      seekTo(getMs(e) + LEAD_MS)
+      seekTo(getMs(e))
     }
     isDragging = false
     mouseDownX = -1

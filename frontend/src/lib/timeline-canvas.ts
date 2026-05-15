@@ -10,6 +10,8 @@
  */
 import type { NoteInterval, Section } from './recording-types'
 import { DEFAULT_LEAD_TIME_SEC, LINE_X_RATIO } from './waterfall-layout'
+import { FINGER_COLORS } from './finger-colors'
+import { noteColor } from './note-colors'
 
 const RIGHT_MIN  = 60   // C4
 const RIGHT_MAX  = 108  // C8
@@ -119,9 +121,9 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
       }
     }
 
-    // Section markers
+    // Section markers (offset by LEAD_MS to match playback position)
     for (const sec of sections) {
-      const sx = msToX(sec.startMs)
+      const sx = msToX(sec.startMs + LEAD_MS)
       if (sx < 2 || sx > W - 2) continue
       ctx.save()
       ctx.strokeStyle = 'rgba(255,210,80,0.55)'
@@ -143,7 +145,6 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
     midiMax: number,
     top: number,
     bot: number,
-    color: string,
     handFilter: 'left' | 'right',
   ) {
     const h = bot - top
@@ -151,19 +152,23 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
     ctx.fillRect(0, top, W, h)
 
     const range = midiMax - midiMin
-    ctx.fillStyle = color
     for (const iv of intervals) {
       const inTrack = iv.hand
         ? iv.hand === handFilter
         : (handFilter === 'right' ? iv.note >= RIGHT_MIN && iv.note <= RIGHT_MAX
                                    : iv.note >= LEFT_MIN  && iv.note <= LEFT_MAX)
       if (!inTrack) continue
-      const x1 = msToX(iv.startMs)
-      const x2 = msToX(iv.endMs)
+      // Offset by LEAD_MS so bars align with when they'll actually be played
+      const x1 = msToX(iv.startMs + LEAD_MS)
+      const x2 = msToX(iv.endMs   + LEAD_MS)
       const bw = Math.max(x2 - x1, 1)
-      const t = (midiMax - iv.note) / range
+      const t  = (midiMax - iv.note) / range
       const cy = top + t * h
       const bh = Math.max(h / (range + 1), 1)
+      // Per-note color: finger color if set, else note color
+      ctx.fillStyle = iv.finger != null
+        ? FINGER_COLORS[iv.finger] + 'cc'
+        : noteColor(iv.note) + 'cc'
       ctx.fillRect(x1, cy - bh / 2, bw, bh)
     }
   }
@@ -172,8 +177,8 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
     ctx.clearRect(0, 0, W, H)
     const { rTop, rBot, lTop, lBot, rulerTop } = getTrackBounds()
 
-    drawTrack(RIGHT_MIN, RIGHT_MAX, rTop, rBot, 'rgba(123,95,240,0.75)', 'right')
-    drawTrack(LEFT_MIN,  LEFT_MAX,  lTop, lBot, 'rgba(240,138,91,0.75)', 'left')
+    drawTrack(RIGHT_MIN, RIGHT_MAX, rTop, rBot, 'right')
+    drawTrack(LEFT_MIN,  LEFT_MAX,  lTop, lBot, 'left')
     drawRuler(rulerTop)
 
     if (durationMs <= 0) return
