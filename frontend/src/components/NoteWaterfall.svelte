@@ -33,6 +33,8 @@
         }
       }
 
+      waterfall.setSpeed(state.speedMultiplier)
+
       if (state.practice) {
         // Offset by lead time so positionMs=0 shows the first notes at the right edge,
         // not already on the golden line.

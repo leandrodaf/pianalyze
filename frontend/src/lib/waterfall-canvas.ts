@@ -116,6 +116,8 @@ export interface WaterfallCanvas {
   setLeadTime(seconds: number): void
   /** Returns the current lead time in seconds. */
   getLeadTime(): number
+  /** Sets the live-mode scroll speed multiplier. */
+  setSpeed(multiplier: number): void
 
   resize(w: number, h: number): void
   destroy(): void
@@ -130,6 +132,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   let rafId = 0
   let lastT = performance.now()
   let totalScrolled = 0
+  let speedMultiplier = 1
 
   const bars: Bar[] = []
   const activeNotes = new Map<number, Bar>()
@@ -522,7 +525,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     lastT = now
 
     if (!practiceActive) {
-      totalScrolled += LIVE_SCROLL_PX_PER_SEC * dt
+      totalScrolled += LIVE_SCROLL_PX_PER_SEC * speedMultiplier * dt
       for (let i = bars.length - 1; i >= 0; i--) {
         if (barScreenX(bars[i]).right < LEFT_MARGIN) bars.splice(i, 1)
       }
@@ -603,6 +606,10 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
 
     getLeadTime() {
       return leadTimeSec
+    },
+
+    setSpeed(multiplier: number) {
+      speedMultiplier = Number.isFinite(multiplier) && multiplier > 0 ? multiplier : 1
     },
 
     resize(w: number, h: number) {
