@@ -10,7 +10,7 @@
 
 import { writable, get } from 'svelte/store'
 import { midiStore } from './midi'
-import type { Recording, RecordedEvent, NoteInterval } from '../lib/recording-types'
+import type { Recording, RecordedEvent, NoteInterval, Hand } from '../lib/recording-types'
 import { GRADE_TOLERANCE_MS } from '../lib/recording-types'
 import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-canvas'
 
@@ -85,22 +85,22 @@ function restartPlaybackAt(ms: number): void {
 
 /** Convert a flat event list into note-on/off pairs. */
 function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
-  const active = new Map<number, { startMs: number; finger?: NoteInterval['finger'] }>()
+  const active = new Map<number, { startMs: number; finger?: NoteInterval['finger']; hand?: Hand }>()
   const out: NoteInterval[] = []
   for (const ev of events) {
     if (ev.vel > 0) {
-      active.set(ev.note, { startMs: ev.t, finger: ev.finger })
+      active.set(ev.note, { startMs: ev.t, finger: ev.finger, hand: ev.hand })
     } else {
       const entry = active.get(ev.note)
       if (entry !== undefined) {
-        out.push({ note: ev.note, startMs: entry.startMs, endMs: ev.t, finger: entry.finger })
+        out.push({ note: ev.note, startMs: entry.startMs, endMs: ev.t, finger: entry.finger, hand: entry.hand })
         active.delete(ev.note)
       }
     }
   }
   // Close any notes still held at end of recording
   for (const [note, entry] of active) {
-    out.push({ note, startMs: entry.startMs, endMs: entry.startMs + 500, finger: entry.finger })
+    out.push({ note, startMs: entry.startMs, endMs: entry.startMs + 500, finger: entry.finger, hand: entry.hand })
   }
   return out
 }
