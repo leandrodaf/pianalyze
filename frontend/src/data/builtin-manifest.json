@@ -1,0 +1,588 @@
+{
+  "version": "1",
+  "name": "Pianalyze Built-in Library",
+  "description": "Exercícios integrados do Pianalyze para iniciantes e intermediários.",
+  "author": {
+    "name": "Pianalyze Team",
+    "url": "https://github.com/leandrodaf/pianalyze",
+    "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+    "contact": "github.com/leandrodaf/pianalyze",
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      }
+    ]
+  },
+  "license": "MIT",
+  "website": "https://github.com/leandrodaf/pianalyze",
+  "exercises": [
+    {
+      "id": "c-major-scale",
+      "title": "Escala de Dó Maior",
+      "subtitle": "C · D · E · F · G · A · B · C",
+      "description": "A escala mais fundamental do piano e ponto de partida para todo iniciante. Pratique com atenção à posição dos dedos, uniformidade de toque e dinâmica constante.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "scales",
+      "difficulty": 1,
+      "tags": [
+        "escala",
+        "dó maior",
+        "iniciante",
+        "fundamentals",
+        "ambas as mãos"
+      ],
+      "style": {
+        "gradient": [
+          "#7c3aed",
+          "#2563eb"
+        ],
+        "icon": "🎵",
+        "coverImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Frederic_Chopin_photo.jpeg/800px-Frederic_Chopin_photo.jpeg"
+      },
+      "stats": {
+        "durationSec": 10,
+        "bpm": 96,
+        "timeSignature": "4/4",
+        "hands": "both"
+      },
+      "dataUrl": "exercises/scales/c-major-scale.json"
+    },
+    {
+      "id": "g-major-scale",
+      "title": "Escala de Sol Maior",
+      "subtitle": "G · A · B · C · D · E · F# · G",
+      "description": "Escala com um sustenido (F#), ótima para treinar a mudança de postura do polegar. Mantenha o pulso relaxado e as notas em legato.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "scales",
+      "difficulty": 1,
+      "tags": [
+        "escala",
+        "sol maior",
+        "iniciante",
+        "sustenido"
+      ],
+      "style": {
+        "gradient": [
+          "#0891b2",
+          "#059669"
+        ],
+        "icon": "🎵"
+      },
+      "stats": {
+        "durationSec": 10,
+        "bpm": 96,
+        "timeSignature": "4/4",
+        "hands": "both"
+      },
+      "dataUrl": "exercises/scales/g-major-scale.json"
+    },
+    {
+      "id": "a-minor-scale",
+      "title": "Escala de Lá Menor",
+      "subtitle": "A · B · C · D · E · F · G · A",
+      "description": "A escala menor natural relativa de Dó Maior. Sinta a diferença de caráter emocional entre maior e menor enquanto toca.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "scales",
+      "difficulty": 1,
+      "tags": [
+        "escala",
+        "lá menor",
+        "menor natural",
+        "iniciante"
+      ],
+      "style": {
+        "gradient": [
+          "#be185d",
+          "#9333ea"
+        ],
+        "icon": "🎵"
+      },
+      "stats": {
+        "durationSec": 10,
+        "bpm": 88,
+        "timeSignature": "4/4",
+        "hands": "both"
+      },
+      "dataUrl": "exercises/scales/a-minor-scale.json"
+    },
+    {
+      "id": "d-major-scale",
+      "title": "Escala de Ré Maior",
+      "subtitle": "D · E · F# · G · A · B · C# · D",
+      "description": "Dois sustenidos (F# e C#). Excelente para consolidar a independência dos dedos na mão esquerda antes de avançar para tonalidades com mais alterações.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escala",
+        "ré maior",
+        "dois sustenidos",
+        "básico"
+      ],
+      "style": {
+        "gradient": [
+          "#065f46",
+          "#0891b2"
+        ],
+        "icon": "🎵"
+      },
+      "stats": {
+        "durationSec": 10,
+        "bpm": 92,
+        "timeSignature": "4/4",
+        "hands": "both"
+      },
+      "dataUrl": "exercises/scales/d-major-scale.json"
+    },
+    {
+      "id": "chromatic-scale",
+      "title": "Escala Cromática",
+      "subtitle": "Todos os 12 semitons · C4 → C5",
+      "description": "Percorre todos os semitons da oitava, envolvendo todas as teclas pretas e brancas. Fundamental para desenvolver precisão motora e familiaridade com o teclado completo.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escala",
+        "cromática",
+        "semitons",
+        "técnica",
+        "mão direita"
+      ],
+      "style": {
+        "gradient": [
+          "#1d4ed8",
+          "#6d28d9"
+        ],
+        "icon": "🎼"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 80,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/chromatic-scale.json"
+    },
+    {
+      "id": "i-iv-v-i",
+      "title": "Progressão I–IV–V–I",
+      "subtitle": "C – F – G – C  (Dó Maior)",
+      "description": "A progressão mais usada na história da música ocidental. Aprenda a encadear tônica, subdominante e dominante com fluidez e bom voicing.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "chords",
+      "difficulty": 1,
+      "tags": [
+        "acordes",
+        "progressão",
+        "dó maior",
+        "harmonia",
+        "iniciante"
+      ],
+      "style": {
+        "gradient": [
+          "#b45309",
+          "#dc2626"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 16,
+        "timeSignature": "4/4",
+        "hands": "both"
+      },
+      "comingSoon": true
+    },
+    {
+      "id": "minor-progression",
+      "title": "Progressão Menor",
+      "subtitle": "Am – F – C – G",
+      "description": "Progressão de quatro acordes usada em incontáveis pop e rock. Perfeita para sentir a tensão e resolução típicas do modo menor.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "chords",
+      "difficulty": 1,
+      "tags": [
+        "acordes",
+        "menor",
+        "progressão",
+        "pop",
+        "iniciante"
+      ],
+      "style": {
+        "gradient": [
+          "#7c3aed",
+          "#be185d"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 16,
+        "timeSignature": "4/4",
+        "hands": "both"
+      },
+      "comingSoon": true
+    },
+    {
+      "id": "seventh-chords",
+      "title": "Acordes de Sétima",
+      "subtitle": "Maj7 · min7 · dom7 · dim7",
+      "description": "Os quatro tipos principais de tétrades. Compreender suas qualidades sonoras é essencial para jazz, bossa nova e música popular.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "chords",
+      "difficulty": 3,
+      "tags": [
+        "acordes",
+        "sétima",
+        "jazz",
+        "tétrades",
+        "harmonia"
+      ],
+      "style": {
+        "gradient": [
+          "#064e3b",
+          "#0891b2"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 20,
+        "hands": "both"
+      },
+      "comingSoon": true
+    },
+    {
+      "id": "inversions",
+      "title": "Inversões de Acorde",
+      "subtitle": "Posição fundamental · 1ª · 2ª inversão",
+      "description": "Pratique as três posições de um acorde tríade. Inversões permitem progressões mais suaves com mínimo movimento de voz.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "chords",
+      "difficulty": 3,
+      "tags": [
+        "acordes",
+        "inversões",
+        "voice leading",
+        "intermediário"
+      ],
+      "style": {
+        "gradient": [
+          "#92400e",
+          "#ca8a04"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 18,
+        "hands": "both"
+      },
+      "comingSoon": true
+    },
+    {
+      "id": "jazz-voicings",
+      "title": "Voicings de Jazz",
+      "subtitle": "ii–V–I · extensões · alterações",
+      "description": "Voicings abertos com 9ªs, 11ªs e 13ªs que definem o som do jazz moderno. Exige familiaridade sólida com tétrades e leitura de cifras avançadas.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "chords",
+      "difficulty": 5,
+      "tags": [
+        "jazz",
+        "voicings",
+        "ii-V-I",
+        "extensões",
+        "avançado"
+      ],
+      "style": {
+        "gradient": [
+          "#1e1b4b",
+          "#6d28d9"
+        ],
+        "icon": "🎷"
+      },
+      "stats": {
+        "durationSec": 25,
+        "hands": "both"
+      },
+      "comingSoon": true
+    },
+    {
+      "id": "twinkle",
+      "title": "Twinkle Twinkle",
+      "subtitle": "Melodia simples para iniciantes",
+      "description": "Melodia icônica ideal para quem está aprendendo a ler notas e coordenar os dedos. Foco em legato suave e dinâmica consistente na mão direita.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": [
+        "peça",
+        "melodia",
+        "iniciante",
+        "mão direita",
+        "clássico infantil"
+      ],
+      "style": {
+        "gradient": [
+          "#15803d",
+          "#0891b2"
+        ],
+        "icon": "⭐"
+      },
+      "stats": {
+        "durationSec": 30,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "comingSoon": true
+    },
+    {
+      "id": "fur-elise",
+      "title": "Für Elise",
+      "subtitle": "Beethoven — Bagatela em Lá Menor",
+      "description": "Introdução da peça mais famosa de Beethoven. O motivo principal em semicolcheias exige precisão rítmica e boa articulação dos dedos 3 e 4.",
+      "author": {
+        "name": "Ludwig van Beethoven (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 3,
+      "tags": [
+        "peça",
+        "beethoven",
+        "clássico",
+        "intermediário",
+        "ambas as mãos"
+      ],
+      "style": {
+        "gradient": [
+          "#6d28d9",
+          "#be185d"
+        ],
+        "icon": "🎼"
+      },
+      "stats": {
+        "durationSec": 45,
+        "timeSignature": "3/8",
+        "hands": "both"
+      },
+      "comingSoon": true
+    },
+    {
+      "id": "ode-to-joy",
+      "title": "Ode à Alegria",
+      "subtitle": "Beethoven — Sinfonia nº 9, 4º Movimento",
+      "description": "Melodia simples e icônica da 9ª Sinfonia. Excelente para treinar ritmo regular e leitura de notas em posição central do teclado.",
+      "author": {
+        "name": "Ludwig van Beethoven (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": [
+        "peça",
+        "beethoven",
+        "clássico",
+        "iniciante",
+        "mão direita"
+      ],
+      "style": {
+        "gradient": [
+          "#92400e",
+          "#15803d"
+        ],
+        "icon": "🎼"
+      },
+      "stats": {
+        "durationSec": 40,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "comingSoon": true
+    },
+    {
+      "id": "happy-birthday",
+      "title": "Parabéns pra Você",
+      "subtitle": "Clássico universal para iniciantes",
+      "description": "Uma das melodias mais reconhecidas no mundo. Ótima para praticar saltos de posição e notas pontuadas no ritmo de valsa.",
+      "author": {
+        "name": "Mildred & Patty Hill (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": [
+        "peça",
+        "popular",
+        "iniciante",
+        "valsa",
+        "mão direita"
+      ],
+      "style": {
+        "gradient": [
+          "#be185d",
+          "#f59e0b"
+        ],
+        "icon": "🎂"
+      },
+      "stats": {
+        "durationSec": 20,
+        "timeSignature": "3/4",
+        "hands": "right"
+      },
+      "comingSoon": true
+    },
+    {
+      "id": "jingle-bells",
+      "title": "Jingle Bells",
+      "subtitle": "James Lord Pierpont, 1857",
+      "description": "Melodia natalina em compasso quaternário com saltos animados. Boa para trabalhar staccato e ritmo animado na mão direita.",
+      "author": {
+        "name": "James Pierpont (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": [
+        "peça",
+        "natal",
+        "popular",
+        "iniciante",
+        "staccato"
+      ],
+      "style": {
+        "gradient": [
+          "#b91c1c",
+          "#c2410c"
+        ],
+        "icon": "🔔"
+      },
+      "stats": {
+        "durationSec": 35,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "comingSoon": true
+    }
+  ]
+}
