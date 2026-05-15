@@ -95,7 +95,9 @@
             // Load intervals into Go grading engine (with full pedagogical fields)
             LoadPracticeIntervals(gradingIvs).catch(() => {/* ignore if not connected */})
             // Load effective grading profile (preset override or exercise profile)
-            LoadGradingProfile(effectiveProfile).catch(() => {})
+            if (effectiveProfile !== null) {
+              LoadGradingProfile(effectiveProfile as Parameters<typeof LoadGradingProfile>[0]).catch(() => {})
+            }
             prevProfileOverride = state.gradingProfileOverride
           }
         } else {
@@ -107,7 +109,9 @@
       // Hot-reload grading profile when preset changes mid-session (practice mode only)
       if (state.practice && hasRecording && state.gradingProfileOverride !== prevProfileOverride) {
         prevProfileOverride = state.gradingProfileOverride
-        LoadGradingProfile(effectiveProfile).catch(() => {})
+        if (effectiveProfile !== null) {
+          LoadGradingProfile(effectiveProfile as Parameters<typeof LoadGradingProfile>[0]).catch(() => {})
+        }
       }
 
       waterfall.setSpeed(state.speedMultiplier)

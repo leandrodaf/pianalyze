@@ -740,30 +740,6 @@
 .connect-btn:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
 .connect-btn:disabled { opacity: .35; cursor: not-allowed; }
 
-.url-input {
-  padding: .5rem .65rem;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 8px;
-  color: rgba(255,255,255,.85); font-size: .72rem;
-  outline: none; transition: border-color .15s;
-}
-.url-input::placeholder { color: rgba(255,255,255,.2); }
-.url-input:focus { border-color: rgba(123,95,240,.5); }
-
-.load-btn {
-  padding: .48rem; border: 1px solid rgba(255,255,255,.12);
-  border-radius: 8px; background: rgba(255,255,255,.06);
-  color: rgba(255,255,255,.7); font-size: .77rem; font-weight: 600;
-  cursor: pointer; display: flex; align-items: center; gap: .4rem;
-  transition: background .15s;
-}
-.load-btn:hover:not(:disabled) { background: rgba(255,255,255,.11); color: #fff; }
-.load-btn:disabled { opacity: .35; cursor: not-allowed; }
-.spin { display: inline-block; animation: spin .8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
- 
-.hidden-input { display: none; }
 .tools-actions {
   display: flex;
   flex-direction: column;
@@ -793,16 +769,6 @@
   opacity: .35;
   cursor: not-allowed;
 }
-.rec-tool-btn {
-  background: rgba(220,40,40,.12);
-  border-color: rgba(220,40,40,.28);
-  color: #ff8c8c;
-}
-.rec-tool-btn:hover:not(:disabled) {
-  background: rgba(220,40,40,.2);
-  border-color: rgba(220,40,40,.4);
-  color: #ffd0d0;
-}
 .tool-icon {
   width: 1rem;
   text-align: center;
@@ -823,11 +789,7 @@
   border-radius: 3px;
 }
 .content::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.22); }
-.hero-glow {
-  position: absolute; top: 0; left: 0; right: 0; height: 320px;
-  background: linear-gradient(180deg, rgba(123,95,240,.2) 0%, transparent 100%);
-  pointer-events: none;
-}
+
 .content-header { position: relative; padding: clamp(1.5rem,3vw,3rem) clamp(1.2rem,3vw,2.5rem) 1.5rem; }
 .greeting { font-size: clamp(1.6rem,2.8vw,3.2rem); font-weight: 900; letter-spacing: -.02em; margin: 0 0 .3rem; }
 .greeting-sub { font-size: clamp(.82rem,1.1vw,1.05rem); color: rgba(255,255,255,.35); margin: 0; }

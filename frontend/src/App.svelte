@@ -120,7 +120,7 @@
   // Also re-apply when the user explicitly changes their skill level in Settings
   // while a recording is already loaded (manual speed changes are cleared intentionally here).
   let _lastSkillLevel = $settingsStore.skillLevel
-  $: if ($settingsStore.skillLevel !== _lastSkillLevel && $playbackStore.recording) {
+  $: if ($settingsStore.skillLevel !== _lastSkillLevel && $settingsStore.skillLevel && $playbackStore.recording) {
     _lastSkillLevel = $settingsStore.skillLevel
     setDifficultyPreset($settingsStore.skillLevel)
   }

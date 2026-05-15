@@ -85,7 +85,7 @@
     saving = true; saveError = ''
     try {
       const rec: Recording = JSON.parse(jsonData)
-      const iso = rec.recordedAt.slice(0, 19).replace(/[:T]/g, '-')
+      const iso = (rec.recordedAt ?? new Date().toISOString()).slice(0, 19).replace(/[:T]/g, '-')
       const filename = `pianalyze-${iso}.pia`
       const dir = savePath || ''
       if (dir) {
@@ -95,7 +95,7 @@
       }
       // if no dir configured, fall back to dialog
       else {
-        await SaveRecording(jsonData)
+        await SaveRecording(jsonData, filename, '')
         savedPath = filename
         onSaved?.(filename)
       }
@@ -110,7 +110,9 @@
     if (!jsonData) return
     saving = true; saveError = ''
     try {
-      await SaveRecording(jsonData)
+      const rec: Recording = JSON.parse(jsonData)
+      const iso = (rec.recordedAt ?? new Date().toISOString()).slice(0, 19).replace(/[:T]/g, '-')
+      await SaveRecording(jsonData, `pianalyze-${iso}.pia`, '')
     } catch (e: unknown) {
       saveError = e instanceof Error ? e.message : String(e)
     } finally {
