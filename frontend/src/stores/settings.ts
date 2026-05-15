@@ -9,6 +9,8 @@ export interface Settings {
   skillLevel: DifficultyPreset | null
   /** Directory where recordings are auto-saved. Empty = use OS default. */
   savePath: string
+  /** ID of the last successfully connected MIDI device (for auto-reconnect). */
+  lastDeviceId: number | null
 }
 
 const STORAGE_KEY = 'pianalyze.settings'
@@ -25,6 +27,7 @@ const defaults: Settings = {
   chordDisplayMode: 'full',
   skillLevel: null,
   savePath: '',
+  lastDeviceId: null,
 }
 
 function createSettingsStore() {

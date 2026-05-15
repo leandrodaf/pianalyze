@@ -69,7 +69,7 @@
       )
       editingPath = ''
     } catch (e: unknown) {
-      addToast({ message: e instanceof Error ? e.message : String(e), type: 'error' })
+      addToast(e instanceof Error ? e.message : String(e), 'error')
     } finally {
       saving = false
     }
@@ -81,7 +81,7 @@
       await DeleteRecording(item.path)
       items = items.filter(i => i.path !== item.path)
     } catch (e: unknown) {
-      addToast({ message: e instanceof Error ? e.message : String(e), type: 'error' })
+      addToast(e instanceof Error ? e.message : String(e), 'error')
     }
   }
 
@@ -98,7 +98,7 @@
       const recording = JSON.parse(json) as Recording
       onLoad(recording)
     } catch (e: unknown) {
-      addToast({ message: e instanceof Error ? e.message : String(e), type: 'error' })
+      addToast(e instanceof Error ? e.message : String(e), 'error')
     }
   }
 

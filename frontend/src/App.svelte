@@ -15,6 +15,7 @@
   import type { Exercise } from './lib/exercise-types'
   import { t } from './lib/i18n'
   import Toast from './components/Toast.svelte'
+  import { addToast } from './stores/toast'
   import { prepStore } from './stores/prep'
   import { FINGER_COLORS } from './lib/finger-colors'
   import { noteColor } from './lib/note-colors'
@@ -36,6 +37,8 @@
   let page: Page = 'home'
   let prepActive = false   // shows prep banner instead of top-bar; both use same playing layout
   let deviceReady = false
+  // Lifted device state — survives page transitions so HomeScreen can restore on remount.
+  let connectedDeviceId: number | null = $settingsStore.lastDeviceId
   let activeExercise: Exercise | null = null
   let isRecordingMode = false
   let isLiveRecording = false
@@ -119,8 +122,10 @@
     setDifficultyPreset($settingsStore.skillLevel)
   }
 
-  function handleDeviceReady() {
+  function handleDeviceReady(deviceId: number) {
     deviceReady = true
+    connectedDeviceId = deviceId
+    settingsStore.patch({ lastDeviceId: deviceId })
   }
 
   function clearLoadedRecording() {
@@ -140,6 +145,9 @@
   }
 
   function handlePlay(exercise: Exercise | null) {
+    if (!deviceReady) {
+      addToast($t('toast.no.device'), 'warning')
+    }
     activeExercise = exercise
     if (exercise?.data) {
       loadRecording(exercise.data)
@@ -177,6 +185,9 @@
   }
 
   function handleImportRecording(recording: unknown) {
+    if (!deviceReady) {
+      addToast($t('toast.no.device'), 'warning')
+    }
     loadRecording(recording)
     setPractice(false)
     activeExercise = null
@@ -184,6 +195,9 @@
   }
 
   async function handleStartRecording() {
+    if (!deviceReady) {
+      addToast($t('toast.no.device'), 'warning')
+    }
     activeExercise = null
     clearLoadedRecording()
     isRecordingMode = true
@@ -211,6 +225,8 @@
     onDeviceReady={handleDeviceReady}
     onImportRecording={handleImportRecording}
     onStartRecording={handleStartRecording}
+    initialDeviceId={connectedDeviceId}
+    initialConnected={deviceReady}
   />
 
 {:else}

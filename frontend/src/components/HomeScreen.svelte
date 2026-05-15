@@ -14,31 +14,58 @@
 
   import { addToast } from '../stores/toast'
   import { handleDevicesChanged } from '../lib/device-handler'
+  import { settingsStore } from '../stores/settings'
   import SettingsModal from './SettingsModal.svelte'
   import RecordingsPage from './RecordingsPage.svelte'
 
   export let onPlay: (exercise: Exercise | null) => void
-  export let onDeviceReady: () => void
+  export let onDeviceReady: (deviceId: number) => void
   export let onImportRecording: ((recording: Recording) => void) | undefined = undefined
   export let onStartRecording: (() => void) | undefined = undefined
+  /** Device ID that was already connected before navigating away (from App.svelte state). */
+  export let initialDeviceId: number | null = null
+  /** Whether the device was already connected before navigating away. */
+  export let initialConnected = false
 
   type NavView = 'home' | 'recordings'
   let activeView: NavView = 'home'
 
   // ── Device ────────────────────────────────────────────────────────────────────
   let devices: main.DeviceInfo[] = []
-  let selectedId: number | null = null
-  let connected      = false
+  let selectedId: number | null = initialDeviceId
+  let connected      = false   // set to true after successful connect or on remount
   let connecting     = false
   let deviceError    = ''
-  let showDeviceList = true
+  let showDeviceList = !initialConnected  // if already connected, don't show the list
 
   let unsubDevices: (() => void) | null = null
 
   onMount(async () => {
     try {
       devices = await ListDevices()
-      if (devices.length === 1) selectedId = devices[0].id
+
+      if (initialConnected && initialDeviceId !== null) {
+        // Back from playing screen — restore UI state; capture is still running on Go side.
+        const stillAvailable = devices.some(d => d.id === initialDeviceId)
+        if (stillAvailable) {
+          selectedId = initialDeviceId
+          connected = true
+          showDeviceList = false
+        } else {
+          // Device was disconnected while away
+          connected = false
+          showDeviceList = true
+          selectedId = null
+        }
+      } else {
+        // First mount — auto-select: last known device if in list, else sole device
+        const lastId = $settingsStore.lastDeviceId
+        if (lastId !== null && devices.some(d => d.id === lastId)) {
+          selectedId = lastId
+        } else if (devices.length === 1) {
+          selectedId = devices[0].id
+        }
+      }
     } catch (e) { deviceError = String(e) }
 
     unsubDevices = EventsOn('devices:changed', (updated: main.DeviceInfo[]) => {
@@ -64,7 +91,7 @@
       await SelectDevice(selectedId)
       await StartCapture()
       connected = true; showDeviceList = false
-      onDeviceReady()
+      onDeviceReady(selectedId)
     } catch (e) { deviceError = String(e) }
     finally    { connecting = false }
   }
