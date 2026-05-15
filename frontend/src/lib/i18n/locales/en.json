@@ -59,10 +59,22 @@
 
   "brand.subtitle": "Piano Analysis Tool",
   "lang.label": "Language",
+  "tools.label": "TOOLS",
+  "tools.import": "Import .pia",
+  "tools.record": "REC",
   "common.by": "by",
   "music.triad": "triad",
 
   "lang.pt-BR": "Português (BR)",
   "lang.en": "English",
-  "lang.es": "Español"
+  "lang.es": "Español",
+
+  "toast.device.disconnected": "MIDI device disconnected",
+  "toast.device.connected": "MIDI device connected",
+
+  "grade.perfect": "Perfect!",
+  "grade.good": "Good",
+  "grade.ok": "OK",
+  "grade.miss": "Miss",
+  "grade.wrong": "Wrong"
 }

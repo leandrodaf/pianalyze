@@ -100,7 +100,7 @@ Ativado quando não há exercício ou o exercício não tem dados.
 
 ### 3.3 Transição entre modos
 
-- Ao clicar "Praticar agora" num exercício com dados → modo prática, play automático
+- Ao clicar "Praticar agora" num exercício com dados → modo prática, aguarda o aluno pressionar ▶
 - Ao clicar "Tocar Livre" → modo ao vivo
 - Ao voltar para Home (← Início) e entrar de novo → reset do estado de prática
 
@@ -245,13 +245,19 @@ interface Recording {
   version: 1
   recordedAt: string   // ISO 8601
   events: Array<{
-    t: number     // ms desde o início
-    cmd: number   // 0x90 = note on/off
-    note: number  // MIDI 0–127
-    vel: number   // 0 = note off
+    t: number      // ms desde o início
+    cmd: number    // 0x90 = note on/off
+    note: number   // MIDI 0–127
+    vel: number    // 0 = note off
+    finger?: 1|2|3|4|5  // dedo correto (opcional, apenas em note-on)
   }>
 }
 ```
+
+**Dedilhado (`finger`):**  
+Convenção universal: 1 = polegar … 5 = mínimo, igual para ambas as mãos.  
+Campo opcional — arquivos sem `finger` continuam válidos.  
+Quando presente, o waterfall exibe o número do dedo em um círculo sobre a barra da nota durante a prática.
 
 ### 7.4 Dificuldade
 
@@ -341,7 +347,7 @@ Separar em:
 - **Linha dourada sempre à esquerda (~15%)** — representa "agora". Não se move.
 - **Notas sempre da direita para a esquerda** — em ambos os modos.
 - **Sem bloqueio por falta de MIDI** — o aluno pode entrar na tela de tocar sem dispositivo; simplesmente não haverá input ao vivo.
-- **Modo prática automático** — ao clicar "Praticar agora" num exercício com dados, o app entra em modo prática e inicia o playback imediatamente.
+- **Modo prática manual** — ao clicar "Praticar agora" num exercício com dados, o app entra em modo prática mas aguarda o aluno pressionar ▶ para iniciar.
 - **Pré-roll de lead time** — o playback começa com `positionMs = 0` mas o waterfall subtrai `leadTimeSec * 1000` do `practiceMs`, fazendo as primeiras notas aparecerem na borda direita.
 - **RecordControls e ImportControls saem da tela de tocar** — essa tela é só para praticar.
 - **Speed multiplier afeta scheduler + scroll** — mudar velocidade não distorce a relação visual nota/tempo.

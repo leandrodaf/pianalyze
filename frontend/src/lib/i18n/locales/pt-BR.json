@@ -59,10 +59,22 @@
 
   "brand.subtitle": "Ferramenta de análise de piano",
   "lang.label": "Idioma",
+  "tools.label": "FERRAMENTAS",
+  "tools.import": "Importar .pia",
+  "tools.record": "REC",
   "common.by": "por",
   "music.triad": "tríade",
 
   "lang.pt-BR": "Português (BR)",
   "lang.en": "English",
-  "lang.es": "Español"
+  "lang.es": "Español",
+
+  "toast.device.disconnected": "Dispositivo MIDI desconectado",
+  "toast.device.connected": "Dispositivo MIDI conectado",
+
+  "grade.perfect": "Perfeito!",
+  "grade.good": "Boa!",
+  "grade.ok": "OK",
+  "grade.miss": "Perdeu",
+  "grade.wrong": "Errou"
 }

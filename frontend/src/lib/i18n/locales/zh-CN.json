@@ -59,11 +59,23 @@
 
   "brand.subtitle": "钢琴分析工具",
   "lang.label": "语言",
+  "tools.label": "工具",
+  "tools.import": "导入 .pia",
+  "tools.record": "录音",
   "common.by": "作者",
   "music.triad": "三和弦",
 
   "lang.pt-BR": "葡萄牙语（巴西）",
   "lang.en": "英语",
   "lang.es": "西班牙语",
-  "lang.zh-CN": "中文（简体）"
+  "lang.zh-CN": "中文（简体）",
+
+  "toast.device.disconnected": "MIDI 设备已断开",
+  "toast.device.connected": "MIDI 设备已连接",
+
+  "grade.perfect": "完美！",
+  "grade.good": "很好",
+  "grade.ok": "还行",
+  "grade.miss": "错过",
+  "grade.wrong": "错误"
 }

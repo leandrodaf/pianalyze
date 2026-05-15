@@ -10,7 +10,7 @@
 
 import { writable, get } from 'svelte/store'
 import { midiStore } from './midi'
-import type { Recording, RecordedEvent, NoteInterval } from '../lib/recording-types'
+import type { Recording, RecordedEvent, NoteInterval, Hand, Dynamic, Articulation } from '../lib/recording-types'
 import { GRADE_TOLERANCE_MS } from '../lib/recording-types'
 import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-canvas'
 
@@ -22,6 +22,10 @@ export interface PlaybackState {
   durationMs: number
   recording: Recording | null
   practice: boolean
+  speedMultiplier: number
+  loopEnabled: boolean
+  loopStart: number | null
+  loopEnd: number | null
 }
 
 export const playbackStore = writable<PlaybackState>({
@@ -30,6 +34,10 @@ export const playbackStore = writable<PlaybackState>({
   durationMs: 0,
   recording: null,
   practice: false,
+  speedMultiplier: 1,
+  loopEnabled: false,
+  loopStart: null,
+  loopEnd: null,
 })
 
 // Pre-processed note intervals (noteOn→noteOff pairs) for practice grading.
@@ -47,6 +55,7 @@ function cancelAll() {
   for (const t of pending) clearTimeout(t)
   pending = []
   cancelAnimationFrame(rafId)
+  rafId = 0
 }
 
 function releaseAll() {
@@ -54,24 +63,44 @@ function releaseAll() {
   midiStore.update(s => ({ ...s, pressedNotes: [] }))
 }
 
+function clampPosition(ms: number, durationMs: number): number {
+  return Math.max(0, Math.min(ms, durationMs))
+}
+
+function currentPositionMs(): number {
+  const state = get(playbackStore)
+  if (state.status !== 'playing') return state.positionMs
+  const elapsed = performance.now() - wallStart
+  return clampPosition(segmentOffset + elapsed * state.speedMultiplier, state.durationMs)
+}
+
+function restartPlaybackAt(ms: number): void {
+  const state = get(playbackStore)
+  if (!state.recording) return
+  const target = clampPosition(ms, state.durationMs)
+  cancelAll(); releaseAll()
+  playbackStore.update(s => ({ ...s, status: 'playing', positionMs: target }))
+  scheduleFrom(state.recording.events, target)
+}
+
 /** Convert a flat event list into note-on/off pairs. */
 function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
-  const active = new Map<number, number>()  // note → startMs
+  const active = new Map<number, { startMs: number; finger?: NoteInterval['finger']; hand?: Hand; dynamic?: Dynamic; articulation?: Articulation }>()
   const out: NoteInterval[] = []
   for (const ev of events) {
     if (ev.vel > 0) {
-      active.set(ev.note, ev.t)
+      active.set(ev.note, { startMs: ev.t, finger: ev.finger, hand: ev.hand, dynamic: ev.dynamic, articulation: ev.articulation })
     } else {
-      const startMs = active.get(ev.note)
-      if (startMs !== undefined) {
-        out.push({ note: ev.note, startMs, endMs: ev.t })
+      const entry = active.get(ev.note)
+      if (entry !== undefined) {
+        out.push({ note: ev.note, startMs: entry.startMs, endMs: ev.t, finger: entry.finger, hand: entry.hand, dynamic: entry.dynamic, articulation: entry.articulation })
         active.delete(ev.note)
       }
     }
   }
   // Close any notes still held at end of recording
-  for (const [note, startMs] of active) {
-    out.push({ note, startMs, endMs: startMs + 500 })
+  for (const [note, entry] of active) {
+    out.push({ note, startMs: entry.startMs, endMs: entry.startMs + 500, finger: entry.finger, hand: entry.hand, dynamic: entry.dynamic, articulation: entry.articulation })
   }
   return out
 }
@@ -80,10 +109,16 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
   wallStart = performance.now()
   segmentOffset = fromMs
 
-  const durationMs = get(playbackStore).durationMs
+  const initialState = get(playbackStore)
+  const durationMs = initialState.durationMs
+  const speed = initialState.speedMultiplier
+  // In review mode the waterfall renders bars with LEAD_MS preview, so MIDI events
+  // must be delayed by the same amount so the keyboard fires exactly when the bar
+  // reaches the golden line.
+  const reviewOffset = initialState.practice ? 0 : DEFAULT_LEAD_TIME_SEC * 1000
 
   for (const ev of events) {
-    const delay = ev.t - fromMs
+    const delay = ev.t - fromMs + reviewOffset
     if (delay < 0) continue
 
     const tid = setTimeout(() => {
@@ -100,13 +135,23 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
         pressedNotes: Array.from(liveNotes),
         velocity: on ? ev.vel : 0,
       }))
-    }, delay)
+    }, delay / speed)
     pending.push(tid)
   }
 
   function tick() {
     const elapsed = performance.now() - wallStart
-    const pos = Math.min(segmentOffset + elapsed, durationMs)
+    const state = get(playbackStore)
+    const pos = clampPosition(segmentOffset + elapsed * state.speedMultiplier, state.durationMs)
+
+    if (state.loopEnabled && state.loopEnd != null && pos >= state.loopEnd && state.recording) {
+      const loopTarget = clampPosition(state.loopStart ?? 0, state.durationMs)
+      cancelAll(); releaseAll()
+      playbackStore.update(s => ({ ...s, status: 'playing', positionMs: loopTarget }))
+      scheduleFrom(state.recording.events, loopTarget)
+      return
+    }
+
     playbackStore.update(s => ({ ...s, positionMs: pos }))
 
     if (pos < durationMs) {
@@ -128,7 +173,16 @@ export function loadRecording(recording: Recording): void {
   const last = recording.events[recording.events.length - 1]
   // Extend duration so the last notes have time to travel from the right edge to the golden line
   const durationMs = last ? last.t + DEFAULT_LEAD_TIME_SEC * 1000 + 500 : 0
-  playbackStore.update(s => ({ ...s, status: 'idle', positionMs: 0, durationMs, recording }))
+  playbackStore.update(s => ({
+    ...s,
+    status: 'idle',
+    positionMs: 0,
+    durationMs,
+    recording,
+    loopEnabled: false,
+    loopStart: null,
+    loopEnd: null,
+  }))
 }
 
 export function setPractice(on: boolean): void {
@@ -139,7 +193,12 @@ export function setPractice(on: boolean): void {
 export function play(): void {
   const state = get(playbackStore)
   if (!state.recording || state.status === 'playing') return
-  const fromMs = state.status === 'paused' ? state.positionMs : 0
+
+  let fromMs = state.positionMs
+  if (state.status === 'idle' && fromMs >= state.durationMs) {
+    fromMs = state.loopEnabled && state.loopStart != null ? state.loopStart : 0
+  }
+
   playbackStore.update(s => ({ ...s, status: 'playing', positionMs: fromMs }))
   scheduleFrom(state.recording.events, fromMs)
 }
@@ -147,7 +206,8 @@ export function play(): void {
 export function pause(): void {
   if (get(playbackStore).status !== 'playing') return
   const elapsed = performance.now() - wallStart
-  const posMs = Math.min(segmentOffset + elapsed, get(playbackStore).durationMs)
+  const speed = get(playbackStore).speedMultiplier
+  const posMs = Math.min(segmentOffset + elapsed * speed, get(playbackStore).durationMs)
   cancelAll(); releaseAll()
   playbackStore.update(s => ({ ...s, status: 'paused', positionMs: posMs }))
 }
@@ -155,6 +215,75 @@ export function pause(): void {
 export function stop(): void {
   cancelAll(); releaseAll()
   playbackStore.update(s => ({ ...s, status: 'idle', positionMs: 0 }))
+}
+
+export function setSpeed(x: number): void {
+  const nextSpeed = Number.isFinite(x) && x > 0 ? x : 1
+  const state = get(playbackStore)
+
+  if (state.status === 'playing' && state.recording) {
+    const pos = currentPositionMs()
+    cancelAll(); releaseAll()
+    playbackStore.update(s => ({ ...s, speedMultiplier: nextSpeed, positionMs: pos }))
+    scheduleFrom(state.recording.events, pos)
+    return
+  }
+
+  playbackStore.update(s => ({ ...s, speedMultiplier: nextSpeed }))
+}
+
+export function seekTo(ms: number): void {
+  const state = get(playbackStore)
+  const target = clampPosition(ms, state.durationMs)
+
+  if (state.status === 'playing' && state.recording) {
+    restartPlaybackAt(target)
+    return
+  }
+
+  playbackStore.update(s => ({ ...s, positionMs: target }))
+}
+
+export function rewind(): void {
+  const state = get(playbackStore)
+  const target = clampPosition(
+    state.loopEnabled && state.loopStart != null ? state.loopStart : 0,
+    state.durationMs,
+  )
+
+  if (state.status === 'playing' && state.recording) {
+    restartPlaybackAt(target)
+    return
+  }
+
+  playbackStore.update(s => ({ ...s, positionMs: target }))
+}
+
+export function setLoop(start: number, end: number): void {
+  const durationMs = get(playbackStore).durationMs
+  const loopStart = clampPosition(Math.min(start, end), durationMs)
+  const loopEnd = clampPosition(Math.max(start, end), durationMs)
+  playbackStore.update(s => ({
+    ...s,
+    loopStart,
+    loopEnd,
+    loopEnabled: loopEnd > loopStart,
+  }))
+}
+
+export function clearLoop(): void {
+  playbackStore.update(s => ({
+    ...s,
+    loopStart: null,
+    loopEnd: null,
+    loopEnabled: false,
+  }))
+}
+
+export function toggleLoop(): void {
+  const state = get(playbackStore)
+  if (state.loopStart == null || state.loopEnd == null || state.loopEnd <= state.loopStart) return
+  playbackStore.update(s => ({ ...s, loopEnabled: !s.loopEnabled }))
 }
 
 /**

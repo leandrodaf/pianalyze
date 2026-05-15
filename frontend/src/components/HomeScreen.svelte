@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import { ListDevices, SelectDevice, StartCapture } from '../../wailsjs/go/main/App'
+  import { onMount, onDestroy } from 'svelte'
+  import { EventsOn } from '../../wailsjs/runtime/runtime'
+  import { ListDevices, SelectDevice, StartCapture, StopCapture } from '../../wailsjs/go/main/App'
   import type { main } from '../../wailsjs/go/models'
   import { exerciseStore, exercisesByCategory, loadFromUrl } from '../stores/exercises'
   import { LOCALE_NAMES, locale, t, type Locale } from '../lib/i18n'
@@ -9,9 +10,15 @@
     type Exercise,
     DIFFICULTY_COLOR,
   } from '../lib/exercise-types'
+  import type { Recording } from '../lib/recording-types'
+
+  import { addToast } from '../stores/toast'
+  import { handleDevicesChanged } from '../lib/device-handler'
 
   export let onPlay: (exercise: Exercise | null) => void
   export let onDeviceReady: () => void
+  export let onImportRecording: ((recording: Recording) => void) | undefined = undefined
+  export let onStartRecording: (() => void) | undefined = undefined
 
   // ── Device ────────────────────────────────────────────────────────────────────
   let devices: main.DeviceInfo[] = []
@@ -21,12 +28,29 @@
   let deviceError    = ''
   let showDeviceList = true
 
+  let unsubDevices: (() => void) | null = null
+
   onMount(async () => {
     try {
       devices = await ListDevices()
       if (devices.length === 1) selectedId = devices[0].id
     } catch (e) { deviceError = String(e) }
+
+    unsubDevices = EventsOn('devices:changed', (updated: main.DeviceInfo[]) => {
+      const prev = devices
+      const next = handleDevicesChanged(updated, prev,
+        { selectedId, connected, showDeviceList, deviceError },
+        { stopCapture: StopCapture, addToast, msgDisconnected: $t('toast.device.disconnected'), msgConnected: $t('toast.device.connected') },
+      )
+      devices = updated
+      selectedId = next.selectedId
+      connected = next.connected
+      showDeviceList = next.showDeviceList
+      deviceError = next.deviceError
+    })
   })
+
+  onDestroy(() => { unsubDevices?.() })
 
   async function connectDevice() {
     if (selectedId === null) return
@@ -65,7 +89,7 @@
   }
 
   function handleContinue() {
-    if (lastExercise) openDetail(lastExercise)
+    if (lastExercise) startExercise(lastExercise)  // atalho direto, sem abrir modal
     else startExercise(null)
   }
 
@@ -95,6 +119,35 @@
     const err = $exerciseStore.error
     if (err) remoteError = err; else remoteUrl = ''
     loadingRemote = false
+  }
+
+  // ── Tools ──────────────────────────────────────────────────────────────────────
+  let importInput: HTMLInputElement
+  let toolsError = ''
+
+  function openImportPicker() {
+    if (!onImportRecording) return
+    importInput?.click()
+  }
+
+  async function handleImportFile(event: Event) {
+    const input = event.currentTarget as HTMLInputElement
+    const file = input.files?.[0]
+    if (!file || !onImportRecording) return
+
+    try {
+      const recording = JSON.parse(await file.text()) as Recording
+      toolsError = ''
+      onImportRecording(recording)
+    } catch (error: unknown) {
+      toolsError = error instanceof Error ? error.message : 'Falha ao importar arquivo'
+    }
+
+    input.value = ''
+  }
+
+  function handleStartRecording() {
+    onStartRecording?.()
   }
 
   // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -240,6 +293,30 @@
         {#if loadingRemote}<span class="spin">⟳</span> {$t('remote.loading')}{:else}{$t('remote.load')}{/if}
       </button>
       {#if remoteError}<p class="error-text">{remoteError}</p>{/if}
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="sb-section">
+      <span class="sb-label">{$t('tools.label')}</span>
+      <input
+        bind:this={importInput}
+        class="hidden-input"
+        type="file"
+        accept=".pia,.json"
+        on:change={handleImportFile}
+      />
+      <div class="tools-actions">
+        <button class="tool-btn" on:click={openImportPicker} disabled={!onImportRecording}>
+          <span class="tool-icon">📂</span>
+          <span>{$t('tools.import')}</span>
+        </button>
+        <button class="tool-btn rec-tool-btn" on:click={handleStartRecording} disabled={!onStartRecording}>
+          <span class="tool-icon">🔴</span>
+          <span>{$t('tools.record')}</span>
+        </button>
+      </div>
+      {#if toolsError}<p class="error-text">{toolsError}</p>{/if}
     </div>
 
   </aside>
@@ -427,7 +504,7 @@
             <span class="stat-label">{$t('stats.hands')}</span>
             <span class="stat-big">
               {detail.stats.hands === 'both' ? '🤲' :
-               detail.stats.hands === 'right' ? '🤚' : '🤚'}
+               detail.stats.hands === 'right' ? '🤚' : '🫲'}
             </span>
             <span class="stat-value">
               {detail.stats.hands ? $t('hands.' + detail.stats.hands) : '—'}
@@ -656,7 +733,53 @@
 .load-btn:disabled { opacity: .35; cursor: not-allowed; }
 .spin { display: inline-block; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
+ 
+.hidden-input { display: none; }
+.tools-actions {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+.tool-btn {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  width: 100%;
+  padding: .55rem .7rem;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px;
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.78);
+  font-size: .76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.tool-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.16);
+  color: #fff;
+}
+.tool-btn:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+.rec-tool-btn {
+  background: rgba(220,40,40,.12);
+  border-color: rgba(220,40,40,.28);
+  color: #ff8c8c;
+}
+.rec-tool-btn:hover:not(:disabled) {
+  background: rgba(220,40,40,.2);
+  border-color: rgba(220,40,40,.4);
+  color: #ffd0d0;
+}
+.tool-icon {
+  width: 1rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+ 
 /* ── Main content ──────────────────────────────────────────────────────────── */
 .content {
   flex: 1; overflow-y: scroll; position: relative;

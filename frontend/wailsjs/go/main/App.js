@@ -6,6 +6,14 @@ export function ListDevices() {
   return window['go']['main']['App']['ListDevices']();
 }
 
+export function LoadPracticeIntervals(arg1) {
+  return window['go']['main']['App']['LoadPracticeIntervals'](arg1);
+}
+
+export function PausePractice(arg1) {
+  return window['go']['main']['App']['PausePractice'](arg1);
+}
+
 export function SaveRecording(arg1) {
   return window['go']['main']['App']['SaveRecording'](arg1);
 }
@@ -18,12 +26,20 @@ export function StartCapture() {
   return window['go']['main']['App']['StartCapture']();
 }
 
+export function StartPractice(arg1, arg2) {
+  return window['go']['main']['App']['StartPractice'](arg1, arg2);
+}
+
 export function StartRecording() {
   return window['go']['main']['App']['StartRecording']();
 }
 
 export function StopCapture() {
   return window['go']['main']['App']['StopCapture']();
+}
+
+export function StopPractice() {
+  return window['go']['main']['App']['StopPractice']();
 }
 
 export function StopRecording() {

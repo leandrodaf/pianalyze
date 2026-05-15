@@ -1,18 +1,35 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { connectMidiStore, midiStore } from './stores/midi'
-  import { loadRecording, setPractice, play } from './stores/playback'
+  import { loadRecording, setPractice, play, stop, clearLoop, playbackStore, noteIntervals } from './stores/playback'
+  import { get } from 'svelte/store'
   import HomeScreen from './components/HomeScreen.svelte'
+  import PrepBanner from './components/PrepBanner.svelte'
   import Piano from './components/Piano.svelte'
   import NoteWaterfall from './components/NoteWaterfall.svelte'
-  import RecordControls from './components/RecordControls.svelte'
-  import ImportControls from './components/ImportControls.svelte'
+  import Timeline from './components/Timeline.svelte'
+  import ControlsBar from './components/ControlsBar.svelte'
   import type { Exercise } from './lib/exercise-types'
+  import type { Recording } from './lib/recording-types'
   import { t } from './lib/i18n'
+  import Toast from './components/Toast.svelte'
+  import { prepStore } from './stores/prep'
+  import { FINGER_COLORS } from './lib/finger-colors'
+  import { noteColor } from './lib/note-colors'
+
+  const KEY_DISPLAY: Record<string, string> = {
+    'C': 'Dó M', 'G': 'Sol M', 'D': 'Ré M', 'A': 'Lá M',
+    'E': 'Mi M', 'B': 'Si M', 'F': 'Fá M', 'F#': 'F# M',
+    'Bb': 'Sib M', 'Eb': 'Mib M',
+    'Am': 'Lá m', 'Em': 'Mi m', 'Dm': 'Ré m', 'Gm': 'Sol m',
+    'Cm': 'Dó m', 'Bm': 'Si m', 'Fm': 'Fá m',
+  }
+  function fmtKey(k: string): string { return KEY_DISPLAY[k] ?? k }
 
   type Page = 'home' | 'playing'
 
   let page: Page = 'home'
+  let prepActive = false   // shows prep banner instead of top-bar; both use same playing layout
   let deviceReady = false
   let activeExercise: Exercise | null = null
 
@@ -25,6 +42,11 @@
   $: isTriad   = triad && triad !== 'Not a Triad'
   $: fillRatio = velocity / 127
   $: barColor  = dynamicColor(dynamic)
+
+  $: rec = $playbackStore.recording
+  $: recBpm = rec?.bpm
+  $: recTimeSig = rec?.timeSignature
+  $: recKey = rec?.keySignature
 
   function dynamicColor(d: string): string {
     switch (d) {
@@ -44,46 +66,124 @@
     deviceReady = true
   }
 
+  function clearLoadedRecording() {
+    stop()
+    noteIntervals.set([])
+    playbackStore.update(s => ({
+      ...s,
+      status: 'idle',
+      positionMs: 0,
+      durationMs: 0,
+      recording: null,
+      practice: false,
+      loopEnabled: false,
+      loopStart: null,
+      loopEnd: null,
+    }))
+  }
+
   function handlePlay(exercise: Exercise | null) {
     activeExercise = exercise
-    page = 'playing'
     if (exercise?.data) {
       loadRecording(exercise.data)
-      setPractice(true)   // exercise with data → practice mode (notes come from the right)
-      play()              // start playback immediately so notes appear from right edge
+      setPractice(true)
+      const ivs = get(noteIntervals)
+      const hasFingers = ivs.some(iv => iv.finger != null)
+      if (hasFingers) {
+        const keys = new Map<number, string>()
+        for (const iv of ivs) {
+          if (!keys.has(iv.note)) {
+            keys.set(iv.note, iv.finger != null ? FINGER_COLORS[iv.finger] : noteColor(iv.note))
+          }
+        }
+        prepStore.activate(keys)
+        prepActive = true
+      } else {
+        prepActive = false
+      }
     } else {
-      setPractice(false)  // free play → live mode (line on right, history trails left)
+      clearLoadedRecording()
+      prepActive = false
     }
+    page = 'playing'
+  }
+
+  function handlePrepComplete() {
+    prepActive = false
+    prepStore.deactivate()
+    play()
+  }
+
+  function handlePrepSkip() {
+    prepActive = false
+    prepStore.deactivate()
+  }
+
+  function handleImportRecording(recording: Recording) {
+    loadRecording(recording)
+    setPractice(false)
+    activeExercise = null
+    page = 'playing'
+  }
+
+  function handleStartRecording() {
+    activeExercise = null
+    clearLoadedRecording()
+    page = 'playing'
   }
 
   function goHome() {
+    stop()
+    clearLoop()
+    prepActive = false
+    prepStore.deactivate()
+    activeExercise = null
     page = 'home'
   }
 </script>
 
+<Toast />
+
 {#if page === 'home'}
-  <HomeScreen onPlay={handlePlay} onDeviceReady={handleDeviceReady} />
+  <HomeScreen
+    onPlay={handlePlay}
+    onDeviceReady={handleDeviceReady}
+    onImportRecording={handleImportRecording}
+    onStartRecording={handleStartRecording}
+  />
 
 {:else}
+  <!-- Single playing layout — never unmounts on prep↔playing transition -->
   <div class="layout">
 
-    <!-- Top bar -->
-    <div class="top-bar">
-      <button class="home-btn" on:click={goHome} title={$t('nav.home')}>
-        {$t('app.back')}
-      </button>
-      {#if activeExercise}
-        <div class="exercise-tag">
-          <span class="exercise-icon">{activeExercise.style.icon}</span>
-          <span class="exercise-name">{activeExercise.title}</span>
-          <span class="exercise-diff">{activeExercise.subtitle}</span>
-        </div>
-      {:else}
-        <span class="freeplay-tag">🎧 {$t('app.freeplay')}</span>
-      {/if}
-    </div>
+    <!-- Swap only the top bar between prep banner and normal top bar -->
+    {#if prepActive}
+      <PrepBanner onComplete={handlePrepComplete} onSkip={handlePrepSkip} onBack={goHome} />
+    {:else}
+      <div class="top-bar">
+        <button class="home-btn" on:click={goHome} title={$t('nav.home')}>
+          {$t('app.back')}
+        </button>
+        {#if activeExercise}
+          <div class="exercise-tag">
+            <span class="exercise-icon">{activeExercise.style.icon}</span>
+            <span class="exercise-name">{activeExercise.title}</span>
+            <span class="exercise-diff">{activeExercise.subtitle}</span>
+          </div>
+        {:else}
+          <span class="freeplay-tag">🎧 {$t('app.freeplay')}</span>
+        {/if}
+        {#if recBpm || recTimeSig || recKey}
+          <div class="meta-chips">
+            {#if recTimeSig}<span class="meta-chip">{recTimeSig}</span>{/if}
+            {#if recBpm}<span class="meta-chip">{recBpm} BPM</span>{/if}
+            {#if recKey}<span class="meta-chip">{fmtKey(recKey)}</span>{/if}
+          </div>
+        {/if}
+      </div>
+    {/if}
 
-    <!-- Scrolling staff + notes -->
+    <!-- Waterfall, timeline, controls and piano stay mounted permanently -->
     <div class="waterfall-area">
       <NoteWaterfall />
 
@@ -109,17 +209,11 @@
       </div>
     </div>
 
-    <!-- Controls bar -->
-    <div class="controls-bar">
-      <RecordControls />
-      <div class="sep"></div>
-      <ImportControls />
-    </div>
+    <div class="timeline-area"><Timeline /></div>
 
-    <!-- Piano keyboard -->
-    <div class="piano-area">
-      <Piano />
-    </div>
+    <div class="controls-bar"><ControlsBar /></div>
+
+    <div class="piano-area"><Piano /></div>
 
   </div>
 {/if}
@@ -194,6 +288,24 @@
     font-size: 0.82rem;
     color: rgba(255,255,255,0.45);
     font-weight: 500;
+  }
+
+  .meta-chips {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-left: auto;
+  }
+  .meta-chip {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 0.1rem 0.5rem;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
   }
 
   /* ── Waterfall ───────────────────────────────────────────────────────────── */
@@ -289,22 +401,17 @@
   }
 
   /* ── Controls bar ─────────────────────────────────────────────────────────── */
+  .timeline-area {
+    height: 60px;
+    flex-shrink: 0;
+  }
+
   .controls-bar {
     flex-shrink: 0;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0 0.75rem;
+    height: 44px;
     background: #1b1d25;
     border-top: 1px solid rgba(255,255,255,0.07);
     border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-
-  .sep {
-    width: 1px; height: 20px;
-    background: rgba(255,255,255,0.1);
-    flex-shrink: 0;
   }
 
   /* ── Piano strip ──────────────────────────────────────────────────────────── */
@@ -320,7 +427,8 @@
   /* Large screens: taller piano, bigger controls */
   @media (min-width: 1600px) {
     .top-bar { height: 42px; padding: 0 1.2rem; }
-    .controls-bar { height: 46px; padding: 0 1.2rem; gap: 0.75rem; }
+    .timeline-area { height: 68px; }
+    .controls-bar { height: 48px; }
     .exercise-name { font-size: .9rem; }
     .hud { bottom: 18px; left: 18px; padding: 12px 18px; }
     .hud-name { font-size: 1.7rem; }
@@ -328,7 +436,8 @@
 
   @media (min-width: 2200px) {
     .top-bar { height: 48px; }
-    .controls-bar { height: 52px; }
+    .timeline-area { height: 76px; }
+    .controls-bar { height: 54px; }
     .exercise-name { font-size: 1rem; }
     .hud-name { font-size: 2rem; }
   }
