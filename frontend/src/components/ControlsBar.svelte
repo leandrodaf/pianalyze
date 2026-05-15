@@ -4,14 +4,36 @@
 
   const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
   const SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2] as const
+  const BPM_STEP = 4
+  const BPM_MIN  = 20
+  const BPM_MAX  = 300
 
   $: s = $playbackStore
-  $: isPlaying = s.status === 'playing'
-  $: hasRec = !!s.recording
-  $: speed = s.speedMultiplier
+  $: isPlaying   = s.status === 'playing'
+  $: hasRec      = !!s.recording
+  $: speed       = s.speedMultiplier
   $: loopEnabled = s.loopEnabled
-  $: hasLoop = s.loopStart != null && s.loopEnd != null && s.loopEnd > s.loopStart
-  $: sections = s.recording?.sections ?? []
+  $: hasLoop     = s.loopStart != null && s.loopEnd != null && s.loopEnd > s.loopStart
+  $: sections    = s.recording?.sections ?? []
+
+  $: originalBpm = s.recording?.bpm ?? null
+  $: currentBpm  = originalBpm ? Math.max(BPM_MIN, Math.round(originalBpm * speed)) : null
+  $: bpmPct      = originalBpm && currentBpm ? Math.round((currentBpm / originalBpm) * 100) : 100
+
+  function decreaseBpm() {
+    if (!originalBpm || currentBpm == null) return
+    setSpeed(Math.max(BPM_MIN, currentBpm - BPM_STEP) / originalBpm)
+  }
+
+  function increaseBpm() {
+    if (!originalBpm || currentBpm == null) return
+    setSpeed(Math.min(BPM_MAX, currentBpm + BPM_STEP) / originalBpm)
+  }
+
+  function resetBpm() {
+    if (!originalBpm) return
+    setSpeed(1)
+  }
 
   function goToSection(idx: number) {
     const sec = sections[idx]
@@ -39,18 +61,42 @@
 
   <div class="sep"></div>
 
-  <div class="group">
-    {#each SPEEDS as x}
+  {#if originalBpm && currentBpm != null}
+    <div class="bpm-control">
       <button
-        class="speed-pill"
-        class:active={speed === x}
-        on:click={() => setSpeed(x)}
-        title={`${x}x speed`}
-      >
-        {x}x
+        class="bpm-step"
+        on:click={decreaseBpm}
+        disabled={currentBpm <= BPM_MIN}
+        title="Diminuir tempo"
+      >−</button>
+      <button class="bpm-display" on:click={resetBpm} title="Restaurar BPM original">
+        <span class="bpm-value">{currentBpm}</span>
+        <span class="bpm-unit">BPM</span>
+        {#if bpmPct !== 100}
+          <span class="bpm-pct">{bpmPct}%</span>
+        {/if}
       </button>
-    {/each}
-  </div>
+      <button
+        class="bpm-step"
+        on:click={increaseBpm}
+        disabled={currentBpm >= BPM_MAX}
+        title="Aumentar tempo"
+      >+</button>
+    </div>
+  {:else}
+    <div class="group">
+      {#each SPEEDS as x}
+        <button
+          class="speed-pill"
+          class:active={speed === x}
+          on:click={() => setSpeed(x)}
+          title={`${x}x speed`}
+        >
+          {x}x
+        </button>
+      {/each}
+    </div>
+  {/if}
 
   <div class="sep"></div>
 
@@ -151,6 +197,80 @@
 
   .loop-btn {
     font-size: 0.9rem;
+  }
+
+  /* ── BPM control ─────────────────────────────────────────────────────────── */
+  .bpm-control {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .bpm-step {
+    width: 22px;
+    height: 26px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .bpm-step:hover:not(:disabled) {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+  .bpm-step:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
+  .bpm-display {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    padding: 0 0.3rem;
+    height: 26px;
+    background: transparent;
+    border: none;
+    border-left: 1px solid rgba(255,255,255,0.08);
+    border-right: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: background 0.1s;
+    min-width: 64px;
+    justify-content: center;
+  }
+  .bpm-display:hover {
+    background: rgba(255,255,255,0.06);
+  }
+
+  .bpm-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.88);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .bpm-unit {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.05em;
+    align-self: center;
+  }
+  .bpm-pct {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: rgba(255,210,50,0.6);
+    letter-spacing: 0.02em;
+    align-self: center;
   }
 
   .sections-group {
