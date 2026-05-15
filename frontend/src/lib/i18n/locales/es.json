@@ -156,5 +156,17 @@
   "chord.minor-13th-s9": "Menor 13ª ♯9",
   "chord.major-9th-s13": "Mayor 9ª ♯13",
   "chord.major-13th-s11": "Mayor 13ª ♯11",
-  "chord.dom7-b9-s13": "Dom 7ª ♭9 ♯13"
+  "chord.dom7-b9-s13": "Dom 7ª ♭9 ♯13",
+  "note.0": "Do",
+  "note.1": "Do♯",
+  "note.2": "Re",
+  "note.3": "Re♯",
+  "note.4": "Mi",
+  "note.5": "Fa",
+  "note.6": "Fa♯",
+  "note.7": "Sol",
+  "note.8": "Sol♯",
+  "note.9": "La",
+  "note.10": "La♯",
+  "note.11": "Si"
 }

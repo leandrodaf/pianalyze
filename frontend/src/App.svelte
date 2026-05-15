@@ -18,7 +18,7 @@
   import { FINGER_COLORS } from './lib/finger-colors'
   import { noteColor } from './lib/note-colors'
 
-  import { translateChord, translateInversion } from './lib/chord-i18n'
+  import { translateChord, translateInversion, translateRootNote } from './lib/chord-i18n'
 
   const KEY_DISPLAY: Record<string, string> = {
     'C': 'Dó M', 'G': 'Sol M', 'D': 'Ré M', 'A': 'Lá M',
@@ -47,6 +47,8 @@
   $: barColor  = dynamicColor(dynamic)
   $: chordLabel     = hasChord ? translateChord(chord, $t) : ''
   $: inversionLabel = inversion ? translateInversion(inversion, $t) : ''
+  $: rootNote       = hasChord ? translateRootNote($midiStore.chordRoot, $t) : ''
+  $: chordDisplay   = rootNote ? `${rootNote} ${chordLabel}` : chordLabel
 
   $: pos = $playbackStore.positionMs
   $: rec = $playbackStore.recording
@@ -232,7 +234,7 @@
       <div class="hud" class:hud-active={hasChord}>
         <div class="hud-chord">
           {#if hasChord}
-            <span class="hud-name">{chordLabel}</span>
+            <span class="hud-name">{chordDisplay}</span>
             {#if isTriad}<span class="hud-badge">{$t('music.triad')}</span>{/if}
           {:else}
             <span class="hud-empty">—</span>

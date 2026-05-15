@@ -8,6 +8,7 @@ const initial: MIDIState = {
   chord: '',
   inversion: '',
   triad: '',
+  chordRoot: -1,
   velocity: 0,
   dynamic: '',
   interval: 0

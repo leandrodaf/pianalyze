@@ -145,6 +145,7 @@ type MIDIState struct {
 	Chord        string `json:"chord"`
 	Inversion    string `json:"inversion"`
 	Triad        string `json:"triad"`
+	ChordRoot    int    `json:"chordRoot"`
 	Velocity     uint8  `json:"velocity"`
 	Dynamic      string `json:"dynamic"`
 	Interval     uint64 `json:"interval"`
@@ -459,6 +460,7 @@ func (a *App) handleEvent(pCtx *pipelinectx.PipelineContext) {
 		Chord:        pCtx.Chord,
 		Inversion:    pCtx.Inversion,
 		Triad:        pCtx.Triad,
+		ChordRoot:    pCtx.ChordRoot,
 		Velocity:     pCtx.Velocity,
 		Dynamic:      pCtx.Dynamic.Label(),
 		Interval:     pCtx.Interval,

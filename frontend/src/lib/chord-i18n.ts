@@ -111,3 +111,14 @@ export function translateInversion(name: string, t: (key: string) => string): st
   const translated = t(key)
   return translated === key ? name : translated
 }
+
+/**
+ * Returns the localized note name for a pitch class (0=C … 11=B).
+ * Returns empty string for out-of-range values (e.g. -1 = no chord).
+ */
+export function translateRootNote(pitchClass: number, t: (key: string) => string): string {
+  if (pitchClass < 0 || pitchClass > 11) return ''
+  const key = `note.${pitchClass}`
+  const translated = t(key)
+  return translated === key ? '' : translated
+}
