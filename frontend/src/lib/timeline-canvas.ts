@@ -9,7 +9,7 @@
  * two views are always in sync.
  */
 import type { NoteInterval } from './recording-types'
-import { DEFAULT_LEAD_TIME_SEC, LINE_X_RATIO } from './waterfall-canvas'
+import { DEFAULT_LEAD_TIME_SEC, LINE_X_RATIO } from './waterfall-layout'
 
 const RIGHT_MIN  = 60   // C4
 const RIGHT_MAX  = 108  // C8

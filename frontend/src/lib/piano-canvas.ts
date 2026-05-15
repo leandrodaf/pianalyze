@@ -1,30 +1,25 @@
 /**
  * Piano canvas rendering library.
  *
- * Draws all 88 keys of a standard piano (MIDI notes 21–108) on a Canvas element.
- * Supports dirty-key diffing: only keys whose pressed state changed are repainted,
- * keeping each update well under the 8 ms target.
+ * Draws all 88 keys of a standard piano (MIDI notes 21–108).
+ * Supports dirty-key diffing: only keys whose state changed are repainted.
  *
- * MIDI note 21 = A0 (leftmost key), MIDI note 108 = C8 (rightmost key).
- *
- * White keys: 52 total.  Black keys: 36 total.
- * Standard proportions: white key width ≈ height / 4.7.
+ * fingerMap: when set, keys in the map are colored by finger (pressed = vivid,
+ * unpressed = soft hint glow + finger number label).
  */
 
 import { noteColor } from './note-colors'
+import { FINGER_COLORS } from './finger-colors'
+import type { Finger } from './recording-types'
 
-const MIDI_MIN = 21   // A0
-const MIDI_MAX = 108  // C8
-
-// Pitch classes (0=C … 11=B) that are black keys.
+const MIDI_MIN = 21
+const MIDI_MAX = 108
 const BLACK_PC = new Set([1, 3, 6, 8, 10])
 
-/** Returns true when the given MIDI note is a black key. */
 function isBlack(note: number): boolean {
   return BLACK_PC.has(note % 12)
 }
 
-/** Counts white keys from MIDI_MIN up to (not including) `note`. */
 function whitesBefore(note: number): number {
   let count = 0
   for (let n = MIDI_MIN; n < note; n++) {
@@ -33,37 +28,30 @@ function whitesBefore(note: number): number {
   return count
 }
 
-// Pre-compute white-key index for every MIDI note (fast lookup at render time).
 const whiteIndex: Int16Array = new Int16Array(128).fill(-1)
 for (let n = MIDI_MIN; n <= MIDI_MAX; n++) {
   if (!isBlack(n)) whiteIndex[n] = whitesBefore(n)
 }
 
-const TOTAL_WHITE = 52
-
-// Colours — warm cream white keys and deep black keys (mirrors sightread).
+const TOTAL_WHITE   = 52
 const WHITE_KEY_COLOR = 'rgb(255,253,240)'
-const BLACK_KEY_COLOR = '#0d0d0d'
 const KEY_BORDER      = 'rgba(0,0,0,0.35)'
 const LABEL_COLOR     = 'rgba(0,0,0,0.38)'
 const LABEL_FONT      = '10px sans-serif'
 
-/** State maintained by the PianoCanvas instance. */
 interface KeyState {
   pressed: boolean
-  velocity: number   // 0–127
+  velocity: number
 }
 
 export interface PianoCanvas {
-  /** Repaint keys whose pressed set changed. */
   updateKeys(pressed: number[], velocity: number): void
-  /** Full redraw — call on mount and resize. */
+  /** Replace the finger hint map. Pass an empty map to clear all hints. */
+  setFingerMap(map: Map<number, Finger>): void
   redraw(): void
-  /** Update the canvas size and redraw. */
   resize(width: number, height: number): void
 }
 
-/** Mixes a base colour with white based on intensity (0–1). */
 function brighten(hex: string, intensity: number): string {
   const r = parseInt(hex.slice(1, 3), 16)
   const g = parseInt(hex.slice(3, 5), 16)
@@ -72,64 +60,56 @@ function brighten(hex: string, intensity: number): string {
   return `rgb(${mix(r)},${mix(g)},${mix(b)})`
 }
 
+/** Blends a finger color with the white key base to produce a soft hint tint. */
+function hintTint(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  const w = (c: number, white: number) => Math.round(c * 0.28 + white * 0.72)
+  return `rgb(${w(r, 255)},${w(g, 253)},${w(b, 240)})`
+}
+
 function velocityIntensity(v: number): number {
   return v / 127
 }
 
-/**
- * Creates a PianoCanvas bound to the given HTMLCanvasElement.
- * Call `redraw()` once immediately after creation to paint the initial state.
- */
 export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
   const ctx = canvas.getContext('2d')!
   const state: KeyState[] = Array.from({ length: 128 }, () => ({ pressed: false, velocity: 0 }))
-  let prevPressed = new Set<number>()
+  let prevPressed  = new Set<number>()
+  let fingerMap    = new Map<number, Finger>()
+  let prevFingerKeys = new Set<number>()
 
-  let wW = 0  // white key width
-  let wH = 0  // white key height
-  let bW = 0  // black key width
-  let bH = 0  // black key height
+  let wW = 0
+  let wH = 0
+  let bW = 0
+  let bH = 0
 
   function computeDimensions() {
-    const W = canvas.width
-    const H = canvas.height
-    wW = W / TOTAL_WHITE
-    wH = H
+    wW = canvas.width / TOTAL_WHITE
+    wH = canvas.height
     bW = wW * 0.6
     bH = wH * 0.62
   }
 
-  function xForWhite(idx: number): number {
-    return idx * wW
-  }
+  function xForWhite(idx: number): number { return idx * wW }
 
-  /** Returns the left-edge x for a black key above the white key at `leftWhiteIdx`. */
   function xForBlack(note: number): number {
-    // A black key sits between two white keys. Its centre aligns with the right edge
-    // of the white key to its left.
+    const offsets: Record<number, number> = { 1: 0.67, 3: 0.67, 6: 0.67, 8: 0.67, 10: 0.67 }
     const pc = note % 12
-    // offsets relative to the preceding white key's left edge (in units of wW)
-    const offsets: Record<number, number> = {
-      1: 0.67,   // C# — sits 2/3 of the way across C
-      3: 0.67,   // D#
-      6: 0.67,   // F#
-      8: 0.67,   // G#
-      10: 0.67,  // A#
-    }
-    const leftWhiteNote = note - 1  // the white key immediately to the left
-    const leftIdx = whiteIndex[leftWhiteNote]
+    const leftIdx = whiteIndex[note - 1]
     return leftIdx * wW + wW * offsets[pc] - bW / 2
   }
 
   function drawWhiteKey(note: number) {
-    const idx = whiteIndex[note]
-    const x = xForWhite(idx)
-    const kw = wW - 1
-    const kh = wH - 1
+    const idx     = whiteIndex[note]
+    const x       = xForWhite(idx)
+    const kw      = wW - 1
+    const kh      = wH - 1
     const pressed = state[note].pressed
-    const radius = Math.max(kw * 0.18, 2)
+    const radius  = Math.max(kw * 0.18, 2)
+    const finger  = fingerMap.get(note)
 
-    // Rounded bottom corners (like sightread)
     ctx.beginPath()
     ctx.moveTo(x, 0)
     ctx.lineTo(x + kw, 0)
@@ -139,12 +119,19 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
     ctx.quadraticCurveTo(x, kh, x, kh - radius)
     ctx.closePath()
 
-    const color = pressed
-      ? brighten(noteColor(note), velocityIntensity(state[note].velocity))
-      : WHITE_KEY_COLOR
+    let color: string
+    if (pressed && finger) {
+      color = brighten(FINGER_COLORS[finger], velocityIntensity(state[note].velocity))
+    } else if (pressed) {
+      color = brighten(noteColor(note), velocityIntensity(state[note].velocity))
+    } else if (finger) {
+      color = hintTint(FINGER_COLORS[finger])
+    } else {
+      color = WHITE_KEY_COLOR
+    }
+
     ctx.fillStyle = color
     ctx.fill()
-
     ctx.strokeStyle = KEY_BORDER
     ctx.lineWidth = 0.5
     ctx.stroke()
@@ -157,33 +144,78 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
       ctx.textAlign = 'center'
       ctx.fillText(`C${octave}`, x + wW / 2, wH - 6)
     }
+
+    // Finger number indicator near the bottom of the key
+    if (finger) {
+      const r  = Math.max(Math.min(wW * 0.28, 10), 5)
+      const fx = x + wW / 2
+      const fy = wH - r - (note % 12 === 0 ? 18 : 10)
+      ctx.beginPath()
+      ctx.arc(fx, fy, r, 0, Math.PI * 2)
+      ctx.fillStyle = FINGER_COLORS[finger]
+      ctx.fill()
+      ctx.font = `bold ${Math.max(Math.round(r * 1.2), 7)}px sans-serif`
+      ctx.fillStyle = '#fff'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(String(finger), fx, fy)
+      ctx.textBaseline = 'alphabetic'
+    }
   }
 
   function drawBlackKey(note: number) {
-    const x = xForBlack(note)
+    const x       = xForBlack(note)
     const pressed = state[note].pressed
+    const finger  = fingerMap.get(note)
 
-    if (pressed) {
+    if (pressed && finger) {
+      ctx.fillStyle = brighten(FINGER_COLORS[finger], velocityIntensity(state[note].velocity))
+      ctx.fillRect(x, 0, bW, bH)
+    } else if (pressed) {
       ctx.fillStyle = brighten(noteColor(note), velocityIntensity(state[note].velocity))
       ctx.fillRect(x, 0, bW, bH)
+    } else if (finger) {
+      // Hint: colored glow on black key
+      ctx.fillStyle = FINGER_COLORS[finger] + '55'  // ~33% opacity
+      ctx.fillRect(x, 0, bW, bH)
+      // Dark body on top to keep 3-D depth, with colored accent
+      const grad = ctx.createLinearGradient(x, 0, x + bW, 0)
+      grad.addColorStop(0,   '#1c1c1c')
+      grad.addColorStop(0.5, '#111111')
+      grad.addColorStop(1,   '#1a1a1a')
+      ctx.fillStyle = grad
+      ctx.fillRect(x, 0, bW, bH * 0.55)
     } else {
-      // Gradient to give the black key a subtle 3-D depth (lighter top edge → deep body).
       const grad = ctx.createLinearGradient(x, 0, x + bW, 0)
       grad.addColorStop(0,   '#1c1c1c')
       grad.addColorStop(0.3, '#0d0d0d')
       grad.addColorStop(1,   '#111111')
       ctx.fillStyle = grad
       ctx.fillRect(x, 0, bW, bH)
-
-      // Subtle highlight on top edge
       ctx.fillStyle = 'rgba(255,255,255,0.06)'
       ctx.fillRect(x + 1, 0, bW - 2, Math.max(bH * 0.12, 3))
+    }
+
+    // Finger number on black key
+    if (finger) {
+      const r  = Math.max(Math.min(bW * 0.36, 9), 4)
+      const fx = x + bW / 2
+      const fy = bH - r - 4
+      ctx.beginPath()
+      ctx.arc(fx, fy, r, 0, Math.PI * 2)
+      ctx.fillStyle = FINGER_COLORS[finger]
+      ctx.fill()
+      ctx.font = `bold ${Math.max(Math.round(r * 1.2), 6)}px sans-serif`
+      ctx.fillStyle = '#fff'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(String(finger), fx, fy)
+      ctx.textBaseline = 'alphabetic'
     }
   }
 
   function drawAll() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    // White keys first, then black keys on top.
     for (let n = MIDI_MIN; n <= MIDI_MAX; n++) {
       if (!isBlack(n)) drawWhiteKey(n)
     }
@@ -194,21 +226,19 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
 
   function repaintKey(note: number) {
     if (isBlack(note)) {
-      // Repaint the two neighbouring white keys underneath first to avoid artefacts.
       if (note - 1 >= MIDI_MIN) drawWhiteKey(note - 1)
       if (note + 1 <= MIDI_MAX && !isBlack(note + 1)) drawWhiteKey(note + 1)
       drawBlackKey(note)
     } else {
       drawWhiteKey(note)
-      // Redraw overlapping black keys to keep them on top.
       if (note - 1 >= MIDI_MIN && isBlack(note - 1)) drawBlackKey(note - 1)
       if (note + 1 <= MIDI_MAX && isBlack(note + 1)) drawBlackKey(note + 1)
     }
   }
 
   return {
-    resize(width: number, height: number) {
-      canvas.width = width
+    resize(width, height) {
+      canvas.width  = width
       canvas.height = height
       computeDimensions()
       drawAll()
@@ -219,31 +249,35 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
       drawAll()
     },
 
-    updateKeys(pressed: number[], velocity: number) {
+    updateKeys(pressed, velocity) {
       const next = new Set(pressed)
-
-      // Keys that changed state.
       const dirty = new Set<number>()
-      for (const n of next) {
-        if (!prevPressed.has(n)) dirty.add(n)
-      }
-      for (const n of prevPressed) {
-        if (!next.has(n)) dirty.add(n)
-      }
+      for (const n of next)         if (!prevPressed.has(n)) dirty.add(n)
+      for (const n of prevPressed)  if (!next.has(n))        dirty.add(n)
 
-      // Update state.
       for (const n of dirty) {
-        const isNowPressed = next.has(n)
-        state[n].pressed = isNowPressed
-        state[n].velocity = isNowPressed ? velocity : 0
+        const on = next.has(n)
+        state[n].pressed  = on
+        state[n].velocity = on ? velocity : 0
       }
-
-      // Repaint only dirty keys.
       for (const n of dirty) {
         if (n >= MIDI_MIN && n <= MIDI_MAX) repaintKey(n)
       }
-
       prevPressed = next
-    }
+    },
+
+    setFingerMap(map) {
+      // Collect all keys that changed hint status
+      const dirty = new Set<number>()
+      for (const n of map.keys())         if (!fingerMap.has(n) || fingerMap.get(n) !== map.get(n)) dirty.add(n)
+      for (const n of prevFingerKeys)     if (!map.has(n)) dirty.add(n)
+
+      fingerMap = map
+      prevFingerKeys = new Set(map.keys())
+
+      for (const n of dirty) {
+        if (n >= MIDI_MIN && n <= MIDI_MAX) repaintKey(n)
+      }
+    },
   }
 }

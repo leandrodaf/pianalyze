@@ -1,8 +1,13 @@
+/** Finger number: 1 = thumb … 5 = pinky (same convention for both hands). */
+export type Finger = 1 | 2 | 3 | 4 | 5
+
 /** A note-on → note-off pair extracted from a Recording. */
 export interface NoteInterval {
   note: number
   startMs: number
   endMs: number
+  /** Which finger should press this note (optional — absent = not specified). */
+  finger?: Finger
 }
 
 /** Maximum ms offset between student input and expected note to count as correct. */
@@ -17,6 +22,8 @@ export interface RecordedEvent {
   note: number
   /** Velocity 0–127. 0 always means note-off regardless of cmd. */
   vel: number
+  /** Which finger should press this note (only on note-on events, optional). */
+  finger?: Finger
 }
 
 export interface Recording {

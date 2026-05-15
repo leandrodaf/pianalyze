@@ -85,22 +85,22 @@ function restartPlaybackAt(ms: number): void {
 
 /** Convert a flat event list into note-on/off pairs. */
 function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
-  const active = new Map<number, number>()  // note → startMs
+  const active = new Map<number, { startMs: number; finger?: NoteInterval['finger'] }>()
   const out: NoteInterval[] = []
   for (const ev of events) {
     if (ev.vel > 0) {
-      active.set(ev.note, ev.t)
+      active.set(ev.note, { startMs: ev.t, finger: ev.finger })
     } else {
-      const startMs = active.get(ev.note)
-      if (startMs !== undefined) {
-        out.push({ note: ev.note, startMs, endMs: ev.t })
+      const entry = active.get(ev.note)
+      if (entry !== undefined) {
+        out.push({ note: ev.note, startMs: entry.startMs, endMs: ev.t, finger: entry.finger })
         active.delete(ev.note)
       }
     }
   }
   // Close any notes still held at end of recording
-  for (const [note, startMs] of active) {
-    out.push({ note, startMs, endMs: startMs + 500 })
+  for (const [note, entry] of active) {
+    out.push({ note, startMs: entry.startMs, endMs: entry.startMs + 500, finger: entry.finger })
   }
   return out
 }

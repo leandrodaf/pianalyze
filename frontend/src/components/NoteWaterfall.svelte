@@ -55,8 +55,8 @@
       for (const n of next) {
         if (!prevPressed.has(n)) {
           if (isPractice) {
-            // Grade the note and show badge — don't show the bar
-            const grade = gradeInput(n, get(playbackStore).positionMs)
+            // Subtract lead time: positionMs is playback time, but grading compares against music time
+            const grade = gradeInput(n, get(playbackStore).positionMs - waterfall.getLeadTime() * 1000)
             waterfall.showGrade(n, grade)
           } else {
             waterfall.noteOn(n, state.velocity)

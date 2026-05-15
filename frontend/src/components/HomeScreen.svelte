@@ -68,7 +68,7 @@
   }
 
   function handleContinue() {
-    if (lastExercise) openDetail(lastExercise)
+    if (lastExercise) startExercise(lastExercise)  // atalho direto, sem abrir modal
     else startExercise(null)
   }
 
@@ -277,7 +277,7 @@
     <div class="hr"></div>
 
     <div class="sb-section">
-      <span class="sb-label">Ferramentas</span>
+      <span class="sb-label">{$t('tools.label')}</span>
       <input
         bind:this={importInput}
         class="hidden-input"
@@ -288,11 +288,11 @@
       <div class="tools-actions">
         <button class="tool-btn" on:click={openImportPicker} disabled={!onImportRecording}>
           <span class="tool-icon">📂</span>
-          <span>Importar .pia</span>
+          <span>{$t('tools.import')}</span>
         </button>
         <button class="tool-btn rec-tool-btn" on:click={handleStartRecording} disabled={!onStartRecording}>
           <span class="tool-icon">🔴</span>
-          <span>REC</span>
+          <span>{$t('tools.record')}</span>
         </button>
       </div>
       {#if toolsError}<p class="error-text">{toolsError}</p>{/if}
@@ -483,7 +483,7 @@
             <span class="stat-label">{$t('stats.hands')}</span>
             <span class="stat-big">
               {detail.stats.hands === 'both' ? '🤲' :
-               detail.stats.hands === 'right' ? '🤚' : '🤚'}
+               detail.stats.hands === 'right' ? '🤚' : '🫲'}
             </span>
             <span class="stat-value">
               {detail.stats.hands ? $t('hands.' + detail.stats.hands) : '—'}

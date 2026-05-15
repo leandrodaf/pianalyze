@@ -93,6 +93,29 @@ func (a *App) startup(ctx context.Context) {
 	}
 	a.midiClient = client
 	a.logger.Info(constants.MsgMIDIClientSetupSuccess)
+
+	go a.watchMIDIDevices(ctx)
+}
+
+// watchMIDIDevices subscribes to MIDI device hot-plug events and forwards them
+// to the frontend as "devices:changed" Wails events. The event payload is a
+// slice of DeviceInfo reflecting the current device list at the time of the
+// change.
+func (a *App) watchMIDIDevices(ctx context.Context) {
+	evCh, err := a.midiClient.WatchDevices(ctx)
+	if err != nil {
+		a.logger.Warn("WatchDevices not available", zap.Error(err))
+		return
+	}
+	for range evCh {
+		devices, err := a.ListDevices()
+		if err != nil {
+			a.logger.Warn("Failed to list devices after hot-plug event", zap.Error(err))
+			devices = []DeviceInfo{}
+		}
+		runtime.EventsEmit(a.ctx, "devices:changed", devices)
+		a.logger.Info("MIDI devices changed", zap.Int("count", len(devices)))
+	}
 }
 
 // shutdown is called by Wails when the application is closing.

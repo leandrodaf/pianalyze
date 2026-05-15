@@ -79,6 +79,12 @@
     page = 'playing'
   }
 
+  function handleStartRecording() {
+    activeExercise = null
+    clearLoadedRecording()
+    page = 'playing'
+  }
+
   function goHome() {
     stop()
     clearLoop()
@@ -92,6 +98,7 @@
     onPlay={handlePlay}
     onDeviceReady={handleDeviceReady}
     onImportRecording={handleImportRecording}
+    onStartRecording={handleStartRecording}
   />
 
 {:else}

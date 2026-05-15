@@ -59,6 +59,9 @@
 
   "brand.subtitle": "钢琴分析工具",
   "lang.label": "语言",
+  "tools.label": "工具",
+  "tools.import": "导入 .pia",
+  "tools.record": "录音",
   "common.by": "作者",
   "music.triad": "三和弦",
 

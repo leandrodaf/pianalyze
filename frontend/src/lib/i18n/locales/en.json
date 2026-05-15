@@ -59,6 +59,9 @@
 
   "brand.subtitle": "Piano Analysis Tool",
   "lang.label": "Language",
+  "tools.label": "TOOLS",
+  "tools.import": "Import .pia",
+  "tools.record": "REC",
   "common.by": "by",
   "music.triad": "triad",
 
