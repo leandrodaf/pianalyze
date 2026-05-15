@@ -440,6 +440,126 @@ func (a *App) ResumeRecording() {
 	a.recMu.Unlock()
 }
 
+// ── Recordings library ───────────────────────────────────────────────────────
+
+// RecordingSummary is a lightweight summary of a .pia file for the library UI.
+type RecordingSummary struct {
+	Path       string `json:"path"`
+	Filename   string `json:"filename"`
+	Title      string `json:"title"`
+	Composer   string `json:"composer"`
+	Copyright  string `json:"copyright"`
+	RecordedAt string `json:"recordedAt"`
+	DurationMs int64  `json:"durationMs"`
+	EventCount int    `json:"eventCount"`
+	FileSizeB  int64  `json:"fileSizeB"`
+}
+
+// ListRecordings returns a summary of every .pia file in dir.
+// If dir is empty, the default save path is used.
+func (a *App) ListRecordings(dir string) ([]RecordingSummary, error) {
+	if dir == "" {
+		dir = a.GetDefaultSavePath()
+	}
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return []RecordingSummary{}, nil
+		}
+		return nil, err
+	}
+
+	var out []RecordingSummary
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(strings.ToLower(e.Name()), ".pia") {
+			continue
+		}
+		p := filepath.Join(dir, e.Name())
+		fi, err := e.Info()
+		if err != nil {
+			continue
+		}
+		sum := RecordingSummary{
+			Path:      p,
+			Filename:  e.Name(),
+			FileSizeB: fi.Size(),
+		}
+		// Read and parse minimal JSON to extract meta + timing.
+		raw, err := os.ReadFile(p)
+		if err == nil {
+			if decompressed, err := gunzip(raw); err == nil {
+				raw = decompressed
+			}
+			var partial struct {
+				Meta struct {
+					Title     string `json:"title"`
+					Composer  string `json:"composer"`
+					Copyright string `json:"copyright"`
+				} `json:"meta"`
+				RecordedAt string `json:"recordedAt"`
+				Events     []struct {
+					T int64 `json:"t"`
+				} `json:"events"`
+			}
+			if json.Unmarshal(raw, &partial) == nil {
+				sum.Title = partial.Meta.Title
+				sum.Composer = partial.Meta.Composer
+				sum.Copyright = partial.Meta.Copyright
+				sum.RecordedAt = partial.RecordedAt
+				sum.EventCount = len(partial.Events)
+				if len(partial.Events) > 0 {
+					sum.DurationMs = partial.Events[len(partial.Events)-1].T
+				}
+			}
+		}
+		out = append(out, sum)
+	}
+	// Newest first (by filename — ISO-date prefix ensures correct order).
+	for i, j := 0, len(out)-1; i < j; i, j = i+1, j-1 {
+		out[i], out[j] = out[j], out[i]
+	}
+	return out, nil
+}
+
+// UpdateRecordingMeta rewrites the meta block of a .pia file in-place.
+func (a *App) UpdateRecordingMeta(path, title, composer, copyright string) error {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	if decompressed, e := gunzip(raw); e == nil {
+		raw = decompressed
+	}
+	var rec map[string]any
+	if err := json.Unmarshal(raw, &rec); err != nil {
+		return err
+	}
+	meta, ok := rec["meta"].(map[string]any)
+	if !ok {
+		meta = map[string]any{}
+	}
+	meta["title"] = title
+	meta["composer"] = composer
+	meta["copyright"] = copyright
+	rec["meta"] = meta
+	updated, err := json.Marshal(rec)
+	if err != nil {
+		return err
+	}
+	return writeGzip(path, updated)
+}
+
+// DeleteRecording permanently removes a .pia file.
+func (a *App) DeleteRecording(path string) error {
+	return os.Remove(path)
+}
+
+// OpenRecordingFolder reveals the recording's directory in the OS file manager.
+func (a *App) OpenRecordingFolder(path string) error {
+	dir := filepath.Dir(path)
+	return runtime.BrowserOpenURL(a.ctx, "file://"+filepath.ToSlash(dir))
+}
+
 // LoadRecordingFile opens a native OS open-file dialog, reads the file (plain
 // JSON or gzip-compressed), applies v1→v2 migration, and returns the JSON string.
 // Returns ("", nil) if the user cancels.

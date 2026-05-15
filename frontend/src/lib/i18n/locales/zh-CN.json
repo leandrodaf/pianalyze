@@ -192,5 +192,8 @@
   "settings.savepath.change": "更改…",
   "settings.savepath.reset": "重置",
   "settings.savepath.dialog": "选择录音文件夹",
-  "rec.ready": "准备录音"
+  "rec.ready": "准备录音",
+  "error.import.invalid": "文件无效或已损坏。请确保是 Pianalyze 生成的 .pia 文件。",
+  "error.import.empty": "未录制任何音符。请在完成录音前演奏一些音符。",
+  "rec.empty.warning": "未录制任何音符 — 录音未保存。"
 }

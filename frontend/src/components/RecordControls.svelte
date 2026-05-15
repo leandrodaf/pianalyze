@@ -24,6 +24,7 @@
   let savedPath = ''
   let saving = false
   let saveError = ''
+  let emptyWarning = false
 
   async function start() {
     jsonData = ''; savedPath = ''; saveError = ''
@@ -54,6 +55,21 @@
     onRecordingStateChange?.(false)
     elapsed = Date.now() - startedAt - pausedTotal
     jsonData = await StopRecording()
+    emptyWarning = false
+
+    // Validate: if no notes were recorded, skip auto-save and warn user
+    try {
+      const rec: Recording = JSON.parse(jsonData)
+      if (!rec.events || rec.events.length === 0) {
+        emptyWarning = true
+        jsonData = ''
+        return
+      }
+    } catch {
+      saveError = $t('error.import.invalid')
+      return
+    }
+
     await autoSave()
   }
 
@@ -134,8 +150,13 @@
     <span class="timer" class:timer-paused={isPaused}>{fmt(elapsed)}</span>
 
   {:else}
-    <!-- Saved state -->
-    {#if saving}
+    <!-- Saved state / empty warning -->
+    {#if emptyWarning}
+      <span class="save-status warn">⚠ {$t('rec.empty.warning')}</span>
+      {#if onDone}
+        <button class="done-btn" on:click={onDone}>{$t('rec.done')}</button>
+      {/if}
+    {:else if saving}
       <span class="save-status spin">⟳</span>
     {:else if saveError}
       <span class="save-status error">✕ {saveError}</span>
@@ -145,7 +166,7 @@
       <button class="save-btn" on:click={saveAs}>{$t('rec.save.as')}</button>
     {/if}
 
-    {#if onDone}
+    {#if !emptyWarning && onDone}
       <button class="done-btn" on:click={onDone}>{$t('rec.done')}</button>
     {/if}
   {/if}
@@ -231,6 +252,7 @@
 
   .save-status.ok   { color: #70c07a; }
   .save-status.error { color: #ff7070; }
+  .save-status.warn  { color: #f0a050; }
 
   .spin { display: inline-block; animation: spin 1s linear infinite; }
 

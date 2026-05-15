@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte'
   import { EventsOn } from '../../wailsjs/runtime/runtime'
-  import { ListDevices, SelectDevice, StartCapture, StopCapture } from '../../wailsjs/go/main/App'
+  import { ListDevices, SelectDevice, StartCapture, StopCapture, LoadRecordingFile } from '../../wailsjs/go/main/App'
   import type { main } from '../../wailsjs/go/models'
   import { exerciseStore, exercisesByCategory } from '../stores/exercises'
   import { LOCALE_NAMES, locale, t, type Locale } from '../lib/i18n'
@@ -111,28 +111,29 @@
   }
 
   // ── Tools ──────────────────────────────────────────────────────────────────────
-  let importInput: HTMLInputElement
   let toolsError = ''
 
-  function openImportPicker() {
+  async function openImportPicker() {
     if (!onImportRecording) return
-    importInput?.click()
-  }
-
-  async function handleImportFile(event: Event) {
-    const input = event.currentTarget as HTMLInputElement
-    const file = input.files?.[0]
-    if (!file || !onImportRecording) return
-
+    toolsError = ''
     try {
-      const recording = JSON.parse(await file.text()) as Recording
-      toolsError = ''
-      onImportRecording(recording)
+      const jsonStr = await LoadRecordingFile()
+      if (!jsonStr) return // user cancelled
+      let rec: Recording
+      try {
+        rec = JSON.parse(jsonStr) as Recording
+      } catch {
+        toolsError = $t('error.import.invalid')
+        return
+      }
+      if (!rec.events || rec.events.length === 0) {
+        toolsError = $t('error.import.empty')
+        return
+      }
+      onImportRecording(rec)
     } catch (error: unknown) {
-      toolsError = error instanceof Error ? error.message : 'Falha ao importar arquivo'
+      toolsError = $t('error.import.invalid')
     }
-
-    input.value = ''
   }
 
   function handleStartRecording() {
@@ -271,13 +272,6 @@
 
     <div class="sb-section">
       <span class="sb-label">{$t('tools.label')}</span>
-      <input
-        bind:this={importInput}
-        class="hidden-input"
-        type="file"
-        accept=".pia,.json"
-        on:change={handleImportFile}
-      />
       <div class="tools-actions">
         <button class="tool-btn" on:click={openImportPicker} disabled={!onImportRecording}>
           <span class="tool-icon">📂</span>

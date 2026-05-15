@@ -6,6 +6,10 @@ export function AutoSaveRecording(arg1, arg2, arg3) {
   return window['go']['main']['App']['AutoSaveRecording'](arg1, arg2, arg3);
 }
 
+export function DeleteRecording(arg1) {
+  return window['go']['main']['App']['DeleteRecording'](arg1);
+}
+
 export function GetDefaultSavePath() {
   return window['go']['main']['App']['GetDefaultSavePath']();
 }

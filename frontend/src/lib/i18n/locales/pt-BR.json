@@ -191,5 +191,8 @@
   "settings.savepath.change": "Alterar…",
   "settings.savepath.reset": "Redefinir",
   "settings.savepath.dialog": "Escolher pasta de gravações",
-  "rec.ready": "Pronto para gravar"
+  "rec.ready": "Pronto para gravar",
+  "error.import.invalid": "Arquivo inválido ou corrompido. Verifique se é um arquivo .pia gerado pelo Pianalyze.",
+  "error.import.empty": "Nenhuma nota gravada. Toque algumas notas antes de concluir a gravação.",
+  "rec.empty.warning": "Nenhuma nota gravada — a gravação não foi salva."
 }
