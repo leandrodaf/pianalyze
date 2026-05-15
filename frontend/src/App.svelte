@@ -18,7 +18,8 @@
   import { FINGER_COLORS } from './lib/finger-colors'
   import { noteColor } from './lib/note-colors'
 
-  import { translateChord, translateInversion, translateRootNote } from './lib/chord-i18n'
+  import { translateChord, translateInversion, translateRootNote, chordShorthand } from './lib/chord-i18n'
+  import { settingsStore } from './stores/settings'
 
   const KEY_DISPLAY: Record<string, string> = {
     'C': 'Dó M', 'G': 'Sol M', 'D': 'Ré M', 'A': 'Lá M',
@@ -48,7 +49,11 @@
   $: chordLabel     = hasChord ? translateChord(chord, $t) : ''
   $: inversionLabel = inversion ? translateInversion(inversion, $t) : ''
   $: rootNote       = hasChord ? translateRootNote($midiStore.chordRoot, $t) : ''
-  $: chordDisplay   = rootNote ? `${rootNote} ${chordLabel}` : chordLabel
+  $: isShortMode    = $settingsStore.chordDisplayMode === 'short'
+  $: chordDisplay   = !hasChord ? '' :
+      isShortMode
+        ? (chordShorthand(chord, $midiStore.chordRoot) || (rootNote ? `${rootNote} ${chordLabel}` : chordLabel))
+        : (rootNote ? `${rootNote} ${chordLabel}` : chordLabel)
 
   // Chord progression trail — tracks last 4 distinct displayed chords locally.
   let chordHistory: string[] = []
@@ -247,6 +252,15 @@
 
       <!-- Analysis HUD -->
       <div class="hud" class:hud-active={hasChord}>
+        <!-- Mode toggle: full name ↔ chord symbol -->
+        <button
+          class="hud-mode-toggle"
+          class:hud-mode-short={isShortMode}
+          on:click={() => settingsStore.toggleChordDisplayMode()}
+          title={isShortMode ? 'Mostrar nome completo' : 'Mostrar cifra'}
+          aria-label="toggle chord display mode"
+        >{isShortMode ? 'ABC' : '♪'}</button>
+
         {#if prevChords.length > 0 && hasChord}
           <div class="hud-history">
             {#each prevChords as ch, i}
@@ -257,7 +271,7 @@
         {/if}
         <div class="hud-chord">
           {#if hasChord}
-            <span class="hud-name">{chordDisplay}</span>
+            <span class="hud-name" class:hud-name-short={isShortMode}>{chordDisplay}</span>
             {#if isTriad}<span class="hud-badge">{$t('music.triad')}</span>{/if}
           {:else}
             <span class="hud-empty">—</span>
@@ -464,7 +478,26 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
-  .hud.hud-active { opacity: 1; }
+  .hud.hud-active { opacity: 1; pointer-events: auto; }
+
+  .hud-mode-toggle {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    color: rgba(255,255,255,0.55);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    cursor: pointer;
+    line-height: 1.4;
+    transition: background 0.15s, color 0.15s;
+  }
+  .hud-mode-toggle:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .hud-mode-toggle.hud-mode-short { background: rgba(255,215,0,0.15); border-color: rgba(255,215,0,0.35); color: #ffd700; }
+  .hud-name-short { font-size: 1.7rem; letter-spacing: 0.01em; }
 
   .hud-history {
     display: flex;

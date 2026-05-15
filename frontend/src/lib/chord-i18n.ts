@@ -130,3 +130,121 @@ export function translateRootNote(pitchClass: number, t: (key: string) => string
   const translated = t(key)
   return translated === key ? '' : translated
 }
+
+// ── Chord shorthand (cifra) ───────────────────────────────────────────────────
+
+/**
+ * International standard note names used in chord symbols (e.g. "Am7", "Cmaj7").
+ * These are always in English regardless of UI locale — chord symbols are universal.
+ */
+export const NOTE_SHORTHAND = [
+  'C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'
+]
+
+/**
+ * Maps every chord/interval name (as returned by the Go backend) to its
+ * standard chord symbol suffix. For major triads the suffix is '' (just the root note).
+ */
+export const CHORD_SHORTHAND: Record<string, string> = {
+  // ── Intervals (2 notes) ───────────────────────────────────────────────────
+  'Minor 2nd':   'm2',
+  'Major 2nd':   'M2',
+  'Minor 3rd':   'm3',
+  'Major 3rd':   'M3',
+  'Perfect 4th': 'P4',
+  'Tritone':     'TT',
+  'Power Chord': '5',
+  'Minor 6th':   'm6',  // also used for 4-note chord (same symbol)
+  'Major 6th':   '6',   // also used for 4-note chord (same symbol)
+  'Minor 7th':   'm7',  // also used for 4-note chord (same symbol)
+  'Major 7th':   'maj7',// also used for 4-note chord (same symbol)
+
+  // ── Triads ────────────────────────────────────────────────────────────────
+  'Major':         '',        // "C" = C Major
+  'Minor':         'm',       // "Am"
+  'Augmented':     'aug',     // "Caug"
+  'Diminished':    'dim',     // "Bdim"
+  'Suspended 2nd': 'sus2',
+  'Suspended 4th': 'sus4',
+
+  // ── 7th chords ────────────────────────────────────────────────────────────
+  'Dominant 7th':        '7',       // "G7"
+  'Augmented 7th':       'aug7',
+  'Augmented Major 7th': 'augMaj7',
+  'Diminished 7th':      'dim7',
+  'Half-diminished':     'ø7',
+  'Minor Major 7th':     'mMaj7',
+
+  // ── Shell voicings ────────────────────────────────────────────────────────
+  'Major 7th no 5th':    'maj7',
+  'Dominant 7th no 5th': '7',
+  'Minor 7th no 5th':    'm7',
+
+  // ── 9th ──────────────────────────────────────────────────────────────────
+  'Major 9th':            'maj9',
+  'Minor 9th':            'm9',
+  'Dominant 9th':         '9',
+  'Dominant 7th flat 9':  '7b9',
+  'Dominant 7th sharp 9': '7#9',
+  'Dominant 9th flat 5':  '9b5',
+  'Dominant 9th sharp 5': '9#5',
+  'Minor Major 9th':      'mMaj9',
+
+  // ── 11th ─────────────────────────────────────────────────────────────────
+  'Major 11th':            'maj11',
+  'Minor 11th':            'm11',
+  'Dominant 11th':         '11',
+  'Dominant 7th sharp 11': '7#11',
+  'Minor 11th flat 5':     'm11b5',
+  'Minor 11th sharp 5':    'm11#5',
+
+  // ── 13th ─────────────────────────────────────────────────────────────────
+  'Major 13th':            'maj13',
+  'Minor 13th':            'm13',
+  'Dominant 13th':         '13',
+  'Dominant 13th flat 9':  '13b9',
+  'Dominant 13th sharp 9': '13#9',
+
+  // ── Extended / altered ────────────────────────────────────────────────────
+  'Minor 6/9':                         'm6/9',
+  '6/9':                               '6/9',
+  'Minor 7th flat 5':                  'm7b5',
+  'Major 7th sharp 5':                 'maj7#5',
+  'Dominant 7th flat 9 flat 5':        '7b9b5',
+  'Dominant 7th sharp 9 sharp 5':      '7#9#5',
+  'Suspended 4th add 9':               'sus4add9',
+  'Minor 9th flat 13':                 'm9b13',
+  'Dominant 7th flat 13':              '7b13',
+  'Add 9':                             'add9',
+  'Minor Add 9':                       'madd9',
+  'Dominant 9th flat 13':              '9b13',
+  'Major 9th add 13':                  'maj9add13',
+  'Minor 9th flat 11':                 'm9b11',
+  'Minor 13th sharp 11':               'm13#11',
+  'Dominant 9th add sharp 11':         '9add#11',
+  'Dominant 11th sharp 9':             '11#9',
+  'Suspended 4th add 13':              'sus4add13',
+  'Minor 9th add 13':                  'm9add13',
+  'Add 9 sharp 11':                    'add9#11',
+  'Minor Add 9 sharp 11':              'madd9#11',
+  'Dominant 7th flat 9 sharp 11':      '7b9#11',
+  'Dominant 7th sharp 9 sharp 11':     '7#9#11',
+  'Dominant 13th sharp 9 flat 11':     '13#9b11',
+  'Minor 13th add flat 9':             'm13addb9',
+  'Minor 13th sharp 9':                'm13#9',
+  'Major 9th sharp 13':                'maj9#13',
+  'Major 13th sharp 11':               'maj13#11',
+  'Dominant 7th flat 9 sharp 13':      '7b9#13',
+}
+
+/**
+ * Returns the international chord symbol for a chord/interval.
+ * Always uses English note names (e.g. "Am7", "Cmaj7", "GP4").
+ * Returns empty string when the chord is unrecognized or pitchClass is invalid.
+ */
+export function chordShorthand(chordName: string, pitchClass: number): string {
+  if (pitchClass < 0 || pitchClass > 11) return ''
+  const symbol = CHORD_SHORTHAND[chordName]
+  if (symbol === undefined) return ''
+  return NOTE_SHORTHAND[pitchClass] + symbol
+}
