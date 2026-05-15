@@ -214,6 +214,10 @@ func (a *App) startup(ctx context.Context) {
 		runtime.EventsEmit(ctx, "app:error", constants.MsgMIDIClientSetupError)
 	}
 
+	// Ensure the default recordings directory exists at startup so dialogs
+	// and auto-save never encounter a missing path on first run.
+	a.GetDefaultSavePath()
+
 	go a.watchMIDIDevices(ctx)
 }
 
@@ -370,7 +374,10 @@ func (a *App) SaveRecording(jsonData, defaultFilename, defaultDir string) error 
 		},
 	}
 	if defaultDir != "" {
-		opts.DefaultDirectory = defaultDir
+		// Ensure the directory exists; dialogs reject a missing DefaultDirectory.
+		if err := os.MkdirAll(defaultDir, 0o755); err == nil {
+			opts.DefaultDirectory = defaultDir
+		}
 	}
 	path, err := runtime.SaveFileDialog(a.ctx, opts)
 	if err != nil || path == "" {
@@ -379,23 +386,29 @@ func (a *App) SaveRecording(jsonData, defaultFilename, defaultDir string) error 
 	return writeGzip(path, []byte(jsonData))
 }
 
-// GetDefaultSavePath returns the default recordings directory:
-// ~/Documents/pianalyze on macOS, Windows, and Linux.
+// GetDefaultSavePath returns the default recordings directory
+// (~/Documents/pianalyze) and ensures it exists on disk.
 func (a *App) GetDefaultSavePath() string {
 	home, err := os.UserHomeDir()
 	if err != nil || home == "" {
 		home = "."
 	}
-	return filepath.Join(home, "Documents", "pianalyze")
+	p := filepath.Join(home, "Documents", "pianalyze")
+	// Create the tree so dialogs and auto-save never fail on a fresh install.
+	if mkErr := os.MkdirAll(p, 0o755); mkErr != nil {
+		a.logger.Warn("could not create default save path", zap.String("path", p), zap.Error(mkErr))
+	}
+	return p
 }
 
 // PickSaveDirectory opens a native directory-picker dialog and returns the
 // chosen path. title is the dialog window title, supplied by the frontend so
 // it can be localised. Returns ("", nil) if the user cancels.
 func (a *App) PickSaveDirectory(title string) (string, error) {
+	defaultDir := a.GetDefaultSavePath() // creates the directory if missing
 	dir, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
 		Title:            title,
-		DefaultDirectory: a.GetDefaultSavePath(),
+		DefaultDirectory: defaultDir,
 	})
 	if err != nil || dir == "" {
 		return "", err
