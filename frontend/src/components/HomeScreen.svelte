@@ -14,6 +14,7 @@
 
   import { addToast } from '../stores/toast'
   import { handleDevicesChanged } from '../lib/device-handler'
+  import SettingsModal from './SettingsModal.svelte'
 
   export let onPlay: (exercise: Exercise | null) => void
   export let onDeviceReady: () => void
@@ -70,6 +71,9 @@
   let langOpen = false
   $: currentFlag = LOCALE_OPTIONS.find(o => o.code === $locale)?.flag ?? '🌐'
 
+  // ── Settings modal ────────────────────────────────────────────────────────────
+  let settingsOpen = false
+
   // ── Detail modal ──────────────────────────────────────────────────────────────
   let detail: Exercise | null = null
 
@@ -77,7 +81,7 @@
   function closeDetail() { detail = null }
 
   function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape') closeDetail()
+    if (e.key === 'Escape') { if (settingsOpen) settingsOpen = false; else closeDetail() }
   }
 
   let lastExercise: Exercise | null = null
@@ -225,6 +229,9 @@
       <button class="nav-item active"><span class="nav-ic">⊞</span> {$t('nav.home')}</button>
       <button class="nav-item" disabled><span class="nav-ic">◫</span> {$t('nav.library')}</button>
       <button class="nav-item" disabled><span class="nav-ic">◉</span> {$t('nav.recordings')}</button>
+      <button class="nav-item nav-settings" on:click={() => settingsOpen = true}>
+        <span class="nav-ic">⚙</span> {$t('settings.title')}
+      </button>
     </nav>
 
     <div class="hr"></div>
@@ -546,6 +553,14 @@
   </div>
 {/if}
 
+<!-- ═══════════════ SETTINGS MODAL ══════════════════════════════════ -->
+{#if settingsOpen}
+  <SettingsModal
+    onClose={() => settingsOpen = false}
+    onImportRecording={onImportRecording}
+  />
+{/if}
+
 <style>
 /* ── Root ──────────────────────────────────────────────────────────────────── */
 .home {
@@ -624,6 +639,8 @@
 .nav-item.active { color: #fff; background: rgba(123,95,240,.18); }
 .nav-item:disabled { opacity: .3; cursor: not-allowed; }
 .nav-ic { font-size: .95rem; width: 18px; text-align: center; }
+.nav-settings { margin-top: auto; color: rgba(255,255,255,.45); }
+.nav-settings:hover { color: rgba(255,255,255,.8) !important; }
 
 .hr { height: 1px; background: rgba(255,255,255,.07); margin: .5rem 1.2rem; flex-shrink: 0; }
 

@@ -1,9 +1,12 @@
 import { writable } from 'svelte/store'
+import type { DifficultyPreset } from '../lib/recording-types'
 
 export type ChordDisplayMode = 'full' | 'short'
 
-interface Settings {
+export interface Settings {
   chordDisplayMode: ChordDisplayMode
+  /** Preferred skill level; null = no preference (no auto-preset applied). */
+  skillLevel: DifficultyPreset | null
 }
 
 const STORAGE_KEY = 'pianalyze.settings'
@@ -17,11 +20,12 @@ function loadSettings(): Settings {
 }
 
 const defaults: Settings = {
-  chordDisplayMode: 'full'
+  chordDisplayMode: 'full',
+  skillLevel: null,
 }
 
 function createSettingsStore() {
-  const { subscribe, update } = writable<Settings>(loadSettings())
+  const { subscribe, update, set } = writable<Settings>(loadSettings())
 
   function persist(s: Settings) {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)) } catch { /* ignore */ }
@@ -35,7 +39,13 @@ function createSettingsStore() {
         ...s,
         chordDisplayMode: s.chordDisplayMode === 'full' ? 'short' : 'full'
       }))
-    }
+    },
+    setSkillLevel(level: DifficultyPreset | null) {
+      update(s => persist({ ...s, skillLevel: level }))
+    },
+    patch(partial: Partial<Settings>) {
+      update(s => persist({ ...s, ...partial }))
+    },
   }
 }
 

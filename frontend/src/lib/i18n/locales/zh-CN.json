@@ -175,5 +175,24 @@
   "chord.minor-3rd": "小三度",
   "chord.major-3rd": "大三度",
   "chord.perfect-4th": "纯四度",
-  "chord.tritone": "三全音"
+  "chord.tritone": "三全音",
+
+  "settings.title": "设置",
+  "settings.profile": "学员简介",
+  "settings.profile.hint": "设定练习的播放速度与判定容差。",
+  "settings.display": "显示",
+  "settings.chord.mode": "和弦显示",
+  "settings.chord.full": "完整名称",
+  "settings.chord.short": "和弦符号 (Am7)",
+  "settings.lang": "语言",
+  "settings.import.title": "通过链接导入",
+  "settings.import.recording.hint": ".pia 文件的 URL（录音）",
+  "settings.import.exercises.hint": "练习 JSON 清单的 URL",
+  "settings.import.load": "加载",
+  "settings.import.loading": "加载中…",
+  "settings.import.error.fetch": "无法加载链接",
+  "settings.import.error.parse": "文件格式无效",
+  "settings.import.tab.recording": "录音",
+  "settings.import.tab.exercises": "练习",
+  "settings.close": "关闭"
 }

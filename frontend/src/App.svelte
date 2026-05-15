@@ -100,6 +100,11 @@
 
   onMount(() => connectMidiStore())
 
+  // Auto-apply skill level preset whenever it changes and a recording is loaded.
+  $: if ($settingsStore.skillLevel && $playbackStore.recording) {
+    setDifficultyPreset($settingsStore.skillLevel)
+  }
+
   function handleDeviceReady() {
     deviceReady = true
   }

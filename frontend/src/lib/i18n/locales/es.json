@@ -174,5 +174,24 @@
   "chord.minor-3rd": "3ª Menor",
   "chord.major-3rd": "3ª Mayor",
   "chord.perfect-4th": "4ª Justa",
-  "chord.tritone": "Tritono"
+  "chord.tritone": "Tritono",
+
+  "settings.title": "Configuración",
+  "settings.profile": "Perfil del Alumno",
+  "settings.profile.hint": "Define la velocidad y la tolerancia de evaluación para los ejercicios.",
+  "settings.display": "Visualización",
+  "settings.chord.mode": "Modo de acordes",
+  "settings.chord.full": "Nombre completo",
+  "settings.chord.short": "Cifra (Am7)",
+  "settings.lang": "Idioma",
+  "settings.import.title": "Importar por enlace",
+  "settings.import.recording.hint": "URL de un archivo .pia (grabación)",
+  "settings.import.exercises.hint": "URL de un manifiesto JSON de ejercicios",
+  "settings.import.load": "Cargar",
+  "settings.import.loading": "Cargando…",
+  "settings.import.error.fetch": "No se pudo cargar el enlace",
+  "settings.import.error.parse": "Formato de archivo no válido",
+  "settings.import.tab.recording": "Grabación",
+  "settings.import.tab.exercises": "Ejercicios",
+  "settings.close": "Cerrar"
 }

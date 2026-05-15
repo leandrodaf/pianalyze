@@ -174,5 +174,24 @@
   "chord.minor-3rd": "Minor 3rd",
   "chord.major-3rd": "Major 3rd",
   "chord.perfect-4th": "Perfect 4th",
-  "chord.tritone": "Tritone"
+  "chord.tritone": "Tritone",
+
+  "settings.title": "Settings",
+  "settings.profile": "Student Profile",
+  "settings.profile.hint": "Sets playback speed and judgment tolerance for exercises.",
+  "settings.display": "Display",
+  "settings.chord.mode": "Chord display",
+  "settings.chord.full": "Full name",
+  "settings.chord.short": "Symbol (Am7)",
+  "settings.lang": "Language",
+  "settings.import.title": "Import by link",
+  "settings.import.recording.hint": "URL of a .pia file (recording)",
+  "settings.import.exercises.hint": "URL of an exercise JSON manifest",
+  "settings.import.load": "Load",
+  "settings.import.loading": "Loading…",
+  "settings.import.error.fetch": "Could not load the URL",
+  "settings.import.error.parse": "Invalid file format",
+  "settings.import.tab.recording": "Recording",
+  "settings.import.tab.exercises": "Exercises",
+  "settings.close": "Close"
 }
