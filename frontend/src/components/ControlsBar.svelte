@@ -3,10 +3,7 @@
   import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
 
   const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
-  const SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2] as const
-  const BPM_STEP = 4
-  const BPM_MIN  = 20
-  const BPM_MAX  = 300
+  const SPEEDS = [0.25, 0.5, 0.75, 1, 1.5, 2] as const
 
   $: s = $playbackStore
   $: isPlaying   = s.status === 'playing'
@@ -17,23 +14,7 @@
   $: sections    = s.recording?.sections ?? []
 
   $: originalBpm = s.recording?.bpm ?? null
-  $: currentBpm  = originalBpm ? Math.max(BPM_MIN, Math.round(originalBpm * speed)) : null
-  $: bpmPct      = originalBpm && currentBpm ? Math.round((currentBpm / originalBpm) * 100) : 100
-
-  function decreaseBpm() {
-    if (!originalBpm || currentBpm == null) return
-    setSpeed(Math.max(BPM_MIN, currentBpm - BPM_STEP) / originalBpm)
-  }
-
-  function increaseBpm() {
-    if (!originalBpm || currentBpm == null) return
-    setSpeed(Math.min(BPM_MAX, currentBpm + BPM_STEP) / originalBpm)
-  }
-
-  function resetBpm() {
-    if (!originalBpm) return
-    setSpeed(1)
-  }
+  $: currentBpm  = originalBpm ? Math.round(originalBpm * speed) : null
 
   function goToSection(idx: number) {
     const sec = sections[idx]
@@ -61,42 +42,22 @@
 
   <div class="sep"></div>
 
-  {#if originalBpm && currentBpm != null}
-    <div class="bpm-control">
+  <div class="speed-group">
+    <span class="speed-label">velocidade</span>
+    {#each SPEEDS as x}
       <button
-        class="bpm-step"
-        on:click={decreaseBpm}
-        disabled={currentBpm <= BPM_MIN}
-        title="Diminuir tempo"
-      >−</button>
-      <button class="bpm-display" on:click={resetBpm} title="Restaurar BPM original">
-        <span class="bpm-value">{currentBpm}</span>
-        <span class="bpm-unit">BPM</span>
-        {#if bpmPct !== 100}
-          <span class="bpm-pct">{bpmPct}%</span>
-        {/if}
+        class="speed-pill"
+        class:active={Math.abs(speed - x) < 0.01}
+        on:click={() => setSpeed(x)}
+        title="{x}× {originalBpm ? `(${Math.round(originalBpm * x)} BPM)` : ''}"
+      >
+        {x === 1 ? '1×' : x < 1 ? `${x * 100 | 0}%` : `${x}×`}
       </button>
-      <button
-        class="bpm-step"
-        on:click={increaseBpm}
-        disabled={currentBpm >= BPM_MAX}
-        title="Aumentar tempo"
-      >+</button>
-    </div>
-  {:else}
-    <div class="group">
-      {#each SPEEDS as x}
-        <button
-          class="speed-pill"
-          class:active={speed === x}
-          on:click={() => setSpeed(x)}
-          title={`${x}x speed`}
-        >
-          {x}x
-        </button>
-      {/each}
-    </div>
-  {/if}
+    {/each}
+    {#if currentBpm != null && Math.abs(speed - 1) > 0.01}
+      <span class="bpm-badge">{currentBpm} BPM</span>
+    {/if}
+  </div>
 
   <div class="sep"></div>
 
@@ -174,108 +135,61 @@
     color: #c4aef8;
   }
 
-  .speed-pill {
-    height: 22px;
-    padding: 0 0.45rem;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 11px;
-    color: rgba(255,255,255,0.4);
-    font-size: 0.7rem;
+  /* ── Speed control ───────────────────────────────────────────────────────── */
+  .speed-group {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .speed-label {
+    font-size: 0.60rem;
     font-weight: 600;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 2px;
+    white-space: nowrap;
+  }
+
+  .speed-pill {
+    height: 26px;
+    min-width: 36px;
+    padding: 0 0.5rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 6px;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.72rem;
+    font-weight: 700;
     cursor: pointer;
     transition: background 0.12s, color 0.12s, border-color 0.12s;
     white-space: nowrap;
   }
 
   .speed-pill:hover {
-    background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.11);
+    color: rgba(255,255,255,0.85);
   }
 
   .speed-pill.active {
-    background: rgba(123,95,240,0.22);
-    border-color: rgba(123,95,240,0.55);
-    color: #c4aef8;
-    font-weight: 700;
+    background: rgba(123,95,240,0.28);
+    border-color: rgba(123,95,240,0.65);
+    color: #d4bfff;
+    font-weight: 800;
+  }
+
+  .bpm-badge {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: rgba(255,210,50,0.55);
+    font-variant-numeric: tabular-nums;
+    margin-left: 2px;
+    white-space: nowrap;
   }
 
   .loop-btn {
     padding: 0 0.45rem;
-  }
-
-  /* ── BPM control ─────────────────────────────────────────────────────────── */
-  .bpm-control {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .bpm-step {
-    width: 22px;
-    height: 26px;
-    background: transparent;
-    border: none;
-    color: rgba(255,255,255,0.5);
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.1s, color 0.1s;
-    line-height: 1;
-    flex-shrink: 0;
-  }
-  .bpm-step:hover:not(:disabled) {
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-  }
-  .bpm-step:disabled {
-    opacity: 0.25;
-    cursor: not-allowed;
-  }
-
-  .bpm-display {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    padding: 0 0.3rem;
-    height: 26px;
-    background: transparent;
-    border: none;
-    border-left: 1px solid rgba(255,255,255,0.08);
-    border-right: 1px solid rgba(255,255,255,0.08);
-    cursor: pointer;
-    transition: background 0.1s;
-    min-width: 64px;
-    justify-content: center;
-  }
-  .bpm-display:hover {
-    background: rgba(255,255,255,0.06);
-  }
-
-  .bpm-value {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0.75);
-    letter-spacing: 0.01em;
-    font-variant-numeric: tabular-nums;
-  }
-  .bpm-unit {
-    font-size: 0.6rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0.35);
-    letter-spacing: 0.05em;
-    align-self: center;
-  }
-  .bpm-pct {
-    font-size: 0.6rem;
-    font-weight: 600;
-    color: rgba(255,210,50,0.6);
-    letter-spacing: 0.02em;
-    align-self: center;
   }
 
   .sections-group {
