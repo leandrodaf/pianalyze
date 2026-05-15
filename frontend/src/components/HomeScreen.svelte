@@ -13,6 +13,7 @@
   import type { Recording } from '../lib/recording-types'
 
   import { addToast } from '../stores/toast'
+  import { handleDevicesChanged } from '../lib/device-handler'
 
   export let onPlay: (exercise: Exercise | null) => void
   export let onDeviceReady: () => void
@@ -37,21 +38,15 @@
 
     unsubDevices = EventsOn('devices:changed', (updated: main.DeviceInfo[]) => {
       const prev = devices
+      const next = handleDevicesChanged(updated, prev,
+        { selectedId, connected, showDeviceList, deviceError },
+        { stopCapture: StopCapture, addToast, msgDisconnected: $t('toast.device.disconnected'), msgConnected: $t('toast.device.connected') },
+      )
       devices = updated
-      if (selectedId !== null && !updated.find(d => d.id === selectedId)) {
-        // Selected device disconnected — reset state
-        selectedId = null
-        connected = false
-        showDeviceList = true
-        deviceError = ''
-        StopCapture().catch(() => {})
-        addToast($t('toast.device.disconnected'), 'warning')
-      } else {
-        const added = updated.filter(d => !prev.find(p => p.id === d.id))
-        if (added.length > 0) {
-          addToast($t('toast.device.connected'), 'success')
-        }
-      }
+      selectedId = next.selectedId
+      connected = next.connected
+      showDeviceList = next.showDeviceList
+      deviceError = next.deviceError
     })
   })
 

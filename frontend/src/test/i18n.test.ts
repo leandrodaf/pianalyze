@@ -172,3 +172,38 @@ describe('i18n — LOCALE_NAMES', () => {
     }
   })
 })
+
+describe('i18n — toast locale keys', () => {
+  const LOCALES = ['en', 'pt-BR', 'es', 'zh-CN'] as const
+
+  beforeEach(() => { vi.resetModules() })
+  afterEach(() => { vi.unstubAllGlobals() })
+
+  for (const locale of LOCALES) {
+    it(`"toast.device.disconnected" is a non-empty string in ${locale}`, async () => {
+      vi.stubGlobal('navigator', { language: locale })
+      const { t } = await import('../lib/i18n')
+      const { get } = await import('svelte/store')
+      const { locale: localeStore } = await import('../lib/i18n')
+      localeStore.set(locale)
+      const translate = get(t)
+      const result = translate('toast.device.disconnected')
+      expect(typeof result).toBe('string')
+      expect(result.length).toBeGreaterThan(0)
+      expect(result).not.toBe('toast.device.disconnected')
+    })
+
+    it(`"toast.device.connected" is a non-empty string in ${locale}`, async () => {
+      vi.stubGlobal('navigator', { language: locale })
+      const { t } = await import('../lib/i18n')
+      const { get } = await import('svelte/store')
+      const { locale: localeStore } = await import('../lib/i18n')
+      localeStore.set(locale)
+      const translate = get(t)
+      const result = translate('toast.device.connected')
+      expect(typeof result).toBe('string')
+      expect(result.length).toBeGreaterThan(0)
+      expect(result).not.toBe('toast.device.connected')
+    })
+  }
+})
