@@ -1,13 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { connectMidiStore, midiStore } from './stores/midi'
-  import { loadRecording, setPractice, play } from './stores/playback'
+  import { loadRecording, setPractice, play, stop, clearLoop, playbackStore, noteIntervals } from './stores/playback'
   import HomeScreen from './components/HomeScreen.svelte'
   import Piano from './components/Piano.svelte'
   import NoteWaterfall from './components/NoteWaterfall.svelte'
-  import RecordControls from './components/RecordControls.svelte'
-  import ImportControls from './components/ImportControls.svelte'
+  import Timeline from './components/Timeline.svelte'
+  import ControlsBar from './components/ControlsBar.svelte'
   import type { Exercise } from './lib/exercise-types'
+  import type { Recording } from './lib/recording-types'
   import { t } from './lib/i18n'
 
   type Page = 'home' | 'playing'
@@ -44,6 +45,22 @@
     deviceReady = true
   }
 
+  function clearLoadedRecording() {
+    stop()
+    noteIntervals.set([])
+    playbackStore.update(s => ({
+      ...s,
+      status: 'idle',
+      positionMs: 0,
+      durationMs: 0,
+      recording: null,
+      practice: false,
+      loopEnabled: false,
+      loopStart: null,
+      loopEnd: null,
+    }))
+  }
+
   function handlePlay(exercise: Exercise | null) {
     activeExercise = exercise
     page = 'playing'
@@ -52,17 +69,31 @@
       setPractice(true)   // exercise with data → practice mode (notes come from the right)
       play()              // start playback immediately so notes appear from right edge
     } else {
-      setPractice(false)  // free play → live mode (line on right, history trails left)
+      clearLoadedRecording()
     }
   }
 
+  function handleImportRecording(recording: Recording) {
+    loadRecording(recording)
+    setPractice(false)
+    activeExercise = null
+    page = 'playing'
+  }
+
   function goHome() {
+    stop()
+    clearLoop()
+    activeExercise = null
     page = 'home'
   }
 </script>
 
 {#if page === 'home'}
-  <HomeScreen onPlay={handlePlay} onDeviceReady={handleDeviceReady} />
+  <HomeScreen
+    onPlay={handlePlay}
+    onDeviceReady={handleDeviceReady}
+    onImportRecording={handleImportRecording}
+  />
 
 {:else}
   <div class="layout">
@@ -109,11 +140,13 @@
       </div>
     </div>
 
+    <div class="timeline-area">
+      <Timeline />
+    </div>
+
     <!-- Controls bar -->
     <div class="controls-bar">
-      <RecordControls />
-      <div class="sep"></div>
-      <ImportControls />
+      <ControlsBar />
     </div>
 
     <!-- Piano keyboard -->
@@ -289,22 +322,17 @@
   }
 
   /* ── Controls bar ─────────────────────────────────────────────────────────── */
+  .timeline-area {
+    height: 60px;
+    flex-shrink: 0;
+  }
+
   .controls-bar {
     flex-shrink: 0;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0 0.75rem;
+    height: 44px;
     background: #1b1d25;
     border-top: 1px solid rgba(255,255,255,0.07);
     border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-
-  .sep {
-    width: 1px; height: 20px;
-    background: rgba(255,255,255,0.1);
-    flex-shrink: 0;
   }
 
   /* ── Piano strip ──────────────────────────────────────────────────────────── */
@@ -320,7 +348,8 @@
   /* Large screens: taller piano, bigger controls */
   @media (min-width: 1600px) {
     .top-bar { height: 42px; padding: 0 1.2rem; }
-    .controls-bar { height: 46px; padding: 0 1.2rem; gap: 0.75rem; }
+    .timeline-area { height: 68px; }
+    .controls-bar { height: 48px; }
     .exercise-name { font-size: .9rem; }
     .hud { bottom: 18px; left: 18px; padding: 12px 18px; }
     .hud-name { font-size: 1.7rem; }
@@ -328,7 +357,8 @@
 
   @media (min-width: 2200px) {
     .top-bar { height: 48px; }
-    .controls-bar { height: 52px; }
+    .timeline-area { height: 76px; }
+    .controls-bar { height: 54px; }
     .exercise-name { font-size: 1rem; }
     .hud-name { font-size: 2rem; }
   }
