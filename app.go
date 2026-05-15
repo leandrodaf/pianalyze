@@ -12,6 +12,7 @@ import (
 	"github.com/leandrodaf/midi/v2/sdk/contracts"
 	"github.com/leandrodaf/midi/v2/sdk/midi"
 	"github.com/leandrodaf/pianalyze/internal/constants"
+	"github.com/leandrodaf/pianalyze/internal/grading"
 	"github.com/leandrodaf/pianalyze/internal/pipeline"
 	"github.com/leandrodaf/pianalyze/internal/pipeline/pipelinectx"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -67,11 +68,16 @@ type App struct {
 	isRec    bool
 	recStart time.Time
 	recBuf   []RecordedEvent
+
+	grader *grading.Grader
 }
 
 // NewApp creates a new App instance.
 func NewApp() *App {
-	return &App{recBuf: make([]RecordedEvent, 0, 2048)}
+	return &App{
+		recBuf: make([]RecordedEvent, 0, 2048),
+		grader: grading.New(),
+	}
 }
 
 // startup is called by Wails when the application is ready.
@@ -184,34 +190,7 @@ func (a *App) StartCapture() error {
 	a.capturing = true
 	a.stopFn = cancel
 
-	// Build the emit callback: assembles MIDIState from the fully-processed context
-	// and pushes it to the frontend. Called by FinalStage on every event.
-	emit := func(pCtx *pipelinectx.PipelineContext) {
-		runtime.EventsEmit(a.ctx, "midi:state", MIDIState{
-			PressedNotes: pCtx.PressedNotes,
-			CurrentKey:   pCtx.CurrentKey,
-			Chord:        pCtx.Chord,
-			Inversion:    pCtx.Inversion,
-			Triad:        pCtx.Triad,
-			Velocity:     pCtx.Velocity,
-			Dynamic:      pCtx.Dynamic.Label(),
-			Interval:     pCtx.Interval,
-		})
-
-		// Append to recording buffer when active.
-		a.recMu.Lock()
-		if a.isRec {
-			a.recBuf = append(a.recBuf, RecordedEvent{
-				T:    time.Since(a.recStart).Milliseconds(),
-				Cmd:  byte(pCtx.MIDIEvent.Command),
-				Note: pCtx.MIDIEvent.Note,
-				Vel:  pCtx.MIDIEvent.Velocity,
-			})
-		}
-		a.recMu.Unlock()
-	}
-
-	processor := pipeline.NewProcessorWithEmitter(a.logger, emit)
+	processor := pipeline.NewProcessorWithEmitter(a.logger, a.handleEvent)
 
 	go func() {
 		defer func() {
@@ -278,6 +257,80 @@ func (a *App) SaveRecording(jsonData string) error {
 		return err
 	}
 	return os.WriteFile(path, []byte(jsonData), 0o644)
+}
+
+// ── Grading API (called by frontend practice engine) ─────────────────────────
+
+// LoadPracticeIntervals replaces the set of expected note intervals used for
+// grading. Call this once when a recording is loaded for practice.
+func (a *App) LoadPracticeIntervals(intervals []grading.Interval) {
+	a.grader.Load(intervals)
+}
+
+// StartPractice activates grading from a given recording position and speed.
+// fromMs is the positionMs at which playback starts; speedMult is the current
+// playback speed (1.0 = normal).
+func (a *App) StartPractice(fromMs int64, speedMult float64) {
+	a.grader.Start(fromMs, speedMult)
+}
+
+// PausePractice records the current position and pauses grading.
+func (a *App) PausePractice(posMs int64) {
+	a.grader.Pause(posMs)
+}
+
+// StopPractice deactivates grading entirely.
+func (a *App) StopPractice() {
+	a.grader.Stop()
+}
+
+// handleEvent is the pipeline emit callback. It pushes MIDI state to the
+// frontend, grades incoming notes, and appends to the recording buffer when
+// a recording session is active.
+func (a *App) handleEvent(pCtx *pipelinectx.PipelineContext) {
+	runtime.EventsEmit(a.ctx, "midi:state", MIDIState{
+		PressedNotes: pCtx.PressedNotes,
+		CurrentKey:   pCtx.CurrentKey,
+		Chord:        pCtx.Chord,
+		Inversion:    pCtx.Inversion,
+		Triad:        pCtx.Triad,
+		Velocity:     pCtx.Velocity,
+		Dynamic:      pCtx.Dynamic.Label(),
+		Interval:     pCtx.Interval,
+	})
+	a.gradeEvent(pCtx)
+	a.bufferEvent(pCtx)
+}
+
+// gradeEvent grades a single MIDI event with Go-side precision and emits the
+// result to the frontend via "grade:result" (note-on) or "grade:hold" (note-off).
+func (a *App) gradeEvent(pCtx *pipelinectx.PipelineContext) {
+	note := int(pCtx.MIDIEvent.Note)
+	if pCtx.MIDIEvent.Velocity > 0 {
+		if res, ok := a.grader.NoteOn(note); ok {
+			runtime.EventsEmit(a.ctx, "grade:result", res)
+		}
+	} else {
+		if res, ok := a.grader.NoteOff(note); ok {
+			runtime.EventsEmit(a.ctx, "grade:hold", res)
+		}
+	}
+}
+
+// bufferEvent appends the event to the in-memory recording buffer when a
+// recording session is active. Safe to call unconditionally on every event.
+func (a *App) bufferEvent(pCtx *pipelinectx.PipelineContext) {
+	a.recMu.Lock()
+	defer a.recMu.Unlock()
+	if !a.isRec {
+		return
+	}
+	a.recBuf = append(a.recBuf, RecordedEvent{
+		T:    time.Since(a.recStart).Milliseconds(),
+		Cmd:  byte(pCtx.MIDIEvent.Command),
+		Note: pCtx.MIDIEvent.Note,
+		Vel:  pCtx.MIDIEvent.Velocity,
+	})
 }
 
 // StopCapture halts MIDI capture and tears down the pipeline goroutine.
