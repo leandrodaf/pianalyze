@@ -48,6 +48,8 @@ export interface PianoCanvas {
   updateKeys(pressed: number[], velocity: number): void
   /** Replace the finger hint map. Pass an empty map to clear all hints. */
   setFingerMap(map: Map<number, Finger>): void
+  /** Highlight keys that should be pressed now (guide from recording). color = CSS hex. */
+  setGuideNotes(notes: Map<number, string>): void
   redraw(): void
   resize(width: number, height: number): void
 }
@@ -79,6 +81,8 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
   let prevPressed  = new Set<number>()
   let fingerMap    = new Map<number, Finger>()
   let prevFingerKeys = new Set<number>()
+
+  let guideNotes: Map<number, string> = new Map()
 
   let wW = 0
   let wH = 0
@@ -119,11 +123,14 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
     ctx.quadraticCurveTo(x, kh, x, kh - radius)
     ctx.closePath()
 
+    const guideColor = guideNotes.get(note)
     let color: string
     if (pressed && finger) {
       color = brighten(FINGER_COLORS[finger], velocityIntensity(state[note].velocity))
     } else if (pressed) {
       color = brighten(noteColor(note), velocityIntensity(state[note].velocity))
+    } else if (guideColor) {
+      color = brighten(guideColor, 0.62)
     } else if (finger) {
       color = hintTint(FINGER_COLORS[finger])
     } else {
@@ -164,15 +171,19 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
   }
 
   function drawBlackKey(note: number) {
-    const x       = xForBlack(note)
-    const pressed = state[note].pressed
-    const finger  = fingerMap.get(note)
+    const x          = xForBlack(note)
+    const pressed    = state[note].pressed
+    const finger     = fingerMap.get(note)
+    const guideColor = guideNotes.get(note)
 
     if (pressed && finger) {
       ctx.fillStyle = brighten(FINGER_COLORS[finger], velocityIntensity(state[note].velocity))
       ctx.fillRect(x, 0, bW, bH)
     } else if (pressed) {
       ctx.fillStyle = brighten(noteColor(note), velocityIntensity(state[note].velocity))
+      ctx.fillRect(x, 0, bW, bH)
+    } else if (guideColor) {
+      ctx.fillStyle = brighten(guideColor, 0.52)
       ctx.fillRect(x, 0, bW, bH)
     } else if (finger) {
       // Hint: colored glow on black key
@@ -267,14 +278,21 @@ export function createPianoCanvas(canvas: HTMLCanvasElement): PianoCanvas {
     },
 
     setFingerMap(map) {
-      // Collect all keys that changed hint status
       const dirty = new Set<number>()
-      for (const n of map.keys())         if (!fingerMap.has(n) || fingerMap.get(n) !== map.get(n)) dirty.add(n)
-      for (const n of prevFingerKeys)     if (!map.has(n)) dirty.add(n)
-
+      for (const n of map.keys())     if (!fingerMap.has(n) || fingerMap.get(n) !== map.get(n)) dirty.add(n)
+      for (const n of prevFingerKeys) if (!map.has(n)) dirty.add(n)
       fingerMap = map
       prevFingerKeys = new Set(map.keys())
+      for (const n of dirty) {
+        if (n >= MIDI_MIN && n <= MIDI_MAX) repaintKey(n)
+      }
+    },
 
+    setGuideNotes(notes) {
+      const dirty = new Set<number>()
+      for (const n of notes.keys())    if (guideNotes.get(n) !== notes.get(n)) dirty.add(n)
+      for (const n of guideNotes.keys()) if (!notes.has(n)) dirty.add(n)
+      guideNotes = notes
       for (const n of dirty) {
         if (n >= MIDI_MIN && n <= MIDI_MAX) repaintKey(n)
       }

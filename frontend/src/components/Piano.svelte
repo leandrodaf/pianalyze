@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte'
+  import { get } from 'svelte/store'
   import { midiStore } from '../stores/midi'
   import { playbackStore, noteIntervals } from '../stores/playback'
+  import { prepStore } from '../stores/prep'
   import { createPianoCanvas, type PianoCanvas } from '../lib/piano-canvas'
   import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
-  import type { Finger } from '../lib/recording-types'
-
-  // Hints shown this many ms before the note is due at the golden line
-  const HINT_WINDOW_MS = 1500
+  import { FINGER_COLORS } from '../lib/finger-colors'
+  import { noteColor } from '../lib/note-colors'
 
   let container: HTMLDivElement
   let canvasEl: HTMLCanvasElement
@@ -26,27 +26,44 @@
       piano?.updateKeys(state.pressedNotes, state.velocity)
     })
 
+    const unsubPrep = prepStore.subscribe(prep => {
+      if (!piano) return
+      if (!prep.active) return
+      const guide = new Map<number, string>()
+      for (const [n, c] of prep.requiredKeys) {
+        if (!prep.confirmedKeys.has(n)) guide.set(n, c)
+      }
+      piano.setGuideNotes(guide)
+      piano.setFingerMap(new Map())
+    })
+
     const unsubPlayback = playbackStore.subscribe(state => {
       if (!piano) return
-      const hints = new Map<number, Finger>()
-      if (state.practice && state.status === 'playing') {
+
+      // Prep mode owns the guide notes
+      if (get(prepStore).active) return
+
+      const guide = new Map<number, string>()
+
+      if (state.recording) {
         const practiceMs = state.positionMs - DEFAULT_LEAD_TIME_SEC * 1000
-        const ivs = $noteIntervals
-        for (const iv of ivs) {
-          if (iv.finger == null) continue
-          // Show hint for notes about to arrive at the golden line
-          if (iv.startMs >= practiceMs && iv.startMs <= practiceMs + HINT_WINDOW_MS) {
-            // Closest upcoming note per pitch wins
-            if (!hints.has(iv.note)) hints.set(iv.note, iv.finger)
+        for (const iv of $noteIntervals) {
+          if (iv.startMs <= practiceMs && practiceMs < iv.endMs) {
+            if (!guide.has(iv.note)) {
+              guide.set(iv.note, iv.finger != null ? FINGER_COLORS[iv.finger] : noteColor(iv.note))
+            }
           }
         }
       }
-      piano.setFingerMap(hints)
+
+      piano.setGuideNotes(guide)
+      piano.setFingerMap(new Map())
     })
 
     return () => {
       ro.disconnect()
       unsubMidi()
+      unsubPrep()
       unsubPlayback()
     }
   })

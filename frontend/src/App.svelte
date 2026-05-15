@@ -2,7 +2,9 @@
   import { onMount } from 'svelte'
   import { connectMidiStore, midiStore } from './stores/midi'
   import { loadRecording, setPractice, play, stop, clearLoop, playbackStore, noteIntervals } from './stores/playback'
+  import { get } from 'svelte/store'
   import HomeScreen from './components/HomeScreen.svelte'
+  import PrepBanner from './components/PrepBanner.svelte'
   import Piano from './components/Piano.svelte'
   import NoteWaterfall from './components/NoteWaterfall.svelte'
   import Timeline from './components/Timeline.svelte'
@@ -11,6 +13,9 @@
   import type { Recording } from './lib/recording-types'
   import { t } from './lib/i18n'
   import Toast from './components/Toast.svelte'
+  import { prepStore } from './stores/prep'
+  import { FINGER_COLORS } from './lib/finger-colors'
+  import { noteColor } from './lib/note-colors'
 
   const KEY_DISPLAY: Record<string, string> = {
     'C': 'Dó M', 'G': 'Sol M', 'D': 'Ré M', 'A': 'Lá M',
@@ -21,7 +26,7 @@
   }
   function fmtKey(k: string): string { return KEY_DISPLAY[k] ?? k }
 
-  type Page = 'home' | 'playing'
+  type Page = 'home' | 'prep' | 'playing'
 
   let page: Page = 'home'
   let deviceReady = false
@@ -78,13 +83,38 @@
 
   function handlePlay(exercise: Exercise | null) {
     activeExercise = exercise
-    page = 'playing'
     if (exercise?.data) {
       loadRecording(exercise.data)
       setPractice(true)
+      const ivs = get(noteIntervals)
+      const hasFingers = ivs.some(iv => iv.finger != null)
+      if (hasFingers) {
+        const keys = new Map<number, string>()
+        for (const iv of ivs) {
+          if (!keys.has(iv.note)) {
+            keys.set(iv.note, iv.finger != null ? FINGER_COLORS[iv.finger] : noteColor(iv.note))
+          }
+        }
+        prepStore.activate(keys)
+        page = 'prep'
+      } else {
+        page = 'playing'
+      }
     } else {
       clearLoadedRecording()
+      page = 'playing'
     }
+  }
+
+  function handlePrepComplete() {
+    prepStore.deactivate()
+    page = 'playing'
+    play()
+  }
+
+  function handlePrepSkip() {
+    prepStore.deactivate()
+    page = 'playing'
   }
 
   function handleImportRecording(recording: Recording) {
@@ -106,6 +136,13 @@
     activeExercise = null
     page = 'home'
   }
+
+  function goHomeFromPrep() {
+    activeExercise = null
+    prepStore.deactivate()
+    clearLoadedRecording()
+    page = 'home'
+  }
 </script>
 
 <Toast />
@@ -117,6 +154,17 @@
     onImportRecording={handleImportRecording}
     onStartRecording={handleStartRecording}
   />
+
+{:else if page === 'prep'}
+  <div class="layout">
+    <PrepBanner onComplete={handlePrepComplete} onSkip={handlePrepSkip} onBack={goHomeFromPrep} />
+    <div class="waterfall-area">
+      <NoteWaterfall />
+    </div>
+    <div class="timeline-area"><Timeline /></div>
+    <div class="controls-bar"><ControlsBar /></div>
+    <div class="piano-area"><Piano /></div>
+  </div>
 
 {:else}
   <div class="layout">
