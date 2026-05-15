@@ -5,6 +5,14 @@
  */
 
 export const CHORD_I18N_KEYS: Record<string, string> = {
+  // ── Intervals (2 notes) ───────────────────────────────────────────────────
+  'Minor 2nd':   'chord.minor-2nd',
+  'Major 2nd':   'chord.major-2nd',
+  'Minor 3rd':   'chord.minor-3rd',
+  'Major 3rd':   'chord.major-3rd',
+  'Perfect 4th': 'chord.perfect-4th',
+  'Tritone':     'chord.tritone',
+
   // ── Triads ────────────────────────────────────────────────────────────────
   'Major':           'chord.major',
   'Minor':           'chord.minor',

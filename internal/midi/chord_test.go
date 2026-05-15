@@ -112,10 +112,55 @@ func TestGetChordName_Dominant9th(t *testing.T) {
 }
 
 func TestGetChordName_TooFewNotes(t *testing.T) {
-	// C + E = major third; not a recognized 2-note chord (only power chords are)
-	_, _, _, found := GetChordName([]int{60, 64})
+	// C4 + C5: same pitch class (both = 0 mod 12) — unison/octave, not a recognized chord.
+	_, _, _, found := GetChordName([]int{60, 72})
 	if found {
-		t.Error("expected no chord for unrecognized 2-note interval")
+		t.Error("expected no chord for unison (same pitch class)")
+	}
+}
+
+func TestGetChordName_MajorThird(t *testing.T) {
+	// C4=60, E4=64 — major third interval
+	name, inversion, root, found := GetChordName([]int{60, 64})
+	if !found {
+		t.Fatal("expected Major 3rd to be found")
+	}
+	if name != "Major 3rd" {
+		t.Errorf("name: got %q, want %q", name, "Major 3rd")
+	}
+	if inversion != "Root position" {
+		t.Errorf("inversion: got %q, want %q", inversion, "Root position")
+	}
+	if root != 0 {
+		t.Errorf("root: got %d, want 0 (C)", root)
+	}
+}
+
+func TestGetChordName_MinorThird(t *testing.T) {
+	// A3=57, C4=60 — minor third interval
+	name, _, root, found := GetChordName([]int{57, 60})
+	if !found {
+		t.Fatal("expected Minor 3rd to be found")
+	}
+	if name != "Minor 3rd" {
+		t.Errorf("name: got %q, want %q", name, "Minor 3rd")
+	}
+	if root != 9 {
+		t.Errorf("root: got %d, want 9 (A)", root)
+	}
+}
+
+func TestGetChordName_Tritone(t *testing.T) {
+	// C4=60, F#4=66 — tritone interval
+	name, _, root, found := GetChordName([]int{60, 66})
+	if !found {
+		t.Fatal("expected Tritone to be found")
+	}
+	if name != "Tritone" {
+		t.Errorf("name: got %q, want %q", name, "Tritone")
+	}
+	if root != 0 {
+		t.Errorf("root: got %d, want 0 (C)", root)
 	}
 }
 

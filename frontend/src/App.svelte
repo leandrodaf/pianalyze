@@ -50,6 +50,21 @@
   $: rootNote       = hasChord ? translateRootNote($midiStore.chordRoot, $t) : ''
   $: chordDisplay   = rootNote ? `${rootNote} ${chordLabel}` : chordLabel
 
+  // Chord progression trail — tracks last 4 distinct displayed chords locally.
+  let chordHistory: string[] = []
+  let _lastChordDisplay = ''
+  $: {
+    if (chordDisplay && chordDisplay !== _lastChordDisplay) {
+      if (_lastChordDisplay) {
+        chordHistory = [...chordHistory, _lastChordDisplay].slice(-4)
+      }
+      _lastChordDisplay = chordDisplay
+    } else if (!chordDisplay) {
+      _lastChordDisplay = ''
+    }
+  }
+  $: prevChords = chordHistory.slice(-3)
+
   $: pos = $playbackStore.positionMs
   $: rec = $playbackStore.recording
   $: activePreset = $playbackStore.difficultyPreset
@@ -232,6 +247,14 @@
 
       <!-- Analysis HUD -->
       <div class="hud" class:hud-active={hasChord}>
+        {#if prevChords.length > 0 && hasChord}
+          <div class="hud-history">
+            {#each prevChords as ch, i}
+              <span class="hud-hist-item" style="opacity:{0.25 + i * 0.2}">{ch}</span>
+            {/each}
+            <span class="hud-hist-arrow">▶</span>
+          </div>
+        {/if}
         <div class="hud-chord">
           {#if hasChord}
             <span class="hud-name">{chordDisplay}</span>
@@ -442,6 +465,26 @@
     -webkit-backdrop-filter: blur(8px);
   }
   .hud.hud-active { opacity: 1; }
+
+  .hud-history {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+    overflow: hidden;
+  }
+  .hud-hist-item {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+  }
+  .hud-hist-arrow {
+    font-size: 0.5rem;
+    color: rgba(255,255,255,0.3);
+    flex-shrink: 0;
+  }
 
   .hud-chord {
     display: flex;
