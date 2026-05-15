@@ -70,5 +70,11 @@
   "lang.es": "Español",
 
   "toast.device.disconnected": "Dispositivo MIDI desconectado",
-  "toast.device.connected": "Dispositivo MIDI conectado"
+  "toast.device.connected": "Dispositivo MIDI conectado",
+
+  "grade.perfect": "Perfeito!",
+  "grade.good": "Boa!",
+  "grade.ok": "OK",
+  "grade.miss": "Perdeu",
+  "grade.wrong": "Errou"
 }

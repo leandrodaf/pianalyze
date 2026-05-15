@@ -71,5 +71,11 @@
   "lang.zh-CN": "中文（简体）",
 
   "toast.device.disconnected": "MIDI 设备已断开",
-  "toast.device.connected": "MIDI 设备已连接"
+  "toast.device.connected": "MIDI 设备已连接",
+
+  "grade.perfect": "完美！",
+  "grade.good": "很好",
+  "grade.ok": "还行",
+  "grade.miss": "错过",
+  "grade.wrong": "错误"
 }
