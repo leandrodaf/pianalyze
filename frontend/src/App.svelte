@@ -21,7 +21,6 @@
 
   import { translateChord, translateInversion, translateRootNote, chordShorthand } from './lib/chord-i18n'
   import { settingsStore } from './stores/settings'
-  import { StartRecording } from '../wailsjs/go/main/App'
 
   const KEY_DISPLAY: Record<string, string> = {
     'C': 'Dó M', 'G': 'Sol M', 'D': 'Ré M', 'A': 'Lá M',
@@ -39,6 +38,7 @@
   let deviceReady = false
   let activeExercise: Exercise | null = null
   let isRecordingMode = false
+  let isLiveRecording = false
 
   $: chord     = $midiStore.chord
   $: inversion = $midiStore.inversion
@@ -176,8 +176,8 @@
     activeExercise = null
     clearLoadedRecording()
     isRecordingMode = true
+    isLiveRecording = false
     page = 'playing'
-    await StartRecording()
   }
 
   function goHome() {
@@ -187,6 +187,7 @@
     prepStore.deactivate()
     activeExercise = null
     isRecordingMode = false
+    isLiveRecording = false
     page = 'home'
   }
 </script>
@@ -220,10 +221,16 @@
             <span class="exercise-diff">{activeExercise.subtitle}</span>
           </div>
         {:else if isRecordingMode}
-          <div class="rec-live-tag">
-            <span class="rec-live-dot"></span>
-            {$t('rec.live')}
-          </div>
+          {#if isLiveRecording}
+            <div class="rec-live-tag">
+              <span class="rec-live-dot"></span>
+              {$t('rec.live')}
+            </div>
+          {:else}
+            <div class="rec-ready-tag">
+              🔴 {$t('rec.ready')}
+            </div>
+          {/if}
         {:else if recTitle}
           <div class="rec-title-tag">
             <span class="rec-title">{recTitle}</span>
@@ -238,7 +245,8 @@
             <RecordControls
               savePath={$settingsStore.savePath}
               onSaved={(p) => { /* recording saved, stay on page */ }}
-              onDone={() => { isRecordingMode = false; goHome() }}
+              onDone={() => { isRecordingMode = false; isLiveRecording = false; goHome() }}
+              onRecordingStateChange={(active) => { isLiveRecording = active }}
             />
           {:else}
             {#if recBpm || recTimeSig || recKey || recMeasure}
@@ -402,6 +410,13 @@
     font-weight: 700;
     color: #ff6060;
     letter-spacing: 0.06em;
+  }
+
+  .rec-ready-tag {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.04em;
   }
 
   .rec-live-dot {

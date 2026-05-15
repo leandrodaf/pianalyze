@@ -190,5 +190,6 @@
   "settings.savepath.default": "Padrão (Documentos/pianalyze)",
   "settings.savepath.change": "Alterar…",
   "settings.savepath.reset": "Redefinir",
-  "settings.savepath.dialog": "Escolher pasta de gravações"
+  "settings.savepath.dialog": "Escolher pasta de gravações",
+  "rec.ready": "Pronto para gravar"
 }

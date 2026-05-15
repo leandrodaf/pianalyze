@@ -356,17 +356,23 @@ func (a *App) StopRecording() (string, error) {
 	return string(data), nil
 }
 
-// SaveRecording opens a native OS save-file dialog and writes the gzip-compressed
-// JSON recording to the path chosen by the user. Returns nil if the user cancels.
-func (a *App) SaveRecording(jsonData string) error {
-	path, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
+// SaveRecording opens a native OS save-file dialog, pre-positioned at
+// defaultDir (use empty string to leave it up to the OS), and writes the
+// gzip-compressed JSON recording to the path chosen by the user.
+// Returns nil if the user cancels.
+func (a *App) SaveRecording(jsonData, defaultFilename, defaultDir string) error {
+	opts := runtime.SaveDialogOptions{
 		Title:           "Save Pianalyze Recording",
-		DefaultFilename: "recording.pia",
+		DefaultFilename: defaultFilename,
 		Filters: []runtime.FileFilter{
 			{DisplayName: "Pianalyze Recording (*.pia)", Pattern: "*.pia"},
 			{DisplayName: "JSON (*.json)", Pattern: "*.json"},
 		},
-	})
+	}
+	if defaultDir != "" {
+		opts.DefaultDirectory = defaultDir
+	}
+	path, err := runtime.SaveFileDialog(a.ctx, opts)
 	if err != nil || path == "" {
 		return err
 	}

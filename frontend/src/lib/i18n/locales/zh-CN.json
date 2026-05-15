@@ -191,5 +191,6 @@
   "settings.savepath.default": "默认（文档/pianalyze）",
   "settings.savepath.change": "更改…",
   "settings.savepath.reset": "重置",
-  "settings.savepath.dialog": "选择录音文件夹"
+  "settings.savepath.dialog": "选择录音文件夹",
+  "rec.ready": "准备录音"
 }

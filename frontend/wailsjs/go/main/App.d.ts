@@ -23,7 +23,7 @@ export function PickSaveDirectory(arg1:string):Promise<string>;
 
 export function ResumeRecording():Promise<void>;
 
-export function SaveRecording(arg1:string):Promise<void>;
+export function SaveRecording(arg1:string,arg2:string,arg3:string):Promise<void>;
 
 export function SelectDevice(arg1:number):Promise<void>;
 

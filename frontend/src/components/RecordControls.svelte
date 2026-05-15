@@ -10,6 +10,8 @@
   export let onSaved: ((path: string) => void) | undefined = undefined
   /** Called when recording is fully done (user dismissed / saved). */
   export let onDone: (() => void) | undefined = undefined
+  /** Called whenever recording starts (true) or stops/finishes (false). */
+  export let onRecordingStateChange: ((active: boolean) => void) | undefined = undefined
 
   let isRecording = false
   let isPaused = false
@@ -28,6 +30,7 @@
     await StartRecording()
     isRecording = true; isPaused = false
     startedAt = Date.now(); pausedTotal = 0
+    onRecordingStateChange?.(true)
     tickId = window.setInterval(() => {
       if (!isPaused) elapsed = Date.now() - startedAt - pausedTotal
     }, 200)
@@ -48,6 +51,7 @@
   async function stop() {
     clearInterval(tickId)
     isRecording = false; isPaused = false
+    onRecordingStateChange?.(false)
     elapsed = Date.now() - startedAt - pausedTotal
     jsonData = await StopRecording()
     await autoSave()

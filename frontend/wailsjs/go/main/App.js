@@ -42,8 +42,8 @@ export function ResumeRecording() {
   return window['go']['main']['App']['ResumeRecording']();
 }
 
-export function SaveRecording(arg1) {
-  return window['go']['main']['App']['SaveRecording'](arg1);
+export function SaveRecording(arg1, arg2, arg3) {
+  return window['go']['main']['App']['SaveRecording'](arg1, arg2, arg3);
 }
 
 export function SelectDevice(arg1) {

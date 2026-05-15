@@ -190,5 +190,6 @@
   "settings.savepath.default": "Default (Documents/pianalyze)",
   "settings.savepath.change": "Change…",
   "settings.savepath.reset": "Reset",
-  "settings.savepath.dialog": "Choose recordings folder"
+  "settings.savepath.dialog": "Choose recordings folder",
+  "rec.ready": "Ready to record"
 }
