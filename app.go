@@ -627,26 +627,26 @@ func (a *App) LoadRecordingFile() (string, error) {
 }
 
 // ImportScoreFile opens a file dialog for MusicXML / MXL files, converts the
-// selected score to the Recording v2 JSON format, and returns it as a string
-// ready for the frontend to display or save.
+// selected score to a Recording v2, saves it as a .pia file in the default
+// recordings library, and returns the saved file path.
 func (a *App) ImportScoreFile() (string, error) {
-	path, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+	filePath, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
 		Title: "Import Score File",
 		Filters: []runtime.FileFilter{
 			{DisplayName: "MusicXML / MXL (*.xml;*.musicxml;*.mxl)", Pattern: "*.xml;*.musicxml;*.mxl"},
 		},
 	})
-	if err != nil || path == "" {
+	if err != nil || filePath == "" {
 		return "", err
 	}
 
-	raw, err := os.ReadFile(path)
+	raw, err := os.ReadFile(filePath)
 	if err != nil {
 		return "", fmt.Errorf("read file: %w", err)
 	}
 
 	xmlData := raw
-	ext := strings.ToLower(filepath.Ext(path))
+	ext := strings.ToLower(filepath.Ext(filePath))
 	if ext == ".mxl" {
 		xmlData, err = extractMXL(raw)
 		if err != nil {
@@ -654,7 +654,7 @@ func (a *App) ImportScoreFile() (string, error) {
 		}
 	}
 
-	rec, err := convertMusicXML(xmlData, path)
+	rec, err := convertMusicXML(xmlData, filePath)
 	if err != nil {
 		return "", err
 	}
@@ -667,7 +667,43 @@ func (a *App) ImportScoreFile() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(out), nil
+
+	// Save directly to the recordings library
+	title := ""
+	if rec.Meta != nil {
+		title = rec.Meta.Title
+	}
+	filename := scoreFilename(title)
+	dir := a.GetDefaultSavePath()
+	savedPath := filepath.Join(dir, filename)
+	if err := os.WriteFile(savedPath, out, 0o644); err != nil {
+		return "", fmt.Errorf("save to library: %w", err)
+	}
+	return savedPath, nil
+}
+
+// scoreFilename generates a safe, unique .pia filename from a score title.
+func scoreFilename(title string) string {
+	if strings.TrimSpace(title) == "" {
+		title = "imported-score"
+	}
+	var sb strings.Builder
+	for _, r := range title {
+		switch {
+		case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9':
+			sb.WriteRune(r)
+		case r == ' ', r == '_', r == '-', r == '.':
+			sb.WriteRune('_')
+		}
+	}
+	safe := strings.Trim(sb.String(), "_")
+	if safe == "" {
+		safe = "imported-score"
+	}
+	if len(safe) > 60 {
+		safe = safe[:60]
+	}
+	return safe + "_" + time.Now().UTC().Format("20060102_150405") + ".pia"
 }
 
 // ── Grading API (called by frontend practice engine) ─────────────────────────

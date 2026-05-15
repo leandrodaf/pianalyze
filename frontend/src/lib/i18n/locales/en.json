@@ -59,6 +59,7 @@
   "toast.device.disconnected": "MIDI device disconnected",
   "toast.device.connected": "MIDI device connected",
   "toast.no.device": "No MIDI device connected — connect one to play",
+  "toast.import.score.success": "Score imported and saved to library successfully",
   "key.picker.label": "Key / Scale",
   "key.picker.none": "— No key",
   "grade.perfect": "Perfect!",

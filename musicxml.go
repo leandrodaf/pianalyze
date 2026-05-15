@@ -1,31 +1,44 @@
 package main
 
-// MusicXML → .pia converter.
+// musicxml.go — MusicXML → .pia v2 converter.
 //
-// Supports score-partwise MusicXML documents (.xml / .musicxml) and their ZIP-
-// compressed variant (.mxl).  All parts are merged into a single event timeline.
-// The converter faithfully maps:
-//   - Note pitches     → MIDI note numbers (0–127)
-//   - Dynamics         → velocity + Dynamic field
-//   - Tempo / metronome directions → TempoMap
-//   - Time-signature changes → TimeSignatureMap
-//   - Key signatures   → KeySignature (first one found)
-//   - Measure offsets  → MeasureMap
-//   - Fingering        → Finger field
-//   - Hand (staff)     → Hand field ("right" = staff 1, "left" = staff 2)
-//   - Articulations    → Articulation field (staccato / tenuto / accent)
-//   - Slurs            → Slur field ("start" / "end")
-//   - Fermata          → Fermata flag
-//   - Grace notes      → Grace flag (emit as 60-ms visual note)
-//   - Ties             → merged into a single NoteOn+NoteOff pair
-//   - Repeat barlines  → Repeats metadata (informational; not unrolled)
-//   - Rehearsal marks  → Sections
-//   - Hairpins         → Hairpins
+// Supported input formats
+//   .xml / .musicxml   Plain MusicXML (score-partwise)
+//   .mxl               ZIP-compressed MusicXML (MXL container)
 //
-// Limitations:
-//   - score-timewise format not supported (rare in practice)
-//   - Multi-voice polyphony in the same staff is preserved via Voice field
-//   - Pickup (anacrusis) measures are treated normally (no special timing offset)
+// What is extracted and where it ends up in the Recording struct
+//
+//   Work title / movement title     → Meta.Title
+//   Composer, lyricist, arranger    → Meta.Composer  (composer); others ignored
+//   <rights>                        → Meta.Copyright
+//   <tempo> / <metronome>           → TempoMap  (incl. dotted-beat metronomes)
+//   <time>                          → TimeSignatureMap
+//   <key>                           → KeySignature  (first one found; changes tracked)
+//   <measure number=…>              → MeasureMap
+//   <wedge> hairpins                → Hairpins
+//   <repeat>                        → Repeats  (open / close)
+//   <coda> / <segno> directions     → Repeats  (coda / segno)
+//   <dal-segno> / <da-capo> words   → Repeats  (ds / dc)
+//   Rehearsal marks                 → Sections  (type="rehearsal")
+//   Tempo-expression words          → Sections  (type="tempo-text")
+//   <dynamics> pp/p/mp/mf/f/ff      → RecordedEvent.Dynamic + velocity
+//   <sound dynamics=…>              → velocity override for subsequent notes
+//   Note pitch + <transpose>        → RecordedEvent.Note  (concert pitch)
+//   Grace notes                     → RecordedEvent.Grace = true  (60 ms visual)
+//   Ties (start/stop/continue)      → merged NoteOn+NoteOff pair
+//   Staff number                    → RecordedEvent.Hand  ("right" / "left")
+//   Voice number                    → RecordedEvent.Voice
+//   Fingering                       → RecordedEvent.Finger
+//   Articulations                   → RecordedEvent.Articulation
+//   Ornaments (trill, mordent …)    → RecordedEvent.Articulation
+//   Slurs                           → RecordedEvent.Slur
+//   Fermata                         → RecordedEvent.Fermata
+//   <lyric> text                    → RecordedEvent.Tip  (first lyric line only)
+//   <pedal type=start/stop>         → CC 64 (sustain) NoteOn/Off events
+//
+// Limitations
+//   • score-timewise format not supported (very rare)
+//   • Repeats are stored as metadata only (not unrolled into events)
 
 import (
 	"archive/zip"
@@ -41,14 +54,16 @@ import (
 	"time"
 )
 
-// ── MusicXML XML structs ──────────────────────────────────────────────────────
+// ── MusicXML XML types ────────────────────────────────────────────────────────
 
 type mxScore struct {
-	XMLName        xml.Name    `xml:"score-partwise"`
-	Work           mxWork      `xml:"work"`
-	Identification mxIdentify  `xml:"identification"`
-	PartList       mxPartList  `xml:"part-list"`
-	Parts          []mxPart    `xml:"part"`
+	XMLName         xml.Name    `xml:"score-partwise"`
+	MovementNumber  string      `xml:"movement-number"`
+	MovementTitle   string      `xml:"movement-title"`
+	Work            mxWork      `xml:"work"`
+	Identification  mxIdentify  `xml:"identification"`
+	PartList        mxPartList  `xml:"part-list"`
+	Parts           []mxPart    `xml:"part"`
 }
 
 type mxWork struct {
@@ -58,6 +73,7 @@ type mxWork struct {
 
 type mxIdentify struct {
 	Creators []mxCreator `xml:"creator"`
+	Rights   []string    `xml:"rights"`
 }
 
 type mxCreator struct {
@@ -79,8 +95,8 @@ type mxPart struct {
 	Measures []mxMeasure `xml:"measure"`
 }
 
-// mxMeasure uses a custom UnmarshalXML so items retain their document order —
-// essential for correct time tracking across backup/forward and tempo changes.
+// mxMeasure must use a custom decoder to preserve element order — critical for
+// correct time tracking (backup/forward, tempo-before-note, etc.).
 type mxMeasure struct {
 	Number string
 	Items  []mxItem
@@ -141,21 +157,21 @@ func (m *mxMeasure) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
-// mxItem is one child element of a <measure>, in document order.
 type mxItem struct {
-	Kind       string // "note"|"direction"|"attributes"|"backup"|"forward"|"barline"
+	Kind       string
 	Attributes *mxAttributes
 	Direction  *mxDirection
 	Note       *mxNote
-	Duration   int // for backup/forward only
+	Duration   int // backup / forward only
 	Barline    *mxBarline
 }
 
 type mxAttributes struct {
-	Divisions int      `xml:"divisions"`
-	Keys      []mxKey  `xml:"key"`
-	Times     []mxTime `xml:"time"`
-	Staves    int      `xml:"staves"`
+	Divisions int          `xml:"divisions"`
+	Keys      []mxKey      `xml:"key"`
+	Times     []mxTime     `xml:"time"`
+	Staves    int          `xml:"staves"`
+	Transpose *mxTranspose `xml:"transpose"`
 }
 
 type mxKey struct {
@@ -168,17 +184,29 @@ type mxTime struct {
 	BeatType int `xml:"beat-type"`
 }
 
+type mxTranspose struct {
+	Diatonic     int `xml:"diatonic"`
+	Chromatic    int `xml:"chromatic"`
+	OctaveChange int `xml:"octave-change"`
+}
+
 type mxDirection struct {
+	Staff int        `xml:"staff"`
 	Types []mxDirType `xml:"direction-type"`
-	Sound *mxSound    `xml:"sound"`
+	Sound *mxSound   `xml:"sound"`
 }
 
 type mxDirType struct {
-	Dynamics  *mxDynamics  `xml:"dynamics"`
-	Metronome *mxMetronome `xml:"metronome"`
-	Wedge     *mxWedge     `xml:"wedge"`
-	Words     string       `xml:"words"`
-	Rehearsal string       `xml:"rehearsal"`
+	Dynamics    *mxDynamics  `xml:"dynamics"`
+	Metronome   *mxMetronome `xml:"metronome"`
+	Wedge       *mxWedge     `xml:"wedge"`
+	Words       string       `xml:"words"`
+	Rehearsal   string       `xml:"rehearsal"`
+	Pedal       *mxPedal     `xml:"pedal"`
+	Coda        *struct{}    `xml:"coda"`
+	Segno       *struct{}    `xml:"segno"`
+	DalSegno    *struct{}    `xml:"dal-segno"`
+	DaCapo      *struct{}    `xml:"da-capo"`
 }
 
 type mxDynamics struct {
@@ -190,16 +218,23 @@ type mxDynamics struct {
 	F   *struct{} `xml:"f"`
 	FF  *struct{} `xml:"ff"`
 	FFF *struct{} `xml:"fff"`
+	SFZ *struct{} `xml:"sfz"`
+	FP  *struct{} `xml:"fp"`
 }
 
 type mxMetronome struct {
-	BeatUnit  string `xml:"beat-unit"`
-	PerMinute string `xml:"per-minute"`
+	BeatUnit    string    `xml:"beat-unit"`
+	BeatUnitDot *struct{} `xml:"beat-unit-dot"`
+	PerMinute   string    `xml:"per-minute"`
 }
 
 type mxWedge struct {
 	Type   string `xml:"type,attr"`
 	Number int    `xml:"number,attr"`
+}
+
+type mxPedal struct {
+	Type string `xml:"type,attr"` // "start"|"stop"|"change"|"continue"
 }
 
 type mxSound struct {
@@ -217,7 +252,7 @@ type mxNote struct {
 	Voice     string       `xml:"voice"`
 	Staff     int          `xml:"staff"`
 	Notations *mxNotations `xml:"notations"`
-	Dynamics  *mxDynamics  `xml:"dynamics"`
+	Lyrics    []mxLyric    `xml:"lyric"`
 }
 
 type mxPitch struct {
@@ -230,13 +265,21 @@ type mxTie struct {
 	Type string `xml:"type,attr"` // "start" | "stop"
 }
 
+type mxLyric struct {
+	Number   string `xml:"number,attr"`
+	Syllabic string `xml:"syllabic"` // "begin"|"middle"|"end"|"single"
+	Text     string `xml:"text"`
+}
+
 type mxNotations struct {
 	Tied          []mxTiedSlur     `xml:"tied"`
 	Slur          []mxTiedSlur     `xml:"slur"`
 	Articulations *mxArticulations `xml:"articulations"`
 	Technical     *mxTechnical     `xml:"technical"`
+	Ornaments     *mxOrnaments     `xml:"ornaments"`
 	Fermata       *struct{}        `xml:"fermata"`
 	Dynamics      *mxDynamics      `xml:"dynamics"`
+	Arpeggiate    *struct{}        `xml:"arpeggiate"`
 }
 
 type mxTiedSlur struct {
@@ -245,9 +288,12 @@ type mxTiedSlur struct {
 }
 
 type mxArticulations struct {
-	Staccato *struct{} `xml:"staccato"`
-	Tenuto   *struct{} `xml:"tenuto"`
-	Accent   *struct{} `xml:"accent"`
+	Staccato      *struct{} `xml:"staccato"`
+	Tenuto        *struct{} `xml:"tenuto"`
+	Accent        *struct{} `xml:"accent"`
+	StrongAccent  *struct{} `xml:"strong-accent"`
+	Staccatissimo *struct{} `xml:"staccatissimo"`
+	Spiccato      *struct{} `xml:"spiccato"`
 }
 
 type mxTechnical struct {
@@ -258,19 +304,36 @@ type mxFingering struct {
 	Value string `xml:",chardata"`
 }
 
+type mxOrnaments struct {
+	Trill      *struct{}  `xml:"trill-mark"`
+	Mordent    *struct{}  `xml:"mordent"`
+	InvMordent *struct{}  `xml:"inverted-mordent"`
+	Turn       *struct{}  `xml:"turn"`
+	InvTurn    *struct{}  `xml:"inverted-turn"`
+	Tremolo    *mxTremolo `xml:"tremolo"`
+}
+
+type mxTremolo struct {
+	Type  string `xml:"type,attr"` // "start"|"stop"|"single"
+	Marks string `xml:",chardata"` // number of slashes
+}
+
 type mxBarline struct {
 	Location string    `xml:"location,attr"`
 	Repeat   *mxRepeat `xml:"repeat"`
 	Ending   *mxEnding `xml:"ending"`
+	Coda     *struct{} `xml:"coda"`
+	Segno    *struct{} `xml:"segno"`
 }
 
 type mxRepeat struct {
 	Direction string `xml:"direction,attr"` // "forward" | "backward"
+	Times     int    `xml:"times,attr"`
 }
 
 type mxEnding struct {
 	Number string `xml:"number,attr"`
-	Type   string `xml:"type,attr"`
+	Type   string `xml:"type,attr"` // "start"|"stop"|"discontinue"
 }
 
 // ── Music-theory helpers ──────────────────────────────────────────────────────
@@ -279,23 +342,22 @@ var mxStepSemi = map[string]int{
 	"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11,
 }
 
-// mxPitchToMidi converts a MusicXML pitch to a MIDI note number.
 func mxPitchToMidi(p mxPitch) int {
 	base := (p.Octave+1)*12 + mxStepSemi[p.Step]
 	return base + int(math.Round(p.Alter))
 }
 
-// mxFifthsToKey converts MusicXML (fifths, mode) to a key-name string.
+// mxFifthsToKey converts a (fifths, mode) pair to a key name like "D", "Am", "Bb".
 func mxFifthsToKey(fifths int, mode string) string {
 	major := map[int]string{
-		0: "C", 1: "G", 2: "D", 3: "A", 4: "E", 5: "B", 6: "F#",
-		-1: "F", -2: "Bb", -3: "Eb", -4: "Ab", -5: "Db", -6: "Gb",
+		0: "C", 1: "G", 2: "D", 3: "A", 4: "E", 5: "B", 6: "F#", 7: "C#",
+		-1: "F", -2: "Bb", -3: "Eb", -4: "Ab", -5: "Db", -6: "Gb", -7: "Cb",
 	}
 	minor := map[int]string{
-		0: "Am", 1: "Em", 2: "Bm", 3: "F#m", 4: "C#m", 5: "G#m", 6: "D#m",
-		-1: "Dm", -2: "Gm", -3: "Cm", -4: "Fm", -5: "Bbm", -6: "Ebm",
+		0: "Am", 1: "Em", 2: "Bm", 3: "F#m", 4: "C#m", 5: "G#m", 6: "D#m", 7: "A#m",
+		-1: "Dm", -2: "Gm", -3: "Cm", -4: "Fm", -5: "Bbm", -6: "Ebm", -7: "Abm",
 	}
-	if mode == "minor" {
+	if strings.EqualFold(mode, "minor") {
 		if k, ok := minor[fifths]; ok {
 			return k
 		}
@@ -306,7 +368,7 @@ func mxFifthsToKey(fifths int, mode string) string {
 	return "C"
 }
 
-// mxDynLabel returns the dynamic label from an mxDynamics element.
+// mxDynLabel returns the standard dynamic label from an mxDynamics element.
 func mxDynLabel(d *mxDynamics) string {
 	if d == nil {
 		return ""
@@ -322,17 +384,21 @@ func mxDynLabel(d *mxDynamics) string {
 		return "mp"
 	case d.MF != nil:
 		return "mf"
-	case d.F != nil:
-		return "f"
-	case d.FF != nil:
-		return "ff"
 	case d.FFF != nil:
 		return "ff"
+	case d.FF != nil:
+		return "ff"
+	case d.F != nil:
+		return "f"
+	case d.SFZ != nil:
+		return "ff"
+	case d.FP != nil:
+		return "f"
 	}
 	return ""
 }
 
-// mxDynVelocity maps a dynamic label to an approximate MIDI velocity.
+// mxDynVelocity maps a dynamic label to a MIDI velocity.
 func mxDynVelocity(dyn string) byte {
 	switch dyn {
 	case "pp":
@@ -348,49 +414,106 @@ func mxDynVelocity(dyn string) byte {
 	case "ff":
 		return 110
 	}
-	return 64 // default = mf
+	return 64 // default mf
+}
+
+// mxSoundDynToLabel converts a <sound dynamics="N"> raw value (1–127) to a label.
+func mxSoundDynToLabel(raw string) (string, byte) {
+	v, err := strconv.ParseFloat(raw, 64)
+	if err != nil || v <= 0 {
+		return "", 0
+	}
+	vel := byte(math.Min(127, math.Max(1, v)))
+	switch {
+	case vel <= 21:
+		return "pp", vel
+	case vel <= 42:
+		return "p", vel
+	case vel <= 63:
+		return "mp", vel
+	case vel <= 84:
+		return "mf", vel
+	case vel <= 105:
+		return "f", vel
+	default:
+		return "ff", vel
+	}
+}
+
+// mxMetronomeBPM calculates the actual quarter-note BPM from a metronome
+// element, honouring dotted beat-unit values (e.g. dotted-quarter = 90 BPM
+// means 90 * 1.5 = 135 quarter-note BPMs).
+func mxMetronomeBPM(m *mxMetronome) (float64, string) {
+	pm, err := strconv.ParseFloat(strings.TrimSpace(m.PerMinute), 64)
+	if err != nil || pm <= 0 {
+		return 0, ""
+	}
+	// Convert beat-unit denominator to quarter-note multiplier.
+	mult := 1.0
+	switch strings.ToLower(m.BeatUnit) {
+	case "whole":
+		mult = 4.0
+	case "half":
+		mult = 2.0
+	case "quarter":
+		mult = 1.0
+	case "eighth":
+		mult = 0.5
+	case "16th":
+		mult = 0.25
+	case "dotted-quarter":
+		mult = 1.5
+	}
+	if m.BeatUnitDot != nil {
+		mult *= 1.5
+	}
+	return pm * mult, m.BeatUnit
 }
 
 // ── MXL (compressed MusicXML) extraction ─────────────────────────────────────
 
-// extractMXL unpacks a .mxl ZIP archive and returns the raw MusicXML bytes.
-// It honours META-INF/container.xml when present; otherwise falls back to the
-// first non-META-INF .xml file in the archive.
+// extractMXL unpacks an MXL archive and returns the raw MusicXML bytes.
+// Follows META-INF/container.xml when present; falls back to the first
+// non-META-INF .xml entry in the archive.
 func extractMXL(data []byte) ([]byte, error) {
 	r, err := zip.NewReader(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
 		return nil, fmt.Errorf("open MXL: %w", err)
 	}
 
-	// Try to find the root file via META-INF/container.xml.
-	rootfile := ""
+	rootFile := ""
 	for _, f := range r.File {
-		if f.Name == "META-INF/container.xml" {
-			rc, err := f.Open()
-			if err != nil {
-				break
-			}
-			var container struct {
-				Rootfiles []struct {
-					FullPath string `xml:"full-path,attr"`
-				} `xml:"rootfiles>rootfile"`
-			}
-			if err := xml.NewDecoder(rc).Decode(&container); err == nil && len(container.Rootfiles) > 0 {
-				rootfile = container.Rootfiles[0].FullPath
-			}
-			rc.Close()
+		if f.Name != "META-INF/container.xml" {
+			continue
+		}
+		rc, err := f.Open()
+		if err != nil {
 			break
 		}
+		var c struct {
+			Rootfiles []struct {
+				FullPath string `xml:"full-path,attr"`
+			} `xml:"rootfiles>rootfile"`
+		}
+		if err := xml.NewDecoder(rc).Decode(&c); err == nil && len(c.Rootfiles) > 0 {
+			rootFile = c.Rootfiles[0].FullPath
+		}
+		rc.Close()
+		break
 	}
 
-	// Open by explicit rootfile path or fall back to first .xml file.
 	for _, f := range r.File {
 		name := f.Name
-		if rootfile != "" && name != rootfile {
-			continue
-		}
-		if rootfile == "" && (!strings.HasSuffix(strings.ToLower(name), ".xml") || strings.HasPrefix(name, "META-INF")) {
-			continue
+		isXML := strings.HasSuffix(strings.ToLower(name), ".xml") ||
+			strings.HasSuffix(strings.ToLower(name), ".musicxml")
+		if rootFile != "" {
+			if name != rootFile {
+				continue
+			}
+		} else {
+			if !isXML || strings.HasPrefix(name, "META-INF") {
+				continue
+			}
 		}
 		rc, err := f.Open()
 		if err != nil {
@@ -409,8 +532,7 @@ type mxWedgeState struct {
 	startMs int64
 }
 
-// convertPart processes a single <part> and returns the events and structural
-// metadata extracted from it.
+// convertPart converts a single <part> into events and structural metadata.
 func convertPart(part mxPart) (
 	events []RecordedEvent,
 	tempoMap []TempoEvent,
@@ -418,18 +540,21 @@ func convertPart(part mxPart) (
 	measureMap []MeasureEntry,
 	hairpins []Hairpin,
 	repeats []Repeat,
-	keySignature string,
 	sections []Section,
+	keySignature string,
+	firstTimeSig string,
 ) {
-	divisions := 1    // ticks per quarter note (default: 1)
-	bpm := 120.0      // current tempo (default: 120 BPM)
-	currentDyn := ""  // current dynamic level from direction elements
-	var posMs int64   // absolute ms position (start of current measure)
+	divisions := 1
+	bpm := 120.0
+	currentDyn := "mf"
+	currentVel := byte(64)
+	transposeChromatic := 0 // chromatic transposition for this part
+	var posMs int64
 
-	// Tied notes: key = staff*1_000_000 + voice*1_000 + midiNote → noteOnMs
+	// tied-note tracking: key = staff*1_000_000 + voice*1_000 + midiNote → noteOnMs
 	tieOnMs := map[int]int64{}
 
-	// Active hairpin wedges indexed by wedge number
+	// active hairpin wedges by wedge-number
 	wedges := map[int]*mxWedgeState{}
 
 	ticksToMs := func(ticks int) int64 {
@@ -451,67 +576,88 @@ func convertPart(part mxPart) (
 		measureStartMs := posMs
 		measureMap = append(measureMap, MeasureEntry{Measure: measureNum, AtMs: measureStartMs})
 
-		var maxTick int64 // maximum tick reached (= measure duration in ticks)
-		var tick int64    // current tick within measure
-		var lastNoteTick int64 // tick where the last non-chord note started (for chords)
+		var maxTick int64
+		var tick int64
+		var lastNoteTick int64
 
-		// Deferred repeat markers resolved after measure duration is known
 		var hasForwardRepeat, hasBackwardRepeat bool
 
 		for _, item := range measure.Items {
 			switch item.Kind {
 
+			// ── attributes ──────────────────────────────────────────────────
 			case "attributes":
 				attr := item.Attributes
 				if attr.Divisions > 0 {
 					divisions = attr.Divisions
 				}
+				if attr.Transpose != nil {
+					transposeChromatic = attr.Transpose.Chromatic + attr.Transpose.OctaveChange*12
+				}
 				for _, k := range attr.Keys {
+					ks := mxFifthsToKey(k.Fifths, k.Mode)
 					if keySignature == "" {
-						keySignature = mxFifthsToKey(k.Fifths, k.Mode)
+						keySignature = ks
 					}
 				}
 				for _, ts := range attr.Times {
 					sig := fmt.Sprintf("%d/%d", ts.Beats, ts.BeatType)
+					if firstTimeSig == "" {
+						firstTimeSig = sig
+					}
+					tMs := measureStartMs + ticksToMs(int(tick))
 					if len(timeSigMap) == 0 || timeSigMap[len(timeSigMap)-1].Value != sig {
-						timeSigMap = append(timeSigMap, TimeSigEvent{
-							AtMs:  measureStartMs + ticksToMs(int(tick)),
-							Value: sig,
-						})
+						timeSigMap = append(timeSigMap, TimeSigEvent{AtMs: tMs, Value: sig})
 					}
 				}
 
+			// ── direction ───────────────────────────────────────────────────
 			case "direction":
 				dir := item.Direction
 				dirMs := measureStartMs + ticksToMs(int(tick))
-				if dir.Sound != nil && dir.Sound.Tempo != "" {
-					if newBpm, err := strconv.ParseFloat(dir.Sound.Tempo, 64); err == nil && newBpm > 0 {
-						bpm = newBpm
-						// Only add to map if first or changed
-						if len(tempoMap) == 0 || tempoMap[len(tempoMap)-1].BPM != newBpm {
-							tempoMap = append(tempoMap, TempoEvent{AtMs: dirMs, BPM: newBpm})
-						}
-					}
-				}
-				for _, dt := range dir.Types {
-					if lbl := mxDynLabel(dt.Dynamics); lbl != "" {
-						currentDyn = lbl
-					}
-					if dt.Metronome != nil && dt.Metronome.PerMinute != "" {
-						if newBpm, err := strconv.ParseFloat(dt.Metronome.PerMinute, 64); err == nil && newBpm > 0 {
-							bpm = newBpm
-							if len(tempoMap) == 0 || tempoMap[len(tempoMap)-1].BPM != newBpm {
-								tempoMap = append(tempoMap, TempoEvent{AtMs: dirMs, BPM: newBpm, BeatUnit: dt.Metronome.BeatUnit})
+
+				if dir.Sound != nil {
+					if dir.Sound.Tempo != "" {
+						if newBPM, err := strconv.ParseFloat(dir.Sound.Tempo, 64); err == nil && newBPM > 0 {
+							bpm = newBPM
+							if len(tempoMap) == 0 || tempoMap[len(tempoMap)-1].BPM != newBPM {
+								tempoMap = append(tempoMap, TempoEvent{AtMs: dirMs, BPM: newBPM})
 							}
 						}
 					}
+					if dir.Sound.Dynamics != "" {
+						lbl, vel := mxSoundDynToLabel(dir.Sound.Dynamics)
+						if lbl != "" {
+							currentDyn = lbl
+							currentVel = vel
+						}
+					}
+				}
+
+				for _, dt := range dir.Types {
+					// Dynamic label
+					if lbl := mxDynLabel(dt.Dynamics); lbl != "" {
+						currentDyn = lbl
+						currentVel = mxDynVelocity(lbl)
+					}
+
+					// Metronome
+					if dt.Metronome != nil && dt.Metronome.PerMinute != "" {
+						if newBPM, beatUnit := mxMetronomeBPM(dt.Metronome); newBPM > 0 {
+							bpm = newBPM
+							if len(tempoMap) == 0 || tempoMap[len(tempoMap)-1].BPM != newBPM {
+								tempoMap = append(tempoMap, TempoEvent{AtMs: dirMs, BPM: newBPM, BeatUnit: beatUnit})
+							}
+						}
+					}
+
+					// Hairpin wedges
 					if dt.Wedge != nil {
 						wn := dt.Wedge.Number
 						if wn == 0 {
 							wn = 1
 						}
-						wt := dt.Wedge.Type
-						switch wt {
+						switch dt.Wedge.Type {
 						case "crescendo", "decrescendo", "diminuendo":
 							wedges[wn] = &mxWedgeState{from: currentDyn, startMs: dirMs}
 						case "stop":
@@ -521,32 +667,72 @@ func convertPart(part mxPart) (
 									toD = w.from
 								}
 								hairpins = append(hairpins, Hairpin{
-									StartMs: w.startMs,
-									EndMs:   dirMs,
-									From:    w.from,
-									To:      toD,
+									StartMs: w.startMs, EndMs: dirMs,
+									From: w.from, To: toD,
 								})
 								delete(wedges, wn)
 							}
 						}
 					}
+
+					// Sustain pedal → CC 64
+					if dt.Pedal != nil {
+						var vel byte
+						switch dt.Pedal.Type {
+						case "start", "sostenuto":
+							vel = 127
+						case "stop":
+							vel = 0
+						case "change":
+							// change = stop then start; emit both
+							events = append(events,
+								RecordedEvent{T: dirMs, Cmd: 0xB0, Note: 64, Vel: 0},
+								RecordedEvent{T: dirMs, Cmd: 0xB0, Note: 64, Vel: 127},
+							)
+							continue
+						}
+						if dt.Pedal.Type == "start" || dt.Pedal.Type == "stop" || dt.Pedal.Type == "sostenuto" {
+							events = append(events, RecordedEvent{T: dirMs, Cmd: 0xB0, Note: 64, Vel: vel})
+						}
+					}
+
+					// Coda / Segno direction markers
+					if dt.Coda != nil {
+						repeats = append(repeats, Repeat{Type: "coda", AtMs: dirMs})
+					}
+					if dt.Segno != nil {
+						repeats = append(repeats, Repeat{Type: "segno", AtMs: dirMs})
+					}
+					if dt.DalSegno != nil {
+						repeats = append(repeats, Repeat{Type: "ds", AtMs: dirMs})
+					}
+					if dt.DaCapo != nil {
+						repeats = append(repeats, Repeat{Type: "dc", AtMs: dirMs})
+					}
+
+					// Rehearsal marks
 					if r := strings.TrimSpace(dt.Rehearsal); r != "" {
 						sections = append(sections, Section{
-							Name:          r,
-							StartMs:       dirMs,
-							Type:          "rehearsal",
-							RehearsalMark: r,
+							Name: r, StartMs: dirMs,
+							Type: "rehearsal", RehearsalMark: r,
 						})
+					}
+
+					// Words / tempo-text expressions
+					if w := strings.TrimSpace(dt.Words); w != "" {
+						sType := classifyWords(w)
+						if sType != "" {
+							sections = append(sections, Section{Name: w, StartMs: dirMs, Type: sType})
+						}
 					}
 				}
 
+			// ── backup / forward ─────────────────────────────────────────────
 			case "backup":
 				tick -= int64(item.Duration)
 				if tick < 0 {
 					tick = 0
 				}
-				// Reset chord anchor after a backup so the next non-chord note
-				// defines a new chord base position.
 				lastNoteTick = tick
 
 			case "forward":
@@ -555,9 +741,13 @@ func convertPart(part mxPart) (
 					maxTick = tick
 				}
 
+			// ── barline ─────────────────────────────────────────────────────
 			case "barline":
 				bl := item.Barline
-				if bl != nil && bl.Repeat != nil {
+				if bl == nil {
+					break
+				}
+				if bl.Repeat != nil {
 					switch bl.Repeat.Direction {
 					case "forward":
 						hasForwardRepeat = true
@@ -565,13 +755,20 @@ func convertPart(part mxPart) (
 						hasBackwardRepeat = true
 					}
 				}
+				if bl.Coda != nil {
+					// defer until after posMs is computed
+					_ = bl.Coda
+				}
+				if bl.Segno != nil {
+					_ = bl.Segno
+				}
 
+			// ── note ────────────────────────────────────────────────────────
 			case "note":
 				note := item.Note
 				isChord := note.Chord != nil
 				isGrace := note.Grace != nil
 
-				// Tick position for this note
 				var noteTick int64
 				if isChord {
 					noteTick = lastNoteTick
@@ -580,13 +777,11 @@ func convertPart(part mxPart) (
 				}
 				noteMs := measureStartMs + ticksToMs(int(noteTick))
 
-				// Compute duration in ms
 				durMs := ticksToMs(note.Duration)
 				if isGrace {
-					durMs = 60 // minimal visual duration — grace notes don't fill time
+					durMs = 60
 				}
 
-				// Advance tick for regular notes (not chord, not grace)
 				if !isChord && !isGrace {
 					lastNoteTick = tick
 					tick += int64(note.Duration)
@@ -595,17 +790,16 @@ func convertPart(part mxPart) (
 					}
 				}
 
-				// Skip rests and notes without a pitch
+				// Skip rests and un-pitched notes
 				if note.Rest != nil || note.Pitch == nil {
 					continue
 				}
 
-				midiNote := mxPitchToMidi(*note.Pitch)
+				midiNote := mxPitchToMidi(*note.Pitch) + transposeChromatic
 				if midiNote < 0 || midiNote > 127 {
 					continue
 				}
 
-				// Voice / staff
 				voice := 1
 				if note.Voice != "" {
 					if v, err := strconv.Atoi(note.Voice); err == nil && v > 0 {
@@ -618,7 +812,7 @@ func convertPart(part mxPart) (
 				}
 				tk := tieKey(staff, voice, midiNote)
 
-				// Tie analysis
+				// Tie logic
 				hasTieStop, hasTieStart := false, false
 				for _, tie := range note.Ties {
 					switch tie.Type {
@@ -630,60 +824,80 @@ func convertPart(part mxPart) (
 				}
 
 				if hasTieStop {
-					if _, exists := tieOnMs[tk]; exists {
+					if onMs, exists := tieOnMs[tk]; exists {
 						if hasTieStart {
-							// Middle of a chain — no NoteOff yet, keep going
+							// Middle of tie chain — extend, no NoteOff yet
+							_ = onMs
 							continue
 						}
-						// End of tie chain — emit NoteOff
+						// End of tie chain — emit NoteOff and done
 						events = append(events, RecordedEvent{
 							T: noteMs + durMs, Cmd: 0x80, Note: byte(midiNote), Vel: 0,
 						})
 						delete(tieOnMs, tk)
 						continue
 					}
-					// Orphan tie-stop: treat as a normal note
+					// Orphan tie-stop → treat as normal note
 				}
 
-				// Determine dynamic
+				// Determine velocity/dynamic for this note
+				vel := currentVel
 				dyn := currentDyn
-				if note.Dynamics != nil {
-					if dl := mxDynLabel(note.Dynamics); dl != "" {
-						dyn = dl
+				if note.Notations != nil {
+					if lbl := mxDynLabel(note.Notations.Dynamics); lbl != "" {
+						dyn = lbl
+						vel = mxDynVelocity(lbl)
 					}
 				}
-				if note.Notations != nil && note.Notations.Dynamics != nil {
-					if dl := mxDynLabel(note.Notations.Dynamics); dl != "" {
-						dyn = dl
-					}
-				}
-				vel := mxDynVelocity(dyn)
 
 				// Notation properties
-				articulation, slurVal := "", ""
+				articulation := ""
+				slurVal := ""
 				var finger *byte
 				fermata := false
+				tipText := ""
 
 				if n := note.Notations; n != nil {
+					// Articulations
 					if n.Articulations != nil {
 						art := n.Articulations
 						switch {
-						case art.Staccato != nil:
+						case art.Staccato != nil, art.Staccatissimo != nil, art.Spiccato != nil:
 							articulation = "staccato"
 						case art.Tenuto != nil:
 							articulation = "tenuto"
-						case art.Accent != nil:
+						case art.StrongAccent != nil, art.Accent != nil:
 							articulation = "accent"
 						}
 					}
+					// Ornaments override articulation only when no articulation set
+					if articulation == "" && n.Ornaments != nil {
+						orn := n.Ornaments
+						switch {
+						case orn.Trill != nil:
+							articulation = "trill"
+						case orn.Mordent != nil:
+							articulation = "mordent"
+						case orn.InvMordent != nil:
+							articulation = "inverted-mordent"
+						case orn.Turn != nil, orn.InvTurn != nil:
+							articulation = "turn"
+						case orn.Tremolo != nil:
+							articulation = "tremolo"
+						}
+					}
+					// Slur
 					for _, sl := range n.Slur {
 						switch sl.Type {
 						case "start":
 							slurVal = "start"
 						case "stop":
 							slurVal = "end"
+						case "continue":
+							slurVal = "continue"
 						}
 					}
+					// Fingering
 					if n.Technical != nil && len(n.Technical.Fingering) > 0 {
 						raw := strings.TrimSpace(n.Technical.Fingering[0].Value)
 						if fv, err := strconv.Atoi(raw); err == nil && fv >= 1 && fv <= 5 {
@@ -691,8 +905,17 @@ func convertPart(part mxPart) (
 							finger = &fb
 						}
 					}
+					// Fermata
 					if n.Fermata != nil {
 						fermata = true
+					}
+				}
+
+				// Lyrics → Tip (first line, first verse only)
+				for _, lyric := range note.Lyrics {
+					if t := strings.TrimSpace(lyric.Text); t != "" {
+						tipText = t
+						break
 					}
 				}
 
@@ -702,7 +925,7 @@ func convertPart(part mxPart) (
 				}
 
 				vb := byte(voice)
-				events = append(events, RecordedEvent{
+				ev := RecordedEvent{
 					T:            noteMs,
 					Cmd:          0x90,
 					Note:         byte(midiNote),
@@ -715,12 +938,13 @@ func convertPart(part mxPart) (
 					Fermata:      fermata,
 					Finger:       finger,
 					Voice:        &vb,
-				})
+					Tip:          tipText,
+				}
+				events = append(events, ev)
 
 				if hasTieStart {
 					tieOnMs[tk] = noteMs
 				} else {
-					// Regular note — emit NoteOff at end
 					events = append(events, RecordedEvent{
 						T: noteMs + durMs, Cmd: 0x80, Note: byte(midiNote), Vel: 0,
 					})
@@ -728,12 +952,12 @@ func convertPart(part mxPart) (
 			}
 		}
 
-		// Advance posMs by the measure duration
+		// Advance posMs by this measure's duration
 		if maxTick > 0 {
 			posMs = measureStartMs + ticksToMs(int(maxTick))
 		}
 
-		// Emit deferred repeat markers
+		// Emit deferred repeat barline markers
 		if hasForwardRepeat {
 			repeats = append(repeats, Repeat{Type: "repeat-open", AtMs: measureStartMs})
 		}
@@ -742,7 +966,7 @@ func convertPart(part mxPart) (
 		}
 	}
 
-	// Close any dangling tied notes (shouldn't happen in well-formed XML)
+	// Close any dangling tied notes (malformed XML edge case)
 	for tk, onMs := range tieOnMs {
 		midiNote := byte(tk % 1_000)
 		events = append(events, RecordedEvent{
@@ -753,10 +977,35 @@ func convertPart(part mxPart) (
 	return
 }
 
+// classifyWords maps a tempo/expression text to a Section type, returning ""
+// for generic dynamic/expression words that shouldn't become section entries.
+func classifyWords(w string) string {
+	lower := strings.ToLower(w)
+	switch {
+	case strings.Contains(lower, "rit") || strings.Contains(lower, "rall") || strings.Contains(lower, "allarg"):
+		return "tempo-text"
+	case strings.Contains(lower, "accel"):
+		return "tempo-text"
+	case strings.Contains(lower, "a tempo") || strings.Contains(lower, "tempo primo") || strings.Contains(lower, "tempo i"):
+		return "tempo-text"
+	case strings.Contains(lower, "fine"):
+		return "tempo-text"
+	case strings.Contains(lower, "coda"):
+		return "coda-text"
+	case strings.Contains(lower, "segno"):
+		return "segno-text"
+	case strings.Contains(lower, "d.s.") || strings.Contains(lower, "dal segno"):
+		return "ds-text"
+	case strings.Contains(lower, "d.c.") || strings.Contains(lower, "da capo"):
+		return "dc-text"
+	}
+	return "" // not worth recording as a section
+}
+
 // ── Top-level converter ───────────────────────────────────────────────────────
 
-// convertMusicXML parses a MusicXML document and returns a fully populated
-// Recording ready for JSON marshalling.
+// convertMusicXML parses a MusicXML document and returns a fully-populated
+// Recording v2, ready for JSON marshalling.
 func convertMusicXML(xmlData []byte, filename string) (*Recording, error) {
 	var score mxScore
 	if err := xml.Unmarshal(xmlData, &score); err != nil {
@@ -768,18 +1017,59 @@ func convertMusicXML(xmlData []byte, filename string) (*Recording, error) {
 
 	// ── Metadata ──────────────────────────────────────────────────────────────
 	title := strings.TrimSpace(score.Work.Title)
-	composer := ""
-	for _, c := range score.Identification.Creators {
-		if strings.EqualFold(c.Type, "composer") {
-			composer = strings.TrimSpace(c.Value)
-			break
-		}
+	if title == "" {
+		title = strings.TrimSpace(score.MovementTitle)
 	}
 	if title == "" && len(score.PartList.ScoreParts) > 0 {
 		title = strings.TrimSpace(score.PartList.ScoreParts[0].Name)
 	}
+	if title == "" {
+		base := filepath.Base(filename)
+		title = strings.TrimSuffix(base, filepath.Ext(base))
+	}
 
-	// ── Merge all parts ───────────────────────────────────────────────────────
+	composer, lyricist, arranger := "", "", ""
+	for _, c := range score.Identification.Creators {
+		val := strings.TrimSpace(c.Value)
+		if val == "" {
+			continue
+		}
+		switch strings.ToLower(c.Type) {
+		case "composer":
+			if composer == "" {
+				composer = val
+			}
+		case "lyricist", "poet", "text":
+			if lyricist == "" {
+				lyricist = val
+			}
+		case "arranger":
+			if arranger == "" {
+				arranger = val
+			}
+		}
+	}
+	// Add non-composer credits to composer field for display purposes
+	extras := []string{}
+	if lyricist != "" {
+		extras = append(extras, "Lyrics: "+lyricist)
+	}
+	if arranger != "" {
+		extras = append(extras, "Arr.: "+arranger)
+	}
+	if len(extras) > 0 && composer == "" {
+		composer = strings.Join(extras, "; ")
+	}
+
+	copyright := ""
+	for _, r := range score.Identification.Rights {
+		if v := strings.TrimSpace(r); v != "" {
+			copyright = v
+			break
+		}
+	}
+
+	// ── Process all parts ─────────────────────────────────────────────────────
 	var allEvents []RecordedEvent
 	var tempoMap []TempoEvent
 	var timeSigMap []TimeSigEvent
@@ -788,9 +1078,11 @@ func convertMusicXML(xmlData []byte, filename string) (*Recording, error) {
 	var repeats []Repeat
 	var sections []Section
 	keySignature := ""
+	firstTimeSig := ""
 
 	for partIdx, part := range score.Parts {
-		pevs, pTempo, pTimeSig, pMeasure, pHairpins, pRepeats, pKey, pSections := convertPart(part)
+		pevs, pTempo, pTimeSig, pMeasure, pHairpins, pRepeats, pSections, pKey, pFirstTS :=
+			convertPart(part)
 		allEvents = append(allEvents, pevs...)
 		if partIdx == 0 {
 			tempoMap    = pTempo
@@ -798,12 +1090,44 @@ func convertMusicXML(xmlData []byte, filename string) (*Recording, error) {
 			measureMap  = pMeasure
 			hairpins    = pHairpins
 			repeats     = pRepeats
-			keySignature = pKey
 			sections    = pSections
+			keySignature = pKey
+			firstTimeSig = pFirstTS
+		} else {
+			// For additional parts, fill gaps in structural data from part 0
+			if keySignature == "" && pKey != "" {
+				keySignature = pKey
+			}
+			if firstTimeSig == "" && pFirstTS != "" {
+				firstTimeSig = pFirstTS
+			}
+			if len(tempoMap) == 0 {
+				tempoMap = pTempo
+			}
 		}
 	}
 
-	// Sort events: ascending time; NoteOn (0x90) before NoteOff (0x80) at same ms.
+	// ── Ensure default structural entries at t=0 ───────────────────────────
+	if len(tempoMap) == 0 || tempoMap[0].AtMs != 0 {
+		def := TempoEvent{AtMs: 0, BPM: 120, BeatUnit: "quarter"}
+		if len(tempoMap) > 0 {
+			def.BPM = tempoMap[0].BPM
+			def.BeatUnit = tempoMap[0].BeatUnit
+		}
+		tempoMap = append([]TempoEvent{def}, tempoMap...)
+	}
+	if len(timeSigMap) == 0 || timeSigMap[0].AtMs != 0 {
+		sig := "4/4"
+		if firstTimeSig != "" {
+			sig = firstTimeSig
+		}
+		timeSigMap = append([]TimeSigEvent{{AtMs: 0, Value: sig}}, timeSigMap...)
+	}
+	if keySignature == "" {
+		keySignature = "C"
+	}
+
+	// ── Sort events: time ascending; NoteOn before NoteOff at same ms ─────
 	sort.SliceStable(allEvents, func(i, j int) bool {
 		ti, tj := allEvents[i].T, allEvents[j].T
 		if ti != tj {
@@ -817,8 +1141,9 @@ func convertMusicXML(xmlData []byte, filename string) (*Recording, error) {
 		Version:    2,
 		RecordedAt: now,
 		Meta: &RecordingMeta{
-			Title:    title,
-			Composer: composer,
+			Title:     title,
+			Composer:  composer,
+			Copyright: copyright,
 			Source: &RecordingSource{
 				Format:     "musicxml",
 				Filename:   filepath.Base(filename),

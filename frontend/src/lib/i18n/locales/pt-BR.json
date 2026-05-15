@@ -59,6 +59,7 @@
   "toast.device.disconnected": "Dispositivo MIDI desconectado",
   "toast.device.connected": "Dispositivo MIDI conectado",
   "toast.no.device": "Nenhum dispositivo MIDI conectado — conecte um para tocar",
+  "toast.import.score.success": "Partitura importada e salva na biblioteca com sucesso",
   "key.picker.label": "Tom / Escala",
   "key.picker.none": "— Sem tom",
   "grade.perfect": "Perfeito!",

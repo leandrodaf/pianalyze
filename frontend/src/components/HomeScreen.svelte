@@ -29,6 +29,7 @@
 
   type NavView = 'home' | 'recordings'
   let activeView: NavView = 'home'
+  let recordingsVersion = 0 // increment to force RecordingsPage re-mount
 
   // ── Device ────────────────────────────────────────────────────────────────────
   let devices: main.DeviceInfo[] = []
@@ -168,23 +169,15 @@
   }
 
   async function openImportScore() {
-    if (!onImportRecording) return
     toolsError = ''
     try {
-      const jsonStr = await ImportScoreFile()
-      if (!jsonStr) return // user cancelled
-      let rec: Recording
-      try {
-        rec = JSON.parse(jsonStr) as Recording
-      } catch {
-        toolsError = $t('error.import.score.parse')
-        return
-      }
-      if (!rec.events || rec.events.length === 0) {
-        toolsError = $t('error.import.score.empty')
-        return
-      }
-      onImportRecording(rec)
+      // ImportScoreFile converts + saves to library, returns the saved path
+      const savedPath = await ImportScoreFile()
+      if (!savedPath) return // user cancelled
+      // Navigate to library and refresh
+      recordingsVersion++
+      activeView = 'recordings'
+      addToast($t('toast.import.score.success'), 'success')
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error)
       toolsError = msg || $t('error.import.score.parse')
@@ -336,7 +329,7 @@
           <span class="tool-icon">📂</span>
           <span>{$t('tools.import')}</span>
         </button>
-        <button class="tool-btn" on:click={openImportScore} disabled={!onImportRecording}>
+        <button class="tool-btn" on:click={openImportScore}>
           <span class="tool-icon">🎼</span>
           <span>{$t('tools.import.score')}</span>
         </button>
@@ -350,7 +343,9 @@
   <main class="content">
 
     {#if activeView === 'recordings'}
-      <RecordingsPage onLoad={onImportRecording} />
+      {#key recordingsVersion}
+        <RecordingsPage onLoad={onImportRecording} />
+      {/key}
     {:else}
 
     <header class="content-header">
