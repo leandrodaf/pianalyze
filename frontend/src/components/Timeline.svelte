@@ -74,7 +74,10 @@
       const ms = getMs(e)
       const lo = Math.min(loopAnchor, ms)
       const hi = Math.max(loopAnchor, ms)
-      if (hi - lo > 50) setLoop(lo, hi)
+      if (hi - lo > 50) {
+        setLoop(lo, hi)
+        seekTo(lo)  // preview notes from start of selection in real time
+      }
     }
   }
 
