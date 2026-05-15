@@ -4,7 +4,7 @@
   import { DIFFICULTY_PRESETS, type DifficultyPreset } from '../lib/recording-types'
   import { loadFromUrl } from '../stores/exercises'
   import { exerciseStore } from '../stores/exercises'
-  import { GetDefaultSavePath, PickSaveDirectory } from '../../wailsjs/go/main/App'
+  import { PickSaveDirectory } from '../../wailsjs/go/main/App'
   import type { Recording } from '../lib/recording-types'
 
   export let onClose: () => void
@@ -66,7 +66,8 @@
   let pathError = ''
   let localSavePath = ''
 
-  // Keep localSavePath in sync with store (one-way, user edits override)
+  // Keep localSavePath in sync with store; blocked while a dialog is open
+  // to avoid the reactive overwriting a value mid-async operation.
   $: if (!pathLoading) localSavePath = $settingsStore.savePath
 
   function commitPath() {
@@ -89,10 +90,11 @@
     }
   }
 
-  async function handleResetPath() {
-    const def = await GetDefaultSavePath()
-    localSavePath = def
-    settingsStore.patch({ savePath: def })
+  // Reset clears any custom path ('' = use OS default). Synchronous so the
+  // reactive $: statement cannot overwrite localSavePath mid-operation.
+  function handleResetPath() {
+    localSavePath = ''
+    settingsStore.patch({ savePath: '' })
     pathError = ''
   }
 </script>
