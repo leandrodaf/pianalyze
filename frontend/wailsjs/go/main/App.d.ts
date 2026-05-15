@@ -5,7 +5,11 @@ import {grading} from '../models';
 
 export function ListDevices():Promise<Array<main.DeviceInfo>>;
 
+export function LoadGradingProfile(arg1:grading.Profile):Promise<void>;
+
 export function LoadPracticeIntervals(arg1:Array<grading.Interval>):Promise<void>;
+
+export function LoadRecordingFile():Promise<string>;
 
 export function PausePractice(arg1:number):Promise<void>;
 

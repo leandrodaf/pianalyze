@@ -10,8 +10,10 @@
 
 import { writable, get } from 'svelte/store'
 import { midiStore } from './midi'
-import type { Recording, RecordedEvent, NoteInterval, Hand, Dynamic, Articulation } from '../lib/recording-types'
-import { GRADE_TOLERANCE_MS } from '../lib/recording-types'
+import type {
+  Recording, RecordedEvent, NoteInterval, Hand, Dynamic, Articulation,
+} from '../lib/recording-types'
+import { migrateRecording, dynamicToVelocity } from '../lib/recording-types'
 import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-canvas'
 
 export type GradeResult = 'perfect' | 'good' | 'ok' | 'miss' | 'wrong'
@@ -83,24 +85,73 @@ function restartPlaybackAt(ms: number): void {
   scheduleFrom(state.recording.events, target)
 }
 
-/** Convert a flat event list into note-on/off pairs. */
+/** Convert a flat event list into note-on/off pairs, preserving all pedagogical fields. */
 function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
-  const active = new Map<number, { startMs: number; finger?: NoteInterval['finger']; hand?: Hand; dynamic?: Dynamic; articulation?: Articulation }>()
+  const CMD_NOTE_ON  = 0x90
+  const CMD_NOTE_OFF = 0x80
+
+  type Active = {
+    startMs: number
+    finger?: NoteInterval['finger']
+    hand?: Hand
+    dynamic?: Dynamic
+    articulation?: Articulation
+    grace?: boolean
+    voice?: NoteInterval['voice']
+  }
+
+  const active = new Map<number, Active>()
   const out: NoteInterval[] = []
+
   for (const ev of events) {
-    if (ev.vel > 0) {
-      active.set(ev.note, { startMs: ev.t, finger: ev.finger, hand: ev.hand, dynamic: ev.dynamic, articulation: ev.articulation })
-    } else {
+    // Skip CC events (pedals) — they don't contribute to note intervals
+    if (ev.cmd === 0xB0) continue
+
+    const isNoteOn = (ev.cmd === CMD_NOTE_ON || ev.cmd === CMD_NOTE_OFF) && ev.vel > 0
+    const isNoteOff = ev.vel === 0 || ev.cmd === CMD_NOTE_OFF
+
+    if (isNoteOn) {
+      active.set(ev.note, {
+        startMs: ev.t,
+        finger: ev.finger,
+        hand: ev.hand,
+        dynamic: ev.dynamic,
+        articulation: ev.articulation,
+        grace: ev.grace,
+        voice: ev.voice,
+      })
+    } else if (isNoteOff) {
       const entry = active.get(ev.note)
       if (entry !== undefined) {
-        out.push({ note: ev.note, startMs: entry.startMs, endMs: ev.t, finger: entry.finger, hand: entry.hand, dynamic: entry.dynamic, articulation: entry.articulation })
+        out.push({
+          note: ev.note,
+          startMs: entry.startMs,
+          endMs: ev.t,
+          finger: entry.finger,
+          hand: entry.hand,
+          dynamic: entry.dynamic,
+          articulation: entry.articulation,
+          grace: entry.grace,
+          voice: entry.voice,
+        })
         active.delete(ev.note)
       }
     }
   }
+
   // Close any notes still held at end of recording
   for (const [note, entry] of active) {
-    out.push({ note, startMs: entry.startMs, endMs: entry.startMs + 500, finger: entry.finger, hand: entry.hand, dynamic: entry.dynamic, articulation: entry.articulation })
+    out.push({
+      note,
+      startMs: entry.startMs,
+      endMs: entry.startMs + 500,
+      finger: entry.finger,
+      hand: entry.hand,
+      dynamic: entry.dynamic,
+      articulation: entry.articulation,
+      grace: entry.grace,
+      voice: entry.voice,
+    })
   }
   return out
 }
@@ -125,6 +176,9 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
       // In practice mode we do NOT feed recording notes into the MIDI store —
       // the student's keyboard is the only input there.
       if (get(playbackStore).practice) return
+
+      // CC events (pedals) are not injected into midiStore for visual display.
+      if (ev.cmd === 0xB0) return
 
       const on = ev.vel > 0
       if (on) liveNotes.add(ev.note)
@@ -166,11 +220,17 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
 
 // ── Public API ────────────────────────────────────────────────────────────────
 
-export function loadRecording(recording: Recording): void {
+export function loadRecording(raw: unknown): void {
+  // Migrate v1 → v2 transparently (V1)
+  const recording = migrateRecording(raw)
   cancelAll(); releaseAll()
+
+  // Only note events contribute to duration; CC/pedal events are ignored.
+  const noteEvents = recording.events.filter(e => e.cmd !== 0xB0)
+  const last = noteEvents[noteEvents.length - 1]
   const intervals = buildIntervals(recording.events)
   noteIntervals.set(intervals)
-  const last = recording.events[recording.events.length - 1]
+
   // Extend duration so the last notes have time to travel from the right edge to the golden line
   const durationMs = last ? last.t + DEFAULT_LEAD_TIME_SEC * 1000 + 500 : 0
   playbackStore.update(s => ({
@@ -286,31 +346,32 @@ export function toggleLoop(): void {
   playbackStore.update(s => ({ ...s, loopEnabled: !s.loopEnabled }))
 }
 
-/**
- * Grade a note pressed by the student during practice.
- * Returns the grade (and the matched interval's Y-anchor in ms for badge placement),
- * or null if there was no expected note nearby.
- */
-export function gradeInput(note: number, currentMs: number): GradeResult {
-  const intervals = get(noteIntervals)
-  let best: { delta: number; interval: NoteInterval } | null = null
-
-  for (const iv of intervals) {
-    if (iv.note !== note) continue
-    const delta = Math.abs(iv.startMs - currentMs)
-    if (delta <= GRADE_TOLERANCE_MS) {
-      if (!best || delta < best.delta) best = { delta, interval: iv }
-    }
-  }
-
-  if (!best) return 'wrong'
-  const d = best.delta
-  if (d < 70)  return 'perfect'
-  if (d < 150) return 'good'
-  return 'ok'
-}
-
 export function formatMs(ms: number): string {
   const s = Math.floor(ms / 1000)
   return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
+}
+
+/**
+ * Build the grading interval payload for the Go grading engine.
+ * Includes dynamic → expectedVel conversion (E2) and all pedagogical fields.
+ */
+export function buildGradingIntervals(intervals: NoteInterval[]): Array<{
+  note: number
+  startMs: number
+  endMs: number
+  dynamic?: string
+  hand?: string
+  articulation?: string
+  expectedVel?: number
+}> {
+  return intervals.map(iv => ({
+    note: iv.note,
+    startMs: iv.startMs,
+    endMs: iv.endMs,
+    dynamic: iv.dynamic,
+    hand: iv.hand,
+    articulation: iv.articulation,
+    // Convert dynamic marking to expected velocity for the Go grader (E2)
+    expectedVel: iv.dynamic ? dynamicToVelocity(iv.dynamic) : undefined,
+  }))
 }

@@ -6,8 +6,16 @@ export function ListDevices() {
   return window['go']['main']['App']['ListDevices']();
 }
 
+export function LoadGradingProfile(arg1) {
+  return window['go']['main']['App']['LoadGradingProfile'](arg1);
+}
+
 export function LoadPracticeIntervals(arg1) {
   return window['go']['main']['App']['LoadPracticeIntervals'](arg1);
+}
+
+export function LoadRecordingFile() {
+  return window['go']['main']['App']['LoadRecordingFile']();
 }
 
 export function PausePractice(arg1) {

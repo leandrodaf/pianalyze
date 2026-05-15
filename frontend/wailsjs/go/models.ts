@@ -4,6 +4,10 @@ export namespace grading {
 	    note: number;
 	    startMs: number;
 	    endMs: number;
+	    dynamic?: string;
+	    hand?: string;
+	    articulation?: string;
+	    expectedVel?: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new Interval(source);
@@ -14,6 +18,34 @@ export namespace grading {
 	        this.note = source["note"];
 	        this.startMs = source["startMs"];
 	        this.endMs = source["endMs"];
+	        this.dynamic = source["dynamic"];
+	        this.hand = source["hand"];
+	        this.articulation = source["articulation"];
+	        this.expectedVel = source["expectedVel"];
+	    }
+	}
+	export class Profile {
+	    earlyToleranceMs?: number;
+	    lateToleranceMs?: number;
+	    perfectMs?: number;
+	    goodMs?: number;
+	    checkVelocity: boolean;
+	    velocityTolerance?: number;
+	    checkArticulation: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new Profile(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.earlyToleranceMs = source["earlyToleranceMs"];
+	        this.lateToleranceMs = source["lateToleranceMs"];
+	        this.perfectMs = source["perfectMs"];
+	        this.goodMs = source["goodMs"];
+	        this.checkVelocity = source["checkVelocity"];
+	        this.velocityTolerance = source["velocityTolerance"];
+	        this.checkArticulation = source["checkArticulation"];
 	    }
 	}
 

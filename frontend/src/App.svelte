@@ -10,7 +10,6 @@
   import Timeline from './components/Timeline.svelte'
   import ControlsBar from './components/ControlsBar.svelte'
   import type { Exercise } from './lib/exercise-types'
-  import type { Recording } from './lib/recording-types'
   import { t } from './lib/i18n'
   import Toast from './components/Toast.svelte'
   import { prepStore } from './stores/prep'
@@ -119,7 +118,7 @@
     prepStore.deactivate()
   }
 
-  function handleImportRecording(recording: Recording) {
+  function handleImportRecording(recording: unknown) {
     loadRecording(recording)
     setPractice(false)
     activeExercise = null

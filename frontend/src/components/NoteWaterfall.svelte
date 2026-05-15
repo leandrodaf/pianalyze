@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { midiStore } from '../stores/midi'
-  import { playbackStore, noteIntervals } from '../stores/playback'
+  import { playbackStore, noteIntervals, buildGradingIntervals } from '../stores/playback'
   import { createWaterfallCanvas, type WaterfallCanvas } from '../lib/waterfall-canvas'
   import { get } from 'svelte/store'
   import { EventsOn } from '../../wailsjs/runtime/runtime'
   import {
     LoadPracticeIntervals,
+    LoadGradingProfile,
     StartPractice,
     PausePractice,
     StopPractice,
@@ -68,12 +69,12 @@
           const ivs = get(noteIntervals)
           waterfall.enablePractice(ivs, state.practice)
           if (state.practice) {
-            // Load intervals into Go grading engine
-            LoadPracticeIntervals(ivs.map(iv => ({
-              note: iv.note,
-              startMs: iv.startMs,
-              endMs: iv.endMs,
-            }))).catch(() => {/* ignore if not connected */})
+            const gradingIvs = buildGradingIntervals(ivs)
+            // Load intervals into Go grading engine (with full pedagogical fields)
+            LoadPracticeIntervals(gradingIvs).catch(() => {/* ignore if not connected */})
+            // Load per-exercise grading profile if present (G1, G2)
+            const profile = state.recording?.gradingProfile ?? null
+            LoadGradingProfile(profile).catch(() => {})
           }
         } else {
           waterfall.disablePractice()
