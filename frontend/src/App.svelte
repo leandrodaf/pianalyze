@@ -2,6 +2,7 @@
   import { onMount } from 'svelte'
   import { connectMidiStore, midiStore } from './stores/midi'
   import { loadRecording, setPractice, play, stop, clearLoop, playbackStore, noteIntervals } from './stores/playback'
+  import { bpmAt, timeSigAt, measureAt } from './lib/recording-types'
   import { get } from 'svelte/store'
   import HomeScreen from './components/HomeScreen.svelte'
   import PrepBanner from './components/PrepBanner.svelte'
@@ -42,10 +43,14 @@
   $: fillRatio = velocity / 127
   $: barColor  = dynamicColor(dynamic)
 
+  $: pos = $playbackStore.positionMs
   $: rec = $playbackStore.recording
-  $: recBpm = rec?.bpm
-  $: recTimeSig = rec?.timeSignature
+  $: recBpm = rec ? Math.round(bpmAt(rec, pos)) : null
+  $: recTimeSig = rec ? timeSigAt(rec, pos) : null
   $: recKey = rec?.keySignature
+  $: recMeasure = rec?.measureMap?.length ? measureAt(rec, pos) : null
+  $: recTitle = rec?.meta?.title ?? null
+  $: recComposer = rec?.meta?.composer ?? null
 
   function dynamicColor(d: string): string {
     switch (d) {
@@ -169,11 +174,17 @@
             <span class="exercise-name">{activeExercise.title}</span>
             <span class="exercise-diff">{activeExercise.subtitle}</span>
           </div>
+        {:else if recTitle}
+          <div class="rec-title-tag">
+            <span class="rec-title">{recTitle}</span>
+            {#if recComposer}<span class="rec-composer">{recComposer}</span>{/if}
+          </div>
         {:else}
           <span class="freeplay-tag">🎧 {$t('app.freeplay')}</span>
         {/if}
-        {#if recBpm || recTimeSig || recKey}
+        {#if recBpm || recTimeSig || recKey || recMeasure}
           <div class="meta-chips">
+            {#if recMeasure != null}<span class="meta-chip">M{recMeasure}</span>{/if}
             {#if recTimeSig}<span class="meta-chip">{recTimeSig}</span>{/if}
             {#if recBpm}<span class="meta-chip">{recBpm} BPM</span>{/if}
             {#if recKey}<span class="meta-chip">{fmtKey(recKey)}</span>{/if}
@@ -287,6 +298,23 @@
     font-size: 0.82rem;
     color: rgba(255,255,255,0.45);
     font-weight: 500;
+  }
+
+  .rec-title-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .rec-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .rec-composer {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.35);
   }
 
   .meta-chips {

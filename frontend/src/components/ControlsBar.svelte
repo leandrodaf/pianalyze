@@ -1,5 +1,6 @@
 <script lang="ts">
   import { playbackStore, play, pause, stop, rewind, setSpeed, toggleLoop, seekTo, setLoop } from '../stores/playback'
+  import { bpmAt } from '../lib/recording-types'
   import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
 
   const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
@@ -13,8 +14,8 @@
   $: hasLoop     = s.loopStart != null && s.loopEnd != null && s.loopEnd > s.loopStart
   $: sections    = s.recording?.sections ?? []
 
-  $: originalBpm = s.recording?.bpm ?? null
-  $: currentBpm  = originalBpm ? Math.round(originalBpm * speed) : null
+  $: liveBpm    = s.recording ? bpmAt(s.recording, s.positionMs) : null
+  $: currentBpm = liveBpm ? Math.round(liveBpm * speed) : null
 
   function goToSection(idx: number) {
     const sec = sections[idx]
@@ -49,12 +50,12 @@
         class="speed-pill"
         class:active={Math.abs(speed - x) < 0.01}
         on:click={() => setSpeed(x)}
-        title="{x}× {originalBpm ? `(${Math.round(originalBpm * x)} BPM)` : ''}"
+        title="{x}× {liveBpm ? `(${Math.round(liveBpm * x)} BPM)` : ''}"
       >
         {x === 1 ? '1×' : x < 1 ? `${x * 100 | 0}%` : `${x}×`}
       </button>
     {/each}
-    {#if currentBpm != null && Math.abs(speed - 1) > 0.01}
+    {#if currentBpm != null && (Math.abs(speed - 1) > 0.01 || (s.recording?.tempoMap?.length ?? 0) > 1)}
       <span class="bpm-badge">{currentBpm} BPM</span>
     {/if}
   </div>

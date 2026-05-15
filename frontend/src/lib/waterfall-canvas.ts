@@ -7,7 +7,7 @@
  */
 
 import { noteColor } from './note-colors'
-import type { NoteInterval } from './recording-types'
+import type { NoteInterval, Hairpin, Dynamic } from './recording-types'
 import { GRADE_TOLERANCE_MS } from './recording-types'
 import { FINGER_COLORS, fingerColor } from './finger-colors'
 import {
@@ -52,8 +52,18 @@ interface GradeBadge {
   startT: number
 }
 
-const GRADE_FADE_MS = 1300
+interface ChordBadge {
+  hit: number
+  total: number
+  x: number
+  y: number
+  startT: number
+}
+
+const GRADE_FADE_MS  = 1300
+const CHORD_FADE_MS  = 1800
 const MISS_WINDOW_MS = 600  // how late before we mark a note as missed
+const TIP_WINDOW_MS  = 2000 // show tip this many ms before the note
 
 let gradeText: Record<PracticeGrade, string> = {
   perfect: 'Perfect!',
@@ -79,9 +89,11 @@ export interface WaterfallCanvas {
   disablePractice(): void
   setPracticeTime(ms: number): void
   showGrade(note: number, grade: PracticeGrade): void
+  showChordResult(hit: number, total: number, note: number): void
   noteHeld(note: number): void
   noteReleased(note: number, holdFraction: number): void
   setGradeLabels(labels: Partial<Record<PracticeGrade, string>>): void
+  setHairpins(hairpins: Hairpin[]): void
   setLeadTime(seconds: number): void
   getLeadTime(): number
   setSpeed(multiplier: number): void
@@ -111,6 +123,8 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   let practiceBars: PracticeBar[] = []
   let practiceMs = 0
   let gradeBadges: GradeBadge[] = []
+  let chordBadges: ChordBadge[] = []
+  let hairpins: Hairpin[] = []
 
   function refreshLayout() {
     layout = computeLayout(W, H, leadTimeSec)
@@ -416,7 +430,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
 
       drawLedgerLines(pb.iv.note, cx, cw)
 
-      const bh = barH(pb.iv.note, layout)
+      const bh = (pb.iv.grace ? 0.62 : 1) * barH(pb.iv.note, layout)
       const cy = pitchY(pb.iv.note, layout) - bh / 2
 
       // Priority: grade color > finger color > note color
@@ -434,6 +448,18 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       ctx.beginPath()
       ctx.roundRect(cx, cy, cw, bh, Math.min(bh / 2, 6))
       ctx.fill()
+      if (pb.iv.grace) {
+        ctx.save()
+        ctx.globalAlpha = alpha * 0.6
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)'
+        ctx.lineWidth = 1
+        ctx.setLineDash([3, 3])
+        ctx.beginPath()
+        ctx.roundRect(cx, cy, cw, bh, Math.min(bh / 2, 6))
+        ctx.stroke()
+        ctx.setLineDash([])
+        ctx.restore()
+      }
       ctx.globalAlpha = 1
 
       if (cw > 14 && bh > 7) {
@@ -521,6 +547,118 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     ctx.textBaseline = 'alphabetic'
   }
 
+  function dynOrder(d: Dynamic): number {
+    const O: Dynamic[] = ['pp', 'p', 'mp', 'mf', 'f', 'ff']
+    return O.indexOf(d)
+  }
+
+  function drawHairpins() {
+    if (hairpins.length === 0) return
+    const y = idxY(BASS_BOT_IDX, layout) + layout.wKeyH * 2.2
+    const hH = layout.wKeyH * 1.0
+
+    ctx.save()
+    ctx.lineCap = 'round'
+    ctx.lineWidth = 1.5
+
+    for (const h of hairpins) {
+      const x1 = msToX(h.startMs)
+      const x2 = msToX(h.endMs)
+      if (x2 < LEFT_MARGIN || x1 > W) continue
+
+      const cx1 = Math.max(x1, LEFT_MARGIN)
+      const cx2 = Math.min(x2, W)
+      if (cx2 <= cx1) continue
+
+      const isCrescendo = dynOrder(h.from) < dynOrder(h.to)
+      // Clamp open-end spread proportionally if start/end are clipped
+      const totalSpan = x2 - x1
+      const spreadFrac = totalSpan > 0 ? (cx2 - cx1) / totalSpan : 0
+      const spread = (hH / 2) * (isCrescendo ? spreadFrac : 1)
+      const baseSpread = (hH / 2) * (isCrescendo ? 0 : spreadFrac)
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.40)'
+
+      if (isCrescendo) {
+        // < closed on left, open on right
+        ctx.beginPath()
+        ctx.moveTo(cx1, y)
+        ctx.lineTo(cx2, y - spread)
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.moveTo(cx1, y)
+        ctx.lineTo(cx2, y + spread)
+        ctx.stroke()
+      } else {
+        // > open on left, closed on right
+        ctx.beginPath()
+        ctx.moveTo(cx1, y - baseSpread)
+        ctx.lineTo(cx2, y)
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.moveTo(cx1, y + baseSpread)
+        ctx.lineTo(cx2, y)
+        ctx.stroke()
+      }
+    }
+    ctx.restore()
+  }
+
+  function drawTips() {
+    for (const pb of practiceBars) {
+      if (!pb.iv.tip || pb.graded) continue
+      const timeToNote = pb.iv.startMs - practiceMs
+      if (timeToNote <= 0 || timeToNote > TIP_WINDOW_MS) continue
+
+      const x = msToX(pb.iv.startMs)
+      if (x < LEFT_MARGIN || x > W) continue
+
+      const bh = barH(pb.iv.note, layout)
+      const cy = pitchY(pb.iv.note, layout) - bh / 2
+      const fs = Math.max(Math.round(layout.wKeyH * 0.85), 9)
+      ctx.font = `${fs}px sans-serif`
+      const tw = ctx.measureText(pb.iv.tip).width
+      const pad = 5
+      const rx = Math.min(x + 4, W - tw - pad * 2 - 4)
+      const ry = cy - fs - 8
+      const alpha = Math.min(1, (TIP_WINDOW_MS - timeToNote) / (TIP_WINDOW_MS * 0.3) * 0.9)
+      ctx.save()
+      ctx.globalAlpha = alpha
+      ctx.fillStyle = 'rgba(20,20,30,0.82)'
+      ctx.beginPath()
+      ctx.roundRect(rx - pad, ry - pad, tw + pad * 2, fs + pad * 2, 5)
+      ctx.fill()
+      ctx.fillStyle = 'rgba(255,230,120,0.95)'
+      ctx.textAlign = 'left'
+      ctx.textBaseline = 'top'
+      ctx.fillText(pb.iv.tip, rx, ry)
+      ctx.restore()
+    }
+    ctx.textBaseline = 'alphabetic'
+  }
+
+  function drawChordBadges() {
+    const now = performance.now()
+    ctx.textAlign = 'left'
+    ctx.textBaseline = 'middle'
+    for (let i = chordBadges.length - 1; i >= 0; i--) {
+      const b = chordBadges[i]
+      const elapsed = now - b.startT
+      if (elapsed > CHORD_FADE_MS) { chordBadges.splice(i, 1); continue }
+      const alpha = Math.max(0, 1 - elapsed / CHORD_FADE_MS)
+      const rise  = (elapsed / CHORD_FADE_MS) * 28
+      const pct = b.total > 0 ? b.hit / b.total : 0
+      const color = pct === 1 ? '#ffd700' : pct >= 0.75 ? '#4ec080' : '#f0a830'
+      const text = `♫ ${b.hit}/${b.total}`
+      ctx.globalAlpha = alpha
+      ctx.font = `bold ${Math.max(Math.round(layout.wKeyH * 1.0), 10)}px sans-serif`
+      ctx.fillStyle = color
+      ctx.fillText(text, b.x, b.y - rise)
+    }
+    ctx.globalAlpha = 1
+    ctx.textBaseline = 'alphabetic'
+  }
+
   function drawGradeBadges() {
     const now = performance.now()
     ctx.textAlign = 'left'
@@ -549,8 +687,11 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     drawClefs()
     if (practiceActive) {
       drawPracticeBars()
+      drawHairpins()
+      drawTips()
       drawGoldenLine()
       drawGradeBadges()
+      drawChordBadges()
     } else {
       drawBars()
       drawGoldenLine()
@@ -603,6 +744,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     enablePractice(intervals: NoteInterval[], grading = false) {
       practiceBars = intervals.map(iv => ({ iv, graded: false, holding: false }))
       gradeBadges = []
+      chordBadges = []
       practiceMs = 0
       practiceActive = true
       gradingEnabled = grading
@@ -612,6 +754,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       practiceActive = false
       practiceBars = []
       gradeBadges = []
+      chordBadges = []
     },
 
     setPracticeTime(ms: number) {
@@ -624,6 +767,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
           pb.holdFraction = undefined
         }
         gradeBadges = []
+        chordBadges = []
       }
       practiceMs = ms
     },
@@ -677,6 +821,21 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
         y:      pitchY(note, layout),
         startT: performance.now(),
       })
+    },
+
+    showChordResult(hit: number, total: number, note: number) {
+      if (total <= 1) return
+      chordBadges.push({
+        hit,
+        total,
+        x: layout.judgeX + 10,
+        y: pitchY(note, layout) - layout.wKeyH * 2.5,
+        startT: performance.now(),
+      })
+    },
+
+    setHairpins(h: Hairpin[]) {
+      hairpins = h
     },
 
     setGradeLabels(labels: Partial<Record<PracticeGrade, string>>) {

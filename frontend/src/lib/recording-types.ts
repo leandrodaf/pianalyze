@@ -165,6 +165,8 @@ export interface NoteInterval {
   articulation?: Articulation
   grace?: boolean
   voice?: Voice
+  /** Pedagogical tip shown as the note approaches the judge line (G5). */
+  tip?: string
 }
 
 // ── Recording (root) ─────────────────────────────────────────────────────────

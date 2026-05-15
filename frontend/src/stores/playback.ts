@@ -98,6 +98,7 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
     articulation?: Articulation
     grace?: boolean
     voice?: NoteInterval['voice']
+    tip?: string
   }
 
   const active = new Map<number, Active>()
@@ -119,6 +120,7 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
         articulation: ev.articulation,
         grace: ev.grace,
         voice: ev.voice,
+        tip: ev.tip,
       })
     } else if (isNoteOff) {
       const entry = active.get(ev.note)
@@ -133,6 +135,7 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
           articulation: entry.articulation,
           grace: entry.grace,
           voice: entry.voice,
+          tip: entry.tip,
         })
         active.delete(ev.note)
       }
@@ -151,6 +154,7 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
       articulation: entry.articulation,
       grace: entry.grace,
       voice: entry.voice,
+      tip: entry.tip,
     })
   }
   return out

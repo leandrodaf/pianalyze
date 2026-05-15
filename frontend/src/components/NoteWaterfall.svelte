@@ -3,6 +3,7 @@
   import { midiStore } from '../stores/midi'
   import { playbackStore, noteIntervals, buildGradingIntervals } from '../stores/playback'
   import { createWaterfallCanvas, type WaterfallCanvas } from '../lib/waterfall-canvas'
+  import { bpmAt } from '../lib/recording-types'
   import { get } from 'svelte/store'
   import { EventsOn } from '../../wailsjs/runtime/runtime'
   import {
@@ -43,12 +44,18 @@
     ro.observe(container)
 
     // Go → frontend: grade result from backend grading engine
-    EventsOn('grade:result', (res: { note: number; grade: string; deltaMs: number }) => {
+    EventsOn('grade:result', (res: {
+      note: number; grade: string; deltaMs: number
+      chordDone?: boolean; chordFrac?: number; chordHit?: number; chordTotal?: number
+    }) => {
       if (!waterfall) return
       // noteHeld MUST come before showGrade — showGrade marks bar as graded,
       // which would prevent noteHeld from finding it.
       waterfall.noteHeld(res.note)
       waterfall.showGrade(res.note, res.grade as any)
+      if (res.chordDone && res.chordHit != null && res.chordTotal != null) {
+        waterfall.showChordResult(res.chordHit, res.chordTotal, res.note)
+      }
     })
 
     // Go → frontend: hold fraction when student releases a note
@@ -83,7 +90,8 @@
       }
 
       waterfall.setSpeed(state.speedMultiplier)
-      waterfall.setBpm(state.recording?.bpm ?? null)
+      waterfall.setBpm(state.recording ? bpmAt(state.recording, state.positionMs) : null)
+      waterfall.setHairpins(state.recording?.hairpins ?? [])
 
       if (hasRecording) {
         waterfall.setPracticeTime(state.positionMs - waterfall.getLeadTime() * 1000)
