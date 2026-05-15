@@ -74,16 +74,7 @@ type App struct {
 
 // NewApp creates a new App instance.
 func NewApp() *App {
-	return &App{
-		recBuf: make([]RecordedEvent, 0, 2048),
-		grader: grading.New(),
-	}
-}
-
-// startup is called by Wails when the application is ready.
-func (a *App) startup(ctx context.Context) {
-	a.ctx = ctx
-	a.logger = initLogger()
+	logger := initLogger()
 
 	client, err := midi.NewMIDIClient(
 		contracts.WithLogLevel(contracts.InfoLevel),
@@ -93,12 +84,25 @@ func (a *App) startup(ctx context.Context) {
 		}),
 	)
 	if err != nil {
-		a.logger.Error(constants.MsgMIDIClientSetupError, zap.Error(err))
-		runtime.EventsEmit(ctx, "app:error", err.Error())
-		return
+		logger.Error(constants.MsgMIDIClientSetupError, zap.Error(err))
+	} else {
+		logger.Info(constants.MsgMIDIClientSetupSuccess)
 	}
-	a.midiClient = client
-	a.logger.Info(constants.MsgMIDIClientSetupSuccess)
+
+	return &App{
+		logger:     logger,
+		midiClient: client,
+		recBuf:     make([]RecordedEvent, 0, 2048),
+		grader:     grading.New(),
+	}
+}
+
+// startup is called by Wails when the application is ready.
+func (a *App) startup(ctx context.Context) {
+	a.ctx = ctx
+	if a.midiClient == nil {
+		runtime.EventsEmit(ctx, "app:error", constants.MsgMIDIClientSetupError)
+	}
 
 	go a.watchMIDIDevices(ctx)
 }
