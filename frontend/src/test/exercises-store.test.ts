@@ -22,7 +22,8 @@ function makeEntry(overrides: Partial<BundledExerciseEntry> = {}): BundledExerci
 }
 
 const fakeRecording: Recording = {
-  bpm: 120,
+  version: 1,
+  recordedAt: '2024-01-01T00:00:00Z',
   events: [],
 }
 
