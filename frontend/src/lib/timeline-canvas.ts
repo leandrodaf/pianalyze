@@ -2,16 +2,27 @@
  * Mini timeline canvas — compressed view of the entire recording.
  * Two horizontal tracks: right hand (top) and left hand (bottom).
  * A time ruler at the bottom shows adaptive time markers.
+ *
+ * The visible-window highlight mirrors the waterfall's visible range:
+ *   [positionMs - PAST_MS,  positionMs + LEAD_MS]
+ * where LEAD_MS and PAST_MS are derived from the waterfall's constants so the
+ * two views are always in sync.
  */
 import type { NoteInterval } from './recording-types'
+import { DEFAULT_LEAD_TIME_SEC, LINE_X_RATIO } from './waterfall-canvas'
 
 const RIGHT_MIN  = 60   // C4
 const RIGHT_MAX  = 108  // C8
 const LEFT_MIN   = 21   // A0
 const LEFT_MAX   = 59   // B3
-const WINDOW_SEC = 30
 const TRACK_GAP  = 3
 const RULER_H    = 14   // px reserved for the time ruler at the bottom
+
+// Window that mirrors waterfall visibility:
+//   future = leadTimeSec s (right-edge → golden bar)
+//   past   = LINE_X_RATIO / (1 - LINE_X_RATIO) × leadTimeSec s (bar → left edge of note area)
+const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
+const PAST_MS = (LINE_X_RATIO / (1 - LINE_X_RATIO)) * LEAD_MS  // ≈ 706 ms
 
 export interface TimelineCanvas {
   setIntervals(intervals: NoteInterval[]): void
@@ -168,8 +179,8 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
       ctx.fillText('B', lx2 - 2, 1)
     }
 
-    const wx1 = msToX(positionMs)
-    const wx2 = msToX(Math.min(positionMs + WINDOW_SEC * 1000, durationMs))
+    const wx1 = msToX(Math.max(0, positionMs - PAST_MS))
+    const wx2 = msToX(Math.min(positionMs + LEAD_MS, durationMs))
     ctx.fillStyle = 'rgba(255,255,255,0.07)'
     ctx.fillRect(wx1, 0, wx2 - wx1, rulerTop)
 

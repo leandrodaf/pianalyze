@@ -45,7 +45,7 @@ const BASS_BOT_IDX   = WHITE_IDX[43]  // 13
 const BASS_TOP_IDX   = WHITE_IDX[57]  // 21
 
 const LIVE_SCROLL_PX_PER_SEC        = 120   // live mode bar scroll speed
-const LINE_X_RATIO                  = 0.15  // golden line position — always left, both modes
+export const LINE_X_RATIO           = 0.15  // golden line position — always left, both modes
 const LEFT_MARGIN                   = 54
 export const DEFAULT_LEAD_TIME_SEC  = 4     // seconds for notes to travel right-edge → golden line
 
