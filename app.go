@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -370,6 +371,54 @@ func (a *App) SaveRecording(jsonData string) error {
 		return err
 	}
 	return writeGzip(path, []byte(jsonData))
+}
+
+// GetDefaultSavePath returns the default recordings directory:
+// ~/Documents/pianalyze on macOS, Windows, and Linux.
+func (a *App) GetDefaultSavePath() string {
+	home, err := os.UserHomeDir()
+	if err != nil || home == "" {
+		home = "."
+	}
+	return filepath.Join(home, "Documents", "pianalyze")
+}
+
+// PickSaveDirectory opens a native directory-picker dialog and returns the
+// chosen path. title is the dialog window title, supplied by the frontend so
+// it can be localised. Returns ("", nil) if the user cancels.
+func (a *App) PickSaveDirectory(title string) (string, error) {
+	dir, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
+		Title:            title,
+		DefaultDirectory: a.GetDefaultSavePath(),
+	})
+	if err != nil || dir == "" {
+		return "", err
+	}
+	return dir, nil
+}
+
+// AutoSaveRecording saves a recording JSON directly to dir/filename,
+// creating the directory tree if needed. Returns the absolute saved path.
+func (a *App) AutoSaveRecording(jsonData, dir, filename string) (string, error) {
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return "", err
+	}
+	p := filepath.Join(dir, filename)
+	return p, writeGzip(p, []byte(jsonData))
+}
+
+// PauseRecording suspends event buffering without clearing the buffer.
+func (a *App) PauseRecording() {
+	a.recMu.Lock()
+	a.isRec = false
+	a.recMu.Unlock()
+}
+
+// ResumeRecording resumes event buffering after a pause.
+func (a *App) ResumeRecording() {
+	a.recMu.Lock()
+	a.isRec = true
+	a.recMu.Unlock()
 }
 
 // LoadRecordingFile opens a native OS open-file dialog, reads the file (plain

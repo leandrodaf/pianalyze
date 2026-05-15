@@ -3,60 +3,48 @@
   "greeting.afternoon": "Boa tarde",
   "greeting.evening": "Boa noite",
   "greeting.sub": "O que você quer praticar hoje?",
-
   "nav.home": "Início",
   "nav.library": "Biblioteca",
   "nav.recordings": "Gravações",
-
   "device.label": "SEU DISPOSITIVO MIDI",
   "device.none": "Nenhum dispositivo MIDI encontrado. Conecte um e reinicie.",
   "device.change": "Trocar dispositivo",
   "device.connecting": "Conectando…",
   "device.connect": "Conectar",
-
   "remote.label": "BIBLIOTECA REMOTA",
   "remote.hint": "URL de um manifesto JSON de exercícios",
   "remote.loading": "Carregando…",
   "remote.load": "Carregar",
-
   "quick.continue": "Continuar",
   "quick.freeplay": "Tocar Livre",
   "quick.random": "Aleatório",
   "quick.randomSub": "Exercício surpresa",
   "quick.challenge": "Desafio do dia",
   "quick.comingSoon": "Em breve",
-
   "exercise.singular": "exercício",
   "exercise.plural": "exercícios",
   "exercise.comingSoon": "Em breve",
-
   "category.scales": "Escalas",
   "category.chords": "Acordes",
   "category.pieces": "Peças",
-
   "difficulty.label": "Dificuldade",
   "difficulty.1": "Iniciante",
   "difficulty.2": "Básico",
   "difficulty.3": "Intermediário",
   "difficulty.4": "Avançado",
   "difficulty.5": "Expert",
-
   "stats.duration": "Duração",
   "stats.bpm": "BPM",
   "stats.hands": "Mãos",
   "stats.timeSignature": "Compasso",
-
   "hands.left": "Mão esquerda",
   "hands.right": "Mão direita",
   "hands.both": "Ambas as mãos",
-
   "modal.practice": "Praticar agora",
   "modal.comingSoon": "Em breve",
   "modal.close": "Fechar",
-
   "app.back": "← Início",
   "app.freeplay": "Tocar Livre",
-
   "brand.subtitle": "Ferramenta de análise de piano",
   "lang.label": "Idioma",
   "tools.label": "FERRAMENTAS",
@@ -64,31 +52,25 @@
   "tools.record": "REC",
   "common.by": "por",
   "music.triad": "tríade",
-
   "lang.pt-BR": "Português (BR)",
   "lang.en": "English",
   "lang.es": "Español",
-
   "toast.device.disconnected": "Dispositivo MIDI desconectado",
   "toast.device.connected": "Dispositivo MIDI conectado",
-
   "grade.perfect": "Perfeito!",
   "grade.good": "Boa!",
   "grade.ok": "OK",
   "grade.miss": "Perdeu",
   "grade.wrong": "Errou",
-
   "waterfall.hand.right": "Mão Direita",
   "waterfall.hand.left": "Mão Esquerda",
   "waterfall.hand.right.abbr": "MD",
   "waterfall.hand.left.abbr": "ME",
-
   "inversion.root": "Posição fundamental",
   "inversion.1st": "1ª inversão",
   "inversion.2nd": "2ª inversão",
   "inversion.3rd": "3ª inversão",
   "inversion.unknown": "Inversão desconhecida",
-
   "chord.major": "Maior",
   "chord.minor": "Menor",
   "chord.augmented": "Aumentado",
@@ -175,7 +157,6 @@
   "chord.major-3rd": "3ª Maior",
   "chord.perfect-4th": "4ª Justa",
   "chord.tritone": "Trítono",
-
   "settings.title": "Configurações",
   "settings.profile": "Perfil do Aluno",
   "settings.profile.hint": "Define velocidade e tolerância de julgamento para os exercícios.",
@@ -193,5 +174,21 @@
   "settings.import.error.parse": "Formato de arquivo inválido",
   "settings.import.tab.recording": "Gravação",
   "settings.import.tab.exercises": "Exercícios",
-  "settings.close": "Fechar"
+  "settings.close": "Fechar",
+  "rec.live": "● GRAVANDO",
+  "rec.start": "REC",
+  "rec.stop": "PARAR",
+  "rec.pause": "Pausar",
+  "rec.resume": "Retomar",
+  "rec.save.as": "Salvar como…",
+  "rec.auto.saved": "Salvo!",
+  "rec.done": "Concluir",
+  "quick.record": "Gravar",
+  "quick.recordSub": "Nova gravação",
+  "settings.savepath": "Pasta de gravações",
+  "settings.savepath.hint": "Local onde as gravações são salvas automaticamente.",
+  "settings.savepath.default": "Padrão (Documentos/pianalyze)",
+  "settings.savepath.change": "Alterar…",
+  "settings.savepath.reset": "Redefinir",
+  "settings.savepath.dialog": "Escolher pasta de gravações"
 }

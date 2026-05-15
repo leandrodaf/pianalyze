@@ -4,6 +4,7 @@
   import { DIFFICULTY_PRESETS, type DifficultyPreset } from '../lib/recording-types'
   import { loadFromUrl } from '../stores/exercises'
   import { exerciseStore } from '../stores/exercises'
+  import { GetDefaultSavePath, PickSaveDirectory } from '../../wailsjs/go/main/App'
   import type { Recording } from '../lib/recording-types'
 
   export let onClose: () => void
@@ -58,6 +59,24 @@
 
   function handleKeydown(e: KeyboardEvent) {
     if (e.key === 'Escape') onClose()
+  }
+
+  // ── Save path ──────────────────────────────────────────────────────────────
+  let pathLoading = false
+
+  async function handlePickDirectory() {
+    pathLoading = true
+    try {
+      const dir = await PickSaveDirectory($t('settings.savepath.dialog'))
+      if (dir) settingsStore.patch({ savePath: dir })
+    } finally {
+      pathLoading = false
+    }
+  }
+
+  async function handleResetPath() {
+    const def = await GetDefaultSavePath()
+    settingsStore.patch({ savePath: def })
   }
 </script>
 
@@ -178,6 +197,27 @@
       </div>
       {#if importError}<p class="error-text">{importError}</p>{/if}
       {#if importSuccess}<p class="success-text">✓</p>{/if}
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── Pasta de gravações ──────────────────────────────────────────── -->
+    <section class="settings-section">
+      <div class="section-label">{$t('settings.savepath')}</div>
+      <p class="section-hint">{$t('settings.savepath.hint')}</p>
+      <div class="savepath-row">
+        <span class="savepath-value" title={$settingsStore.savePath || $t('settings.savepath.default')}>
+          {$settingsStore.savePath || $t('settings.savepath.default')}
+        </span>
+        <button class="sp-btn" on:click={handlePickDirectory} disabled={pathLoading}>
+          {pathLoading ? '⟳' : $t('settings.savepath.change')}
+        </button>
+        {#if $settingsStore.savePath}
+          <button class="sp-btn sp-btn-reset" on:click={handleResetPath} title={$t('settings.savepath.reset')}>
+            ↩
+          </button>
+        {/if}
+      </div>
     </section>
 
   </div>
@@ -360,6 +400,52 @@
 
   .error-text { font-size: 0.72rem; color: #f87171; margin: 4px 0 0; }
   .success-text { font-size: 0.85rem; color: #4ade80; margin: 4px 0 0; }
+
+  .savepath-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .savepath-value {
+    flex: 1;
+    font-size: 0.73rem;
+    color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 0.3rem 0.55rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .sp-btn {
+    padding: 0.3rem 0.65rem;
+    background: rgba(123,95,240,0.15);
+    border: 1px solid rgba(123,95,240,0.35);
+    border-radius: 4px;
+    color: #b89af4;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .sp-btn:hover:not(:disabled) { background: rgba(123,95,240,0.28); }
+  .sp-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .sp-btn-reset {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.5);
+  }
+
+  .sp-btn-reset:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
 
   .spin { display: inline-block; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }

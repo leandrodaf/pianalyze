@@ -3,6 +3,10 @@
 import {main} from '../models';
 import {grading} from '../models';
 
+export function AutoSaveRecording(arg1:string,arg2:string,arg3:string):Promise<string>;
+
+export function GetDefaultSavePath():Promise<string>;
+
 export function ListDevices():Promise<Array<main.DeviceInfo>>;
 
 export function LoadGradingProfile(arg1:grading.Profile):Promise<void>;
@@ -12,6 +16,12 @@ export function LoadPracticeIntervals(arg1:Array<grading.Interval>):Promise<void
 export function LoadRecordingFile():Promise<string>;
 
 export function PausePractice(arg1:number):Promise<void>;
+
+export function PauseRecording():Promise<void>;
+
+export function PickSaveDirectory(arg1:string):Promise<string>;
+
+export function ResumeRecording():Promise<void>;
 
 export function SaveRecording(arg1:string):Promise<void>;
 

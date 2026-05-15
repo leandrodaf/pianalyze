@@ -3,7 +3,7 @@
   import { EventsOn } from '../../wailsjs/runtime/runtime'
   import { ListDevices, SelectDevice, StartCapture, StopCapture } from '../../wailsjs/go/main/App'
   import type { main } from '../../wailsjs/go/models'
-  import { exerciseStore, exercisesByCategory, loadFromUrl } from '../stores/exercises'
+  import { exerciseStore, exercisesByCategory } from '../stores/exercises'
   import { LOCALE_NAMES, locale, t, type Locale } from '../lib/i18n'
   import {
     type Category,
@@ -108,21 +108,6 @@
     if (!available.length) return null
     const day = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 1).getTime()) / 86400000)
     return available[day % available.length]
-  }
-
-  // ── Remote library ─────────────────────────────────────────────────────────────
-  let remoteUrl    = ''
-  let loadingRemote = false
-  let remoteError  = ''
-
-  async function handleLoadRemote() {
-    const url = remoteUrl.trim()
-    if (!url) return
-    loadingRemote = true; remoteError = ''
-    await loadFromUrl(url)
-    const err = $exerciseStore.error
-    if (err) remoteError = err; else remoteUrl = ''
-    loadingRemote = false
   }
 
   // ── Tools ──────────────────────────────────────────────────────────────────────
@@ -284,26 +269,6 @@
 
     <div class="hr"></div>
 
-    <!-- Remote library -->
-    <div class="sb-section">
-      <span class="sb-label">{$t('remote.label')}</span>
-      <p class="hint-text">{$t('remote.hint')}</p>
-      <input
-        class="url-input"
-        type="url"
-        placeholder="https://exemplo.com/exercises.json"
-        bind:value={remoteUrl}
-        on:keydown={e => e.key === 'Enter' && handleLoadRemote()}
-      />
-      <button class="load-btn" on:click={handleLoadRemote}
-        disabled={loadingRemote || !remoteUrl.trim()}>
-        {#if loadingRemote}<span class="spin">⟳</span> {$t('remote.loading')}{:else}{$t('remote.load')}{/if}
-      </button>
-      {#if remoteError}<p class="error-text">{remoteError}</p>{/if}
-    </div>
-
-    <div class="hr"></div>
-
     <div class="sb-section">
       <span class="sb-label">{$t('tools.label')}</span>
       <input
@@ -317,10 +282,6 @@
         <button class="tool-btn" on:click={openImportPicker} disabled={!onImportRecording}>
           <span class="tool-icon">📂</span>
           <span>{$t('tools.import')}</span>
-        </button>
-        <button class="tool-btn rec-tool-btn" on:click={handleStartRecording} disabled={!onStartRecording}>
-          <span class="tool-icon">🔴</span>
-          <span>{$t('tools.record')}</span>
         </button>
       </div>
       {#if toolsError}<p class="error-text">{toolsError}</p>{/if}
@@ -365,6 +326,14 @@
           <div class="pill-text">
             <span class="pill-label">{$t('quick.challenge')}</span>
             <span class="pill-sub">{dailyChallengeEx ? dailyChallengeEx.title : $t('quick.comingSoon')}</span>
+          </div>
+        </button>
+
+        <button class="quick-pill rec-pill" on:click={handleStartRecording} disabled={!onStartRecording}>
+          <span class="pill-icon">🔴</span>
+          <div class="pill-text">
+            <span class="pill-label">{$t('quick.record')}</span>
+            <span class="pill-sub">{$t('quick.recordSub')}</span>
           </div>
         </button>
 

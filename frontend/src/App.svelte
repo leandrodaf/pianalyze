@@ -11,6 +11,7 @@
   import NoteWaterfall from './components/NoteWaterfall.svelte'
   import Timeline from './components/Timeline.svelte'
   import ControlsBar from './components/ControlsBar.svelte'
+  import RecordControls from './components/RecordControls.svelte'
   import type { Exercise } from './lib/exercise-types'
   import { t } from './lib/i18n'
   import Toast from './components/Toast.svelte'
@@ -20,6 +21,7 @@
 
   import { translateChord, translateInversion, translateRootNote, chordShorthand } from './lib/chord-i18n'
   import { settingsStore } from './stores/settings'
+  import { StartRecording } from '../wailsjs/go/main/App'
 
   const KEY_DISPLAY: Record<string, string> = {
     'C': 'Dó M', 'G': 'Sol M', 'D': 'Ré M', 'A': 'Lá M',
@@ -36,6 +38,7 @@
   let prepActive = false   // shows prep banner instead of top-bar; both use same playing layout
   let deviceReady = false
   let activeExercise: Exercise | null = null
+  let isRecordingMode = false
 
   $: chord     = $midiStore.chord
   $: inversion = $midiStore.inversion
@@ -169,10 +172,12 @@
     page = 'playing'
   }
 
-  function handleStartRecording() {
+  async function handleStartRecording() {
     activeExercise = null
     clearLoadedRecording()
+    isRecordingMode = true
     page = 'playing'
+    await StartRecording()
   }
 
   function goHome() {
@@ -181,6 +186,7 @@
     prepActive = false
     prepStore.deactivate()
     activeExercise = null
+    isRecordingMode = false
     page = 'home'
   }
 </script>
@@ -213,6 +219,11 @@
             <span class="exercise-name">{activeExercise.title}</span>
             <span class="exercise-diff">{activeExercise.subtitle}</span>
           </div>
+        {:else if isRecordingMode}
+          <div class="rec-live-tag">
+            <span class="rec-live-dot"></span>
+            {$t('rec.live')}
+          </div>
         {:else if recTitle}
           <div class="rec-title-tag">
             <span class="rec-title">{recTitle}</span>
@@ -221,31 +232,39 @@
         {:else}
           <span class="freeplay-tag">🎧 {$t('app.freeplay')}</span>
         {/if}
-        <!-- Right side: meta chips + difficulty presets -->
+        <!-- Right side: record controls OR meta chips + presets -->
         <div class="top-bar-right">
-          {#if recBpm || recTimeSig || recKey || recMeasure}
-            <div class="meta-chips">
-              {#if recMeasure != null}<span class="meta-chip">M{recMeasure}</span>{/if}
-              {#if recTimeSig}<span class="meta-chip">{recTimeSig}</span>{/if}
-              {#if recBpm}<span class="meta-chip">{recBpm} BPM</span>{/if}
-              {#if recKey}<span class="meta-chip">{fmtKey(recKey)}</span>{/if}
-            </div>
-          {/if}
-          <!-- Difficulty presets — top-right corner -->
-          {#if rec}
-            <div class="preset-group">
-              {#each PRESETS as [key, cfg]}
-                <button
-                  class="preset-pill"
-                  class:active={activePreset === key}
-                  on:click={() => applyPreset(key)}
-                  title="{cfg.label} — {cfg.speed * 100 | 0}% velocidade"
-                >
-                  <span class="preset-icon">{cfg.icon}</span>
-                  <span class="preset-name">{cfg.label}</span>
-                </button>
-              {/each}
-            </div>
+          {#if isRecordingMode}
+            <RecordControls
+              savePath={$settingsStore.savePath}
+              onSaved={(p) => { /* recording saved, stay on page */ }}
+              onDone={() => { isRecordingMode = false; goHome() }}
+            />
+          {:else}
+            {#if recBpm || recTimeSig || recKey || recMeasure}
+              <div class="meta-chips">
+                {#if recMeasure != null}<span class="meta-chip">M{recMeasure}</span>{/if}
+                {#if recTimeSig}<span class="meta-chip">{recTimeSig}</span>{/if}
+                {#if recBpm}<span class="meta-chip">{recBpm} BPM</span>{/if}
+                {#if recKey}<span class="meta-chip">{fmtKey(recKey)}</span>{/if}
+              </div>
+            {/if}
+            <!-- Difficulty presets — top-right corner -->
+            {#if rec}
+              <div class="preset-group">
+                {#each PRESETS as [key, cfg]}
+                  <button
+                    class="preset-pill"
+                    class:active={activePreset === key}
+                    on:click={() => applyPreset(key)}
+                    title="{cfg.label} — {cfg.speed * 100 | 0}% velocidade"
+                  >
+                    <span class="preset-icon">{cfg.icon}</span>
+                    <span class="preset-name">{cfg.label}</span>
+                  </button>
+                {/each}
+              </div>
+            {/if}
           {/if}
         </div>
       </div>
@@ -373,6 +392,28 @@
     font-size: 0.82rem;
     color: rgba(255,255,255,0.45);
     font-weight: 500;
+  }
+
+  .rec-live-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #ff6060;
+    letter-spacing: 0.06em;
+  }
+
+  .rec-live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #cc3030;
+    animation: pulse 0.9s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
   }
 
   .rec-title-tag {

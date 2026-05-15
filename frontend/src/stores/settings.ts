@@ -7,6 +7,8 @@ export interface Settings {
   chordDisplayMode: ChordDisplayMode
   /** Preferred skill level; null = no preference (no auto-preset applied). */
   skillLevel: DifficultyPreset | null
+  /** Directory where recordings are auto-saved. Empty = use OS default. */
+  savePath: string
 }
 
 const STORAGE_KEY = 'pianalyze.settings'
@@ -22,6 +24,7 @@ function loadSettings(): Settings {
 const defaults: Settings = {
   chordDisplayMode: 'full',
   skillLevel: null,
+  savePath: '',
 }
 
 function createSettingsStore() {
