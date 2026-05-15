@@ -10,6 +10,7 @@
   import type { Exercise } from './lib/exercise-types'
   import type { Recording } from './lib/recording-types'
   import { t } from './lib/i18n'
+  import Toast from './components/Toast.svelte'
 
   type Page = 'home' | 'playing'
 
@@ -92,6 +93,8 @@
     page = 'home'
   }
 </script>
+
+<Toast />
 
 {#if page === 'home'}
   <HomeScreen

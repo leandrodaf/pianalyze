@@ -67,5 +67,8 @@
 
   "lang.pt-BR": "Português (BR)",
   "lang.en": "English",
-  "lang.es": "Español"
+  "lang.es": "Español",
+
+  "toast.device.disconnected": "MIDI device disconnected",
+  "toast.device.connected": "MIDI device connected"
 }

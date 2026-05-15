@@ -12,6 +12,8 @@
   } from '../lib/exercise-types'
   import type { Recording } from '../lib/recording-types'
 
+  import { addToast } from '../stores/toast'
+
   export let onPlay: (exercise: Exercise | null) => void
   export let onDeviceReady: () => void
   export let onImportRecording: ((recording: Recording) => void) | undefined = undefined
@@ -34,6 +36,7 @@
     } catch (e) { deviceError = String(e) }
 
     unsubDevices = EventsOn('devices:changed', (updated: main.DeviceInfo[]) => {
+      const prev = devices
       devices = updated
       if (selectedId !== null && !updated.find(d => d.id === selectedId)) {
         // Selected device disconnected — reset state
@@ -42,6 +45,12 @@
         showDeviceList = true
         deviceError = ''
         StopCapture().catch(() => {})
+        addToast($t('toast.device.disconnected'), 'warning')
+      } else {
+        const added = updated.filter(d => !prev.find(p => p.id === d.id))
+        if (added.length > 0) {
+          addToast($t('toast.device.connected'), 'success')
+        }
       }
     })
   })

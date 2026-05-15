@@ -68,5 +68,8 @@
   "lang.pt-BR": "葡萄牙语（巴西）",
   "lang.en": "英语",
   "lang.es": "西班牙语",
-  "lang.zh-CN": "中文（简体）"
+  "lang.zh-CN": "中文（简体）",
+
+  "toast.device.disconnected": "MIDI 设备已断开",
+  "toast.device.connected": "MIDI 设备已连接"
 }
