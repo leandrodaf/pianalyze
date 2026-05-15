@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { get } from 'svelte/store'
   import { createTimelineCanvas } from '../lib/timeline-canvas'
   import { playbackStore, noteIntervals, seekTo, setLoop, clearLoop } from '../stores/playback'
 
@@ -8,9 +7,11 @@
   let canvasEl: HTMLCanvasElement
   let timeline: ReturnType<typeof createTimelineCanvas> | null = null
 
-  type DragMode = 'seek' | 'loop' | null
-  let dragMode: DragMode = null
+  // Plain drag = select loop range (auto-enables loop), click = seek, dbl-click = clear loop
+  const DRAG_THRESHOLD_PX = 5
+  let mouseDownX = -1
   let loopAnchor = -1
+  let isDragging = false
 
   onMount(() => {
     timeline = createTimelineCanvas(canvasEl)
@@ -54,45 +55,41 @@
 
   function handleMouseDown(e: MouseEvent) {
     if (!timeline) return
-    const ms = getMs(e)
-
-    if (e.shiftKey) {
-      dragMode = 'loop'
-      loopAnchor = ms
-      setLoop(ms, ms)
-    } else {
-      dragMode = 'seek'
-      seekTo(ms)
-    }
+    mouseDownX = e.clientX
+    loopAnchor = getMs(e)
+    isDragging = false
 
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseup', handleMouseUp, { once: true })
   }
 
   function handleMouseMove(e: MouseEvent) {
-    if (!timeline || !dragMode) return
-    const ms = getMs(e)
+    if (!timeline) return
 
-    if (dragMode === 'seek') {
-      seekTo(ms)
-    } else if (dragMode === 'loop') {
+    if (!isDragging && Math.abs(e.clientX - mouseDownX) > DRAG_THRESHOLD_PX) {
+      isDragging = true
+    }
+
+    if (isDragging) {
+      const ms = getMs(e)
       const lo = Math.min(loopAnchor, ms)
       const hi = Math.max(loopAnchor, ms)
-      if (hi - lo > 100) setLoop(lo, hi)
+      if (hi - lo > 50) setLoop(lo, hi)
     }
   }
 
-  function handleMouseUp() {
-    dragMode = null
+  function handleMouseUp(e: MouseEvent) {
+    if (!isDragging) {
+      seekTo(getMs(e))
+    }
+    isDragging = false
+    mouseDownX = -1
     window.removeEventListener('mousemove', handleMouseMove)
   }
 
-  function handleDblClick(e: MouseEvent) {
+  function handleDblClick(_e: MouseEvent) {
     if (!timeline) return
-    const ms = getMs(e)
-    const s = get(playbackStore)
-    if (s.loopStart == null || s.loopEnd == null) return
-    if (ms < s.loopStart || ms > s.loopEnd) clearLoop()
+    clearLoop()
   }
 </script>
 

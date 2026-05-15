@@ -263,7 +263,7 @@ export function setLoop(start: number, end: number): void {
     ...s,
     loopStart,
     loopEnd,
-    loopEnabled: loopEnd > loopStart ? s.loopEnabled : false,
+    loopEnabled: loopEnd > loopStart,
   }))
 }
 

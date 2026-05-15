@@ -66,8 +66,7 @@
     page = 'playing'
     if (exercise?.data) {
       loadRecording(exercise.data)
-      setPractice(true)   // exercise with data → practice mode (notes come from the right)
-      play()              // start playback immediately so notes appear from right edge
+      setPractice(true)
     } else {
       clearLoadedRecording()
     }

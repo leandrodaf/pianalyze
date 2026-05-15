@@ -1,15 +1,17 @@
 /**
  * Mini timeline canvas — compressed view of the entire recording.
  * Two horizontal tracks: right hand (top) and left hand (bottom).
+ * A time ruler at the bottom shows adaptive time markers.
  */
 import type { NoteInterval } from './recording-types'
 
-const RIGHT_MIN = 60  // C4
-const RIGHT_MAX = 108 // C8
-const LEFT_MIN  = 21  // A0
-const LEFT_MAX  = 59  // B3
+const RIGHT_MIN  = 60   // C4
+const RIGHT_MAX  = 108  // C8
+const LEFT_MIN   = 21   // A0
+const LEFT_MAX   = 59   // B3
 const WINDOW_SEC = 30
-const TRACK_GAP  = 4
+const TRACK_GAP  = 3
+const RULER_H    = 14   // px reserved for the time ruler at the bottom
 
 export interface TimelineCanvas {
   setIntervals(intervals: NoteInterval[]): void
@@ -42,12 +44,66 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
   }
 
   function getTrackBounds() {
-    const trackH = (H - TRACK_GAP) / 2
+    const available = H - RULER_H - TRACK_GAP
+    const trackH = available / 2
     return {
       rTop: 0,
       rBot: trackH,
       lTop: trackH + TRACK_GAP,
-      lBot: H,
+      lBot: trackH + TRACK_GAP + trackH,
+      rulerTop: H - RULER_H,
+    }
+  }
+
+  /** Adaptive tick interval based on total duration. */
+  function calcTickInterval(durMs: number): { major: number; minor: number } {
+    const s = durMs / 1000
+    if (s <= 30)    return { major: 5_000,   minor: 1_000 }
+    if (s <= 120)   return { major: 10_000,  minor: 5_000 }
+    if (s <= 300)   return { major: 30_000,  minor: 10_000 }
+    if (s <= 900)   return { major: 60_000,  minor: 15_000 }
+    if (s <= 3_600) return { major: 120_000, minor: 30_000 }
+    return               { major: 300_000,  minor: 60_000 }
+  }
+
+  function fmtMs(ms: number): string {
+    const s = Math.floor(ms / 1000)
+    const m = Math.floor(s / 60)
+    return `${m}:${String(s % 60).padStart(2, '0')}`
+  }
+
+  function drawRuler(rulerTop: number) {
+    if (durationMs <= 0) {
+      ctx.fillStyle = 'rgba(0,0,0,0.25)'
+      ctx.fillRect(0, rulerTop, W, RULER_H)
+      return
+    }
+
+    ctx.fillStyle = 'rgba(0,0,0,0.30)'
+    ctx.fillRect(0, rulerTop, W, RULER_H)
+
+    const { major, minor } = calcTickInterval(durationMs)
+    ctx.strokeStyle = 'rgba(255,255,255,0.20)'
+    ctx.lineWidth = 1
+    ctx.fillStyle = 'rgba(255,255,255,0.45)'
+    ctx.font = '8px sans-serif'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'top'
+
+    for (let t = 0; t <= durationMs; t += minor) {
+      const x = msToX(t)
+      const isMajor = t % major === 0
+      const tickH = isMajor ? RULER_H * 0.7 : RULER_H * 0.35
+      ctx.beginPath()
+      ctx.moveTo(x, rulerTop)
+      ctx.lineTo(x, rulerTop + tickH)
+      ctx.stroke()
+
+      if (isMajor) {
+        const label = fmtMs(t)
+        const lx = Math.min(Math.max(x, 10), W - 10)
+        ctx.fillText(label, lx, rulerTop + RULER_H * 0.55)
+      }
     }
   }
 
@@ -78,10 +134,11 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
 
   function draw() {
     ctx.clearRect(0, 0, W, H)
-    const { rTop, rBot, lTop, lBot } = getTrackBounds()
+    const { rTop, rBot, lTop, lBot, rulerTop } = getTrackBounds()
 
     drawTrack(RIGHT_MIN, RIGHT_MAX, rTop, rBot, 'rgba(123,95,240,0.75)')
-    drawTrack(LEFT_MIN, LEFT_MAX, lTop, lBot, 'rgba(240,138,91,0.75)')
+    drawTrack(LEFT_MIN,  LEFT_MAX,  lTop, lBot, 'rgba(240,138,91,0.75)')
+    drawRuler(rulerTop)
 
     if (durationMs <= 0) return
 
@@ -89,17 +146,17 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
       const lx1 = msToX(loopStart)
       const lx2 = msToX(loopEnd)
       ctx.fillStyle = loopEnabled ? 'rgba(123,95,240,0.20)' : 'rgba(123,95,240,0.10)'
-      ctx.fillRect(lx1, 0, lx2 - lx1, H)
+      ctx.fillRect(lx1, 0, lx2 - lx1, rulerTop)
 
       ctx.strokeStyle = '#7b5ff0'
       ctx.lineWidth = 1
       ctx.beginPath()
       ctx.moveTo(lx1, 0)
-      ctx.lineTo(lx1, H)
+      ctx.lineTo(lx1, rulerTop)
       ctx.stroke()
       ctx.beginPath()
       ctx.moveTo(lx2, 0)
-      ctx.lineTo(lx2, H)
+      ctx.lineTo(lx2, rulerTop)
       ctx.stroke()
 
       ctx.font = 'bold 8px sans-serif'
@@ -111,17 +168,17 @@ export function createTimelineCanvas(canvas: HTMLCanvasElement): TimelineCanvas 
       ctx.fillText('B', lx2 - 2, 1)
     }
 
-    const wx2 = msToX(Math.min(positionMs + WINDOW_SEC * 1000, durationMs))
     const wx1 = msToX(positionMs)
+    const wx2 = msToX(Math.min(positionMs + WINDOW_SEC * 1000, durationMs))
     ctx.fillStyle = 'rgba(255,255,255,0.07)'
-    ctx.fillRect(wx1, 0, wx2 - wx1, H)
+    ctx.fillRect(wx1, 0, wx2 - wx1, rulerTop)
 
     const nx = msToX(positionMs)
     ctx.strokeStyle = 'rgba(255,210,50,0.9)'
     ctx.lineWidth = 1.5
     ctx.beginPath()
     ctx.moveTo(nx, 0)
-    ctx.lineTo(nx, H)
+    ctx.lineTo(nx, rulerTop)
     ctx.stroke()
 
     ctx.textBaseline = 'alphabetic'
