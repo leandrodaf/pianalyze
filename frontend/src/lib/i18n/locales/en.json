@@ -1,0 +1,68 @@
+{
+  "greeting.morning": "Good morning",
+  "greeting.afternoon": "Good afternoon",
+  "greeting.evening": "Good evening",
+  "greeting.sub": "What do you want to practice today?",
+
+  "nav.home": "Home",
+  "nav.library": "Library",
+  "nav.recordings": "Recordings",
+
+  "device.label": "YOUR MIDI DEVICE",
+  "device.none": "No MIDI device found. Connect one and restart.",
+  "device.change": "Change device",
+  "device.connecting": "Connecting…",
+  "device.connect": "Connect",
+
+  "remote.label": "REMOTE LIBRARY",
+  "remote.hint": "URL of an exercise JSON manifest",
+  "remote.loading": "Loading…",
+  "remote.load": "Load",
+
+  "quick.continue": "Continue",
+  "quick.freeplay": "Free Play",
+  "quick.random": "Random",
+  "quick.randomSub": "Surprise exercise",
+  "quick.challenge": "Daily challenge",
+  "quick.comingSoon": "Coming soon",
+
+  "exercise.singular": "exercise",
+  "exercise.plural": "exercises",
+  "exercise.comingSoon": "Coming soon",
+
+  "category.scales": "Scales",
+  "category.chords": "Chords",
+  "category.pieces": "Pieces",
+
+  "difficulty.label": "Difficulty",
+  "difficulty.1": "Beginner",
+  "difficulty.2": "Basic",
+  "difficulty.3": "Intermediate",
+  "difficulty.4": "Advanced",
+  "difficulty.5": "Expert",
+
+  "stats.duration": "Duration",
+  "stats.bpm": "BPM",
+  "stats.hands": "Hands",
+  "stats.timeSignature": "Time",
+
+  "hands.left": "Left hand",
+  "hands.right": "Right hand",
+  "hands.both": "Both hands",
+
+  "modal.practice": "Practice now",
+  "modal.comingSoon": "Coming soon",
+  "modal.close": "Close",
+
+  "app.back": "← Home",
+  "app.freeplay": "Free Play",
+
+  "brand.subtitle": "Piano Analysis Tool",
+  "lang.label": "Language",
+  "common.by": "by",
+  "music.triad": "triad",
+
+  "lang.pt-BR": "Português (BR)",
+  "lang.en": "English",
+  "lang.es": "Español"
+}

@@ -1,0 +1,69 @@
+{
+  "greeting.morning": "早上好",
+  "greeting.afternoon": "下午好",
+  "greeting.evening": "晚上好",
+  "greeting.sub": "今天想练什么？",
+
+  "nav.home": "主页",
+  "nav.library": "曲库",
+  "nav.recordings": "录音",
+
+  "device.label": "您的 MIDI 设备",
+  "device.none": "未找到 MIDI 设备，请连接后重启。",
+  "device.change": "更换设备",
+  "device.connecting": "连接中…",
+  "device.connect": "连接",
+
+  "remote.label": "远程曲库",
+  "remote.hint": "练习 JSON 清单的 URL",
+  "remote.loading": "加载中…",
+  "remote.load": "加载",
+
+  "quick.continue": "继续",
+  "quick.freeplay": "自由演奏",
+  "quick.random": "随机",
+  "quick.randomSub": "随机练习",
+  "quick.challenge": "每日挑战",
+  "quick.comingSoon": "即将推出",
+
+  "exercise.singular": "练习",
+  "exercise.plural": "练习",
+  "exercise.comingSoon": "即将推出",
+
+  "category.scales": "音阶",
+  "category.chords": "和弦",
+  "category.pieces": "乐曲",
+
+  "difficulty.label": "难度",
+  "difficulty.1": "入门",
+  "difficulty.2": "初级",
+  "difficulty.3": "中级",
+  "difficulty.4": "高级",
+  "difficulty.5": "专家",
+
+  "stats.duration": "时长",
+  "stats.bpm": "BPM",
+  "stats.hands": "手",
+  "stats.timeSignature": "拍号",
+
+  "hands.left": "左手",
+  "hands.right": "右手",
+  "hands.both": "双手",
+
+  "modal.practice": "立即练习",
+  "modal.comingSoon": "即将推出",
+  "modal.close": "关闭",
+
+  "app.back": "← 主页",
+  "app.freeplay": "自由演奏",
+
+  "brand.subtitle": "钢琴分析工具",
+  "lang.label": "语言",
+  "common.by": "作者",
+  "music.triad": "三和弦",
+
+  "lang.pt-BR": "葡萄牙语（巴西）",
+  "lang.en": "英语",
+  "lang.es": "西班牙语",
+  "lang.zh-CN": "中文（简体）"
+}

@@ -1,0 +1,68 @@
+{
+  "greeting.morning": "Buenos días",
+  "greeting.afternoon": "Buenas tardes",
+  "greeting.evening": "Buenas noches",
+  "greeting.sub": "¿Qué quieres practicar hoy?",
+
+  "nav.home": "Inicio",
+  "nav.library": "Biblioteca",
+  "nav.recordings": "Grabaciones",
+
+  "device.label": "TU DISPOSITIVO MIDI",
+  "device.none": "No se encontró ningún dispositivo MIDI. Conecta uno y reinicia.",
+  "device.change": "Cambiar dispositivo",
+  "device.connecting": "Conectando…",
+  "device.connect": "Conectar",
+
+  "remote.label": "BIBLIOTECA REMOTA",
+  "remote.hint": "URL de un manifiesto JSON de ejercicios",
+  "remote.loading": "Cargando…",
+  "remote.load": "Cargar",
+
+  "quick.continue": "Continuar",
+  "quick.freeplay": "Tocar Libre",
+  "quick.random": "Aleatorio",
+  "quick.randomSub": "Ejercicio sorpresa",
+  "quick.challenge": "Desafío del día",
+  "quick.comingSoon": "Próximamente",
+
+  "exercise.singular": "ejercicio",
+  "exercise.plural": "ejercicios",
+  "exercise.comingSoon": "Próximamente",
+
+  "category.scales": "Escalas",
+  "category.chords": "Acordes",
+  "category.pieces": "Piezas",
+
+  "difficulty.label": "Dificultad",
+  "difficulty.1": "Principiante",
+  "difficulty.2": "Básico",
+  "difficulty.3": "Intermedio",
+  "difficulty.4": "Avanzado",
+  "difficulty.5": "Experto",
+
+  "stats.duration": "Duración",
+  "stats.bpm": "BPM",
+  "stats.hands": "Manos",
+  "stats.timeSignature": "Compás",
+
+  "hands.left": "Mano izquierda",
+  "hands.right": "Mano derecha",
+  "hands.both": "Ambas manos",
+
+  "modal.practice": "Practicar ahora",
+  "modal.comingSoon": "Próximamente",
+  "modal.close": "Cerrar",
+
+  "app.back": "← Inicio",
+  "app.freeplay": "Tocar Libre",
+
+  "brand.subtitle": "Herramienta de análisis de piano",
+  "lang.label": "Idioma",
+  "common.by": "por",
+  "music.triad": "tríada",
+
+  "lang.pt-BR": "Português (BR)",
+  "lang.en": "English",
+  "lang.es": "Español"
+}
