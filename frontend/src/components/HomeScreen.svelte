@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import { ListDevices, SelectDevice, StartCapture } from '../../wailsjs/go/main/App'
+  import { onMount, onDestroy } from 'svelte'
+  import { EventsOn } from '../../wailsjs/runtime/runtime'
+  import { ListDevices, SelectDevice, StartCapture, StopCapture } from '../../wailsjs/go/main/App'
   import type { main } from '../../wailsjs/go/models'
   import { exerciseStore, exercisesByCategory, loadFromUrl } from '../stores/exercises'
   import { LOCALE_NAMES, locale, t, type Locale } from '../lib/i18n'
@@ -24,12 +25,28 @@
   let deviceError    = ''
   let showDeviceList = true
 
+  let unsubDevices: (() => void) | null = null
+
   onMount(async () => {
     try {
       devices = await ListDevices()
       if (devices.length === 1) selectedId = devices[0].id
     } catch (e) { deviceError = String(e) }
+
+    unsubDevices = EventsOn('devices:changed', (updated: main.DeviceInfo[]) => {
+      devices = updated
+      if (selectedId !== null && !updated.find(d => d.id === selectedId)) {
+        // Selected device disconnected — reset state
+        selectedId = null
+        connected = false
+        showDeviceList = true
+        deviceError = ''
+        StopCapture().catch(() => {})
+      }
+    })
   })
+
+  onDestroy(() => { unsubDevices?.() })
 
   async function connectDevice() {
     if (selectedId === null) return
