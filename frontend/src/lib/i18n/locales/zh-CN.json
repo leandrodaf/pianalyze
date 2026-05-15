@@ -59,6 +59,8 @@
   "toast.device.disconnected": "MIDI 设备已断开",
   "toast.device.connected": "MIDI 设备已连接",
   "toast.no.device": "未连接 MIDI 设备 — 请连接后再演奏",
+  "key.picker.label": "调性 / 音阶",
+  "key.picker.none": "— 不选调性",
   "grade.perfect": "完美！",
   "grade.good": "很好",
   "grade.ok": "还行",

@@ -6,6 +6,8 @@
 
   /** Directory to auto-save recordings. Empty = use OS default from store. */
   export let savePath: string = ''
+  /** Musical key to embed in saved recording (e.g. "C", "Am"). */
+  export let keySignature: string = ''
   /** Called when a recording is successfully auto-saved, passing the file path. */
   export let onSaved: ((path: string) => void) | undefined = undefined
   /** Called when recording is fully done (user dismissed / saved). */
@@ -64,6 +66,11 @@
         emptyWarning = true
         jsonData = ''
         return
+      }
+      // Inject key signature if the user picked one before recording
+      if (keySignature) {
+        rec.keySignature = keySignature
+        jsonData = JSON.stringify(rec)
       }
     } catch {
       saveError = $t('error.import.invalid')

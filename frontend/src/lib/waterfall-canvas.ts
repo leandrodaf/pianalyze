@@ -15,7 +15,7 @@ import {
   TREBLE_LINES, BASS_LINES,
   TREBLE_BOT_IDX, TREBLE_TOP_IDX, BASS_BOT_IDX, BASS_TOP_IDX,
   LEFT_MARGIN, LIVE_SCROLL_PX_PER_SEC,
-  DEFAULT_LEAD_TIME_SEC,
+  DEFAULT_LEAD_TIME_SEC, MIDI_MIN, MIDI_MAX,
   type WaterfallLayout,
   computeLayout, pitchY, idxY, barH, ledgerSlots,
 } from './waterfall-layout'
@@ -99,6 +99,7 @@ export interface WaterfallCanvas {
   setSpeed(multiplier: number): void
   setBpm(bpm: number | null): void
   setHandLabels(right: string, left: string): void
+  setScaleKey(pcs: Set<number> | null): void
   resize(w: number, h: number): void
   destroy(): void
 }
@@ -128,6 +129,8 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   let hairpins: Hairpin[] = []
   let handLabelRight = 'RIGHT HAND'
   let handLabelLeft  = 'LEFT HAND'
+  /** Pitch classes (0–11) belonging to the currently selected scale key. */
+  let scalePCs: Set<number> | null = null
 
   function refreshLayout() {
     layout = computeLayout(W, H, leadTimeSec)
@@ -193,6 +196,22 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     const bassBot = idxY(BASS_BOT_IDX, layout) + layout.wKeyH
     ctx.fillStyle = 'rgba(240,138,91,0.07)'
     ctx.fillRect(LEFT_MARGIN, bassTop, W - LEFT_MARGIN, bassBot - bassTop)
+
+    drawScaleGuides()
+  }
+
+  function drawScaleGuides() {
+    if (!scalePCs || scalePCs.size === 0) return
+    for (let midi = MIDI_MIN; midi <= MIDI_MAX; midi++) {
+      if (!scalePCs.has(midi % 12)) continue
+      const y  = pitchY(midi, layout)
+      const h  = barH(midi, layout)
+      // Subtle amber band — black keys slightly dimmer
+      ctx.fillStyle = BLACK_PC.has(midi % 12)
+        ? 'rgba(255,210,80,0.05)'
+        : 'rgba(255,210,80,0.10)'
+      ctx.fillRect(LEFT_MARGIN, y - h * 0.5, W - LEFT_MARGIN, h)
+    }
   }
 
   function drawHandSeparator() {
@@ -934,6 +953,10 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     setHandLabels(right: string, left: string) {
       handLabelRight = right || 'RIGHT HAND'
       handLabelLeft  = left  || 'LEFT HAND'
+    },
+
+    setScaleKey(pcs: Set<number> | null) {
+      scalePCs = pcs
     },
 
     resize(w: number, h: number) {

@@ -22,6 +22,7 @@
 
   import { translateChord, translateInversion, translateRootNote, chordShorthand } from './lib/chord-i18n'
   import { settingsStore } from './stores/settings'
+  import { KEY_OPTIONS } from './lib/key-utils'
 
   const KEY_DISPLAY: Record<string, string> = {
     'C': 'Dó M', 'G': 'Sol M', 'D': 'Ré M', 'A': 'Lá M',
@@ -42,6 +43,8 @@
   let activeExercise: Exercise | null = null
   let isRecordingMode = false
   let isLiveRecording = false
+  /** Musical key selected for freeplay / recording (e.g. "Am", "G"). */
+  let freeplayKey: string = ''
 
   $: chord     = $midiStore.chord
   $: inversion = $midiStore.inversion
@@ -266,16 +269,43 @@
         {:else}
           <span class="freeplay-tag">🎧 {$t('app.freeplay')}</span>
         {/if}
-        <!-- Right side: record controls OR meta chips + presets -->
+        <!-- Right side: record controls OR key picker + meta chips + presets -->
         <div class="top-bar-right">
           {#if isRecordingMode}
+            <!-- Key picker before recording controls -->
+            {#if !isLiveRecording}
+              <select
+                class="key-picker"
+                bind:value={freeplayKey}
+                title={$t('key.picker.label')}
+              >
+                <option value="">{$t('key.picker.none')}</option>
+                {#each KEY_OPTIONS as opt}
+                  <option value={opt.value}>{opt.label}</option>
+                {/each}
+              </select>
+            {/if}
             <RecordControls
               savePath={$settingsStore.savePath}
+              keySignature={freeplayKey}
               onSaved={(p) => { /* recording saved, stay on page */ }}
               onDone={() => { isRecordingMode = false; isLiveRecording = false; goHome() }}
               onRecordingStateChange={(active) => { isLiveRecording = active }}
             />
           {:else}
+            <!-- Key picker for freeplay / review modes (no active exercise) -->
+            {#if !activeExercise}
+              <select
+                class="key-picker"
+                bind:value={freeplayKey}
+                title={$t('key.picker.label')}
+              >
+                <option value="">{$t('key.picker.none')}</option>
+                {#each KEY_OPTIONS as opt}
+                  <option value={opt.value}>{opt.label}</option>
+                {/each}
+              </select>
+            {/if}
             {#if recBpm || recTimeSig || recKey || recMeasure}
               <div class="meta-chips">
                 {#if recMeasure != null}<span class="meta-chip">M{recMeasure}</span>{/if}
@@ -307,7 +337,7 @@
 
     <!-- Waterfall, timeline, controls and piano stay mounted permanently -->
     <div class="waterfall-area">
-      <NoteWaterfall />
+      <NoteWaterfall scaleKey={freeplayKey} />
 
       <!-- Analysis HUD -->
       <div class="hud" class:hud-active={hasChord}>
@@ -538,6 +568,34 @@
     padding: 0.1rem 0.5rem;
     letter-spacing: 0.02em;
     white-space: nowrap;
+  }
+
+  /* ── Key picker dropdown ─────────────────────────────────────────────────── */
+  .key-picker {
+    height: 24px;
+    padding: 0 0.45rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    color: rgba(255,255,255,0.65);
+    font-size: 0.70rem;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    min-width: 5.5rem;
+    letter-spacing: 0.02em;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .key-picker:hover, .key-picker:focus {
+    background: rgba(255,255,255,0.10);
+    border-color: rgba(255,255,255,0.22);
+    outline: none;
+    color: rgba(255,255,255,0.88);
+  }
+  .key-picker option {
+    background: #1a1b20;
+    color: rgba(255,255,255,0.85);
   }
 
   /* ── Waterfall ───────────────────────────────────────────────────────────── */

@@ -58,6 +58,8 @@
   "toast.device.disconnected": "MIDI device disconnected",
   "toast.device.connected": "MIDI device connected",
   "toast.no.device": "No MIDI device connected — connect one to play",
+  "key.picker.label": "Key / Scale",
+  "key.picker.none": "— No key",
   "grade.perfect": "Perfect!",
   "grade.good": "Good",
   "grade.ok": "OK",

@@ -4,6 +4,7 @@
   import { playbackStore, noteIntervals, buildGradingIntervals } from '../stores/playback'
   import { createWaterfallCanvas, type WaterfallCanvas } from '../lib/waterfall-canvas'
   import { bpmAt } from '../lib/recording-types'
+  import { keyToPitchClasses } from '../lib/key-utils'
   import { get } from 'svelte/store'
   import { EventsOn } from '../../wailsjs/runtime/runtime'
   import {
@@ -14,6 +15,9 @@
     StopPractice,
   } from '../../wailsjs/go/main/App'
   import { t } from '../lib/i18n'
+
+  /** Currently selected musical key (e.g. "C", "Am", "F#"). Empty = none. */
+  export let scaleKey: string = ''
 
   let container: HTMLDivElement
   let canvasEl: HTMLCanvasElement
@@ -30,6 +34,12 @@
     })
     waterfall.setHandLabels($t('waterfall.hand.right'), $t('waterfall.hand.left'))
   }
+
+  // Propagate scale key changes to the canvas
+  $: if (waterfall) {
+    waterfall.setScaleKey(scaleKey ? keyToPitchClasses(scaleKey) : null)
+  }
+
   let prevHasRecording = false
   let prevPractice = false
   let prevStatus = ''
