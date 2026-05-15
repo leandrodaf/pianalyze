@@ -98,6 +98,7 @@ export interface WaterfallCanvas {
   getLeadTime(): number
   setSpeed(multiplier: number): void
   setBpm(bpm: number | null): void
+  setHandLabels(right: string, left: string): void
   resize(w: number, h: number): void
   destroy(): void
 }
@@ -125,6 +126,8 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   let gradeBadges: GradeBadge[] = []
   let chordBadges: ChordBadge[] = []
   let hairpins: Hairpin[] = []
+  let handLabelRight = 'RIGHT HAND'
+  let handLabelLeft  = 'LEFT HAND'
 
   function refreshLayout() {
     layout = computeLayout(W, H, leadTimeSec)
@@ -248,9 +251,9 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     ctx.textBaseline = 'bottom'
     ctx.font = `bold ${fs}px sans-serif`
     ctx.fillStyle = 'rgba(185,154,244,0.45)'
-    ctx.fillText('RIGHT HAND', LEFT_MARGIN, idxY(TREBLE_TOP_IDX, layout) - layout.wKeyH - 2)
+    ctx.fillText(handLabelRight, LEFT_MARGIN, idxY(TREBLE_TOP_IDX, layout) - layout.wKeyH - 2)
     ctx.fillStyle = 'rgba(240,138,91,0.45)'
-    ctx.fillText('LEFT HAND',  LEFT_MARGIN, idxY(BASS_TOP_IDX, layout)   - layout.wKeyH - 2)
+    ctx.fillText(handLabelLeft,  LEFT_MARGIN, idxY(BASS_TOP_IDX, layout)   - layout.wKeyH - 2)
     ctx.textBaseline = 'alphabetic'
   }
 
@@ -541,6 +544,21 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
         }
       }
 
+      // Fermata symbol — 𝄐 drawn above the bar (T5)
+      if (pb.iv.fermata) {
+        const ferX = cx + Math.min(cw / 2, 20)
+        const ferFs = Math.max(Math.round(bh * 2.2), 12)
+        ctx.save()
+        ctx.globalAlpha = 0.80
+        ctx.fillStyle = 'rgba(255,255,200,0.90)'
+        ctx.font = `${ferFs}px serif`
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'bottom'
+        ctx.fillText('\uD834\uDD10', ferX, cy - 1) // 𝄐 U+1D110
+        ctx.restore()
+        ctx.textBaseline = 'alphabetic'
+      }
+
       ctx.globalAlpha = 1
     }
     ctx.globalAlpha = 1
@@ -604,9 +622,62 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     ctx.restore()
   }
 
+  /**
+   * Draw slur arcs above bars that have slur:'start'…'end' spans (E4).
+   * Pairs each slur-start bar with the nearest subsequent slur-end bar (same hand if possible)
+   * and draws a quadratic Bézier arc.
+   */
+  function drawSlurs() {
+    if (practiceBars.length === 0) return
+
+    ctx.save()
+    ctx.strokeStyle = 'rgba(180,220,255,0.55)'
+    ctx.lineWidth = 1.5
+    ctx.lineCap = 'round'
+    ctx.setLineDash([])
+
+    // Collect start bars
+    const starts: { idx: number; x: number; y: number }[] = []
+    for (let i = 0; i < practiceBars.length; i++) {
+      const pb = practiceBars[i]
+      if (pb.iv.slur !== 'start') continue
+      const x = msToX(pb.iv.startMs)
+      const bh = barH(pb.iv.note, layout)
+      const y = pitchY(pb.iv.note, layout) - bh / 2 - 4
+      starts.push({ idx: i, x, y })
+    }
+
+    for (const s of starts) {
+      // Find the nearest 'end' (or 'continue' at buffer end) after this start
+      let endX = -1
+      let endY = -1
+      for (let j = s.idx + 1; j < practiceBars.length; j++) {
+        const pb = practiceBars[j]
+        if (pb.iv.slur === 'end' || pb.iv.slur === 'continue') {
+          endX = msToX(pb.iv.startMs)
+          const bh2 = barH(pb.iv.note, layout)
+          endY = pitchY(pb.iv.note, layout) - bh2 / 2 - 4
+          if (pb.iv.slur === 'end') break
+        }
+      }
+      if (endX < 0 || endX <= s.x) continue
+      if (endX < LEFT_MARGIN || s.x > W) continue
+
+      const midX = (s.x + endX) / 2
+      const midY = Math.min(s.y, endY) - Math.max(16, (endX - s.x) * 0.10)
+
+      ctx.beginPath()
+      ctx.moveTo(s.x, s.y)
+      ctx.quadraticCurveTo(midX, midY, endX, endY)
+      ctx.stroke()
+    }
+    ctx.restore()
+  }
+
   function drawTips() {
     for (const pb of practiceBars) {
-      if (!pb.iv.tip || pb.graded) continue
+      const tip = pb.iv.tip ?? pb.iv.handPosition
+      if (!tip || pb.graded) continue
       const timeToNote = pb.iv.startMs - practiceMs
       if (timeToNote <= 0 || timeToNote > TIP_WINDOW_MS) continue
 
@@ -617,7 +688,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       const cy = pitchY(pb.iv.note, layout) - bh / 2
       const fs = Math.max(Math.round(layout.wKeyH * 0.85), 9)
       ctx.font = `${fs}px sans-serif`
-      const tw = ctx.measureText(pb.iv.tip).width
+      const tw = ctx.measureText(tip).width
       const pad = 5
       const rx = Math.min(x + 4, W - tw - pad * 2 - 4)
       const ry = cy - fs - 8
@@ -631,7 +702,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       ctx.fillStyle = 'rgba(255,230,120,0.95)'
       ctx.textAlign = 'left'
       ctx.textBaseline = 'top'
-      ctx.fillText(pb.iv.tip, rx, ry)
+      ctx.fillText(tip, rx, ry)
       ctx.restore()
     }
     ctx.textBaseline = 'alphabetic'
@@ -688,6 +759,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     if (practiceActive) {
       drawPracticeBars()
       drawHairpins()
+      drawSlurs()
       drawTips()
       drawGoldenLine()
       drawGradeBadges()
@@ -857,6 +929,11 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
 
     setBpm(_bpm: number | null) {
       // reserved for future use
+    },
+
+    setHandLabels(right: string, left: string) {
+      handLabelRight = right || 'RIGHT HAND'
+      handLabelLeft  = left  || 'LEFT HAND'
     },
 
     resize(w: number, h: number) {

@@ -4,6 +4,9 @@ package midi
 // chordDefinitions maps each chord name to its interval pattern (semitones from root).
 // Intervals above 11 span multiple octaves; comparison is performed mod 12.
 var chordDefinitions = map[string][]int{
+	// 2-note
+	"Power Chord": {0, 7},
+
 	// Triads
 	"Major":         {0, 4, 7},
 	"Minor":         {0, 3, 7},
@@ -18,6 +21,11 @@ var chordDefinitions = map[string][]int{
 	"Major 7th":           {0, 4, 7, 11},
 	"Minor 7th":           {0, 3, 7, 10},
 	"Dominant 7th":        {0, 4, 7, 10},
+
+	// Shell voicings — 7th chords without the 5th (common in jazz/pop)
+	"Major 7th no 5th":    {0, 4, 11},
+	"Dominant 7th no 5th": {0, 4, 10},
+	"Minor 7th no 5th":    {0, 3, 10},
 	"Augmented 7th":       {0, 4, 8, 10},
 	"Augmented Major 7th": {0, 4, 8, 11},
 	"Diminished 7th":      {0, 3, 6, 9},
@@ -124,7 +132,7 @@ func inversionLabel(i int) string {
 // Returns the chord name, inversion name, root pitch class (0–11), and whether a match was found.
 // Uses a pre-built bitmask lookup table — zero allocations in the hot path.
 func GetChordName(notes []int) (string, string, int, bool) {
-	if len(notes) < 3 {
+	if len(notes) < 2 {
 		return "", "", -1, false
 	}
 

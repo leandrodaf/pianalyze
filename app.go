@@ -40,7 +40,11 @@ type RecordedEvent struct {
 	Articulation string `json:"articulation,omitempty"` // "legato"|"staccato"|"tenuto"|"accent"
 	Grace        bool   `json:"grace,omitempty"`        // true = grace note (E4)
 	Tip          string `json:"tip,omitempty"`          // pedagogical tip (G5)
+	HandPosition string `json:"handPosition,omitempty"` // keyboard position hint (G5)
 	Voice        *byte  `json:"voice,omitempty"`        // voice within staff 1–4 (E7)
+	Fermata      bool   `json:"fermata,omitempty"`      // fermata over this note (T5)
+	Slur         string `json:"slur,omitempty"`         // "start"|"end"|"continue" — slur boundary (E4)
+	Channel      *byte  `json:"channel,omitempty"`      // MIDI channel 0–15 (P2)
 }
 
 // RecordingMeta holds title, composer, and provenance metadata (M1, M2).
@@ -90,9 +94,23 @@ type Hairpin struct {
 
 // Section is a named region within a recording.
 type Section struct {
-	Name    string `json:"name"`
-	StartMs int64  `json:"startMs"`
-	Type    string `json:"type,omitempty"` // "intro"|"verse"|"chorus"|"bridge"|"coda"|"rehearsal"|"free"
+	Name         string `json:"name"`
+	StartMs      int64  `json:"startMs"`
+	Type         string `json:"type,omitempty"`         // "intro"|"verse"|"chorus"|"bridge"|"coda"|"rehearsal"|"free"
+	RehearsalMark string `json:"rehearsalMark,omitempty"` // e.g. "A", "B", "1" (F4)
+	Difficulty   int    `json:"difficulty,omitempty"`   // 1–5 per-section difficulty (G3)
+}
+
+// RepeatType is the kind of repeat / navigation marker in the score (F1).
+type RepeatType = string
+
+// Repeat is a repeat or navigation marker at a specific recording position (F1).
+// When the converter pre-unrolls repeats into the events array, this field is
+// retained as informational metadata and the app plays events linearly.
+type Repeat struct {
+	Type       RepeatType `json:"type"`                 // "repeat-open"|"repeat-close"|"segno"|"coda"|"fine"|"ds"|"dc"|"ds-coda"|"dc-coda"
+	AtMs       int64      `json:"atMs"`                 // position of this marker in the recording (ms)
+	TargetAtMs *int64     `json:"targetAtMs,omitempty"` // jump target for ds/dc/coda/repeat-close
 }
 
 // Recording is the serialisable container for a captured performance (.pia v2).
@@ -112,6 +130,8 @@ type Recording struct {
 	Sections   []Section      `json:"sections,omitempty"`
 	MeasureMap []MeasureEntry `json:"measureMap,omitempty"`
 	Hairpins   []Hairpin      `json:"hairpins,omitempty"`
+	// Repeats are retained as metadata after a converter unrolls them into Events (F1).
+	Repeats []Repeat `json:"repeats,omitempty"`
 
 	GradingProfile *grading.Profile `json:"gradingProfile,omitempty"`
 

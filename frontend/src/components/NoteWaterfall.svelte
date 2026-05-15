@@ -28,11 +28,13 @@
       miss:    $t('grade.miss'),
       wrong:   $t('grade.wrong'),
     })
+    waterfall.setHandLabels($t('waterfall.hand.right'), $t('waterfall.hand.left'))
   }
   let prevHasRecording = false
   let prevPractice = false
   let prevStatus = ''
   let prevSpeed = 1
+  let prevProfileOverride: unknown = undefined
 
   onMount(() => {
     waterfall = createWaterfallCanvas(canvasEl)
@@ -68,6 +70,9 @@
 
       const hasRecording = !!state.recording
 
+      // Effective profile: preset override takes precedence over exercise profile.
+      const effectiveProfile = state.gradingProfileOverride ?? state.recording?.gradingProfile ?? null
+
       // Enable/disable practice rendering
       if (hasRecording !== prevHasRecording || state.practice !== prevPractice) {
         prevHasRecording = hasRecording
@@ -79,14 +84,20 @@
             const gradingIvs = buildGradingIntervals(ivs)
             // Load intervals into Go grading engine (with full pedagogical fields)
             LoadPracticeIntervals(gradingIvs).catch(() => {/* ignore if not connected */})
-            // Load per-exercise grading profile if present (G1, G2)
-            const profile = state.recording?.gradingProfile ?? null
-            LoadGradingProfile(profile).catch(() => {})
+            // Load effective grading profile (preset override or exercise profile)
+            LoadGradingProfile(effectiveProfile).catch(() => {})
+            prevProfileOverride = state.gradingProfileOverride
           }
         } else {
           waterfall.disablePractice()
           StopPractice().catch(() => {})
         }
+      }
+
+      // Hot-reload grading profile when preset changes mid-session (practice mode only)
+      if (state.practice && hasRecording && state.gradingProfileOverride !== prevProfileOverride) {
+        prevProfileOverride = state.gradingProfileOverride
+        LoadGradingProfile(effectiveProfile).catch(() => {})
       }
 
       waterfall.setSpeed(state.speedMultiplier)

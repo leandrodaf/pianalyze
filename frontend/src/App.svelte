@@ -1,9 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { connectMidiStore, midiStore } from './stores/midi'
-  import { loadRecording, setPractice, play, stop, clearLoop, playbackStore, noteIntervals } from './stores/playback'
-  import { bpmAt, timeSigAt, measureAt } from './lib/recording-types'
+  import { loadRecording, setPractice, play, stop, clearLoop, playbackStore, noteIntervals, setDifficultyPreset } from './stores/playback'
+  import { bpmAt, timeSigAt, measureAt, DIFFICULTY_PRESETS } from './lib/recording-types'
   import { get } from 'svelte/store'
+  import type { DifficultyPreset } from './lib/recording-types'
   import HomeScreen from './components/HomeScreen.svelte'
   import PrepBanner from './components/PrepBanner.svelte'
   import Piano from './components/Piano.svelte'
@@ -16,6 +17,8 @@
   import { prepStore } from './stores/prep'
   import { FINGER_COLORS } from './lib/finger-colors'
   import { noteColor } from './lib/note-colors'
+
+  import { translateChord, translateInversion } from './lib/chord-i18n'
 
   const KEY_DISPLAY: Record<string, string> = {
     'C': 'Dó M', 'G': 'Sol M', 'D': 'Ré M', 'A': 'Lá M',
@@ -42,10 +45,19 @@
   $: isTriad   = triad && triad !== 'Not a Triad'
   $: fillRatio = velocity / 127
   $: barColor  = dynamicColor(dynamic)
+  $: chordLabel     = hasChord ? translateChord(chord, $t) : ''
+  $: inversionLabel = inversion ? translateInversion(inversion, $t) : ''
 
   $: pos = $playbackStore.positionMs
   $: rec = $playbackStore.recording
+  $: activePreset = $playbackStore.difficultyPreset
   $: recBpm = rec ? Math.round(bpmAt(rec, pos)) : null
+
+  const PRESETS = Object.entries(DIFFICULTY_PRESETS) as [DifficultyPreset, typeof DIFFICULTY_PRESETS[DifficultyPreset]][]
+
+  function applyPreset(key: string) {
+    setDifficultyPreset(key as DifficultyPreset)
+  }
   $: recTimeSig = rec ? timeSigAt(rec, pos) : null
   $: recKey = rec?.keySignature
   $: recMeasure = rec?.measureMap?.length ? measureAt(rec, pos) : null
@@ -182,14 +194,33 @@
         {:else}
           <span class="freeplay-tag">🎧 {$t('app.freeplay')}</span>
         {/if}
-        {#if recBpm || recTimeSig || recKey || recMeasure}
-          <div class="meta-chips">
-            {#if recMeasure != null}<span class="meta-chip">M{recMeasure}</span>{/if}
-            {#if recTimeSig}<span class="meta-chip">{recTimeSig}</span>{/if}
-            {#if recBpm}<span class="meta-chip">{recBpm} BPM</span>{/if}
-            {#if recKey}<span class="meta-chip">{fmtKey(recKey)}</span>{/if}
-          </div>
-        {/if}
+        <!-- Right side: meta chips + difficulty presets -->
+        <div class="top-bar-right">
+          {#if recBpm || recTimeSig || recKey || recMeasure}
+            <div class="meta-chips">
+              {#if recMeasure != null}<span class="meta-chip">M{recMeasure}</span>{/if}
+              {#if recTimeSig}<span class="meta-chip">{recTimeSig}</span>{/if}
+              {#if recBpm}<span class="meta-chip">{recBpm} BPM</span>{/if}
+              {#if recKey}<span class="meta-chip">{fmtKey(recKey)}</span>{/if}
+            </div>
+          {/if}
+          <!-- Difficulty presets — top-right corner -->
+          {#if rec}
+            <div class="preset-group">
+              {#each PRESETS as [key, cfg]}
+                <button
+                  class="preset-pill"
+                  class:active={activePreset === key}
+                  on:click={() => applyPreset(key)}
+                  title="{cfg.label} — {cfg.speed * 100 | 0}% velocidade"
+                >
+                  <span class="preset-icon">{cfg.icon}</span>
+                  <span class="preset-name">{cfg.label}</span>
+                </button>
+              {/each}
+            </div>
+          {/if}
+        </div>
       </div>
     {/if}
 
@@ -201,14 +232,14 @@
       <div class="hud" class:hud-active={hasChord}>
         <div class="hud-chord">
           {#if hasChord}
-            <span class="hud-name">{chord}</span>
+            <span class="hud-name">{chordLabel}</span>
             {#if isTriad}<span class="hud-badge">{$t('music.triad')}</span>{/if}
           {:else}
             <span class="hud-empty">—</span>
           {/if}
         </div>
         {#if hasChord}
-          <span class="hud-inv">{inversion}</span>
+          <span class="hud-inv">{inversionLabel}</span>
         {/if}
         <div class="hud-dyn" class:hud-dyn-active={!!dynamic}>
           <div class="hud-bar-track">
@@ -321,8 +352,55 @@
     display: flex;
     align-items: center;
     gap: 0.3rem;
+  }
+
+  /* ── Right-side wrapper (meta chips + presets) ──────────────────────────── */
+  .top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     margin-left: auto;
   }
+
+  /* ── Difficulty presets (top-bar right corner) ──────────────────────────── */
+  .preset-group {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .preset-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 24px;
+    padding: 0 0.55rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 6px;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.68rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    white-space: nowrap;
+  }
+
+  .preset-pill:hover {
+    background: rgba(255,255,255,0.10);
+    color: rgba(255,255,255,0.82);
+    border-color: rgba(255,255,255,0.20);
+  }
+
+  .preset-pill.active {
+    background: rgba(80,200,120,0.20);
+    border-color: rgba(80,200,120,0.52);
+    color: #8eeab2;
+    font-weight: 800;
+  }
+
+  .preset-icon { font-size: 0.78rem; line-height: 1; }
+  .preset-name { font-size: 0.66rem; }
   .meta-chip {
     font-size: 0.68rem;
     font-weight: 600;

@@ -23,6 +23,40 @@ export interface Section {
   startMs: number
   /** Optional structural role of this section (F3). */
   type?: 'intro' | 'verse' | 'chorus' | 'bridge' | 'coda' | 'rehearsal' | 'free'
+  /** Rehearsal marker label shown in scores, e.g. "A", "B", "1" (F4). */
+  rehearsalMark?: string
+  /** Difficulty level for this section (G3). 1 = Beginner … 5 = Expert. */
+  difficulty?: 1 | 2 | 3 | 4 | 5
+}
+
+// ── Repetitions (F1) ─────────────────────────────────────────────────────────
+
+/**
+ * Type of repeat/jump marker (F1).
+ * When a converter "unrolls" repeats into the flat events array, this field
+ * becomes informational metadata and the app plays events linearly.
+ */
+export type RepeatType =
+  | 'repeat-open'   // ‖: — start of a repeat bracket
+  | 'repeat-close'  // :‖ — end of a repeat bracket (jump back to repeat-open)
+  | 'segno'         // 𝄋 — Dal Segno target
+  | 'coda'          // 𝄌 — Coda target
+  | 'fine'          // Fine — end of piece on D.C./D.S.
+  | 'ds'            // Dal Segno — jump to segno
+  | 'dc'            // Da Capo — jump to beginning
+  | 'ds-coda'       // Dal Segno al Coda — jump to segno, then to coda
+  | 'dc-coda'       // Da Capo al Coda — jump to beginning, then to coda
+
+/** A repeat/navigation marker in the score (F1). */
+export interface Repeat {
+  type: RepeatType
+  /** Position of this marker in the recording (ms). */
+  atMs: number
+  /**
+   * For jump markers (ds, dc, ds-coda, dc-coda, repeat-close): the target
+   * recording position in ms. Required when events are NOT pre-unrolled.
+   */
+  targetAtMs?: number
 }
 
 // ── Metadata (M1, M2, M3) ─────────────────────────────────────────────────────
@@ -111,6 +145,63 @@ export interface GradingProfile {
   checkArticulation?: boolean
 }
 
+// ── Difficulty presets ────────────────────────────────────────────────────────
+
+export type DifficultyPreset = 'beginner' | 'intermediate' | 'advanced'
+
+export interface DifficultyPresetConfig {
+  label: string
+  icon: string
+  /** Playback speed multiplier. */
+  speed: number
+  /** Grading profile overrides applied on top of the exercise profile. */
+  profile: GradingProfile
+}
+
+/**
+ * Built-in difficulty presets.
+ *
+ * Tolerance values are in recording-time milliseconds. Because practiceMs()
+ * advances at `speedMult` rate, wall-clock tolerance = value / speed.
+ *
+ * Beginner at 0.5× → earlyTolerance 800ms recording-time = 1600ms wall-clock.
+ */
+export const DIFFICULTY_PRESETS: Record<DifficultyPreset, DifficultyPresetConfig> = {
+  beginner: {
+    label: 'Iniciante',
+    icon: '🐢',
+    speed: 0.5,
+    profile: {
+      earlyToleranceMs: 800,
+      lateToleranceMs: 600,
+      perfectMs: 160,
+      goodMs: 380,
+    },
+  },
+  intermediate: {
+    label: 'Intermediário',
+    icon: '🎵',
+    speed: 0.75,
+    profile: {
+      earlyToleranceMs: 550,
+      lateToleranceMs: 350,
+      perfectMs: 100,
+      goodMs: 230,
+    },
+  },
+  advanced: {
+    label: 'Avançado',
+    icon: '⭐',
+    speed: 1.0,
+    profile: {
+      earlyToleranceMs: 350,
+      lateToleranceMs: 200,
+      perfectMs: 60,
+      goodMs: 130,
+    },
+  },
+}
+
 // ── Events ────────────────────────────────────────────────────────────────────
 
 export interface RecordedEvent {
@@ -150,8 +241,22 @@ export interface RecordedEvent {
   grace?: boolean
   /** Pedagogical tip, e.g. "cruzar polegar aqui" — G5. */
   tip?: string
+  /**
+   * Keyboard position hint, e.g. "Dó central" or "posição de Lá" — G5.
+   * Displayed like a tip when the note approaches the judge line.
+   */
+  handPosition?: string
   /** Voice within the staff (1 = melody, 2 = accompaniment) — E7. */
   voice?: Voice
+  /** True when a fermata is placed over this note (T5). */
+  fermata?: boolean
+  /**
+   * Slur boundary marker — ties a group of notes with a legato curve (E4).
+   * 'start' = first note of slur, 'end' = last note, 'continue' = middle note.
+   */
+  slur?: 'start' | 'end' | 'continue'
+  /** MIDI channel 0–15 for multi-instrument recordings (P2). */
+  channel?: number
 }
 
 /** A note-on → note-off pair extracted from a Recording. */
@@ -167,6 +272,12 @@ export interface NoteInterval {
   voice?: Voice
   /** Pedagogical tip shown as the note approaches the judge line (G5). */
   tip?: string
+  /** Keyboard position hint shown like a tip (G5). */
+  handPosition?: string
+  /** True when a fermata is placed over this note (T5). */
+  fermata?: boolean
+  /** Slur boundary marker (E4). */
+  slur?: 'start' | 'end' | 'continue'
 }
 
 // ── Recording (root) ─────────────────────────────────────────────────────────
@@ -204,6 +315,12 @@ export interface Recording {
   measureMap?: MeasureEntry[]
   /** Dynamic hairpins (crescendo / decrescendo) — E3. */
   hairpins?: Hairpin[]
+  /**
+   * Repeat and navigation markers in score order (F1).
+   * When the converter "unrolls" repeats into the events array, this field
+   * is retained as metadata. The app always plays events linearly.
+   */
+  repeats?: Repeat[]
 
   // ── Pedagogy ──────────────────────────────────────────────────────────────
   /** Per-exercise grading tolerances. Absent = defaults. */
@@ -298,6 +415,22 @@ export function measureAt(recording: Recording, posMs: number): number {
 export function dynamicToVelocity(d: Dynamic): number {
   const table: Record<Dynamic, number> = { pp: 20, p: 40, mp: 55, mf: 72, f: 90, ff: 110 }
   return table[d]
+}
+
+// ── MIDI command utilities (V4) ───────────────────────────────────────────────
+
+/**
+ * Classify a raw MIDI command byte into a human-readable type (V4).
+ * Handles the four types used by the .pia format.
+ */
+export function cmdType(cmd: number): 'noteOn' | 'noteOff' | 'cc' | 'pitchBend' | 'unknown' {
+  switch (cmd) {
+    case 0x90: return 'noteOn'
+    case 0x80: return 'noteOff'
+    case 0xB0: return 'cc'
+    case 0xE0: return 'pitchBend'
+    default:   return 'unknown'
+  }
 }
 
 // ── Backward-compat export (deprecated) ──────────────────────────────────────

@@ -12,8 +12,9 @@ import { writable, get } from 'svelte/store'
 import { midiStore } from './midi'
 import type {
   Recording, RecordedEvent, NoteInterval, Hand, Dynamic, Articulation,
+  GradingProfile, DifficultyPreset,
 } from '../lib/recording-types'
-import { migrateRecording, dynamicToVelocity } from '../lib/recording-types'
+import { migrateRecording, dynamicToVelocity, DIFFICULTY_PRESETS } from '../lib/recording-types'
 import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-canvas'
 
 export type GradeResult = 'perfect' | 'good' | 'ok' | 'miss' | 'wrong'
@@ -28,6 +29,13 @@ export interface PlaybackState {
   loopEnabled: boolean
   loopStart: number | null
   loopEnd: number | null
+  /** Active difficulty preset, or null when speed was set manually. */
+  difficultyPreset: DifficultyPreset | null
+  /**
+   * Grading profile override applied by a difficulty preset.
+   * Supersedes the exercise's own gradingProfile when non-null.
+   */
+  gradingProfileOverride: GradingProfile | null
 }
 
 export const playbackStore = writable<PlaybackState>({
@@ -40,6 +48,8 @@ export const playbackStore = writable<PlaybackState>({
   loopEnabled: false,
   loopStart: null,
   loopEnd: null,
+  difficultyPreset: null,
+  gradingProfileOverride: null,
 })
 
 // Pre-processed note intervals (noteOn→noteOff pairs) for practice grading.
@@ -99,6 +109,9 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
     grace?: boolean
     voice?: NoteInterval['voice']
     tip?: string
+    handPosition?: string
+    fermata?: boolean
+    slur?: NoteInterval['slur']
   }
 
   const active = new Map<number, Active>()
@@ -121,6 +134,9 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
         grace: ev.grace,
         voice: ev.voice,
         tip: ev.tip,
+        handPosition: ev.handPosition,
+        fermata: ev.fermata,
+        slur: ev.slur,
       })
     } else if (isNoteOff) {
       const entry = active.get(ev.note)
@@ -136,6 +152,9 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
           grace: entry.grace,
           voice: entry.voice,
           tip: entry.tip,
+          handPosition: entry.handPosition,
+          fermata: entry.fermata,
+          slur: entry.slur,
         })
         active.delete(ev.note)
       }
@@ -155,6 +174,9 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
       grace: entry.grace,
       voice: entry.voice,
       tip: entry.tip,
+      handPosition: entry.handPosition,
+      fermata: entry.fermata,
+      slur: entry.slur,
     })
   }
   return out
@@ -288,12 +310,41 @@ export function setSpeed(x: number): void {
   if (state.status === 'playing' && state.recording) {
     const pos = currentPositionMs()
     cancelAll(); releaseAll()
-    playbackStore.update(s => ({ ...s, speedMultiplier: nextSpeed, positionMs: pos }))
+    playbackStore.update(s => ({ ...s, speedMultiplier: nextSpeed, positionMs: pos, difficultyPreset: null }))
     scheduleFrom(state.recording.events, pos)
     return
   }
 
-  playbackStore.update(s => ({ ...s, speedMultiplier: nextSpeed }))
+  playbackStore.update(s => ({ ...s, speedMultiplier: nextSpeed, difficultyPreset: null }))
+}
+
+/**
+ * Apply a named difficulty preset: sets speedMultiplier + gradingProfileOverride
+ * atomically. Also re-loads the grading profile on the Go side when in practice mode.
+ */
+export function setDifficultyPreset(preset: DifficultyPreset): void {
+  const cfg = DIFFICULTY_PRESETS[preset]
+  const nextSpeed = cfg.speed
+  const state = get(playbackStore)
+
+  const storeUpdate = (s: PlaybackState): PlaybackState => ({
+    ...s,
+    speedMultiplier: nextSpeed,
+    difficultyPreset: preset,
+    gradingProfileOverride: cfg.profile,
+  })
+
+  if (state.status === 'playing' && state.recording) {
+    const pos = currentPositionMs()
+    cancelAll(); releaseAll()
+    playbackStore.update(s => ({ ...storeUpdate(s), positionMs: pos }))
+    scheduleFrom(state.recording.events, pos)
+  } else {
+    playbackStore.update(storeUpdate)
+  }
+
+  // Live-update grading profile when in practice mode (can't import Wails here,
+  // so NoteWaterfall watches gradingProfileOverride and calls LoadGradingProfile)
 }
 
 export function seekTo(ms: number): void {

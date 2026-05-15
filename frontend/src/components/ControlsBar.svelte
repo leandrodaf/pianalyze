@@ -2,6 +2,7 @@
   import { playbackStore, play, pause, stop, rewind, setSpeed, toggleLoop, seekTo, setLoop } from '../stores/playback'
   import { bpmAt } from '../lib/recording-types'
   import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
+  import { DIFFICULTY_COLOR } from '../lib/exercise-types'
 
   const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
   const SPEEDS = [0.25, 0.5, 0.75, 1, 1.5, 2] as const
@@ -81,7 +82,13 @@
     <div class="group sections-group">
       {#each sections as sec, i}
         <button class="section-pill" on:click={() => goToSection(i)} title="Ir para {sec.name}">
+          {#if sec.rehearsalMark}
+            <span class="rehearsal-mark">[{sec.rehearsalMark}]</span>
+          {/if}
           {sec.name}
+          {#if sec.difficulty}
+            <span class="diff-dot" style="background:{DIFFICULTY_COLOR[sec.difficulty]}"></span>
+          {/if}
         </button>
       {/each}
     </div>
@@ -216,6 +223,26 @@
     border-color: rgba(255,210,50,0.45);
     color: rgba(255,210,50,1);
   }
+
+  .rehearsal-mark {
+    font-size: 0.60rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.02em;
+    margin-right: 3px;
+  }
+
+  .diff-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-left: 4px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  /* ── Difficulty presets — moved to App.svelte top-bar ───────────────────── */
 
   .sep {
     width: 1px;

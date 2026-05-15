@@ -112,9 +112,69 @@ func TestGetChordName_Dominant9th(t *testing.T) {
 }
 
 func TestGetChordName_TooFewNotes(t *testing.T) {
+	// C + E = major third; not a recognized 2-note chord (only power chords are)
 	_, _, _, found := GetChordName([]int{60, 64})
 	if found {
-		t.Error("expected no chord for fewer than 3 notes")
+		t.Error("expected no chord for unrecognized 2-note interval")
+	}
+}
+
+func TestGetChordName_PowerChord(t *testing.T) {
+	// C4=60, G4=67 — C power chord (root + perfect 5th)
+	name, inversion, root, found := GetChordName([]int{60, 67})
+	if !found {
+		t.Fatal("expected power chord to be found")
+	}
+	if name != "Power Chord" {
+		t.Errorf("name: got %q, want %q", name, "Power Chord")
+	}
+	if inversion != "Root position" {
+		t.Errorf("inversion: got %q, want %q", inversion, "Root position")
+	}
+	if root != 0 {
+		t.Errorf("root: got %d, want 0 (C)", root)
+	}
+}
+
+func TestGetChordName_DominantShellVoicing(t *testing.T) {
+	// G4=67, B4=71, F5=77 — G dominant 7th without 5th (shell voicing)
+	name, _, root, found := GetChordName([]int{67, 71, 77})
+	if !found {
+		t.Fatal("expected dominant 7th (no 5th) to be found")
+	}
+	if name != "Dominant 7th no 5th" {
+		t.Errorf("name: got %q, want %q", name, "Dominant 7th no 5th")
+	}
+	if root != 7 {
+		t.Errorf("root: got %d, want 7 (G)", root)
+	}
+}
+
+func TestGetChordName_MajorShellVoicing(t *testing.T) {
+	// C4=60, E4=64, B4=71 — C major 7th without 5th
+	name, _, root, found := GetChordName([]int{60, 64, 71})
+	if !found {
+		t.Fatal("expected major 7th (no 5th) to be found")
+	}
+	if name != "Major 7th no 5th" {
+		t.Errorf("name: got %q, want %q", name, "Major 7th no 5th")
+	}
+	if root != 0 {
+		t.Errorf("root: got %d, want 0 (C)", root)
+	}
+}
+
+func TestGetChordName_MinorShellVoicing(t *testing.T) {
+	// A3=57, C4=60, G4=67 — A minor 7th without 5th
+	name, _, root, found := GetChordName([]int{57, 60, 67})
+	if !found {
+		t.Fatal("expected minor 7th (no 5th) to be found")
+	}
+	if name != "Minor 7th no 5th" {
+		t.Errorf("name: got %q, want %q", name, "Minor 7th no 5th")
+	}
+	if root != 9 {
+		t.Errorf("root: got %d, want 9 (A)", root)
 	}
 }
 
