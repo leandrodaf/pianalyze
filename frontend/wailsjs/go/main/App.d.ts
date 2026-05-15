@@ -5,9 +5,13 @@ import {grading} from '../models';
 
 export function AutoSaveRecording(arg1:string,arg2:string,arg3:string):Promise<string>;
 
+export function DeleteRecording(arg1:string):Promise<void>;
+
 export function GetDefaultSavePath():Promise<string>;
 
 export function ListDevices():Promise<Array<main.DeviceInfo>>;
+
+export function ListRecordings(arg1:string):Promise<Array<main.RecordingSummary>>;
 
 export function LoadGradingProfile(arg1:grading.Profile):Promise<void>;
 
@@ -15,11 +19,15 @@ export function LoadPracticeIntervals(arg1:Array<grading.Interval>):Promise<void
 
 export function LoadRecordingFile():Promise<string>;
 
+export function OpenRecordingFolder(arg1:string):Promise<void>;
+
 export function PausePractice(arg1:number):Promise<void>;
 
 export function PauseRecording():Promise<void>;
 
 export function PickSaveDirectory(arg1:string):Promise<string>;
+
+export function ReadRecordingByPath(arg1:string):Promise<string>;
 
 export function ResumeRecording():Promise<void>;
 
@@ -38,3 +46,5 @@ export function StopCapture():Promise<void>;
 export function StopPractice():Promise<void>;
 
 export function StopRecording():Promise<string>;
+
+export function UpdateRecordingMeta(arg1:string,arg2:string,arg3:string,arg4:string):Promise<void>;

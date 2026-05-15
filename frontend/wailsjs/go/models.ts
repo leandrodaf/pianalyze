@@ -69,6 +69,34 @@ export namespace main {
 	        this.manufacturer = source["manufacturer"];
 	    }
 	}
+	export class RecordingSummary {
+	    path: string;
+	    filename: string;
+	    title: string;
+	    composer: string;
+	    copyright: string;
+	    recordedAt: string;
+	    durationMs: number;
+	    eventCount: number;
+	    fileSizeB: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new RecordingSummary(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.path = source["path"];
+	        this.filename = source["filename"];
+	        this.title = source["title"];
+	        this.composer = source["composer"];
+	        this.copyright = source["copyright"];
+	        this.recordedAt = source["recordedAt"];
+	        this.durationMs = source["durationMs"];
+	        this.eventCount = source["eventCount"];
+	        this.fileSizeB = source["fileSizeB"];
+	    }
+	}
 
 }
 

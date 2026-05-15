@@ -15,11 +15,15 @@
   import { addToast } from '../stores/toast'
   import { handleDevicesChanged } from '../lib/device-handler'
   import SettingsModal from './SettingsModal.svelte'
+  import RecordingsPage from './RecordingsPage.svelte'
 
   export let onPlay: (exercise: Exercise | null) => void
   export let onDeviceReady: () => void
   export let onImportRecording: ((recording: Recording) => void) | undefined = undefined
   export let onStartRecording: (() => void) | undefined = undefined
+
+  type NavView = 'home' | 'recordings'
+  let activeView: NavView = 'home'
 
   // ── Device ────────────────────────────────────────────────────────────────────
   let devices: main.DeviceInfo[] = []
@@ -212,9 +216,13 @@
     {/if}
 
     <nav class="nav">
-      <button class="nav-item active"><span class="nav-ic">⊞</span> {$t('nav.home')}</button>
+      <button class="nav-item" class:active={activeView === 'home'} on:click={() => activeView = 'home'}>
+        <span class="nav-ic">⊞</span> {$t('nav.home')}
+      </button>
       <button class="nav-item" disabled><span class="nav-ic">◫</span> {$t('nav.library')}</button>
-      <button class="nav-item" disabled><span class="nav-ic">◉</span> {$t('nav.recordings')}</button>
+      <button class="nav-item" class:active={activeView === 'recordings'} on:click={() => activeView = 'recordings'}>
+        <span class="nav-ic">◉</span> {$t('nav.recordings')}
+      </button>
       <button class="nav-item nav-settings" on:click={() => settingsOpen = true}>
         <span class="nav-ic">⚙</span> {$t('settings.title')}
       </button>
@@ -286,7 +294,9 @@
   <!-- ═══════════════ MAIN CONTENT ═══════════════════════════════ -->
   <main class="content">
 
-    <div class="hero-glow"></div>
+    {#if activeView === 'recordings'}
+      <RecordingsPage onLoad={onImportRecording} />
+    {:else}
 
     <header class="content-header">
       <h1 class="greeting">{currentHour < 12 ? $t('greeting.morning') : currentHour < 18 ? $t('greeting.afternoon') : $t('greeting.evening')}</h1>
@@ -382,6 +392,7 @@
     {/each}
 
     <div style="height:3rem"></div>
+    {/if}
   </main>
 </div>
 

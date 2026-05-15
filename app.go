@@ -362,7 +362,7 @@ func (a *App) StopRecording() (string, error) {
 
 // SaveRecording opens a native OS save-file dialog, pre-positioned at
 // defaultDir (use empty string to leave it up to the OS), and writes the
-// gzip-compressed JSON recording to the path chosen by the user.
+// JSON recording (plain text) to the path chosen by the user.
 // Returns nil if the user cancels.
 func (a *App) SaveRecording(jsonData, defaultFilename, defaultDir string) error {
 	opts := runtime.SaveDialogOptions{
@@ -383,7 +383,7 @@ func (a *App) SaveRecording(jsonData, defaultFilename, defaultDir string) error 
 	if err != nil || path == "" {
 		return err
 	}
-	return writeGzip(path, []byte(jsonData))
+	return os.WriteFile(path, []byte(jsonData), 0o644)
 }
 
 // GetDefaultSavePath returns the default recordings directory
@@ -423,7 +423,7 @@ func (a *App) AutoSaveRecording(jsonData, dir, filename string) (string, error) 
 		return "", err
 	}
 	p := filepath.Join(dir, filename)
-	return p, writeGzip(p, []byte(jsonData))
+	return p, os.WriteFile(p, []byte(jsonData), 0o644)
 }
 
 // PauseRecording suspends event buffering without clearing the buffer.
@@ -546,7 +546,7 @@ func (a *App) UpdateRecordingMeta(path, title, composer, copyright string) error
 	if err != nil {
 		return err
 	}
-	return writeGzip(path, updated)
+	return os.WriteFile(path, updated, 0o644)
 }
 
 // DeleteRecording permanently removes a .pia file.
@@ -555,9 +555,31 @@ func (a *App) DeleteRecording(path string) error {
 }
 
 // OpenRecordingFolder reveals the recording's directory in the OS file manager.
-func (a *App) OpenRecordingFolder(path string) error {
+func (a *App) OpenRecordingFolder(path string) {
 	dir := filepath.Dir(path)
-	return runtime.BrowserOpenURL(a.ctx, "file://"+filepath.ToSlash(dir))
+	runtime.BrowserOpenURL(a.ctx, "file://"+filepath.ToSlash(dir))
+}
+
+// ReadRecordingByPath reads a .pia file by its absolute path (plain JSON or
+// gzip-compressed), applies v1→v2 migration, and returns the JSON string.
+func (a *App) ReadRecordingByPath(recPath string) (string, error) {
+	raw, err := os.ReadFile(recPath)
+	if err != nil {
+		return "", err
+	}
+	if dec, err := gunzip(raw); err == nil {
+		raw = dec
+	}
+	var rec map[string]any
+	if err := json.Unmarshal(raw, &rec); err != nil {
+		return "", err
+	}
+	migrateRecordingMap(rec)
+	out, err := json.Marshal(rec)
+	if err != nil {
+		return "", err
+	}
+	return string(out), nil
 }
 
 // LoadRecordingFile opens a native OS open-file dialog, reads the file (plain

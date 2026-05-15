@@ -194,5 +194,19 @@
   "rec.ready": "Listo para grabar",
   "error.import.invalid": "Archivo inválido o corrupto. Asegúrate de que sea un archivo .pia generado por Pianalyze.",
   "error.import.empty": "No se grabaron notas. Toca algunas notas antes de finalizar la grabación.",
-  "rec.empty.warning": "Sin notas grabadas — la grabación no se guardó."
+  "rec.empty.warning": "Sin notas grabadas — la grabación no se guardó.",
+  "library.title": "Grabaciones",
+  "library.empty": "No se encontraron grabaciones.",
+  "library.empty.hint": "Graba una actuación para verla aquí.",
+  "library.events": "eventos",
+  "library.edit": "Editar metadatos",
+  "library.save": "Guardar",
+  "library.cancel": "Cancelar",
+  "library.delete": "Eliminar",
+  "library.delete.confirm": "¿Eliminar esta grabación permanentemente?",
+  "library.open.folder": "Abrir carpeta",
+  "library.play": "Cargar",
+  "library.field.title": "Título",
+  "library.field.composer": "Compositor",
+  "library.field.copyright": "Copyright"
 }

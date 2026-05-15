@@ -195,5 +195,19 @@
   "rec.ready": "准备录音",
   "error.import.invalid": "文件无效或已损坏。请确保是 Pianalyze 生成的 .pia 文件。",
   "error.import.empty": "未录制任何音符。请在完成录音前演奏一些音符。",
-  "rec.empty.warning": "未录制任何音符 — 录音未保存。"
+  "rec.empty.warning": "未录制任何音符 — 录音未保存。",
+  "library.title": "录音",
+  "library.empty": "未找到录音。",
+  "library.empty.hint": "录制一场演奏，它将显示在这里。",
+  "library.events": "个事件",
+  "library.edit": "编辑元数据",
+  "library.save": "保存",
+  "library.cancel": "取消",
+  "library.delete": "删除",
+  "library.delete.confirm": "永久删除此录音？",
+  "library.open.folder": "打开文件夹",
+  "library.play": "加载",
+  "library.field.title": "标题",
+  "library.field.composer": "作曲家",
+  "library.field.copyright": "版权"
 }

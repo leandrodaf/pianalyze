@@ -18,6 +18,10 @@ export function ListDevices() {
   return window['go']['main']['App']['ListDevices']();
 }
 
+export function ListRecordings(arg1) {
+  return window['go']['main']['App']['ListRecordings'](arg1);
+}
+
 export function LoadGradingProfile(arg1) {
   return window['go']['main']['App']['LoadGradingProfile'](arg1);
 }
@@ -30,6 +34,10 @@ export function LoadRecordingFile() {
   return window['go']['main']['App']['LoadRecordingFile']();
 }
 
+export function OpenRecordingFolder(arg1) {
+  return window['go']['main']['App']['OpenRecordingFolder'](arg1);
+}
+
 export function PausePractice(arg1) {
   return window['go']['main']['App']['PausePractice'](arg1);
 }
@@ -40,6 +48,10 @@ export function PauseRecording() {
 
 export function PickSaveDirectory(arg1) {
   return window['go']['main']['App']['PickSaveDirectory'](arg1);
+}
+
+export function ReadRecordingByPath(arg1) {
+  return window['go']['main']['App']['ReadRecordingByPath'](arg1);
 }
 
 export function ResumeRecording() {
@@ -76,4 +88,8 @@ export function StopPractice() {
 
 export function StopRecording() {
   return window['go']['main']['App']['StopRecording']();
+}
+
+export function UpdateRecordingMeta(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['UpdateRecordingMeta'](arg1, arg2, arg3, arg4);
 }

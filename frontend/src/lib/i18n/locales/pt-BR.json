@@ -194,5 +194,19 @@
   "rec.ready": "Pronto para gravar",
   "error.import.invalid": "Arquivo inválido ou corrompido. Verifique se é um arquivo .pia gerado pelo Pianalyze.",
   "error.import.empty": "Nenhuma nota gravada. Toque algumas notas antes de concluir a gravação.",
-  "rec.empty.warning": "Nenhuma nota gravada — a gravação não foi salva."
+  "rec.empty.warning": "Nenhuma nota gravada — a gravação não foi salva.",
+  "library.title": "Gravações",
+  "library.empty": "Nenhuma gravação encontrada.",
+  "library.empty.hint": "Grave uma performance para ela aparecer aqui.",
+  "library.events": "eventos",
+  "library.edit": "Editar metadados",
+  "library.save": "Salvar",
+  "library.cancel": "Cancelar",
+  "library.delete": "Excluir",
+  "library.delete.confirm": "Excluir esta gravação permanentemente?",
+  "library.open.folder": "Abrir pasta",
+  "library.play": "Carregar",
+  "library.field.title": "Título",
+  "library.field.composer": "Compositor",
+  "library.field.copyright": "Copyright"
 }
