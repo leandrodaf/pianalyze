@@ -281,6 +281,9 @@
   <!-- Single playing layout — never unmounts on prep↔playing transition -->
   <div class="layout">
 
+    <!-- macOS: transparent drag handle that clears the inset traffic-light area -->
+    <div class="layout-drag" aria-hidden="true" style="--wails-draggable:drag"></div>
+
     <!-- Swap only the top bar between prep banner and normal top bar -->
     {#if prepActive}
       <PrepBanner onComplete={handlePrepComplete} onSkip={handlePrepSkip} onBack={goHome} />
@@ -796,12 +799,15 @@
     border-top: 1px solid rgba(255,255,255,0.05);
   }
 
-  /* ── macOS: clear traffic-light buttons in top bar & prep banner ─────────── */
-  :global([data-platform="darwin"]) .top-bar {
-    padding-left: 72px;
+  /* ── macOS: transparent drag handle / traffic-light spacer ──────────────── */
+  .layout-drag {
+    display: none;
+    height: 0;
+    flex-shrink: 0;
   }
-  :global([data-platform="darwin"] .prep-top) {
-    padding-left: 72px;
+  :global([data-platform="darwin"]) .layout-drag {
+    display: block;
+    height: 28px;
   }
 
   /* ── Responsive ────────────────────────────────────────────────────────────── */
