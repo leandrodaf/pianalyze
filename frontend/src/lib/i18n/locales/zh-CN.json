@@ -193,7 +193,7 @@
   "quick.recordSub": "新录音",
   "settings.savepath": "录音文件夹",
   "settings.savepath.hint": "录音自动保存的位置。",
-  "settings.savepath.default": "默认（文档/pianalyze）",
+  "settings.savepath.default": "默认（应用文件夹）",
   "settings.savepath.change": "更改…",
   "settings.savepath.reset": "重置",
   "settings.savepath.dialog": "选择录音文件夹",
@@ -216,5 +216,9 @@
   "library.play": "加载",
   "library.field.title": "标题",
   "library.field.composer": "作曲家",
-  "library.field.copyright": "版权"
+  "library.field.copyright": "版权",
+  "library.setup.title": "选择录音文件夹",
+  "library.setup.desc": "Pianalyze 应将您的录音保存在哪里？您可以随时在设置中更改。",
+  "library.setup.choose": "选择文件夹…",
+  "library.setup.default": "使用默认位置"
 }

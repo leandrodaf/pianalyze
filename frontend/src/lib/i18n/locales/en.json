@@ -192,7 +192,7 @@
   "quick.recordSub": "New recording",
   "settings.savepath": "Recordings folder",
   "settings.savepath.hint": "Where recordings are automatically saved.",
-  "settings.savepath.default": "Default (Documents/pianalyze)",
+  "settings.savepath.default": "Default (app folder)",
   "settings.savepath.change": "Change…",
   "settings.savepath.reset": "Reset",
   "settings.savepath.dialog": "Choose recordings folder",
@@ -215,5 +215,9 @@
   "library.play": "Load",
   "library.field.title": "Title",
   "library.field.composer": "Composer",
-  "library.field.copyright": "Copyright"
+  "library.field.copyright": "Copyright",
+  "library.setup.title": "Choose recordings folder",
+  "library.setup.desc": "Where should Pianalyze save your recordings? You can change this at any time in Settings.",
+  "library.setup.choose": "Choose folder…",
+  "library.setup.default": "Use default location"
 }

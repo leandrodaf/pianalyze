@@ -192,7 +192,7 @@
   "quick.recordSub": "Nova gravação",
   "settings.savepath": "Pasta de gravações",
   "settings.savepath.hint": "Local onde as gravações são salvas automaticamente.",
-  "settings.savepath.default": "Padrão (Documentos/pianalyze)",
+  "settings.savepath.default": "Padrão (pasta do aplicativo)",
   "settings.savepath.change": "Alterar…",
   "settings.savepath.reset": "Redefinir",
   "settings.savepath.dialog": "Escolher pasta de gravações",
@@ -215,5 +215,9 @@
   "library.play": "Carregar",
   "library.field.title": "Título",
   "library.field.composer": "Compositor",
-  "library.field.copyright": "Copyright"
+  "library.field.copyright": "Copyright",
+  "library.setup.title": "Escolher pasta de gravações",
+  "library.setup.desc": "Onde o Pianalyze deve salvar suas gravações? Você pode mudar isso a qualquer momento nas configurações.",
+  "library.setup.choose": "Escolher pasta…",
+  "library.setup.default": "Usar localização padrão"
 }

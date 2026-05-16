@@ -10,6 +10,7 @@
     OpenRecordingFolder,
     GetDefaultSavePath,
     ReadRecordingByPath,
+    PickSaveDirectory,
   } from '../../wailsjs/go/main/App'
   import type { main } from '../../wailsjs/go/models'
   import type { Recording } from '../lib/recording-types'
@@ -19,8 +20,9 @@
   type Summary = main.RecordingSummary
 
   let items: Summary[] = []
-  let loading = true
+  let loading = false   // don't auto-load until folder is confirmed
   let loadError = ''
+  let picking = false
 
   // per-card edit state
   let editingPath = ''
@@ -32,7 +34,39 @@
   // delete confirm
   let confirmDelete: Summary | null = null
 
-  onMount(refresh)
+  // Show setup screen when no folder is configured yet.
+  $: needsSetup = $settingsStore.savePath === ''
+
+  onMount(() => {
+    if (!needsSetup) refresh()
+  })
+
+  async function useDefaultFolder() {
+    picking = true
+    try {
+      const dir = await GetDefaultSavePath()
+      settingsStore.patch({ savePath: dir })
+      await refresh()
+    } catch (e: unknown) {
+      loadError = e instanceof Error ? e.message : String(e)
+    } finally {
+      picking = false
+    }
+  }
+
+  async function chooseFolder() {
+    picking = true
+    try {
+      const dir = await PickSaveDirectory($t('settings.savepath.dialog'))
+      if (!dir) return // user cancelled
+      settingsStore.patch({ savePath: dir })
+      await refresh()
+    } catch (e: unknown) {
+      loadError = e instanceof Error ? e.message : String(e)
+    } finally {
+      picking = false
+    }
+  }
 
   async function refresh() {
     loading = true; loadError = ''
@@ -128,7 +162,24 @@
     <button class="refresh-btn" on:click={refresh} title="Refresh" disabled={loading}>↻</button>
   </div>
 
-  {#if loading}
+  {#if needsSetup}
+    <!-- ── First-run: ask user where to store recordings ── -->
+    <div class="setup-card">
+      <div class="setup-icon">📁</div>
+      <h3 class="setup-title">{$t('library.setup.title')}</h3>
+      <p class="setup-desc">{$t('library.setup.desc')}</p>
+      <div class="setup-actions">
+        <button class="btn-setup-primary" on:click={chooseFolder} disabled={picking}>
+          {picking ? '⟳' : $t('library.setup.choose')}
+        </button>
+        <button class="btn-setup-secondary" on:click={useDefaultFolder} disabled={picking}>
+          {$t('library.setup.default')}
+        </button>
+      </div>
+      {#if loadError}<p class="lib-error">{loadError}</p>{/if}
+    </div>
+
+  {:else if loading}
     <div class="lib-loading">⟳</div>
 
   {:else if loadError}
@@ -259,6 +310,66 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .lib-error { color: #f87171; font-size: 0.85rem; }
+
+  /* ── First-run setup card ── */
+  .setup-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 2.5rem auto;
+    max-width: 340px;
+    text-align: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 2rem 1.5rem;
+  }
+  .setup-icon { font-size: 2.5rem; }
+  .setup-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+  }
+  .setup-desc {
+    margin: 0;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.5;
+  }
+  .setup-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+  .btn-setup-primary {
+    background: #6366f1;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-setup-primary:hover:not(:disabled) { background: #4f46e5; }
+  .btn-setup-primary:disabled { opacity: 0.5; cursor: default; }
+  .btn-setup-secondary {
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0.55rem 1rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .btn-setup-secondary:hover:not(:disabled) { color: #fff; }
+  .btn-setup-secondary:disabled { opacity: 0.5; cursor: default; }
 
   .lib-empty {
     display: flex;
