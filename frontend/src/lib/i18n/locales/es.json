@@ -7,7 +7,7 @@
   "nav.library": "Biblioteca",
   "nav.recordings": "Grabaciones",
   "device.label": "TU DISPOSITIVO MIDI",
-  "device.none": "No se encontró ningún dispositivo MIDI. Conecta uno y reinicia.",
+  "device.none": "No se encontró ningún dispositivo MIDI. Conecta uno para continuar.",
   "device.change": "Cambiar dispositivo",
   "device.connecting": "Conectando…",
   "device.connect": "Conectar",

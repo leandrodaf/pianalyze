@@ -7,7 +7,7 @@
   "nav.library": "曲库",
   "nav.recordings": "录音",
   "device.label": "您的 MIDI 设备",
-  "device.none": "未找到 MIDI 设备，请连接后重启。",
+  "device.none": "未找到 MIDI 设备，请连接后继续。",
   "device.change": "更换设备",
   "device.connecting": "连接中…",
   "device.connect": "连接",

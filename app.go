@@ -226,27 +226,72 @@ func (a *App) startup(ctx context.Context) {
 	go a.watchMIDIDevices(ctx)
 }
 
-// watchMIDIDevices subscribes to MIDI device hot-plug events and forwards them
-// to the frontend as "devices:changed" Wails events. The event payload is a
-// slice of DeviceInfo reflecting the current device list at the time of the
-// change.
+// watchMIDIDevices forwards MIDI hot-plug events to the frontend as
+// "devices:changed" Wails events. It combines two strategies:
+//
+//  1. The WatchDevices channel from the MIDI library, which delivers events
+//     almost instantly via CoreMIDI (macOS) or ALSA (Linux) notifications.
+//  2. A 3-second polling ticker as a safety net for platforms or drivers where
+//     the notification callback may be unreliable or fire late.
+//
+// Events are only emitted when the device list actually changes, so the
+// polling does not cause spurious frontend updates.
 func (a *App) watchMIDIDevices(ctx context.Context) {
 	evCh, err := a.midiClient.WatchDevices(ctx)
 	if err != nil {
-		a.logger.Warn("WatchDevices not available", zap.Error(err))
-		return
+		a.logger.Warn("WatchDevices not available, polling only", zap.Error(err))
+		evCh = nil // nil channel blocks forever in select — polling takes over
 	}
-	for range evCh {
+
+	ticker := time.NewTicker(3 * time.Second)
+	defer ticker.Stop()
+
+	var prevNames []string // last emitted device name list for change detection
+
+	checkAndEmit := func() {
 		if ctx.Err() != nil {
 			return
 		}
 		devices, err := a.ListDevices()
 		if err != nil {
-			a.logger.Warn("Failed to list devices after hot-plug event", zap.Error(err))
 			devices = []DeviceInfo{}
 		}
+		names := make([]string, len(devices))
+		for i, d := range devices {
+			names[i] = d.Name
+		}
+		// Only emit when something actually changed to avoid frontend spam.
+		if len(names) == len(prevNames) {
+			same := true
+			for i := range names {
+				if names[i] != prevNames[i] {
+					same = false
+					break
+				}
+			}
+			if same {
+				return
+			}
+		}
+		prevNames = names
 		runtime.EventsEmit(ctx, "devices:changed", devices)
 		a.logger.Info("MIDI devices changed", zap.Int("count", len(devices)))
+	}
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case _, ok := <-evCh:
+			if !ok {
+				// Channel closed — fall back to polling only.
+				evCh = nil
+				continue
+			}
+			checkAndEmit()
+		case <-ticker.C:
+			checkAndEmit()
+		}
 	}
 }
 
