@@ -487,7 +487,7 @@ func (a *App) ListRecordings(dir string) ([]RecordingSummary, error) {
 		return nil, err
 	}
 
-	var out []RecordingSummary
+	out := make([]RecordingSummary, 0, len(entries))
 	for _, e := range entries {
 		if e.IsDir() || !strings.HasSuffix(strings.ToLower(e.Name()), ".pia") {
 			continue
