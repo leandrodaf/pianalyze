@@ -311,7 +311,7 @@ func TestStart_AfterPause_Reactivates(t *testing.T) {
 
 // ── Concurrency ───────────────────────────────────────────────────────────────
 
-func TestGrader_ConcurrentNoteOn(t *testing.T) {
+func TestGrader_ConcurrentNoteOn(_ *testing.T) {
 	g := grading.New()
 	ivs := make([]grading.Interval, 50)
 	for i := range ivs {

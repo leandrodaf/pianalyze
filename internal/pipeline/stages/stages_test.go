@@ -293,7 +293,7 @@ func TestFinalStage_WithoutEmitter_NoError(t *testing.T) {
 
 func TestFinalStage_WithEmitter_Called(t *testing.T) {
 	called := false
-	s := stages.NewFinalStageWithEmitter(nopLogger(), func(ctx *pipelinectx.PipelineContext) {
+	s := stages.NewFinalStageWithEmitter(nopLogger(), func(_ *pipelinectx.PipelineContext) {
 		called = true
 	})
 	state := store.NewPipelineState()

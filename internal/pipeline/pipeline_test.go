@@ -20,7 +20,7 @@ type recordingStage struct {
 	retErr error
 }
 
-func (r *recordingStage) Process(ctx *pipelinectx.PipelineContext, _ *store.State) error {
+func (r *recordingStage) Process(_ *pipelinectx.PipelineContext, _ *store.State) error {
 	*r.order = append(*r.order, r.idx)
 	return r.retErr
 }
