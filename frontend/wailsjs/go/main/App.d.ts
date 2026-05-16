@@ -51,4 +51,6 @@ export function StopPractice():Promise<void>;
 
 export function StopRecording():Promise<string>;
 
+export function SyncMenuState(arg1:main.MenuState):Promise<void>;
+
 export function UpdateRecordingMeta(arg1:string,arg2:string,arg3:string,arg4:string):Promise<void>;

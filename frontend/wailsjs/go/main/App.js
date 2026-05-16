@@ -98,6 +98,10 @@ export function StopRecording() {
   return window['go']['main']['App']['StopRecording']();
 }
 
+export function SyncMenuState(arg1) {
+  return window['go']['main']['App']['SyncMenuState'](arg1);
+}
+
 export function UpdateRecordingMeta(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['UpdateRecordingMeta'](arg1, arg2, arg3, arg4);
 }

@@ -83,6 +83,22 @@ export namespace main {
 	        this.data = source["data"];
 	    }
 	}
+	export class MenuState {
+	    language: string;
+	    chordMode: string;
+	    skillLevel: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new MenuState(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.language = source["language"];
+	        this.chordMode = source["chordMode"];
+	        this.skillLevel = source["skillLevel"];
+	    }
+	}
 	export class RecordingSummary {
 	    path: string;
 	    filename: string;
