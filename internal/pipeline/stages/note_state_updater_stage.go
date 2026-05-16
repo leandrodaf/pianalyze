@@ -54,6 +54,6 @@ func (s *NoteStateUpdaterStage) Process(ctx *pipelinectx.PipelineContext, state 
 			zap.Uint8("velocity", event.Velocity))
 	}
 
-	ctx.PressedNotes = state.GetPressedNotes()
+	ctx.PressedNotes = state.CopyPressedNotes(ctx.PressedNotes)
 	return nil
 }
