@@ -64,8 +64,19 @@ type mxScore struct {
 	MovementTitle   string      `xml:"movement-title"`
 	Work            mxWork      `xml:"work"`
 	Identification  mxIdentify  `xml:"identification"`
+	Credits         []mxCredit  `xml:"credit"`
 	PartList        mxPartList  `xml:"part-list"`
 	Parts           []mxPart    `xml:"part"`
+}
+
+type mxCredit struct {
+	Page  int             `xml:"page,attr"`
+	Words []mxCreditWord `xml:"credit-words"`
+}
+
+type mxCreditWord struct {
+	FontSize string `xml:"font-size,attr"`
+	Value    string `xml:",chardata"`
 }
 
 type mxWork struct {
@@ -1016,7 +1027,82 @@ func classifyWords(w string) string {
 
 // ── Top-level converter ───────────────────────────────────────────────────────
 
-// convertMusicXML parses a MusicXML document and returns a fully-populated
+// extractMetaFromCredits falls back to <credit-words> elements when the score
+// lacks <work-title> or <identification><creator type="composer">. It picks the
+// credit-word with the largest font-size on page 1 as the title, and uses a
+// heuristic (presence of a year range like "(1810 - 1849)") to identify the
+// composer credit block.
+func extractMetaFromCredits(credits []mxCredit) (title, composer string) {
+	type entry struct {
+		size  float64
+		value string
+	}
+	var page1 []entry
+	for _, cr := range credits {
+		if cr.Page != 0 && cr.Page != 1 {
+			continue
+		}
+		var combined strings.Builder
+		var maxSize float64
+		for _, w := range cr.Words {
+			v := strings.TrimSpace(w.Value)
+			if v == "" {
+				continue
+			}
+			combined.WriteString(v)
+			combined.WriteRune(' ')
+			var s float64
+			_, _ = fmt.Sscanf(w.FontSize, "%f", &s)
+			if s > maxSize {
+				maxSize = s
+			}
+		}
+		text := strings.TrimSpace(combined.String())
+		if text != "" {
+			page1 = append(page1, entry{maxSize, text})
+		}
+	}
+	if len(page1) == 0 {
+		return
+	}
+	// Largest font → title
+	var biggest entry
+	for _, e := range page1 {
+		if e.size > biggest.size {
+			biggest = e
+		}
+	}
+	title = biggest.value
+
+	// Find composer: a credit line that contains a 4-digit year
+	yearRe := strings.NewReplacer("(", "", ")", "", "-", "", " ", "")
+	for _, e := range page1 {
+		if e.value == title {
+			continue
+		}
+		cleaned := yearRe.Replace(e.value)
+		hasYear := false
+		for i := 0; i+3 < len(cleaned); i++ {
+			yr := cleaned[i : i+4]
+			if yr >= "1400" && yr <= "2100" {
+				hasYear = true
+				break
+			}
+		}
+		if hasYear {
+			// Remove the year annotation "(YYYY - YYYY)" from the composer name
+			if idx := strings.Index(e.value, "("); idx > 0 {
+				composer = strings.TrimSpace(e.value[:idx])
+			} else {
+				composer = strings.TrimSpace(e.value)
+			}
+			break
+		}
+	}
+	return
+}
+
+
 // Recording v2, ready for JSON marshalling.
 func convertMusicXML(xmlData []byte, filename string, logger *zap.Logger) (*Recording, error) {
 	var score mxScore
@@ -1032,14 +1118,8 @@ func convertMusicXML(xmlData []byte, filename string, logger *zap.Logger) (*Reco
 	if title == "" {
 		title = strings.TrimSpace(score.MovementTitle)
 	}
-	if title == "" && len(score.PartList.ScoreParts) > 0 {
-		title = strings.TrimSpace(score.PartList.ScoreParts[0].Name)
-	}
-	if title == "" {
-		base := filepath.Base(filename)
-		title = strings.TrimSuffix(base, filepath.Ext(base))
-	}
 
+	// Extract composer from identification creators
 	composer, lyricist, arranger := "", "", ""
 	for _, c := range score.Identification.Creators {
 		val := strings.TrimSpace(c.Value)
@@ -1061,6 +1141,28 @@ func convertMusicXML(xmlData []byte, filename string, logger *zap.Logger) (*Reco
 			}
 		}
 	}
+
+	// Fallback: extract title and composer from <credit-words> when not found above.
+	// The largest font-size credit on page 1 is typically the title.
+	// A subsequent credit whose text matches a "Name (YYYY - YYYY)" pattern is the composer.
+	if title == "" || composer == "" {
+		titleFromCredit, composerFromCredit := extractMetaFromCredits(score.Credits)
+		if title == "" {
+			title = titleFromCredit
+		}
+		if composer == "" {
+			composer = composerFromCredit
+		}
+	}
+
+	if title == "" && len(score.PartList.ScoreParts) > 0 {
+		title = strings.TrimSpace(score.PartList.ScoreParts[0].Name)
+	}
+	if title == "" {
+		base := filepath.Base(filename)
+		title = strings.TrimSuffix(base, filepath.Ext(base))
+	}
+
 	// Add non-composer credits to composer field for display purposes
 	extras := []string{}
 	if lyricist != "" {

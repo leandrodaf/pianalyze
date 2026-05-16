@@ -231,19 +231,34 @@
           {:else}
             <!-- ── Normal view ── -->
             <div class="card-main">
+              {#if item.coverUrl}
+                <img class="card-cover" src={item.coverUrl} alt={item.title} loading="lazy" />
+              {:else}
+                <div class="card-cover card-cover-placeholder">🎵</div>
+              {/if}
               <div class="card-left">
                 <span class="card-title">{item.title || item.filename}</span>
                 {#if item.composer}
                   <span class="card-composer">{item.composer}</span>
                 {/if}
                 <div class="card-meta">
-                  <span>{fmtDate(item.recordedAt)}</span>
-                  <span class="meta-sep">·</span>
+                  {#if item.difficulty}
+                    <span class="card-difficulty" title="Dificuldade {item.difficulty}/5">
+                      {#each {length: 5} as _, i}
+                        <span class:dot-filled={i < item.difficulty}>●</span>
+                      {/each}
+                    </span>
+                    <span class="meta-sep">·</span>
+                  {/if}
                   <span>{fmtDuration(item.durationMs)}</span>
                   <span class="meta-sep">·</span>
                   <span>{item.eventCount} {$t('library.events')}</span>
-                  <span class="meta-sep">·</span>
-                  <span>{fmtSize(item.fileSizeB)}</span>
+                  {#if item.tags?.length}
+                    <span class="meta-sep">·</span>
+                    {#each item.tags.slice(0,3) as tag}
+                      <span class="tag-pill">{tag}</span>
+                    {/each}
+                  {/if}
                 </div>
               </div>
               <div class="card-actions">
@@ -402,7 +417,24 @@
   .card-main {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.85rem;
+  }
+
+  .card-cover {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .card-cover-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: rgba(255,255,255,0.25);
   }
 
   .card-left {
@@ -437,6 +469,25 @@
     margin-top: 0.15rem;
   }
   .meta-sep { opacity: 0.4; }
+
+  .card-difficulty {
+    display: flex;
+    gap: 1px;
+    font-size: 0.6rem;
+    letter-spacing: -1px;
+  }
+  .card-difficulty span { color: rgba(255,255,255,0.15); }
+  .card-difficulty span.dot-filled { color: #7b5ff0; }
+
+  .tag-pill {
+    background: rgba(123,95,240,0.15);
+    border: 1px solid rgba(123,95,240,0.25);
+    border-radius: 3px;
+    padding: 0 0.35rem;
+    font-size: 0.66rem;
+    color: rgba(180,160,255,0.8);
+    line-height: 1.5;
+  }
 
   .card-actions {
     display: flex;

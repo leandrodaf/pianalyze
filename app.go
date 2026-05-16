@@ -54,6 +54,9 @@ type RecordingMeta struct {
 	Title     string           `json:"title,omitempty"`
 	Composer  string           `json:"composer,omitempty"`
 	Copyright string           `json:"copyright,omitempty"`
+	CoverURL  string           `json:"coverUrl,omitempty"`  // optional album/piece cover image URL
+	Difficulty int             `json:"difficulty,omitempty"` // 1–5 overall difficulty hint
+	Tags      []string         `json:"tags,omitempty"`       // e.g. ["baroque","beginner","bach"]
 	Source    *RecordingSource `json:"source,omitempty"`
 }
 
@@ -221,7 +224,10 @@ func (a *App) startup(ctx context.Context) {
 
 	// Ensure the default recordings directory exists at startup so dialogs
 	// and auto-save never encounter a missing path on first run.
-	a.GetDefaultSavePath()
+	dir := a.GetDefaultSavePath()
+
+	// Seed built-in library pieces once, skipping files already present.
+	a.seedBuiltinLibrary(dir)
 
 	go a.watchMIDIDevices(ctx)
 }
@@ -519,7 +525,41 @@ func (a *App) GetDefaultSavePath() string {
 	return p
 }
 
-// PickSaveDirectory opens a native directory-picker dialog and returns the
+// seedBuiltinLibrary copies any bundled library .pia files into dir on first
+// run (or when new pieces are added). Files already present are skipped so
+// user edits or deletions are not overwritten.
+func (a *App) seedBuiltinLibrary(dir string) {
+	entries, err := builtinLibrary.ReadDir("data/library")
+	if err != nil {
+		a.logger.Warn("seedBuiltinLibrary: cannot read embedded library", zap.Error(err))
+		return
+	}
+	seeded := 0
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".pia") {
+			continue
+		}
+		dst := filepath.Join(dir, e.Name())
+		if _, statErr := os.Stat(dst); statErr == nil {
+			continue // already present
+		}
+		data, readErr := builtinLibrary.ReadFile("data/library/" + e.Name())
+		if readErr != nil {
+			a.logger.Warn("seedBuiltinLibrary: read embedded file", zap.String("file", e.Name()), zap.Error(readErr))
+			continue
+		}
+		if writeErr := os.WriteFile(dst, data, 0o644); writeErr != nil {
+			a.logger.Warn("seedBuiltinLibrary: write file", zap.String("dst", dst), zap.Error(writeErr))
+			continue
+		}
+		seeded++
+	}
+	if seeded > 0 {
+		a.logger.Info("seeded built-in library", zap.Int("pieces", seeded), zap.String("dir", dir))
+	}
+}
+
+
 // chosen path. title is the dialog window title, supplied by the frontend so
 // it can be localised. Returns ("", nil) if the user cancels.
 func (a *App) PickSaveDirectory(title string) (string, error) {
@@ -562,15 +602,18 @@ func (a *App) ResumeRecording() {
 
 // RecordingSummary is a lightweight summary of a .pia file for the library UI.
 type RecordingSummary struct {
-	Path       string `json:"path"`
-	Filename   string `json:"filename"`
-	Title      string `json:"title"`
-	Composer   string `json:"composer"`
-	Copyright  string `json:"copyright"`
-	RecordedAt string `json:"recordedAt"`
-	DurationMs int64  `json:"durationMs"`
-	EventCount int    `json:"eventCount"`
-	FileSizeB  int64  `json:"fileSizeB"`
+	Path       string   `json:"path"`
+	Filename   string   `json:"filename"`
+	Title      string   `json:"title"`
+	Composer   string   `json:"composer"`
+	Copyright  string   `json:"copyright"`
+	CoverURL   string   `json:"coverUrl,omitempty"`
+	Difficulty int      `json:"difficulty,omitempty"`
+	Tags       []string `json:"tags,omitempty"`
+	RecordedAt string   `json:"recordedAt"`
+	DurationMs int64    `json:"durationMs"`
+	EventCount int      `json:"eventCount"`
+	FileSizeB  int64    `json:"fileSizeB"`
 }
 
 // ListRecordings returns a summary of every .pia file in dir.
@@ -610,9 +653,12 @@ func (a *App) ListRecordings(dir string) ([]RecordingSummary, error) {
 			}
 			var partial struct {
 				Meta struct {
-					Title     string `json:"title"`
-					Composer  string `json:"composer"`
-					Copyright string `json:"copyright"`
+					Title      string   `json:"title"`
+					Composer   string   `json:"composer"`
+					Copyright  string   `json:"copyright"`
+					CoverURL   string   `json:"coverUrl"`
+					Difficulty int      `json:"difficulty"`
+					Tags       []string `json:"tags"`
 				} `json:"meta"`
 				RecordedAt string `json:"recordedAt"`
 				Events     []struct {
@@ -623,6 +669,9 @@ func (a *App) ListRecordings(dir string) ([]RecordingSummary, error) {
 				sum.Title = partial.Meta.Title
 				sum.Composer = partial.Meta.Composer
 				sum.Copyright = partial.Meta.Copyright
+				sum.CoverURL = partial.Meta.CoverURL
+				sum.Difficulty = partial.Meta.Difficulty
+				sum.Tags = partial.Meta.Tags
 				sum.RecordedAt = partial.RecordedAt
 				sum.EventCount = len(partial.Events)
 				if len(partial.Events) > 0 {

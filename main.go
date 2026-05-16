@@ -18,6 +18,9 @@ var assets embed.FS
 //go:embed build/appicon.png
 var appIcon []byte
 
+//go:embed data/library
+var builtinLibrary embed.FS
+
 func main() {
 	app := NewApp()
 
