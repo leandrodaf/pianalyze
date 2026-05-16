@@ -796,6 +796,14 @@
     border-top: 1px solid rgba(255,255,255,0.05);
   }
 
+  /* ── macOS: clear traffic-light buttons in top bar & prep banner ─────────── */
+  :global([data-platform="darwin"]) .top-bar {
+    padding-left: 72px;
+  }
+  :global([data-platform="darwin"] .prep-top) {
+    padding-left: 72px;
+  }
+
   /* ── Responsive ────────────────────────────────────────────────────────────── */
 
   /* Large screens: taller piano, bigger controls */
