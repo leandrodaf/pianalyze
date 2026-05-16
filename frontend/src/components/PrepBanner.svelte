@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onDestroy } from 'svelte'
   import { prepStore } from '../stores/prep'
 
   export let onComplete: () => void
@@ -7,6 +7,7 @@
   export let onBack:    () => void
 
   let done = false
+  let timer: ReturnType<typeof setTimeout> | null = null
 
   $: total = $prepStore.requiredKeys.size
   $: count = $prepStore.confirmedKeys.size
@@ -15,8 +16,12 @@
   // Piano.svelte handles confirmation; we just watch for completion
   $: if (!done && count >= total && total > 0) {
     done = true
-    setTimeout(onComplete, 750)
+    timer = setTimeout(onComplete, 750)
   }
+
+  onDestroy(() => {
+    if (timer !== null) clearTimeout(timer)
+  })
 </script>
 
 <div class="prep-banner">

@@ -56,7 +56,7 @@
     ro.observe(container)
 
     // Go → frontend: grade result from backend grading engine
-    EventsOn('grade:result', (res: {
+    const offGradeResult = EventsOn('grade:result', (res: {
       note: number; grade: string; deltaMs: number
       chordDone?: boolean; chordFrac?: number; chordHit?: number; chordTotal?: number
     }) => {
@@ -71,7 +71,7 @@
     })
 
     // Go → frontend: hold fraction when student releases a note
-    EventsOn('grade:hold', (res: { note: number; holdFraction: number }) => {
+    const offGradeHold = EventsOn('grade:hold', (res: { note: number; holdFraction: number }) => {
       waterfall?.noteReleased(res.note, res.holdFraction)
     })
 
@@ -161,6 +161,8 @@
 
     return () => {
       ro.disconnect()
+      offGradeResult()
+      offGradeHold()
       unsubPlayback()
       unsubMidi()
       waterfall?.destroy()
