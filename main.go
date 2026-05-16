@@ -52,8 +52,6 @@ func main() {
 				Message: "Para estudantes e entusiastas de piano\n\n© Leandro Ferreira",
 				Icon:    appIcon,
 			},
-			// Disable pinch-zoom — not useful in a piano/MIDI app.
-			DisableZoom: true,
 		},
 
 		// ── Windows ───────────────────────────────────────────────────────────
