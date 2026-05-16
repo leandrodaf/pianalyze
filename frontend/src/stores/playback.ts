@@ -64,11 +64,17 @@ let wallStart = 0
 let segmentOffset = 0
 let liveNotes = new Set<number>()
 
+// Audio sustain pedal state — reset on cancelAll() and seekTo()
+let audioPedalHeld = false
+const audioPedalSustained = new Set<number>()
+
 function cancelAll() {
   for (const t of pending) clearTimeout(t)
   pending = []
   cancelAnimationFrame(rafId)
   rafId = 0
+  audioPedalHeld = false
+  audioPedalSustained.clear()
   stopAllNotes()
 }
 
@@ -99,8 +105,10 @@ function restartPlaybackAt(ms: number): void {
 
 /** Convert a flat event list into note-on/off pairs, preserving all pedagogical fields. */
 function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
-  const CMD_NOTE_ON  = 0x90
+  const CMD_NOTE_ON = 0x90
   const CMD_NOTE_OFF = 0x80
+  const CMD_CC = 0xB0
+  const CC_SUSTAIN = 64
 
   type Active = {
     startMs: number
@@ -116,17 +124,62 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
     slur?: NoteInterval['slur']
   }
 
+  function pushInterval(note: number, entry: Active, endMs: number) {
+    out.push({
+      note,
+      startMs: entry.startMs,
+      endMs,
+      finger: entry.finger,
+      hand: entry.hand,
+      dynamic: entry.dynamic,
+      articulation: entry.articulation,
+      grace: entry.grace,
+      voice: entry.voice,
+      tip: entry.tip,
+      handPosition: entry.handPosition,
+      fermata: entry.fermata,
+      slur: entry.slur,
+    })
+  }
+
   const active = new Map<number, Active>()
   const out: NoteInterval[] = []
 
-  for (const ev of events) {
-    // Skip CC events (pedals) — they don't contribute to note intervals
-    if (ev.cmd === 0xB0) continue
+  // Sustain pedal state (CC 64)
+  let sustainHeld = false
+  // Notes with key released while pedal held — note → key-release time
+  const pedalSustained = new Map<number, number>()
 
-    const isNoteOn = (ev.cmd === CMD_NOTE_ON || ev.cmd === CMD_NOTE_OFF) && ev.vel > 0
-    const isNoteOff = ev.vel === 0 || ev.cmd === CMD_NOTE_OFF
+  for (const ev of events) {
+    if (ev.cmd === CMD_CC) {
+      if (ev.note === CC_SUSTAIN) {
+        if (ev.vel >= 64) {
+          sustainHeld = true
+        } else {
+          // Pedal release — end all pedal-sustained notes at the pedal release time
+          sustainHeld = false
+          for (const [note] of pedalSustained) {
+            const entry = active.get(note)
+            if (entry) { pushInterval(note, entry, ev.t); active.delete(note) }
+          }
+          pedalSustained.clear()
+        }
+      }
+      continue
+    }
+
+    // 0x90 vel>0 = NoteOn;  0x90 vel=0 or 0x80 any vel = NoteOff
+    const isNoteOn = ev.cmd === CMD_NOTE_ON && ev.vel > 0
+    const isNoteOff = ev.cmd === CMD_NOTE_OFF || (ev.cmd === CMD_NOTE_ON && ev.vel === 0)
 
     if (isNoteOn) {
+      // Re-striking a note that is already active (trill, or pedal-held re-press)
+      if (active.has(ev.note)) {
+        const prev = active.get(ev.note)!
+        pushInterval(ev.note, prev, pedalSustained.get(ev.note) ?? ev.t)
+        pedalSustained.delete(ev.note)
+        active.delete(ev.note)
+      }
       active.set(ev.note, {
         startMs: ev.t,
         finger: ev.finger,
@@ -143,43 +196,23 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
     } else if (isNoteOff) {
       const entry = active.get(ev.note)
       if (entry !== undefined) {
-        out.push({
-          note: ev.note,
-          startMs: entry.startMs,
-          endMs: ev.t,
-          finger: entry.finger,
-          hand: entry.hand,
-          dynamic: entry.dynamic,
-          articulation: entry.articulation,
-          grace: entry.grace,
-          voice: entry.voice,
-          tip: entry.tip,
-          handPosition: entry.handPosition,
-          fermata: entry.fermata,
-          slur: entry.slur,
-        })
-        active.delete(ev.note)
+        if (sustainHeld) {
+          // Defer release — pedal extends the note
+          pedalSustained.set(ev.note, ev.t)
+        } else {
+          pushInterval(ev.note, entry, ev.t)
+          active.delete(ev.note)
+        }
       }
     }
   }
 
-  // Close any notes still held at end of recording
+  // Close any notes still active at end of recording
   for (const [note, entry] of active) {
-    out.push({
-      note,
-      startMs: entry.startMs,
-      endMs: entry.startMs + 500,
-      finger: entry.finger,
-      hand: entry.hand,
-      dynamic: entry.dynamic,
-      articulation: entry.articulation,
-      grace: entry.grace,
-      voice: entry.voice,
-      tip: entry.tip,
-      handPosition: entry.handPosition,
-      fermata: entry.fermata,
-      slur: entry.slur,
-    })
+    const endMs = pedalSustained.has(note)
+      ? pedalSustained.get(note)! + 500
+      : entry.startMs + 500
+    pushInterval(note, entry, endMs)
   }
   return out
 }
@@ -201,16 +234,33 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
     if (delay < 0) continue
 
     const tid = setTimeout(() => {
-      // CC events (pedals) — skip for both visual and audio.
-      if (ev.cmd === 0xB0) return
+      // Sustain pedal (CC 64): tracked for audio; never injected into visual store.
+      if (ev.cmd === 0xB0) {
+        if (ev.note === 64) {
+          if (ev.vel >= 64) {
+            audioPedalHeld = true
+          } else {
+            audioPedalHeld = false
+            for (const note of audioPedalSustained) stopNote(note)
+            audioPedalSustained.clear()
+          }
+        }
+        return
+      }
 
-      const on = ev.vel > 0
+      // 0x90 vel>0 = NoteOn; 0x90 vel=0 or 0x80 any vel = NoteOff
+      const on = ev.cmd === 0x90 && ev.vel > 0
       const isPractice = get(playbackStore).practice
 
-      // Audio: plays in both review and practice modes so students can use it
-      // as a quiet background guide while playing their own piano.
-      if (on) playNote(ev.note, ev.vel)
-      else    stopNote(ev.note)
+      // Audio: plays in both review and practice modes.
+      if (on) {
+        playNote(ev.note, ev.vel)
+        audioPedalSustained.delete(ev.note)  // re-strike clears pending release
+      } else if (audioPedalHeld) {
+        audioPedalSustained.add(ev.note)     // defer release until pedal lifts
+      } else {
+        stopNote(ev.note)
+      }
 
       // Visual MIDI injection: review mode only.
       if (!isPractice) {

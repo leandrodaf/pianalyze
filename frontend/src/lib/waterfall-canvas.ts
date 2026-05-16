@@ -408,12 +408,14 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     }
   }
 
+  const MIN_BAR_PX = 3
+
   function drawBars() {
     for (const bar of bars) {
       const { left, right } = barScreenX(bar)
       if (right < LEFT_MARGIN || left > W) continue
       const cx = Math.max(left, LEFT_MARGIN)
-      const cw = Math.min(right, W) - cx
+      const cw = Math.max(MIN_BAR_PX, Math.min(right, W) - cx)
       if (cw <= 0) continue
 
       drawLedgerLines(bar.note, cx, cw)
@@ -447,7 +449,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       const right = msToX(pb.iv.endMs)
       if (right < LEFT_MARGIN || left > W) continue
       const cx = Math.max(left, LEFT_MARGIN)
-      const cw = Math.min(right, W) - cx
+      const cw = Math.max(MIN_BAR_PX, Math.min(right, W) - cx)
       if (cw <= 0) continue
 
       drawLedgerLines(pb.iv.note, cx, cw)
