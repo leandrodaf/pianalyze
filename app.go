@@ -394,15 +394,25 @@ func (a *App) SaveRecording(jsonData, defaultFilename, defaultDir string) error 
 	return os.WriteFile(path, []byte(jsonData), 0o644)
 }
 
-// GetDefaultSavePath returns the default recordings directory
-// (~/Documents/pianalyze) and ensures it exists on disk.
+// GetDefaultSavePath returns the platform-appropriate recordings directory and
+// ensures it exists on disk.
+//
+// On macOS ~/Documents is protected by TCC and may silently block mkdir/readdir
+// until the user grants access — causing the app to hang on first run.
+// os.UserConfigDir() (→ ~/Library/Application Support on macOS, %AppData% on
+// Windows, $XDG_CONFIG_HOME on Linux) is always accessible without permission
+// prompts and is the correct location for user-facing app data on each OS.
 func (a *App) GetDefaultSavePath() string {
-	home, err := os.UserHomeDir()
-	if err != nil || home == "" {
-		home = "."
+	base, err := os.UserConfigDir()
+	if err != nil || base == "" {
+		// Fall back to home dir if the config dir is somehow unavailable.
+		if home, herr := os.UserHomeDir(); herr == nil && home != "" {
+			base = home
+		} else {
+			base = "."
+		}
 	}
-	p := filepath.Join(home, "Documents", "pianalyze")
-	// Create the tree so dialogs and auto-save never fail on a fresh install.
+	p := filepath.Join(base, "pianalyze", "recordings")
 	if mkErr := os.MkdirAll(p, 0o755); mkErr != nil {
 		a.logger.Warn("could not create default save path", zap.String("path", p), zap.Error(mkErr))
 	}
