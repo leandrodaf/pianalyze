@@ -13,6 +13,7 @@
   import type { Recording } from '../lib/recording-types'
 
   import { addToast } from '../stores/toast'
+  import logoIcon from '../assets/logo_icon.png'
   import { handleDevicesChanged } from '../lib/device-handler'
   import { settingsStore } from '../stores/settings'
   import SettingsModal from './SettingsModal.svelte'
@@ -222,7 +223,7 @@
   <aside class="sidebar">
 
     <div class="logo-area">
-      <div class="logo-icon">🎹</div>
+      <img class="logo-icon" src={logoIcon} alt="Pianalyze" />
       <div class="logo-text">
         <span class="logo-brand">PIANALYZE</span>
         <span class="logo-sub">{$t('brand.subtitle')}</span>
@@ -610,8 +611,11 @@
   position: relative;
 }
 .logo-icon {
-  font-size: 1.8rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  object-fit: contain;
   filter: drop-shadow(0 0 10px rgba(123,95,240,.8));
+  flex-shrink: 0;
 }
 .logo-text { display: flex; flex-direction: column; gap: 1px; }
 .logo-brand {
@@ -1122,7 +1126,7 @@ a.contributor-name:hover { color: #fff; }
 }
 @media (min-width: 2200px) {
   .sidebar { width: clamp(320px, 15%, 400px); }
-  .logo-icon { font-size: 2.2rem; }
+  .logo-icon { width: 2.8rem; height: 2.8rem; }
   .logo-brand { font-size: 1.2rem; }
   .nav-item { font-size: 1rem; padding: .75rem 1rem; }
   .sb-label { font-size: .68rem; }
