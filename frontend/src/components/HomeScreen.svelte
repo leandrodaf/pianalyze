@@ -146,13 +146,6 @@
     openDetail(available[Math.floor(Math.random() * available.length)])
   }
 
-  function getDailyChallenge(exercises: Exercise[]): Exercise | null {
-    const available = exercises.filter(e => !e.comingSoon)
-    if (!available.length) return null
-    const day = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 1).getTime()) / 86400000)
-    return available[day % available.length]
-  }
-
   // ── Tools ──────────────────────────────────────────────────────────────────────
   let toolsError = ''
 
@@ -209,7 +202,7 @@
   $: scales           = $exercisesByCategory.scales
   $: chords           = $exercisesByCategory.chords
   $: pieces           = $exercisesByCategory.pieces
-  $: dailyChallengeEx = getDailyChallenge($exerciseStore.exercises)
+  $: lastExercise = getLastExercise($exerciseStore.exercises, $settingsStore.lastExerciseId)
 
   const currentHour = new Date().getHours()
   const LOCALE_OPTIONS: { code: Locale; flag: string; short: string }[] = [
@@ -373,16 +366,6 @@
           <div class="pill-text">
             <span class="pill-label">{$t('quick.random')}</span>
             <span class="pill-sub">{$t('quick.randomSub')}</span>
-          </div>
-        </button>
-
-        <button class="quick-pill challenge-pill"
-          on:click={() => dailyChallengeEx && openDetail(dailyChallengeEx)}
-          disabled={!dailyChallengeEx}>
-          <span class="pill-icon">⭐</span>
-          <div class="pill-text">
-            <span class="pill-label">{$t('quick.challenge')}</span>
-            <span class="pill-sub">{dailyChallengeEx ? dailyChallengeEx.title : $t('quick.comingSoon')}</span>
           </div>
         </button>
 
@@ -849,9 +832,6 @@
 
 .random-pill { background: rgba(16,185,129,.1); border-color: rgba(16,185,129,.25); }
 .random-pill:hover { background: rgba(16,185,129,.18); border-color: rgba(16,185,129,.4); }
-
-.challenge-pill { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.22); }
-.challenge-pill:hover { background: rgba(251,191,36,.16); border-color: rgba(251,191,36,.42); }
 
 .pill-icon { font-size: 1rem; line-height: 1; flex-shrink: 0; }
 .pill-text { display: flex; flex-direction: column; gap: 1px; }
