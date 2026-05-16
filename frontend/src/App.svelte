@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
+  import { Environment } from '../wailsjs/runtime/runtime'
   import { connectMidiStore, midiStore } from './stores/midi'
   import { loadRecording, setPractice, play, stop, clearLoop, playbackStore, noteIntervals, setDifficultyPreset } from './stores/playback'
   import { bpmAt, timeSigAt, measureAt, DIFFICULTY_PRESETS } from './lib/recording-types'
@@ -109,7 +110,13 @@
     }
   }
 
-  onMount(() => connectMidiStore())
+  onMount(() => {
+    const unsubMidi = connectMidiStore()
+    Environment().then(env => {
+      document.body.dataset.platform = env.platform
+    }).catch(() => {})
+    return unsubMidi
+  })
 
   // Auto-apply skill level preset only when a NEW recording is loaded, not on
   // every store update (which would override manual speed changes).

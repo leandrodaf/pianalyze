@@ -222,6 +222,10 @@
   <!-- ═══════════════ SIDEBAR ═══════════════════════════════════ -->
   <aside class="sidebar">
 
+    <!-- macOS: spacer that clears the inset traffic-light buttons and acts
+         as a window drag handle (--wails-draggable only works on darwin). -->
+    <div class="titlebar-drag" style="--wails-draggable:drag"></div>
+
     <div class="logo-area">
       <img class="logo-icon" src={logoIcon} alt="Pianalyze" />
       <div class="logo-text">
@@ -609,6 +613,20 @@
   gap: .65rem;
   padding: 1.4rem 1.2rem 1rem;
   position: relative;
+}
+
+/* macOS: the draggable spacer fills the inset traffic-light area (~28 px). */
+.titlebar-drag {
+  display: none;
+  height: 0;
+  flex-shrink: 0;
+}
+:global([data-platform="darwin"]) .titlebar-drag {
+  display: block;
+  height: 28px;
+}
+:global([data-platform="darwin"]) .logo-area {
+  padding-top: .6rem;
 }
 .logo-icon {
   width: 2.4rem;
