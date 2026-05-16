@@ -105,6 +105,9 @@ export namespace main {
 	    title: string;
 	    composer: string;
 	    copyright: string;
+	    coverUrl?: string;
+	    difficulty?: number;
+	    tags?: string[];
 	    recordedAt: string;
 	    durationMs: number;
 	    eventCount: number;
@@ -121,6 +124,9 @@ export namespace main {
 	        this.title = source["title"];
 	        this.composer = source["composer"];
 	        this.copyright = source["copyright"];
+	        this.coverUrl = source["coverUrl"];
+	        this.difficulty = source["difficulty"];
+	        this.tags = source["tags"];
 	        this.recordedAt = source["recordedAt"];
 	        this.durationMs = source["durationMs"];
 	        this.eventCount = source["eventCount"];

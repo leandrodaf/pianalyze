@@ -18,6 +18,7 @@
   import { settingsStore } from '../stores/settings'
   import SettingsModal from './SettingsModal.svelte'
   import RecordingsPage from './RecordingsPage.svelte'
+  import LibraryPage from './LibraryPage.svelte'
 
   export let onPlay: (exercise: Exercise | null) => void
   export let onDeviceReady: (deviceId: number) => void
@@ -28,7 +29,7 @@
   /** Whether the device was already connected before navigating away. */
   export let initialConnected = false
 
-  type NavView = 'home' | 'recordings'
+  type NavView = 'home' | 'library' | 'recordings'
   let activeView: NavView = 'home'
   let recordingsVersion = 0 // increment to force RecordingsPage re-mount
 
@@ -262,7 +263,9 @@
       <button class="nav-item" class:active={activeView === 'home'} on:click={() => activeView = 'home'}>
         <span class="nav-ic">⊞</span> {$t('nav.home')}
       </button>
-      <button class="nav-item" disabled><span class="nav-ic">◫</span> {$t('nav.library')}</button>
+      <button class="nav-item" class:active={activeView === 'library'} on:click={() => activeView = 'library'}>
+        <span class="nav-ic">◫</span> {$t('nav.library')}
+      </button>
       <button class="nav-item" class:active={activeView === 'recordings'} on:click={() => activeView = 'recordings'}>
         <span class="nav-ic">◉</span> {$t('nav.recordings')}
       </button>
@@ -341,6 +344,8 @@
       {#key recordingsVersion}
         <RecordingsPage onLoad={onImportRecording} />
       {/key}
+    {:else if activeView === 'library'}
+      <LibraryPage onPlay={onImportRecording} />
     {:else}
 
     <header class="content-header">

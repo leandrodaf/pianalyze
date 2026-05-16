@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -51,15 +52,18 @@ type RecordedEvent struct {
 
 // RecordingMeta holds title, composer, and provenance metadata (M1, M2).
 type RecordingMeta struct {
-	Title     string           `json:"title,omitempty"`
-	Composer  string           `json:"composer,omitempty"`
-	Copyright string           `json:"copyright,omitempty"`
-	Source    *RecordingSource `json:"source,omitempty"`
+	Title      string           `json:"title,omitempty"`
+	Composer   string           `json:"composer,omitempty"`
+	Copyright  string           `json:"copyright,omitempty"`
+	CoverURL   string           `json:"coverUrl,omitempty"`   // optional album/piece cover image URL
+	Difficulty int              `json:"difficulty,omitempty"` // 1–5 overall difficulty hint
+	Tags       []string         `json:"tags,omitempty"`       // e.g. ["baroque","beginner","bach"]
+	Source     *RecordingSource `json:"source,omitempty"`
 }
 
 // RecordingSource describes the origin of an imported recording (M2).
 type RecordingSource struct {
-	Format     string `json:"format"`               // "musicxml"|"mscz"|"midi"|"manual"
+	Format     string `json:"format"` // "musicxml"|"mscz"|"midi"|"manual"
 	Filename   string `json:"filename,omitempty"`
 	ImportedAt string `json:"importedAt,omitempty"` // ISO 8601
 }
@@ -96,11 +100,11 @@ type Hairpin struct {
 
 // Section is a named region within a recording.
 type Section struct {
-	Name         string `json:"name"`
-	StartMs      int64  `json:"startMs"`
-	Type         string `json:"type,omitempty"`         // "intro"|"verse"|"chorus"|"bridge"|"coda"|"rehearsal"|"free"
+	Name          string `json:"name"`
+	StartMs       int64  `json:"startMs"`
+	Type          string `json:"type,omitempty"`          // "intro"|"verse"|"chorus"|"bridge"|"coda"|"rehearsal"|"free"
 	RehearsalMark string `json:"rehearsalMark,omitempty"` // e.g. "A", "B", "1" (F4)
-	Difficulty   int    `json:"difficulty,omitempty"`   // 1–5 per-section difficulty (G3)
+	Difficulty    int    `json:"difficulty,omitempty"`    // 1–5 per-section difficulty (G3)
 }
 
 // RepeatType is the kind of repeat / navigation marker in the score (F1).
@@ -123,7 +127,7 @@ type Recording struct {
 	Meta *RecordingMeta `json:"meta,omitempty"`
 
 	TempoMap         []TempoEvent   `json:"tempoMap,omitempty"`
-	BPM              *float64       `json:"bpm,omitempty"`           // deprecated v1 compat
+	BPM              *float64       `json:"bpm,omitempty"` // deprecated v1 compat
 	TimeSignatureMap []TimeSigEvent `json:"timeSignatureMap,omitempty"`
 	TimeSignature    string         `json:"timeSignature,omitempty"` // deprecated v1 compat
 	KeySignature     string         `json:"keySignature,omitempty"`
@@ -221,7 +225,7 @@ func (a *App) startup(ctx context.Context) {
 
 	// Ensure the default recordings directory exists at startup so dialogs
 	// and auto-save never encounter a missing path on first run.
-	a.GetDefaultSavePath()
+	_ = a.GetDefaultSavePath()
 
 	go a.watchMIDIDevices(ctx)
 }
@@ -519,7 +523,152 @@ func (a *App) GetDefaultSavePath() string {
 	return p
 }
 
-// PickSaveDirectory opens a native directory-picker dialog and returns the
+// coverDataURICache maps external Wikimedia cover URL → embedded data URI.
+// Populated lazily on first call to ListBuiltinLibrary.
+var (
+	coverCache   = map[string]string{}
+	coverCacheMu sync.Mutex
+)
+
+// wikimediaToEmbedded maps known Wikimedia thumbnail URLs to embedded cover files.
+var wikimediaToEmbedded = map[string]string{
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Scriabin_1909_Cropped.jpg/250px-Scriabin_1909_Cropped.jpg":                                                                     "data/library/covers/scriabin.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Johann_Sebastian_Bach.jpg/220px-Johann_Sebastian_Bach.jpg":                                                                     "data/library/covers/bach.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Edvard_Grieg_portrait_%28cropped%29.jpg/250px-Edvard_Grieg_portrait_%28cropped%29.jpg":                                         "data/library/covers/grieg.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Beethoven_2.jpg/220px-Beethoven_2.jpg":                                                                                         "data/library/covers/beethoven.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Claude_Debussy_by_Atelier_Nadar.jpg/250px-Claude_Debussy_by_Atelier_Nadar.jpg":                                                 "data/library/covers/debussy.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Retrato_de_Domenico_Scarlatti.jpg/250px-Retrato_de_Domenico_Scarlatti.jpg":                                                     "data/library/covers/scarlatti.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Franz_Liszt_by_Herman_Biow-_1843.png/250px-Franz_Liszt_by_Herman_Biow-_1843.png":                                               "data/library/covers/liszt.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Franz_Schubert_by_Wilhelm_August_Rieder_1875.jpg/250px-Franz_Schubert_by_Wilhelm_August_Rieder_1875.jpg":                       "data/library/covers/schubert.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/George_Frideric_Handel_by_Balthasar_Denner.jpg/250px-George_Frideric_Handel_by_Balthasar_Denner.jpg":                           "data/library/covers/handel.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/JohannesBrahms_%28cropped%29.jpg/250px-JohannesBrahms_%28cropped%29.jpg":                                                       "data/library/covers/brahms.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Joseph_Haydn.jpg/250px-Joseph_Haydn.jpg":                                                                                       "data/library/covers/haydn.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Frederic_Chopin_photo.jpeg/220px-Frederic_Chopin_photo.jpeg":                                                                   "data/library/covers/chopin.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Muzio_Clementi.jpg/220px-Muzio_Clementi.jpg":                                                                                   "data/library/covers/clementi.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Robert_Schumann_1839.jpg/250px-Robert_Schumann_1839.jpg":                                                                       "data/library/covers/schumann.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Alexander_Gretchaninov.jpg/220px-Alexander_Gretchaninov.jpg":                                                                   "data/library/covers/gretchaninov.svg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Ericsatie.jpg/250px-Ericsatie.jpg":                                                                                             "data/library/covers/satie.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Felix_Mendelssohn_Bartholdy_by_Eduard_Magnus_%281833%29.jpg/250px-Felix_Mendelssohn_Bartholdy_by_Eduard_Magnus_%281833%29.jpg": "data/library/covers/mendelssohn.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Croce-Mozart-Detail.jpg/220px-Croce-Mozart-Detail.jpg":                                                                         "data/library/covers/mozart.jpg",
+}
+
+// coverDataURI converts a Wikimedia URL to an embedded data URI, caching the result.
+func coverDataURI(wikiURL string) string {
+	coverCacheMu.Lock()
+	if v, ok := coverCache[wikiURL]; ok {
+		coverCacheMu.Unlock()
+		return v
+	}
+	coverCacheMu.Unlock()
+
+	embedPath, ok := wikimediaToEmbedded[wikiURL]
+	if !ok {
+		return wikiURL // unknown URL; return as-is (external)
+	}
+	data, err := libCovers.ReadFile(embedPath)
+	if err != nil {
+		return wikiURL
+	}
+	mime := "image/jpeg"
+	if strings.HasSuffix(embedPath, ".png") {
+		mime = "image/png"
+	} else if strings.HasSuffix(embedPath, ".svg") {
+		mime = "image/svg+xml"
+	}
+	dataURI := "data:" + mime + ";base64," + base64.StdEncoding.EncodeToString(data)
+
+	coverCacheMu.Lock()
+	coverCache[wikiURL] = dataURI
+	coverCacheMu.Unlock()
+	return dataURI
+}
+
+// ListBuiltinLibrary returns metadata for all embedded library pieces without
+// copying anything to disk. The Path field is set to the filename only (not an
+// absolute path) so the frontend can call LoadBuiltinPiece with it.
+// Cover images are returned as base64 data URIs so the webview never needs
+// to make external HTTP requests.
+func (a *App) ListBuiltinLibrary() ([]RecordingSummary, error) {
+	entries, err := builtinLibrary.ReadDir("data/library")
+	if err != nil {
+		return nil, err
+	}
+	out := make([]RecordingSummary, 0, len(entries))
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".pia") {
+			continue
+		}
+		sum := RecordingSummary{
+			Path:     e.Name(),
+			Filename: e.Name(),
+		}
+		if fi, err := e.Info(); err == nil {
+			sum.FileSizeB = fi.Size()
+		}
+		raw, err := builtinLibrary.ReadFile("data/library/" + e.Name())
+		if err == nil {
+			if dec, err := gunzip(raw); err == nil {
+				raw = dec
+			}
+			var partial struct {
+				Meta struct {
+					Title      string   `json:"title"`
+					Composer   string   `json:"composer"`
+					Copyright  string   `json:"copyright"`
+					CoverURL   string   `json:"coverUrl"`
+					Difficulty int      `json:"difficulty"`
+					Tags       []string `json:"tags"`
+				} `json:"meta"`
+				RecordedAt string `json:"recordedAt"`
+				Events     []struct {
+					T int64 `json:"t"`
+				} `json:"events"`
+			}
+			if json.Unmarshal(raw, &partial) == nil {
+				sum.Title = partial.Meta.Title
+				sum.Composer = partial.Meta.Composer
+				sum.Copyright = partial.Meta.Copyright
+				sum.CoverURL = coverDataURI(partial.Meta.CoverURL)
+				sum.Difficulty = partial.Meta.Difficulty
+				sum.Tags = partial.Meta.Tags
+				sum.RecordedAt = partial.RecordedAt
+				sum.EventCount = len(partial.Events)
+				if len(partial.Events) > 0 {
+					sum.DurationMs = partial.Events[len(partial.Events)-1].T
+				}
+			}
+		}
+		out = append(out, sum)
+	}
+	return out, nil
+}
+
+// LoadBuiltinPiece loads an embedded library .pia file by filename and returns
+// the JSON string ready for the frontend playback engine.
+func (a *App) LoadBuiltinPiece(filename string) (string, error) {
+	// Guard against path traversal — only bare filenames are allowed.
+	if strings.ContainsAny(filename, "/\\") || strings.Contains(filename, "..") {
+		return "", fmt.Errorf("invalid filename")
+	}
+	raw, err := builtinLibrary.ReadFile("data/library/" + filename)
+	if err != nil {
+		return "", err
+	}
+	if dec, err := gunzip(raw); err == nil {
+		raw = dec
+	}
+	var rec map[string]any
+	if err := json.Unmarshal(raw, &rec); err != nil {
+		return "", err
+	}
+	migrateRecordingMap(rec)
+	out, err := json.Marshal(rec)
+	if err != nil {
+		return "", err
+	}
+	return string(out), nil
+}
+
 // chosen path. title is the dialog window title, supplied by the frontend so
 // it can be localised. Returns ("", nil) if the user cancels.
 func (a *App) PickSaveDirectory(title string) (string, error) {
@@ -562,15 +711,18 @@ func (a *App) ResumeRecording() {
 
 // RecordingSummary is a lightweight summary of a .pia file for the library UI.
 type RecordingSummary struct {
-	Path       string `json:"path"`
-	Filename   string `json:"filename"`
-	Title      string `json:"title"`
-	Composer   string `json:"composer"`
-	Copyright  string `json:"copyright"`
-	RecordedAt string `json:"recordedAt"`
-	DurationMs int64  `json:"durationMs"`
-	EventCount int    `json:"eventCount"`
-	FileSizeB  int64  `json:"fileSizeB"`
+	Path       string   `json:"path"`
+	Filename   string   `json:"filename"`
+	Title      string   `json:"title"`
+	Composer   string   `json:"composer"`
+	Copyright  string   `json:"copyright"`
+	CoverURL   string   `json:"coverUrl,omitempty"`
+	Difficulty int      `json:"difficulty,omitempty"`
+	Tags       []string `json:"tags,omitempty"`
+	RecordedAt string   `json:"recordedAt"`
+	DurationMs int64    `json:"durationMs"`
+	EventCount int      `json:"eventCount"`
+	FileSizeB  int64    `json:"fileSizeB"`
 }
 
 // ListRecordings returns a summary of every .pia file in dir.
@@ -610,9 +762,12 @@ func (a *App) ListRecordings(dir string) ([]RecordingSummary, error) {
 			}
 			var partial struct {
 				Meta struct {
-					Title     string `json:"title"`
-					Composer  string `json:"composer"`
-					Copyright string `json:"copyright"`
+					Title      string   `json:"title"`
+					Composer   string   `json:"composer"`
+					Copyright  string   `json:"copyright"`
+					CoverURL   string   `json:"coverUrl"`
+					Difficulty int      `json:"difficulty"`
+					Tags       []string `json:"tags"`
 				} `json:"meta"`
 				RecordedAt string `json:"recordedAt"`
 				Events     []struct {
@@ -623,6 +778,9 @@ func (a *App) ListRecordings(dir string) ([]RecordingSummary, error) {
 				sum.Title = partial.Meta.Title
 				sum.Composer = partial.Meta.Composer
 				sum.Copyright = partial.Meta.Copyright
+				sum.CoverURL = partial.Meta.CoverURL
+				sum.Difficulty = partial.Meta.Difficulty
+				sum.Tags = partial.Meta.Tags
 				sum.RecordedAt = partial.RecordedAt
 				sum.EventCount = len(partial.Events)
 				if len(partial.Events) > 0 {
@@ -834,8 +992,8 @@ type ImportResult struct {
 // ImportAnyFile opens a single file dialog that accepts all supported import
 // formats.  The correct handler is selected by file extension:
 //
-//   .pia / .json             → read, migrate v1→v2, return JSON (kind="recording")
-//   .xml / .musicxml / .mxl  → convert MusicXML, save to library (kind="score")
+//	.pia / .json             → read, migrate v1→v2, return JSON (kind="recording")
+//	.xml / .musicxml / .mxl  → convert MusicXML, save to library (kind="score")
 //
 // Returns (nil, nil) when the user cancels.
 func (a *App) ImportAnyFile() (*ImportResult, error) {

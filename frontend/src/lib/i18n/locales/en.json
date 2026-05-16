@@ -219,5 +219,19 @@
   "library.setup.title": "Choose recordings folder",
   "library.setup.desc": "Where should Pianalyze save your recordings? You can change this at any time in Settings.",
   "library.setup.choose": "Choose folder…",
-  "library.setup.default": "Use default location"
+  "library.setup.default": "Use default location",
+  "builtin.title": "Classical Library",
+  "builtin.subtitle": "Curated pieces for piano students and enthusiasts",
+  "builtin.filter.all": "All",
+  "builtin.filter.beginner": "Beginner",
+  "builtin.filter.intermediate": "Intermediate",
+  "builtin.filter.advanced": "Advanced",
+  "builtin.play": "Play",
+  "builtin.pieces": "pieces",
+  "builtin.piece": "piece",
+  "builtin.loading": "Loading library…",
+  "builtin.error": "Failed to load library.",
+  "builtin.difficulty.label": "Difficulty",
+  "builtin.search": "Search pieces…",
+  "builtin.noResults": "No pieces found."
 }
