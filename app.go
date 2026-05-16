@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -522,9 +523,59 @@ func (a *App) GetDefaultSavePath() string {
 	return p
 }
 
+// coverDataURICache maps external Wikimedia cover URL → embedded data URI.
+// Populated lazily on first call to ListBuiltinLibrary.
+var (
+	coverCache   = map[string]string{}
+	coverCacheMu sync.Mutex
+)
+
+// wikimediaToEmbedded maps known Wikimedia thumbnail URLs to embedded cover files.
+var wikimediaToEmbedded = map[string]string{
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Johann_Sebastian_Bach.jpg/220px-Johann_Sebastian_Bach.jpg":    "data/library/covers/bach.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Beethoven_2.jpg/220px-Beethoven_2.jpg":                        "data/library/covers/beethoven.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Frederic_Chopin_photo.jpeg/220px-Frederic_Chopin_photo.jpeg":  "data/library/covers/chopin.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Muzio_Clementi.jpg/220px-Muzio_Clementi.jpg":                  "data/library/covers/clementi.jpg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Alexander_Gretchaninov.jpg/220px-Alexander_Gretchaninov.jpg":  "data/library/covers/gretchaninov.svg",
+	"https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Croce-Mozart-Detail.jpg/220px-Croce-Mozart-Detail.jpg":        "data/library/covers/mozart.jpg",
+}
+
+// coverDataURI converts a Wikimedia URL to an embedded data URI, caching the result.
+func coverDataURI(wikiURL string) string {
+	coverCacheMu.Lock()
+	if v, ok := coverCache[wikiURL]; ok {
+		coverCacheMu.Unlock()
+		return v
+	}
+	coverCacheMu.Unlock()
+
+	embedPath, ok := wikimediaToEmbedded[wikiURL]
+	if !ok {
+		return wikiURL // unknown URL; return as-is (external)
+	}
+	data, err := libCovers.ReadFile(embedPath)
+	if err != nil {
+		return wikiURL
+	}
+	mime := "image/jpeg"
+	if strings.HasSuffix(embedPath, ".png") {
+		mime = "image/png"
+	} else if strings.HasSuffix(embedPath, ".svg") {
+		mime = "image/svg+xml"
+	}
+	dataURI := "data:" + mime + ";base64," + base64.StdEncoding.EncodeToString(data)
+
+	coverCacheMu.Lock()
+	coverCache[wikiURL] = dataURI
+	coverCacheMu.Unlock()
+	return dataURI
+}
+
 // ListBuiltinLibrary returns metadata for all embedded library pieces without
 // copying anything to disk. The Path field is set to the filename only (not an
 // absolute path) so the frontend can call LoadBuiltinPiece with it.
+// Cover images are returned as base64 data URIs so the webview never needs
+// to make external HTTP requests.
 func (a *App) ListBuiltinLibrary() ([]RecordingSummary, error) {
 	entries, err := builtinLibrary.ReadDir("data/library")
 	if err != nil {
@@ -565,7 +616,7 @@ func (a *App) ListBuiltinLibrary() ([]RecordingSummary, error) {
 				sum.Title = partial.Meta.Title
 				sum.Composer = partial.Meta.Composer
 				sum.Copyright = partial.Meta.Copyright
-				sum.CoverURL = partial.Meta.CoverURL
+				sum.CoverURL = coverDataURI(partial.Meta.CoverURL)
 				sum.Difficulty = partial.Meta.Difficulty
 				sum.Tags = partial.Meta.Tags
 				sum.RecordedAt = partial.RecordedAt
