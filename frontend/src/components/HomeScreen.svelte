@@ -202,7 +202,6 @@
   $: scales           = $exercisesByCategory.scales
   $: chords           = $exercisesByCategory.chords
   $: pieces           = $exercisesByCategory.pieces
-  $: lastExercise = getLastExercise($exerciseStore.exercises, $settingsStore.lastExerciseId)
 
   const currentHour = new Date().getHours()
   const LOCALE_OPTIONS: { code: Locale; flag: string; short: string }[] = [
