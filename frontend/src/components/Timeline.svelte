@@ -51,6 +51,7 @@
       unsubIntervals()
       unsubSections()
       timeline?.destroy()
+      window.removeEventListener('mousemove', handleMouseMove)
     }
   })
 

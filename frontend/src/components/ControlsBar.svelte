@@ -1,6 +1,8 @@
 <script lang="ts">
   import { playbackStore, play, pause, stop, rewind, setSpeed, toggleLoop, seekTo, setLoop } from '../stores/playback'
+  import { bpmAt } from '../lib/recording-types'
   import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
+  import { DIFFICULTY_COLOR } from '../lib/exercise-types'
 
   const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
   const SPEEDS = [0.25, 0.5, 0.75, 1, 1.5, 2] as const
@@ -13,8 +15,8 @@
   $: hasLoop     = s.loopStart != null && s.loopEnd != null && s.loopEnd > s.loopStart
   $: sections    = s.recording?.sections ?? []
 
-  $: originalBpm = s.recording?.bpm ?? null
-  $: currentBpm  = originalBpm ? Math.round(originalBpm * speed) : null
+  $: liveBpm    = s.recording ? bpmAt(s.recording, s.positionMs) : null
+  $: currentBpm = liveBpm ? Math.round(liveBpm * speed) : null
 
   function goToSection(idx: number) {
     const sec = sections[idx]
@@ -49,12 +51,12 @@
         class="speed-pill"
         class:active={Math.abs(speed - x) < 0.01}
         on:click={() => setSpeed(x)}
-        title="{x}× {originalBpm ? `(${Math.round(originalBpm * x)} BPM)` : ''}"
+        title="{x}× {liveBpm ? `(${Math.round(liveBpm * x)} BPM)` : ''}"
       >
         {x === 1 ? '1×' : x < 1 ? `${x * 100 | 0}%` : `${x}×`}
       </button>
     {/each}
-    {#if currentBpm != null && Math.abs(speed - 1) > 0.01}
+    {#if currentBpm != null && (Math.abs(speed - 1) > 0.01 || (s.recording?.tempoMap?.length ?? 0) > 1)}
       <span class="bpm-badge">{currentBpm} BPM</span>
     {/if}
   </div>
@@ -80,7 +82,13 @@
     <div class="group sections-group">
       {#each sections as sec, i}
         <button class="section-pill" on:click={() => goToSection(i)} title="Ir para {sec.name}">
+          {#if sec.rehearsalMark}
+            <span class="rehearsal-mark">[{sec.rehearsalMark}]</span>
+          {/if}
           {sec.name}
+          {#if sec.difficulty}
+            <span class="diff-dot" style="background:{DIFFICULTY_COLOR[sec.difficulty]}"></span>
+          {/if}
         </button>
       {/each}
     </div>
@@ -215,6 +223,26 @@
     border-color: rgba(255,210,50,0.45);
     color: rgba(255,210,50,1);
   }
+
+  .rehearsal-mark {
+    font-size: 0.60rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.02em;
+    margin-right: 3px;
+  }
+
+  .diff-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-left: 4px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  /* ── Difficulty presets — moved to App.svelte top-bar ───────────────────── */
 
   .sep {
     width: 1px;

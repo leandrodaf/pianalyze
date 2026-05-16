@@ -51,6 +51,15 @@ func (ps *State) GetPressedNotes() []int {
 	return out
 }
 
+// CopyPressedNotes copies the pressed notes into dst (reusing its backing array
+// when capacity allows) and returns the result. Prefer this over GetPressedNotes
+// in hot paths to avoid a heap allocation on every pipeline event.
+func (ps *State) CopyPressedNotes(dst []int) []int {
+	ps.mu.RLock()
+	defer ps.mu.RUnlock()
+	return append(dst[:0], ps.PressedNotes...)
+}
+
 // UpdateLastNoteTime stores the timestamp of the last note event atomically.
 func (ps *State) UpdateLastNoteTime(timestamp uint64) {
 	ps.lastNoteTime.Store(timestamp)

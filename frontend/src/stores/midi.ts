@@ -8,6 +8,7 @@ const initial: MIDIState = {
   chord: '',
   inversion: '',
   triad: '',
+  chordRoot: -1,
   velocity: 0,
   dynamic: '',
   interval: 0
@@ -15,9 +16,10 @@ const initial: MIDIState = {
 
 export const midiStore = writable<MIDIState>(initial)
 
-/** Wire the store to the Go backend "midi:state" event. Call once at app startup. */
-export function connectMidiStore(): void {
-  EventsOn('midi:state', (state: MIDIState) => {
+/** Wire the store to the Go backend "midi:state" event. Returns the unsubscribe
+ *  function — pass it to onDestroy or return it from onMount for automatic cleanup. */
+export function connectMidiStore(): () => void {
+  return EventsOn('midi:state', (state: MIDIState) => {
     midiStore.set(state)
   })
 }

@@ -6,8 +6,6 @@
     play, pause, stop, setPractice,
     formatMs,
   } from '../stores/playback'
-  import type { Recording } from '../lib/recording-types'
-
   let fileInput: HTMLInputElement
 
   $: s          = $playbackStore
@@ -23,12 +21,36 @@
 
   function openFile() { fileInput.click() }
 
+  async function readPiaFile(file: File): Promise<unknown> {
+    const buf = await file.arrayBuffer()
+    const bytes = new Uint8Array(buf)
+    // Detect gzip magic bytes (V3)
+    if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
+      const ds = new DecompressionStream('gzip')
+      const writer = ds.writable.getWriter()
+      const reader = ds.readable.getReader()
+      void writer.write(bytes).then(() => writer.close())
+      const chunks: Uint8Array[] = []
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        chunks.push(value)
+      }
+      const total = chunks.reduce((n, c) => n + c.length, 0)
+      const combined = new Uint8Array(total)
+      let offset = 0
+      for (const c of chunks) { combined.set(c, offset); offset += c.length }
+      return JSON.parse(new TextDecoder().decode(combined))
+    }
+    return JSON.parse(new TextDecoder().decode(bytes))
+  }
+
   async function onFile(e: Event) {
     const file = (e.target as HTMLInputElement).files?.[0]
     if (!file) return
     try {
-      const rec: Recording = JSON.parse(await file.text())
-      loadRecording(rec)
+      const raw = await readPiaFile(file)
+      loadRecording(raw)
     } catch {
       // silently ignore malformed files for now
     }

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte'
-  import { EventsOn } from '../../wailsjs/runtime/runtime'
-  import { ListDevices, SelectDevice, StartCapture, StopCapture } from '../../wailsjs/go/main/App'
+  import { EventsOn, EventsOff } from '../../wailsjs/runtime/runtime'
+  import { ListDevices, SelectDevice, StartCapture, StopCapture, ImportAnyFile } from '../../wailsjs/go/main/App'
   import type { main } from '../../wailsjs/go/models'
-  import { exerciseStore, exercisesByCategory, loadFromUrl } from '../stores/exercises'
+  import { exerciseStore, exercisesByCategory } from '../stores/exercises'
   import { LOCALE_NAMES, locale, t, type Locale } from '../lib/i18n'
   import {
     type Category,
@@ -13,27 +13,61 @@
   import type { Recording } from '../lib/recording-types'
 
   import { addToast } from '../stores/toast'
+  import logoIcon from '../assets/logo_icon.png'
   import { handleDevicesChanged } from '../lib/device-handler'
+  import { settingsStore } from '../stores/settings'
+  import SettingsModal from './SettingsModal.svelte'
+  import RecordingsPage from './RecordingsPage.svelte'
 
   export let onPlay: (exercise: Exercise | null) => void
-  export let onDeviceReady: () => void
+  export let onDeviceReady: (deviceId: number) => void
   export let onImportRecording: ((recording: Recording) => void) | undefined = undefined
   export let onStartRecording: (() => void) | undefined = undefined
+  /** Device ID that was already connected before navigating away (from App.svelte state). */
+  export let initialDeviceId: number | null = null
+  /** Whether the device was already connected before navigating away. */
+  export let initialConnected = false
+
+  type NavView = 'home' | 'recordings'
+  let activeView: NavView = 'home'
+  let recordingsVersion = 0 // increment to force RecordingsPage re-mount
 
   // ── Device ────────────────────────────────────────────────────────────────────
   let devices: main.DeviceInfo[] = []
-  let selectedId: number | null = null
-  let connected      = false
+  let selectedId: number | null = initialDeviceId
+  let connected      = false   // set to true after successful connect or on remount
   let connecting     = false
   let deviceError    = ''
-  let showDeviceList = true
+  let showDeviceList = !initialConnected  // if already connected, don't show the list
 
   let unsubDevices: (() => void) | null = null
 
   onMount(async () => {
     try {
       devices = await ListDevices()
-      if (devices.length === 1) selectedId = devices[0].id
+
+      if (initialConnected && initialDeviceId !== null) {
+        // Back from playing screen — restore UI state; capture is still running on Go side.
+        const stillAvailable = devices.some(d => d.id === initialDeviceId)
+        if (stillAvailable) {
+          selectedId = initialDeviceId
+          connected = true
+          showDeviceList = false
+        } else {
+          // Device was disconnected while away
+          connected = false
+          showDeviceList = true
+          selectedId = null
+        }
+      } else {
+        // First mount — auto-select: last known device if in list, else sole device
+        const lastId = $settingsStore.lastDeviceId
+        if (lastId !== null && devices.some(d => d.id === lastId)) {
+          selectedId = lastId
+        } else if (devices.length === 1) {
+          selectedId = devices[0].id
+        }
+      }
     } catch (e) { deviceError = String(e) }
 
     unsubDevices = EventsOn('devices:changed', (updated: main.DeviceInfo[]) => {
@@ -48,9 +82,19 @@
       showDeviceList = next.showDeviceList
       deviceError = next.deviceError
     })
+
+    // Native OS menu events handled by HomeScreen.
+    EventsOn('menu:open-settings', () => { settingsOpen = true })
+    EventsOn('menu:import-file',   () => { openImportAny() })
+    EventsOn('menu:pick-save-dir', () => { settingsOpen = true })
   })
 
-  onDestroy(() => { unsubDevices?.() })
+  onDestroy(() => {
+    unsubDevices?.()
+    EventsOff('menu:open-settings')
+    EventsOff('menu:import-file')
+    EventsOff('menu:pick-save-dir')
+  })
 
   async function connectDevice() {
     if (selectedId === null) return
@@ -59,7 +103,7 @@
       await SelectDevice(selectedId)
       await StartCapture()
       connected = true; showDeviceList = false
-      onDeviceReady()
+      onDeviceReady(selectedId)
     } catch (e) { deviceError = String(e) }
     finally    { connecting = false }
   }
@@ -70,6 +114,9 @@
   let langOpen = false
   $: currentFlag = LOCALE_OPTIONS.find(o => o.code === $locale)?.flag ?? '🌐'
 
+  // ── Settings modal ────────────────────────────────────────────────────────────
+  let settingsOpen = false
+
   // ── Detail modal ──────────────────────────────────────────────────────────────
   let detail: Exercise | null = null
 
@@ -77,7 +124,7 @@
   function closeDetail() { detail = null }
 
   function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape') closeDetail()
+    if (e.key === 'Escape') { if (settingsOpen) settingsOpen = false; else closeDetail() }
   }
 
   let lastExercise: Exercise | null = null
@@ -99,51 +146,38 @@
     openDetail(available[Math.floor(Math.random() * available.length)])
   }
 
-  function getDailyChallenge(exercises: Exercise[]): Exercise | null {
-    const available = exercises.filter(e => !e.comingSoon)
-    if (!available.length) return null
-    const day = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 1).getTime()) / 86400000)
-    return available[day % available.length]
-  }
-
-  // ── Remote library ─────────────────────────────────────────────────────────────
-  let remoteUrl    = ''
-  let loadingRemote = false
-  let remoteError  = ''
-
-  async function handleLoadRemote() {
-    const url = remoteUrl.trim()
-    if (!url) return
-    loadingRemote = true; remoteError = ''
-    await loadFromUrl(url)
-    const err = $exerciseStore.error
-    if (err) remoteError = err; else remoteUrl = ''
-    loadingRemote = false
-  }
-
   // ── Tools ──────────────────────────────────────────────────────────────────────
-  let importInput: HTMLInputElement
   let toolsError = ''
 
-  function openImportPicker() {
-    if (!onImportRecording) return
-    importInput?.click()
-  }
-
-  async function handleImportFile(event: Event) {
-    const input = event.currentTarget as HTMLInputElement
-    const file = input.files?.[0]
-    if (!file || !onImportRecording) return
-
+  async function openImportAny() {
+    toolsError = ''
     try {
-      const recording = JSON.parse(await file.text()) as Recording
-      toolsError = ''
-      onImportRecording(recording)
+      const result = await ImportAnyFile()
+      if (!result) return // user cancelled
+      if (result.kind === 'score') {
+        recordingsVersion++
+        activeView = 'recordings'
+        addToast($t('toast.import.score.success'), 'success')
+      } else {
+        // .pia / .json — load into playback
+        if (!onImportRecording) return
+        let rec: Recording
+        try {
+          rec = JSON.parse(result.data) as Recording
+        } catch {
+          toolsError = $t('error.import.invalid')
+          return
+        }
+        if (!rec.events || rec.events.length === 0) {
+          toolsError = $t('error.import.empty')
+          return
+        }
+        onImportRecording(rec)
+      }
     } catch (error: unknown) {
-      toolsError = error instanceof Error ? error.message : 'Falha ao importar arquivo'
+      const msg = error instanceof Error ? error.message : String(error)
+      toolsError = msg || $t('error.import.invalid')
     }
-
-    input.value = ''
   }
 
   function handleStartRecording() {
@@ -168,7 +202,6 @@
   $: scales           = $exercisesByCategory.scales
   $: chords           = $exercisesByCategory.chords
   $: pieces           = $exercisesByCategory.pieces
-  $: dailyChallengeEx = getDailyChallenge($exerciseStore.exercises)
 
   const currentHour = new Date().getHours()
   const LOCALE_OPTIONS: { code: Locale; flag: string; short: string }[] = [
@@ -191,8 +224,12 @@
   <!-- ═══════════════ SIDEBAR ═══════════════════════════════════ -->
   <aside class="sidebar">
 
+    <!-- macOS: spacer that clears the inset traffic-light buttons and acts
+         as a window drag handle (--wails-draggable only works on darwin). -->
+    <div class="titlebar-drag" style="--wails-draggable:drag"></div>
+
     <div class="logo-area">
-      <div class="logo-icon">🎹</div>
+      <img class="logo-icon" src={logoIcon} alt="Pianalyze" />
       <div class="logo-text">
         <span class="logo-brand">PIANALYZE</span>
         <span class="logo-sub">{$t('brand.subtitle')}</span>
@@ -222,9 +259,16 @@
     {/if}
 
     <nav class="nav">
-      <button class="nav-item active"><span class="nav-ic">⊞</span> {$t('nav.home')}</button>
+      <button class="nav-item" class:active={activeView === 'home'} on:click={() => activeView = 'home'}>
+        <span class="nav-ic">⊞</span> {$t('nav.home')}
+      </button>
       <button class="nav-item" disabled><span class="nav-ic">◫</span> {$t('nav.library')}</button>
-      <button class="nav-item" disabled><span class="nav-ic">◉</span> {$t('nav.recordings')}</button>
+      <button class="nav-item" class:active={activeView === 'recordings'} on:click={() => activeView = 'recordings'}>
+        <span class="nav-ic">◉</span> {$t('nav.recordings')}
+      </button>
+      <button class="nav-item nav-settings" on:click={() => settingsOpen = true}>
+        <span class="nav-ic">⚙</span> {$t('settings.title')}
+      </button>
     </nav>
 
     <div class="hr"></div>
@@ -277,43 +321,12 @@
 
     <div class="hr"></div>
 
-    <!-- Remote library -->
-    <div class="sb-section">
-      <span class="sb-label">{$t('remote.label')}</span>
-      <p class="hint-text">{$t('remote.hint')}</p>
-      <input
-        class="url-input"
-        type="url"
-        placeholder="https://exemplo.com/exercises.json"
-        bind:value={remoteUrl}
-        on:keydown={e => e.key === 'Enter' && handleLoadRemote()}
-      />
-      <button class="load-btn" on:click={handleLoadRemote}
-        disabled={loadingRemote || !remoteUrl.trim()}>
-        {#if loadingRemote}<span class="spin">⟳</span> {$t('remote.loading')}{:else}{$t('remote.load')}{/if}
-      </button>
-      {#if remoteError}<p class="error-text">{remoteError}</p>{/if}
-    </div>
-
-    <div class="hr"></div>
-
     <div class="sb-section">
       <span class="sb-label">{$t('tools.label')}</span>
-      <input
-        bind:this={importInput}
-        class="hidden-input"
-        type="file"
-        accept=".pia,.json"
-        on:change={handleImportFile}
-      />
       <div class="tools-actions">
-        <button class="tool-btn" on:click={openImportPicker} disabled={!onImportRecording}>
-          <span class="tool-icon">📂</span>
+        <button class="tool-btn" on:click={openImportAny}>
+          <span class="tool-icon">📥</span>
           <span>{$t('tools.import')}</span>
-        </button>
-        <button class="tool-btn rec-tool-btn" on:click={handleStartRecording} disabled={!onStartRecording}>
-          <span class="tool-icon">🔴</span>
-          <span>{$t('tools.record')}</span>
         </button>
       </div>
       {#if toolsError}<p class="error-text">{toolsError}</p>{/if}
@@ -324,7 +337,11 @@
   <!-- ═══════════════ MAIN CONTENT ═══════════════════════════════ -->
   <main class="content">
 
-    <div class="hero-glow"></div>
+    {#if activeView === 'recordings'}
+      {#key recordingsVersion}
+        <RecordingsPage onLoad={onImportRecording} />
+      {/key}
+    {:else}
 
     <header class="content-header">
       <h1 class="greeting">{currentHour < 12 ? $t('greeting.morning') : currentHour < 18 ? $t('greeting.afternoon') : $t('greeting.evening')}</h1>
@@ -351,13 +368,11 @@
           </div>
         </button>
 
-        <button class="quick-pill challenge-pill"
-          on:click={() => dailyChallengeEx && openDetail(dailyChallengeEx)}
-          disabled={!dailyChallengeEx}>
-          <span class="pill-icon">⭐</span>
+        <button class="quick-pill rec-pill" on:click={handleStartRecording} disabled={!onStartRecording}>
+          <span class="pill-icon">🔴</span>
           <div class="pill-text">
-            <span class="pill-label">{$t('quick.challenge')}</span>
-            <span class="pill-sub">{dailyChallengeEx ? dailyChallengeEx.title : $t('quick.comingSoon')}</span>
+            <span class="pill-label">{$t('quick.record')}</span>
+            <span class="pill-sub">{$t('quick.recordSub')}</span>
           </div>
         </button>
 
@@ -412,6 +427,7 @@
     {/each}
 
     <div style="height:3rem"></div>
+    {/if}
   </main>
 </div>
 
@@ -546,6 +562,14 @@
   </div>
 {/if}
 
+<!-- ═══════════════ SETTINGS MODAL ══════════════════════════════════ -->
+{#if settingsOpen}
+  <SettingsModal
+    onClose={() => settingsOpen = false}
+    onImportRecording={onImportRecording}
+  />
+{/if}
+
 <style>
 /* ── Root ──────────────────────────────────────────────────────────────────── */
 .home {
@@ -582,9 +606,26 @@
   padding: 1.4rem 1.2rem 1rem;
   position: relative;
 }
+
+/* macOS: the draggable spacer fills the inset traffic-light area (~28 px). */
+.titlebar-drag {
+  display: none;
+  height: 0;
+  flex-shrink: 0;
+}
+:global([data-platform="darwin"]) .titlebar-drag {
+  display: block;
+  height: 44px;
+}
+:global([data-platform="darwin"]) .logo-area {
+  padding-top: .6rem;
+}
 .logo-icon {
-  font-size: 1.8rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  object-fit: contain;
   filter: drop-shadow(0 0 10px rgba(123,95,240,.8));
+  flex-shrink: 0;
 }
 .logo-text { display: flex; flex-direction: column; gap: 1px; }
 .logo-brand {
@@ -624,6 +665,8 @@
 .nav-item.active { color: #fff; background: rgba(123,95,240,.18); }
 .nav-item:disabled { opacity: .3; cursor: not-allowed; }
 .nav-ic { font-size: .95rem; width: 18px; text-align: center; }
+.nav-settings { margin-top: auto; color: rgba(255,255,255,.45); }
+.nav-settings:hover { color: rgba(255,255,255,.8) !important; }
 
 .hr { height: 1px; background: rgba(255,255,255,.07); margin: .5rem 1.2rem; flex-shrink: 0; }
 
@@ -711,30 +754,6 @@
 .connect-btn:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
 .connect-btn:disabled { opacity: .35; cursor: not-allowed; }
 
-.url-input {
-  padding: .5rem .65rem;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 8px;
-  color: rgba(255,255,255,.85); font-size: .72rem;
-  outline: none; transition: border-color .15s;
-}
-.url-input::placeholder { color: rgba(255,255,255,.2); }
-.url-input:focus { border-color: rgba(123,95,240,.5); }
-
-.load-btn {
-  padding: .48rem; border: 1px solid rgba(255,255,255,.12);
-  border-radius: 8px; background: rgba(255,255,255,.06);
-  color: rgba(255,255,255,.7); font-size: .77rem; font-weight: 600;
-  cursor: pointer; display: flex; align-items: center; gap: .4rem;
-  transition: background .15s;
-}
-.load-btn:hover:not(:disabled) { background: rgba(255,255,255,.11); color: #fff; }
-.load-btn:disabled { opacity: .35; cursor: not-allowed; }
-.spin { display: inline-block; animation: spin .8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
- 
-.hidden-input { display: none; }
 .tools-actions {
   display: flex;
   flex-direction: column;
@@ -764,16 +783,6 @@
   opacity: .35;
   cursor: not-allowed;
 }
-.rec-tool-btn {
-  background: rgba(220,40,40,.12);
-  border-color: rgba(220,40,40,.28);
-  color: #ff8c8c;
-}
-.rec-tool-btn:hover:not(:disabled) {
-  background: rgba(220,40,40,.2);
-  border-color: rgba(220,40,40,.4);
-  color: #ffd0d0;
-}
 .tool-icon {
   width: 1rem;
   text-align: center;
@@ -794,11 +803,7 @@
   border-radius: 3px;
 }
 .content::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.22); }
-.hero-glow {
-  position: absolute; top: 0; left: 0; right: 0; height: 320px;
-  background: linear-gradient(180deg, rgba(123,95,240,.2) 0%, transparent 100%);
-  pointer-events: none;
-}
+
 .content-header { position: relative; padding: clamp(1.5rem,3vw,3rem) clamp(1.2rem,3vw,2.5rem) 1.5rem; }
 .greeting { font-size: clamp(1.6rem,2.8vw,3.2rem); font-weight: 900; letter-spacing: -.02em; margin: 0 0 .3rem; }
 .greeting-sub { font-size: clamp(.82rem,1.1vw,1.05rem); color: rgba(255,255,255,.35); margin: 0; }
@@ -812,7 +817,7 @@
   padding: .6rem 1.1rem .6rem .85rem;
   background: rgba(255,255,255,.06);
   border: 1px solid rgba(255,255,255,.1);
-  border-radius: 30px;
+  border-radius: 8px;
   cursor: pointer; color: #fff; text-align: left;
   transition: background .15s, border-color .15s, transform .12s;
   outline: none;
@@ -826,9 +831,6 @@
 
 .random-pill { background: rgba(16,185,129,.1); border-color: rgba(16,185,129,.25); }
 .random-pill:hover { background: rgba(16,185,129,.18); border-color: rgba(16,185,129,.4); }
-
-.challenge-pill { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.22); }
-.challenge-pill:hover { background: rgba(251,191,36,.16); border-color: rgba(251,191,36,.42); }
 
 .pill-icon { font-size: 1rem; line-height: 1; flex-shrink: 0; }
 .pill-text { display: flex; flex-direction: column; gap: 1px; }
@@ -1131,7 +1133,7 @@ a.contributor-name:hover { color: #fff; }
 }
 @media (min-width: 2200px) {
   .sidebar { width: clamp(320px, 15%, 400px); }
-  .logo-icon { font-size: 2.2rem; }
+  .logo-icon { width: 2.8rem; height: 2.8rem; }
   .logo-brand { font-size: 1.2rem; }
   .nav-item { font-size: 1rem; padding: .75rem 1rem; }
   .sb-label { font-size: .68rem; }

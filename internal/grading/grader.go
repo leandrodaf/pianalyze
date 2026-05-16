@@ -4,6 +4,7 @@ package grading
 
 import (
 	"math"
+	"sort"
 	"sync"
 	"time"
 )
@@ -98,11 +99,15 @@ func New() *Grader {
 	return &Grader{heldNotes: make(map[int]int64)}
 }
 
-// Load replaces the set of expected note intervals.
+// Load replaces the set of expected note intervals. Intervals are sorted by
+// StartMs so binary search can be used in hot paths.
 func (g *Grader) Load(ivs []Interval) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 	g.intervals = ivs
+	sort.Slice(g.intervals, func(i, j int) bool {
+		return g.intervals[i].StartMs < g.intervals[j].StartMs
+	})
 }
 
 // LoadProfile replaces the active grading profile (G1, G2).
@@ -164,18 +169,16 @@ func (g *Grader) NoteOn(note int, vel byte) (NoteGrade, bool) {
 
 	var best *Interval
 	var bestAbs int64 = math.MaxInt64
-	for i := range g.intervals {
+	// Intervals are sorted by StartMs; binary search to the candidate window.
+	lo := now - late
+	hi := now + early
+	start := sort.Search(len(g.intervals), func(i int) bool { return g.intervals[i].StartMs >= lo })
+	for i := start; i < len(g.intervals) && g.intervals[i].StartMs <= hi; i++ {
 		iv := &g.intervals[i]
 		if iv.Note != note {
 			continue
 		}
-		delta := iv.StartMs - now // positive = student pressed early
-		earlyDelta := delta
-		lateDelta := -delta
-		if earlyDelta > early || lateDelta > late {
-			continue
-		}
-		abs := absInt64(delta)
+		abs := absInt64(iv.StartMs - now)
 		if abs < bestAbs {
 			bestAbs = abs
 			best = iv
@@ -238,7 +241,11 @@ func (g *Grader) NoteOff(note int) (HoldResult, bool) {
 
 	var best *Interval
 	var bestAbs int64 = math.MaxInt64
-	for i := range g.intervals {
+	// Intervals are sorted by StartMs; narrow the scan to the press-time window.
+	lo := pressMs - defaultEarlyToleranceMs
+	hi := pressMs + defaultLateToleranceMs
+	startIdx := sort.Search(len(g.intervals), func(i int) bool { return g.intervals[i].StartMs >= lo })
+	for i := startIdx; i < len(g.intervals) && g.intervals[i].StartMs <= hi; i++ {
 		iv := &g.intervals[i]
 		if iv.Note != note {
 			continue
@@ -285,13 +292,12 @@ func (g *Grader) practiceMs() int64 {
 // a multi-note chord. hit counts how many of those notes are currently in
 // heldNotes (i.e. just pressed or still held). Must be called with mu held.
 func (g *Grader) chordInfo(chordMs int64) (total, hit int) {
-	for i := range g.intervals {
-		iv := &g.intervals[i]
-		if absInt64(iv.StartMs-chordMs) > chordWindowMs {
-			continue
-		}
+	lo := chordMs - chordWindowMs
+	hi := chordMs + chordWindowMs
+	start := sort.Search(len(g.intervals), func(i int) bool { return g.intervals[i].StartMs >= lo })
+	for i := start; i < len(g.intervals) && g.intervals[i].StartMs <= hi; i++ {
 		total++
-		if _, ok := g.heldNotes[iv.Note]; ok {
+		if _, ok := g.heldNotes[g.intervals[i].Note]; ok {
 			hit++
 		}
 	}

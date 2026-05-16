@@ -60,7 +60,7 @@
       const guide = new Map<number, string>()
       if (state.recording) {
         const practiceMs = state.positionMs - DEFAULT_LEAD_TIME_SEC * 1000
-        for (const iv of $noteIntervals) {
+        for (const iv of get(noteIntervals)) {
           if (iv.startMs <= practiceMs && practiceMs < iv.endMs) {
             if (!guide.has(iv.note)) {
               guide.set(iv.note, iv.finger != null ? FINGER_COLORS[iv.finger] : noteColor(iv.note))

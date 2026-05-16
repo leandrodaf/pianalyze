@@ -12,13 +12,15 @@
 
   function dynamicColor(d: string): string {
     switch (d) {
-      case 'pp': return '#6ab7f5'
-      case 'p':  return '#5aa8f0'
-      case 'mp': return '#4f9cf5'
-      case 'mf': return '#3a88e0'
-      case 'f':  return '#f59e42'
-      case 'ff': return '#f56542'
-      default:   return '#333'
+      case 'ppp': return '#8dcffa'
+      case 'pp':  return '#6ab7f5'
+      case 'p':   return '#5aa8f0'
+      case 'mp':  return '#4f9cf5'
+      case 'mf':  return '#3a88e0'
+      case 'f':   return '#f59e42'
+      case 'ff':  return '#f56542'
+      case 'fff': return '#e03010'
+      default:    return '#333'
     }
   }
 </script>

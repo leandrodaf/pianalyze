@@ -1,17 +1,23 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { midiStore } from '../stores/midi'
-  import { playbackStore, noteIntervals } from '../stores/playback'
+  import { playbackStore, noteIntervals, buildGradingIntervals } from '../stores/playback'
   import { createWaterfallCanvas, type WaterfallCanvas } from '../lib/waterfall-canvas'
+  import { bpmAt } from '../lib/recording-types'
+  import { keyToPitchClasses } from '../lib/key-utils'
   import { get } from 'svelte/store'
   import { EventsOn } from '../../wailsjs/runtime/runtime'
   import {
     LoadPracticeIntervals,
+    LoadGradingProfile,
     StartPractice,
     PausePractice,
     StopPractice,
   } from '../../wailsjs/go/main/App'
   import { t } from '../lib/i18n'
+
+  /** Currently selected musical key (e.g. "C", "Am", "F#"). Empty = none. */
+  export let scaleKey: string = ''
 
   let container: HTMLDivElement
   let canvasEl: HTMLCanvasElement
@@ -26,11 +32,19 @@
       miss:    $t('grade.miss'),
       wrong:   $t('grade.wrong'),
     })
+    waterfall.setHandLabels($t('waterfall.hand.right'), $t('waterfall.hand.left'))
   }
+
+  // Propagate scale key changes to the canvas
+  $: if (waterfall) {
+    waterfall.setScaleKey(scaleKey ? keyToPitchClasses(scaleKey) : null)
+  }
+
   let prevHasRecording = false
   let prevPractice = false
   let prevStatus = ''
   let prevSpeed = 1
+  let prevProfileOverride: unknown = undefined
 
   onMount(() => {
     waterfall = createWaterfallCanvas(canvasEl)
@@ -42,16 +56,22 @@
     ro.observe(container)
 
     // Go → frontend: grade result from backend grading engine
-    EventsOn('grade:result', (res: { note: number; grade: string; deltaMs: number }) => {
+    const offGradeResult = EventsOn('grade:result', (res: {
+      note: number; grade: string; deltaMs: number
+      chordDone?: boolean; chordFrac?: number; chordHit?: number; chordTotal?: number
+    }) => {
       if (!waterfall) return
       // noteHeld MUST come before showGrade — showGrade marks bar as graded,
       // which would prevent noteHeld from finding it.
       waterfall.noteHeld(res.note)
       waterfall.showGrade(res.note, res.grade as any)
+      if (res.chordDone && res.chordHit != null && res.chordTotal != null) {
+        waterfall.showChordResult(res.chordHit, res.chordTotal, res.note)
+      }
     })
 
     // Go → frontend: hold fraction when student releases a note
-    EventsOn('grade:hold', (res: { note: number; holdFraction: number }) => {
+    const offGradeHold = EventsOn('grade:hold', (res: { note: number; holdFraction: number }) => {
       waterfall?.noteReleased(res.note, res.holdFraction)
     })
 
@@ -59,6 +79,9 @@
       if (!waterfall) return
 
       const hasRecording = !!state.recording
+
+      // Effective profile: preset override takes precedence over exercise profile.
+      const effectiveProfile = state.gradingProfileOverride ?? state.recording?.gradingProfile ?? null
 
       // Enable/disable practice rendering
       if (hasRecording !== prevHasRecording || state.practice !== prevPractice) {
@@ -68,12 +91,14 @@
           const ivs = get(noteIntervals)
           waterfall.enablePractice(ivs, state.practice)
           if (state.practice) {
-            // Load intervals into Go grading engine
-            LoadPracticeIntervals(ivs.map(iv => ({
-              note: iv.note,
-              startMs: iv.startMs,
-              endMs: iv.endMs,
-            }))).catch(() => {/* ignore if not connected */})
+            const gradingIvs = buildGradingIntervals(ivs)
+            // Load intervals into Go grading engine (with full pedagogical fields)
+            LoadPracticeIntervals(gradingIvs).catch(() => {/* ignore if not connected */})
+            // Load effective grading profile (preset override or exercise profile)
+            if (effectiveProfile !== null) {
+              LoadGradingProfile(effectiveProfile as Parameters<typeof LoadGradingProfile>[0]).catch(() => {})
+            }
+            prevProfileOverride = state.gradingProfileOverride
           }
         } else {
           waterfall.disablePractice()
@@ -81,8 +106,17 @@
         }
       }
 
+      // Hot-reload grading profile when preset changes mid-session (practice mode only)
+      if (state.practice && hasRecording && state.gradingProfileOverride !== prevProfileOverride) {
+        prevProfileOverride = state.gradingProfileOverride
+        if (effectiveProfile !== null) {
+          LoadGradingProfile(effectiveProfile as Parameters<typeof LoadGradingProfile>[0]).catch(() => {})
+        }
+      }
+
       waterfall.setSpeed(state.speedMultiplier)
-      waterfall.setBpm(state.recording?.bpm ?? null)
+      waterfall.setBpm(state.recording ? bpmAt(state.recording, state.positionMs) : null)
+      waterfall.setHairpins(state.recording?.hairpins ?? [])
 
       if (hasRecording) {
         waterfall.setPracticeTime(state.positionMs - waterfall.getLeadTime() * 1000)
@@ -127,6 +161,8 @@
 
     return () => {
       ro.disconnect()
+      offGradeResult()
+      offGradeHold()
       unsubPlayback()
       unsubMidi()
       waterfall?.destroy()

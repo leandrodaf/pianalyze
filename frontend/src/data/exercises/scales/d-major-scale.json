@@ -1,43 +1,301 @@
 {
-  "version": 1,
-  "recordedAt": "1970-01-01T00:00:00.000Z",
-  "bpm": 92,
-  "timeSignature": "4/4",
+  "version": 2,
+  "meta": {
+    "title": "Escala de Ré Maior",
+    "composer": "Exercício Clássico",
+    "source": {
+      "format": "manual"
+    }
+  },
   "keySignature": "D",
-  "sections": [
-    { "name": "Subida", "startMs": 0 },
-    { "name": "Descida", "startMs": 5217 }
+  "tempoMap": [
+    {
+      "atMs": 0,
+      "bpm": 92,
+      "beatUnit": "quarter",
+      "label": "Moderato"
+    }
   ],
+  "timeSignatureMap": [
+    {
+      "atMs": 0,
+      "value": "4/4"
+    }
+  ],
+  "measureMap": [
+    {
+      "measure": 1,
+      "atMs": 0
+    },
+    {
+      "measure": 2,
+      "atMs": 2609
+    },
+    {
+      "measure": 3,
+      "atMs": 5217
+    },
+    {
+      "measure": 4,
+      "atMs": 7826
+    }
+  ],
+  "sections": [
+    {
+      "name": "Subida",
+      "startMs": 0,
+      "type": "verse",
+      "rehearsalMark": "A",
+      "difficulty": 2
+    },
+    {
+      "name": "Descida",
+      "startMs": 5217,
+      "type": "bridge",
+      "rehearsalMark": "B",
+      "difficulty": 2
+    }
+  ],
+  "gradingProfile": {
+    "velocityTolerance": 30,
+    "earlyToleranceMs": 383,
+    "lateToleranceMs": 230
+  },
   "events": [
-    { "t": 0,    "cmd": 144, "note": 62, "vel": 72, "finger": 1, "hand": "right" },
-    { "t": 535,  "cmd": 144, "note": 62, "vel": 0 },
-    { "t": 652,  "cmd": 144, "note": 64, "vel": 72, "finger": 2, "hand": "right" },
-    { "t": 1187, "cmd": 144, "note": 64, "vel": 0 },
-    { "t": 1304, "cmd": 144, "note": 66, "vel": 72, "finger": 3, "hand": "right" },
-    { "t": 1839, "cmd": 144, "note": 66, "vel": 0 },
-    { "t": 1957, "cmd": 144, "note": 67, "vel": 72, "finger": 1, "hand": "right" },
-    { "t": 2491, "cmd": 144, "note": 67, "vel": 0 },
-    { "t": 2609, "cmd": 144, "note": 69, "vel": 72, "finger": 2, "hand": "right" },
-    { "t": 3143, "cmd": 144, "note": 69, "vel": 0 },
-    { "t": 3261, "cmd": 144, "note": 71, "vel": 72, "finger": 3, "hand": "right" },
-    { "t": 3796, "cmd": 144, "note": 71, "vel": 0 },
-    { "t": 3913, "cmd": 144, "note": 73, "vel": 72, "finger": 4, "hand": "right" },
-    { "t": 4448, "cmd": 144, "note": 73, "vel": 0 },
-    { "t": 4565, "cmd": 144, "note": 74, "vel": 72, "finger": 5, "hand": "right" },
-    { "t": 5100, "cmd": 144, "note": 74, "vel": 0 },
-    { "t": 5217, "cmd": 144, "note": 73, "vel": 72, "finger": 4, "hand": "right" },
-    { "t": 5752, "cmd": 144, "note": 73, "vel": 0 },
-    { "t": 5870, "cmd": 144, "note": 71, "vel": 72, "finger": 3, "hand": "right" },
-    { "t": 6404, "cmd": 144, "note": 71, "vel": 0 },
-    { "t": 6522, "cmd": 144, "note": 69, "vel": 72, "finger": 2, "hand": "right" },
-    { "t": 7057, "cmd": 144, "note": 69, "vel": 0 },
-    { "t": 7174, "cmd": 144, "note": 67, "vel": 72, "finger": 1, "hand": "right" },
-    { "t": 7709, "cmd": 144, "note": 67, "vel": 0 },
-    { "t": 7826, "cmd": 144, "note": 66, "vel": 72, "finger": 3, "hand": "right" },
-    { "t": 8361, "cmd": 144, "note": 66, "vel": 0 },
-    { "t": 8478, "cmd": 144, "note": 64, "vel": 72, "finger": 2, "hand": "right" },
-    { "t": 9013, "cmd": 144, "note": 64, "vel": 0 },
-    { "t": 9130, "cmd": 144, "note": 62, "vel": 72, "finger": 1, "hand": "right" },
-    { "t": 9665, "cmd": 144, "note": 62, "vel": 0 }
+    {
+      "t": 0,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "dynamic": "mf",
+      "slur": "start",
+      "tip": "Posição de Ré Maior — polegar em D4"
+    },
+    {
+      "t": 535,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 652,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 1187,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 1304,
+      "cmd": 144,
+      "note": 66,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 1839,
+      "cmd": 144,
+      "note": 66,
+      "vel": 0
+    },
+    {
+      "t": 1957,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "dynamic": "mf",
+      "tip": "Cruzar polegar"
+    },
+    {
+      "t": 2491,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 2609,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 3143,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 3261,
+      "cmd": 144,
+      "note": 71,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 3796,
+      "cmd": 144,
+      "note": 71,
+      "vel": 0
+    },
+    {
+      "t": 3913,
+      "cmd": 144,
+      "note": 73,
+      "vel": 72,
+      "finger": 4,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 4448,
+      "cmd": 144,
+      "note": 73,
+      "vel": 0
+    },
+    {
+      "t": 4565,
+      "cmd": 144,
+      "note": 74,
+      "vel": 72,
+      "finger": 5,
+      "hand": "right",
+      "dynamic": "mf",
+      "slur": "end",
+      "fermata": true
+    },
+    {
+      "t": 5100,
+      "cmd": 144,
+      "note": 74,
+      "vel": 0
+    },
+    {
+      "t": 5217,
+      "cmd": 144,
+      "note": 73,
+      "vel": 72,
+      "finger": 4,
+      "hand": "right",
+      "dynamic": "mf",
+      "slur": "start",
+      "handPosition": "Início da descida — dedo 4 em C#5"
+    },
+    {
+      "t": 5752,
+      "cmd": 144,
+      "note": 73,
+      "vel": 0
+    },
+    {
+      "t": 5870,
+      "cmd": 144,
+      "note": 71,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 6404,
+      "cmd": 144,
+      "note": 71,
+      "vel": 0
+    },
+    {
+      "t": 6522,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 7057,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 7174,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "dynamic": "mf",
+      "tip": "Passar 3° dedo sobre polegar"
+    },
+    {
+      "t": 7709,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 7826,
+      "cmd": 144,
+      "note": 66,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 8361,
+      "cmd": 144,
+      "note": 66,
+      "vel": 0
+    },
+    {
+      "t": 8478,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 9013,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 9130,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "dynamic": "mf",
+      "slur": "end",
+      "fermata": true
+    },
+    {
+      "t": 9665,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    }
   ]
 }

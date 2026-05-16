@@ -22,6 +22,7 @@ type PipelineContext struct {
 	Triad        string
 	Chord        string
 	Inversion    string
+	ChordRoot    int   // pitch class of the chord root (0–11); -1 when no chord is detected
 	PressedNotes []int
 }
 
