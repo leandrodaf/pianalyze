@@ -226,73 +226,118 @@ func (a *App) startup(ctx context.Context) {
 	go a.watchMIDIDevices(ctx)
 }
 
-// watchMIDIDevices forwards MIDI hot-plug events to the frontend as
-// "devices:changed" Wails events. It combines two strategies:
+// watchMIDIDevices forwards MIDI device changes to the frontend via the
+// "devices:changed" Wails event. It uses two complementary mechanisms:
 //
-//  1. The WatchDevices channel from the MIDI library, which delivers events
-//     almost instantly via CoreMIDI (macOS) or ALSA (Linux) notifications.
-//  2. A 3-second polling ticker as a safety net for platforms or drivers where
-//     the notification callback may be unreliable or fire late.
+//  1. Hot-plug notifications from the MIDI library (CoreMIDI on macOS, ALSA
+//     on Linux) for near-instant reaction when a device is connected or
+//     disconnected.
+//  2. A 5-second polling ticker as a silent safety net for drivers that may
+//     drop or delay notifications.
 //
-// Events are only emitted when the device list actually changes, so the
-// polling does not cause spurious frontend updates.
+// Both mechanisms feed a single buffered signal channel. The consumer waits
+// for a 300 ms debounce window before reading the device list, which lets the
+// OS settle after a physical connect/disconnect event (eliminates transient
+// "ghost" sources that CoreMIDI briefly shows with an empty name). Events are
+// only emitted when the list actually changes, keeping the frontend quiet
+// during periods of no activity.
 func (a *App) watchMIDIDevices(ctx context.Context) {
+	// checkCh carries "something may have changed" signals from both the
+	// hot-plug goroutine and the ticker.  Capacity 1 is enough: if a signal
+	// is already pending there is no point queuing another.
+	checkCh := make(chan struct{}, 1)
+	signal := func() {
+		select {
+		case checkCh <- struct{}{}:
+		default:
+		}
+	}
+
+	// Start hot-plug listener if available.
 	evCh, err := a.midiClient.WatchDevices(ctx)
 	if err != nil {
-		a.logger.Warn("WatchDevices not available, polling only", zap.Error(err))
-		evCh = nil // nil channel blocks forever in select — polling takes over
+		a.logger.Warn("WatchDevices unavailable, polling only", zap.Error(err))
+		evCh = nil
 	}
-
-	ticker := time.NewTicker(3 * time.Second)
-	defer ticker.Stop()
-
-	var prevNames []string // last emitted device name list for change detection
-
-	checkAndEmit := func() {
-		if ctx.Err() != nil {
-			return
-		}
-		devices, err := a.ListDevices()
-		if err != nil {
-			devices = []DeviceInfo{}
-		}
-		names := make([]string, len(devices))
-		for i, d := range devices {
-			names[i] = d.Name
-		}
-		// Only emit when something actually changed to avoid frontend spam.
-		if len(names) == len(prevNames) {
-			same := true
-			for i := range names {
-				if names[i] != prevNames[i] {
-					same = false
-					break
+	if evCh != nil {
+		go func() {
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case _, ok := <-evCh:
+					if !ok {
+						return
+					}
+					signal()
 				}
 			}
-			if same {
-				return
-			}
-		}
-		prevNames = names
-		runtime.EventsEmit(ctx, "devices:changed", devices)
-		a.logger.Info("MIDI devices changed", zap.Int("count", len(devices)))
+		}()
 	}
+
+	// Polling ticker — fires even when hot-plug notifications are missed.
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+
+	// Trigger an initial check shortly after startup so the frontend gets the
+	// current device list without waiting for the first ticker tick.
+	signal()
+
+	var prevNames []string
 
 	for {
 		select {
 		case <-ctx.Done():
 			return
-		case _, ok := <-evCh:
-			if !ok {
-				// Channel closed — fall back to polling only.
-				evCh = nil
+		case <-ticker.C:
+			signal()
+		case <-checkCh:
+			// Debounce: wait for the OS to finish updating its device list
+			// before reading it.  CoreMIDI may briefly expose a source with
+			// an empty name immediately after a disconnect; 300 ms is enough
+			// for the kernel to clean up.
+			select {
+			case <-time.After(300 * time.Millisecond):
+			case <-ctx.Done():
+				return
+			}
+			// Drain any extra signal that arrived during the debounce window
+			// so we don't do a redundant check right after this one.
+			select {
+			case <-checkCh:
+			default:
+			}
+
+			devices, err := a.ListDevices()
+			if err != nil {
+				devices = []DeviceInfo{}
+			}
+
+			names := make([]string, len(devices))
+			for i, d := range devices {
+				names[i] = d.Name
+			}
+			if deviceNamesEqual(names, prevNames) {
 				continue
 			}
-			checkAndEmit()
-		case <-ticker.C:
-			checkAndEmit()
+			prevNames = names
+			runtime.EventsEmit(ctx, "devices:changed", devices)
+			a.logger.Info("MIDI devices changed", zap.Int("count", len(devices)))
 		}
 	}
+}
+
+// deviceNamesEqual reports whether two device name slices are identical.
+func deviceNamesEqual(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
 }
 
 // shutdown is called by Wails when the application is closing.
@@ -317,15 +362,25 @@ func (a *App) ListDevices() ([]DeviceInfo, error) {
 
 	var visible []indexed
 	for i, d := range devices {
+		// Skip ghost entries: CoreMIDI briefly keeps a source in the list
+		// after disconnect but with empty Name (properties already removed).
+		if strings.TrimSpace(d.Name) == "" {
+			continue
+		}
 		if strings.HasSuffix(d.Manufacturer, ",0") || !strings.Contains(d.Manufacturer, ",") {
 			visible = append(visible, indexed{i, d})
 		}
 	}
 	if len(visible) == 0 {
-		visible = make([]indexed, len(devices))
+		// Fallback: include all non-empty-name devices regardless of manufacturer format.
 		for i, d := range devices {
-			visible[i] = indexed{i, d}
+			if strings.TrimSpace(d.Name) != "" {
+				visible = append(visible, indexed{i, d})
+			}
 		}
+	}
+	if len(visible) == 0 {
+		return nil, fmt.Errorf("no MIDI devices found")
 	}
 
 	result := make([]DeviceInfo, len(visible))
