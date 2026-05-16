@@ -177,6 +177,10 @@ type App struct {
 	recBuf   []RecordedEvent
 
 	grader *grading.Grader
+
+	// menuState holds the last settings snapshot pushed by the frontend so
+	// buildMenu() can render the correct radio / checkbox selections.
+	menuState MenuState
 }
 
 // NewApp creates a new App instance.

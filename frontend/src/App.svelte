@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { Environment } from '../wailsjs/runtime/runtime'
+  import { Environment, EventsOn, EventsOff } from '../wailsjs/runtime/runtime'
   import { connectMidiStore, midiStore } from './stores/midi'
   import { loadRecording, setPractice, play, stop, clearLoop, playbackStore, noteIntervals, setDifficultyPreset } from './stores/playback'
   import { bpmAt, timeSigAt, measureAt, DIFFICULTY_PRESETS } from './lib/recording-types'
@@ -15,6 +15,8 @@
   import RecordControls from './components/RecordControls.svelte'
   import type { Exercise } from './lib/exercise-types'
   import { t } from './lib/i18n'
+  import { locale } from './lib/i18n'
+  import type { Locale } from './lib/i18n'
   import Toast from './components/Toast.svelte'
   import { addToast } from './stores/toast'
   import { prepStore } from './stores/prep'
@@ -23,6 +25,7 @@
 
   import { translateChord, translateInversion, translateRootNote, chordShorthand } from './lib/chord-i18n'
   import { settingsStore } from './stores/settings'
+  import { SyncMenuState } from '../wailsjs/go/main/App'
   import { KEY_OPTIONS } from './lib/key-utils'
 
   const KEY_DISPLAY: Record<string, string> = {
@@ -115,8 +118,41 @@
     Environment().then(env => {
       document.body.dataset.platform = env.platform
     }).catch(() => {})
-    return unsubMidi
+
+    // Sync native menu with current settings on startup.
+    SyncMenuState({
+      language: $locale,
+      chordMode: $settingsStore.chordDisplayMode,
+      skillLevel: $settingsStore.skillLevel ?? '',
+    }).catch(() => {})
+
+    // Handle menu-driven settings changes from the native OS menu.
+    EventsOn('menu:set-language', (code: string) => {
+      locale.set(code as Locale)
+    })
+    EventsOn('menu:set-chord-mode', (mode: string) => {
+      settingsStore.patch({ chordDisplayMode: mode as 'full' | 'short' })
+    })
+    EventsOn('menu:set-skill-level', (level: string) => {
+      settingsStore.setSkillLevel((level || null) as DifficultyPreset | null)
+    })
+
+    return () => {
+      unsubMidi()
+      EventsOff('menu:set-language')
+      EventsOff('menu:set-chord-mode')
+      EventsOff('menu:set-skill-level')
+    }
   })
+
+  // Keep the native menu in sync whenever settings or locale changes.
+  $: if (typeof SyncMenuState === 'function') {
+    SyncMenuState({
+      language: $locale,
+      chordMode: $settingsStore.chordDisplayMode,
+      skillLevel: $settingsStore.skillLevel ?? '',
+    }).catch(() => {})
+  }
 
   // Auto-apply skill level preset only when a NEW recording is loaded, not on
   // every store update (which would override manual speed changes).

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte'
-  import { EventsOn } from '../../wailsjs/runtime/runtime'
+  import { EventsOn, EventsOff } from '../../wailsjs/runtime/runtime'
   import { ListDevices, SelectDevice, StartCapture, StopCapture, ImportAnyFile } from '../../wailsjs/go/main/App'
   import type { main } from '../../wailsjs/go/models'
   import { exerciseStore, exercisesByCategory } from '../stores/exercises'
@@ -82,9 +82,19 @@
       showDeviceList = next.showDeviceList
       deviceError = next.deviceError
     })
+
+    // Native OS menu events handled by HomeScreen.
+    EventsOn('menu:open-settings', () => { settingsOpen = true })
+    EventsOn('menu:import-file',   () => { openImportAny() })
+    EventsOn('menu:pick-save-dir', () => { settingsOpen = true })
   })
 
-  onDestroy(() => { unsubDevices?.() })
+  onDestroy(() => {
+    unsubDevices?.()
+    EventsOff('menu:open-settings')
+    EventsOff('menu:import-file')
+    EventsOff('menu:pick-save-dir')
+  })
 
   async function connectDevice() {
     if (selectedId === null) return

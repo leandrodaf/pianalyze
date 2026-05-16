@@ -36,6 +36,7 @@ func main() {
 		Bind: []interface{}{
 			app,
 		},
+		Menu: app.buildMenu(),
 
 		// Elements with style="--wails-draggable:drag" become window drag handles.
 		CSSDragProperty: "--wails-draggable",
