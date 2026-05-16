@@ -10,6 +10,7 @@
 
 import { writable, get } from 'svelte/store'
 import { midiStore } from './midi'
+import { initAudio, playNote, stopNote, stopAllNotes } from './audio'
 import type {
   Recording, RecordedEvent, NoteInterval, Hand, Dynamic, Articulation,
   GradingProfile, DifficultyPreset,
@@ -68,6 +69,7 @@ function cancelAll() {
   pending = []
   cancelAnimationFrame(rafId)
   rafId = 0
+  stopAllNotes()
 }
 
 function releaseAll() {
@@ -199,22 +201,28 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
     if (delay < 0) continue
 
     const tid = setTimeout(() => {
-      // In practice mode we do NOT feed recording notes into the MIDI store —
-      // the student's keyboard is the only input there.
-      if (get(playbackStore).practice) return
-
-      // CC events (pedals) are not injected into midiStore for visual display.
+      // CC events (pedals) — skip for both visual and audio.
       if (ev.cmd === 0xB0) return
 
       const on = ev.vel > 0
-      if (on) liveNotes.add(ev.note)
-      else    liveNotes.delete(ev.note)
+      const isPractice = get(playbackStore).practice
 
-      midiStore.update(s => ({
-        ...s,
-        pressedNotes: Array.from(liveNotes),
-        velocity: on ? ev.vel : 0,
-      }))
+      // Audio: plays in both review and practice modes so students can use it
+      // as a quiet background guide while playing their own piano.
+      if (on) playNote(ev.note, ev.vel)
+      else    stopNote(ev.note)
+
+      // Visual MIDI injection: review mode only.
+      if (!isPractice) {
+        if (on) liveNotes.add(ev.note)
+        else    liveNotes.delete(ev.note)
+
+        midiStore.update(s => ({
+          ...s,
+          pressedNotes: Array.from(liveNotes),
+          velocity: on ? ev.vel : 0,
+        }))
+      }
     }, delay / speed)
     pending.push(tid)
   }
@@ -276,9 +284,12 @@ export function setPractice(on: boolean): void {
   playbackStore.update(s => ({ ...s, practice: on, status: 'idle', positionMs: 0 }))
 }
 
-export function play(): void {
+export async function play(): Promise<void> {
   const state = get(playbackStore)
   if (!state.recording || state.status === 'playing') return
+
+  // Must be called from a user gesture — initializes Web Audio on first play.
+  await initAudio()
 
   let fromMs = state.positionMs
   if (state.status === 'idle' && fromMs >= state.durationMs) {

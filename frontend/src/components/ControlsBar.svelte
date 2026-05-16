@@ -1,5 +1,6 @@
 <script lang="ts">
   import { playbackStore, play, pause, stop, rewind, setSpeed, toggleLoop, seekTo, setLoop } from '../stores/playback'
+  import { audioStore, setVolume, toggleMute } from '../stores/audio'
   import { bpmAt } from '../lib/recording-types'
   import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
   import { DIFFICULTY_COLOR } from '../lib/exercise-types'
@@ -17,6 +18,14 @@
 
   $: liveBpm    = s.recording ? bpmAt(s.recording, s.positionMs) : null
   $: currentBpm = liveBpm ? Math.round(liveBpm * speed) : null
+
+  $: audio  = $audioStore
+  $: isMuted = audio.muted || audio.volume === 0
+  $: isLoading = audio.status === 'loading'
+
+  function onVolumeInput(e: Event) {
+    setVolume(+(e.currentTarget as HTMLInputElement).value)
+  }
 
   function goToSection(idx: number) {
     const sec = sections[idx]
@@ -77,6 +86,46 @@
       <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
     </svg>
   </button>
+  <div class="sep"></div>
+
+  <div class="volume-group">
+    <button
+      class="btn mute-btn"
+      class:muted={isMuted}
+      on:click={toggleMute}
+      title={isMuted ? 'Reativar som' : 'Silenciar'}
+      disabled={isLoading}
+    >
+      {#if isMuted}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+        </svg>
+      {:else if audio.volume < 40}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+      {:else}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+      {/if}
+    </button>
+    <input
+      type="range"
+      class="volume-slider"
+      min="0"
+      max="100"
+      step="1"
+      value={audio.muted ? 0 : audio.volume}
+      on:input={onVolumeInput}
+      title="Volume: {audio.muted ? 0 : audio.volume}%"
+    />
+  </div>
+
   {#if sections.length > 0}
     <div class="sep"></div>
     <div class="group sections-group">
@@ -240,6 +289,54 @@
     margin-left: 4px;
     vertical-align: middle;
     flex-shrink: 0;
+  }
+
+  /* ── Volume control ─────────────────────────────────────────────────────── */
+  .volume-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mute-btn {
+    padding: 0 0.4rem;
+    flex-shrink: 0;
+  }
+
+  .mute-btn.muted {
+    color: rgba(255,255,255,0.3);
+  }
+
+  .volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 72px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.15);
+    outline: none;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+
+  .volume-slider:hover {
+    background: rgba(255,255,255,0.25);
+  }
+
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.75);
+    cursor: pointer;
+    transition: background 0.12s, transform 0.1s;
+  }
+
+  .volume-slider:hover::-webkit-slider-thumb {
+    background: #fff;
+    transform: scale(1.15);
   }
 
   /* ── Difficulty presets — moved to App.svelte top-bar ───────────────────── */

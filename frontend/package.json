@@ -13,7 +13,8 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@wailsio/runtime": "^3.0.0-alpha.7"
+    "@wailsio/runtime": "^3.0.0-alpha.7",
+    "tone": "^15.1.22"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
