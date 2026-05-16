@@ -807,7 +807,7 @@
   }
   :global([data-platform="darwin"]) .layout-drag {
     display: block;
-    height: 28px;
+    height: 44px;
   }
 
   /* ── Responsive ────────────────────────────────────────────────────────────── */

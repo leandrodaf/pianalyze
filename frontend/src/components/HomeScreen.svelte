@@ -615,7 +615,7 @@
 }
 :global([data-platform="darwin"]) .titlebar-drag {
   display: block;
-  height: 28px;
+  height: 44px;
 }
 :global([data-platform="darwin"]) .logo-area {
   padding-top: .6rem;
