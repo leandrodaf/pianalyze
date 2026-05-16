@@ -38,7 +38,7 @@ type RecordedEvent struct {
 	Vel          byte   `json:"vel"`                    // velocity / CC value 0–127
 	Finger       *byte  `json:"finger,omitempty"`       // 1–5 (optional)
 	Hand         string `json:"hand,omitempty"`         // "left" | "right" (optional)
-	Dynamic      string `json:"dynamic,omitempty"`      // "pp"|"p"|"mp"|"mf"|"f"|"ff" (optional)
+	Dynamic      string `json:"dynamic,omitempty"`      // "ppp"|"pp"|"p"|"mp"|"mf"|"f"|"ff"|"fff" (optional)
 	Articulation string `json:"articulation,omitempty"` // "legato"|"staccato"|"tenuto"|"accent"
 	Grace        bool   `json:"grace,omitempty"`        // true = grace note (E4)
 	Tip          string `json:"tip,omitempty"`          // pedagogical tip (G5)
@@ -233,12 +233,15 @@ func (a *App) watchMIDIDevices(ctx context.Context) {
 		return
 	}
 	for range evCh {
+		if ctx.Err() != nil {
+			return
+		}
 		devices, err := a.ListDevices()
 		if err != nil {
 			a.logger.Warn("Failed to list devices after hot-plug event", zap.Error(err))
 			devices = []DeviceInfo{}
 		}
-		runtime.EventsEmit(a.ctx, "devices:changed", devices)
+		runtime.EventsEmit(ctx, "devices:changed", devices)
 		a.logger.Info("MIDI devices changed", zap.Int("count", len(devices)))
 	}
 }
@@ -654,7 +657,7 @@ func (a *App) ImportScoreFile() (string, error) {
 		}
 	}
 
-	rec, err := convertMusicXML(xmlData, filePath)
+	rec, err := convertMusicXML(xmlData, filePath, a.logger)
 	if err != nil {
 		return "", err
 	}
@@ -752,7 +755,7 @@ func (a *App) ImportAnyFile() (*ImportResult, error) {
 				return nil, fmt.Errorf("extract MXL: %w", err)
 			}
 		}
-		rec, err := convertMusicXML(xmlData, filePath)
+		rec, err := convertMusicXML(xmlData, filePath, a.logger)
 		if err != nil {
 			return nil, err
 		}
@@ -877,10 +880,11 @@ func (a *App) bufferEvent(pCtx *pipelinectx.PipelineContext) {
 		return
 	}
 	a.recBuf = append(a.recBuf, RecordedEvent{
-		T:    time.Since(a.recStart).Milliseconds(),
-		Cmd:  byte(pCtx.MIDIEvent.Command),
-		Note: pCtx.MIDIEvent.Note,
-		Vel:  pCtx.MIDIEvent.Velocity,
+		T:       time.Since(a.recStart).Milliseconds(),
+		Cmd:     byte(pCtx.MIDIEvent.Command),
+		Note:    pCtx.MIDIEvent.Note,
+		Vel:     pCtx.MIDIEvent.Velocity,
+		Dynamic: pCtx.Dynamic.Label(),
 	})
 }
 

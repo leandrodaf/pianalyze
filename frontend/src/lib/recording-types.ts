@@ -4,7 +4,7 @@ export type Finger = 1 | 2 | 3 | 4 | 5
 /** Which hand plays the note. */
 export type Hand = 'left' | 'right'
 
-export type Dynamic = 'pp' | 'p' | 'mp' | 'mf' | 'f' | 'ff'
+export type Dynamic = 'ppp' | 'pp' | 'p' | 'mp' | 'mf' | 'f' | 'ff' | 'fff'
 export type Articulation = 'legato' | 'staccato' | 'tenuto' | 'accent'
 
 /** Voice within the staff (1 = melody, 2 = accompaniment, etc.). */
@@ -413,7 +413,7 @@ export function measureAt(recording: Recording, posMs: number): number {
 
 /** Convert a dynamic marking to an approximate MIDI velocity (E2 reference table). */
 export function dynamicToVelocity(d: Dynamic): number {
-  const table: Record<Dynamic, number> = { pp: 20, p: 40, mp: 55, mf: 72, f: 90, ff: 110 }
+  const table: Record<Dynamic, number> = { ppp: 10, pp: 20, p: 40, mp: 55, mf: 72, f: 90, ff: 110, fff: 120 }
   return table[d]
 }
 

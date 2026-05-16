@@ -21,7 +21,7 @@ package main
 //   <dal-segno> / <da-capo> words   → Repeats  (ds / dc)
 //   Rehearsal marks                 → Sections  (type="rehearsal")
 //   Tempo-expression words          → Sections  (type="tempo-text")
-//   <dynamics> pp/p/mp/mf/f/ff      → RecordedEvent.Dynamic + velocity
+//   <dynamics> ppp/pp/p/mp/mf/f/ff/fff → RecordedEvent.Dynamic + velocity
 //   <sound dynamics=…>              → velocity override for subsequent notes
 //   Note pitch + <transpose>        → RecordedEvent.Note  (concert pitch)
 //   Grace notes                     → RecordedEvent.Grace = true  (60 ms visual)
@@ -52,6 +52,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 // ── MusicXML XML types ────────────────────────────────────────────────────────
@@ -375,7 +377,7 @@ func mxDynLabel(d *mxDynamics) string {
 	}
 	switch {
 	case d.PPP != nil:
-		return "pp"
+		return "ppp"
 	case d.PP != nil:
 		return "pp"
 	case d.P != nil:
@@ -385,13 +387,13 @@ func mxDynLabel(d *mxDynamics) string {
 	case d.MF != nil:
 		return "mf"
 	case d.FFF != nil:
-		return "ff"
+		return "fff"
 	case d.FF != nil:
 		return "ff"
 	case d.F != nil:
 		return "f"
 	case d.SFZ != nil:
-		return "ff"
+		return "fff"
 	case d.FP != nil:
 		return "f"
 	}
@@ -401,6 +403,8 @@ func mxDynLabel(d *mxDynamics) string {
 // mxDynVelocity maps a dynamic label to a MIDI velocity.
 func mxDynVelocity(dyn string) byte {
 	switch dyn {
+	case "ppp":
+		return 10
 	case "pp":
 		return 25
 	case "p":
@@ -413,6 +417,8 @@ func mxDynVelocity(dyn string) byte {
 		return 95
 	case "ff":
 		return 110
+	case "fff":
+		return 120
 	}
 	return 64 // default mf
 }
@@ -425,6 +431,8 @@ func mxSoundDynToLabel(raw string) (string, byte) {
 	}
 	vel := byte(math.Min(127, math.Max(1, v)))
 	switch {
+	case vel <= 10:
+		return "ppp", vel
 	case vel <= 21:
 		return "pp", vel
 	case vel <= 42:
@@ -435,8 +443,10 @@ func mxSoundDynToLabel(raw string) (string, byte) {
 		return "mf", vel
 	case vel <= 105:
 		return "f", vel
-	default:
+	case vel <= 115:
 		return "ff", vel
+	default:
+		return "fff", vel
 	}
 }
 
@@ -532,7 +542,7 @@ type mxWedgeState struct {
 }
 
 // convertPart converts a single <part> into events and structural metadata.
-func convertPart(part mxPart) (
+func convertPart(part mxPart, logger *zap.Logger) (
 	events []RecordedEvent,
 	tempoMap []TempoEvent,
 	timeSigMap []TimeSigEvent,
@@ -796,6 +806,9 @@ func convertPart(part mxPart) (
 
 				midiNote := mxPitchToMidi(*note.Pitch) + transposeChromatic
 				if midiNote < 0 || midiNote > 127 {
+					logger.Warn("note out of MIDI range after transposition — skipped",
+						zap.Int("midiNote", midiNote),
+						zap.Int("transposeChromatic", transposeChromatic))
 					continue
 				}
 
@@ -1005,7 +1018,7 @@ func classifyWords(w string) string {
 
 // convertMusicXML parses a MusicXML document and returns a fully-populated
 // Recording v2, ready for JSON marshalling.
-func convertMusicXML(xmlData []byte, filename string) (*Recording, error) {
+func convertMusicXML(xmlData []byte, filename string, logger *zap.Logger) (*Recording, error) {
 	var score mxScore
 	if err := xml.Unmarshal(xmlData, &score); err != nil {
 		return nil, fmt.Errorf("parse MusicXML: %w", err)
@@ -1081,7 +1094,7 @@ func convertMusicXML(xmlData []byte, filename string) (*Recording, error) {
 
 	for partIdx, part := range score.Parts {
 		pevs, pTempo, pTimeSig, pMeasure, pHairpins, pRepeats, pSections, pKey, pFirstTS :=
-			convertPart(part)
+			convertPart(part, logger)
 		allEvents = append(allEvents, pevs...)
 		if partIdx == 0 {
 			tempoMap    = pTempo

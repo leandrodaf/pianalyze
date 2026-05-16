@@ -97,13 +97,15 @@
 
   function dynamicColor(d: string): string {
     switch (d) {
-      case 'pp': return '#9d7ff0'
-      case 'p':  return '#8b6ef0'
-      case 'mp': return '#7b5ff0'
-      case 'mf': return '#f08a5b'
-      case 'f':  return '#e07040'
-      case 'ff': return '#d06030'
-      default:   return 'rgba(255,255,255,0.08)'
+      case 'ppp': return '#b8a0f8'
+      case 'pp':  return '#9d7ff0'
+      case 'p':   return '#8b6ef0'
+      case 'mp':  return '#7b5ff0'
+      case 'mf':  return '#f08a5b'
+      case 'f':   return '#e07040'
+      case 'ff':  return '#d06030'
+      case 'fff': return '#b84020'
+      default:    return 'rgba(255,255,255,0.08)'
     }
   }
 

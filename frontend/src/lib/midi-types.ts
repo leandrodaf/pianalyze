@@ -11,4 +11,4 @@ export interface MIDIState {
   interval: number;
 }
 
-export type DynamicLabel = '' | 'pp' | 'p' | 'mp' | 'mf' | 'f' | 'ff';
+export type DynamicLabel = '' | 'ppp' | 'pp' | 'p' | 'mp' | 'mf' | 'f' | 'ff' | 'fff';

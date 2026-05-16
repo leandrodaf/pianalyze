@@ -585,7 +585,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   }
 
   function dynOrder(d: Dynamic): number {
-    const O: Dynamic[] = ['pp', 'p', 'mp', 'mf', 'f', 'ff']
+    const O: Dynamic[] = ['ppp', 'pp', 'p', 'mp', 'mf', 'f', 'ff', 'fff']
     return O.indexOf(d)
   }
 
