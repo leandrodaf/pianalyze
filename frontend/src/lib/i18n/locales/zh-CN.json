@@ -220,5 +220,19 @@
   "library.setup.title": "选择录音文件夹",
   "library.setup.desc": "Pianalyze 应将您的录音保存在哪里？您可以随时在设置中更改。",
   "library.setup.choose": "选择文件夹…",
-  "library.setup.default": "使用默认位置"
+  "library.setup.default": "使用默认位置",
+  "builtin.title": "古典乐库",
+  "builtin.subtitle": "为钢琴学生和爱好者精选的曲目",
+  "builtin.filter.all": "全部",
+  "builtin.filter.beginner": "入门",
+  "builtin.filter.intermediate": "中级",
+  "builtin.filter.advanced": "高级",
+  "builtin.play": "演奏",
+  "builtin.pieces": "首",
+  "builtin.piece": "首",
+  "builtin.loading": "正在加载曲库…",
+  "builtin.error": "无法加载曲库。",
+  "builtin.difficulty.label": "难度",
+  "builtin.search": "搜索曲目…",
+  "builtin.noResults": "未找到曲目。"
 }

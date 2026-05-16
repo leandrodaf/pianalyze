@@ -219,5 +219,19 @@
   "library.setup.title": "Escolher pasta de gravações",
   "library.setup.desc": "Onde o Pianalyze deve salvar suas gravações? Você pode mudar isso a qualquer momento nas configurações.",
   "library.setup.choose": "Escolher pasta…",
-  "library.setup.default": "Usar localização padrão"
+  "library.setup.default": "Usar localização padrão",
+  "builtin.title": "Biblioteca Clássica",
+  "builtin.subtitle": "Peças selecionadas para estudantes e entusiastas do piano",
+  "builtin.filter.all": "Todas",
+  "builtin.filter.beginner": "Iniciante",
+  "builtin.filter.intermediate": "Intermediário",
+  "builtin.filter.advanced": "Avançado",
+  "builtin.play": "Tocar",
+  "builtin.pieces": "peças",
+  "builtin.piece": "peça",
+  "builtin.loading": "Carregando biblioteca…",
+  "builtin.error": "Não foi possível carregar a biblioteca.",
+  "builtin.difficulty.label": "Dificuldade",
+  "builtin.search": "Buscar peças…",
+  "builtin.noResults": "Nenhuma peça encontrada."
 }

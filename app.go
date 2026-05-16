@@ -224,10 +224,7 @@ func (a *App) startup(ctx context.Context) {
 
 	// Ensure the default recordings directory exists at startup so dialogs
 	// and auto-save never encounter a missing path on first run.
-	dir := a.GetDefaultSavePath()
-
-	// Seed built-in library pieces once, skipping files already present.
-	a.seedBuiltinLibrary(dir)
+	_ = a.GetDefaultSavePath()
 
 	go a.watchMIDIDevices(ctx)
 }
@@ -525,38 +522,88 @@ func (a *App) GetDefaultSavePath() string {
 	return p
 }
 
-// seedBuiltinLibrary copies any bundled library .pia files into dir on first
-// run (or when new pieces are added). Files already present are skipped so
-// user edits or deletions are not overwritten.
-func (a *App) seedBuiltinLibrary(dir string) {
+// ListBuiltinLibrary returns metadata for all embedded library pieces without
+// copying anything to disk. The Path field is set to the filename only (not an
+// absolute path) so the frontend can call LoadBuiltinPiece with it.
+func (a *App) ListBuiltinLibrary() ([]RecordingSummary, error) {
 	entries, err := builtinLibrary.ReadDir("data/library")
 	if err != nil {
-		a.logger.Warn("seedBuiltinLibrary: cannot read embedded library", zap.Error(err))
-		return
+		return nil, err
 	}
-	seeded := 0
+	out := make([]RecordingSummary, 0, len(entries))
 	for _, e := range entries {
 		if e.IsDir() || !strings.HasSuffix(e.Name(), ".pia") {
 			continue
 		}
-		dst := filepath.Join(dir, e.Name())
-		if _, statErr := os.Stat(dst); statErr == nil {
-			continue // already present
+		sum := RecordingSummary{
+			Path:     e.Name(),
+			Filename: e.Name(),
 		}
-		data, readErr := builtinLibrary.ReadFile("data/library/" + e.Name())
-		if readErr != nil {
-			a.logger.Warn("seedBuiltinLibrary: read embedded file", zap.String("file", e.Name()), zap.Error(readErr))
-			continue
+		if fi, err := e.Info(); err == nil {
+			sum.FileSizeB = fi.Size()
 		}
-		if writeErr := os.WriteFile(dst, data, 0o644); writeErr != nil {
-			a.logger.Warn("seedBuiltinLibrary: write file", zap.String("dst", dst), zap.Error(writeErr))
-			continue
+		raw, err := builtinLibrary.ReadFile("data/library/" + e.Name())
+		if err == nil {
+			if dec, err := gunzip(raw); err == nil {
+				raw = dec
+			}
+			var partial struct {
+				Meta struct {
+					Title      string   `json:"title"`
+					Composer   string   `json:"composer"`
+					Copyright  string   `json:"copyright"`
+					CoverURL   string   `json:"coverUrl"`
+					Difficulty int      `json:"difficulty"`
+					Tags       []string `json:"tags"`
+				} `json:"meta"`
+				RecordedAt string `json:"recordedAt"`
+				Events     []struct {
+					T int64 `json:"t"`
+				} `json:"events"`
+			}
+			if json.Unmarshal(raw, &partial) == nil {
+				sum.Title = partial.Meta.Title
+				sum.Composer = partial.Meta.Composer
+				sum.Copyright = partial.Meta.Copyright
+				sum.CoverURL = partial.Meta.CoverURL
+				sum.Difficulty = partial.Meta.Difficulty
+				sum.Tags = partial.Meta.Tags
+				sum.RecordedAt = partial.RecordedAt
+				sum.EventCount = len(partial.Events)
+				if len(partial.Events) > 0 {
+					sum.DurationMs = partial.Events[len(partial.Events)-1].T
+				}
+			}
 		}
-		seeded++
+		out = append(out, sum)
 	}
-	if seeded > 0 {
-		a.logger.Info("seeded built-in library", zap.Int("pieces", seeded), zap.String("dir", dir))
+	return out, nil
+}
+
+// LoadBuiltinPiece loads an embedded library .pia file by filename and returns
+// the JSON string ready for the frontend playback engine.
+func (a *App) LoadBuiltinPiece(filename string) (string, error) {
+	// Guard against path traversal — only bare filenames are allowed.
+	if strings.ContainsAny(filename, "/\\") || strings.Contains(filename, "..") {
+		return "", fmt.Errorf("invalid filename")
 	}
+	raw, err := builtinLibrary.ReadFile("data/library/" + filename)
+	if err != nil {
+		return "", err
+	}
+	if dec, err := gunzip(raw); err == nil {
+		raw = dec
+	}
+	var rec map[string]any
+	if err := json.Unmarshal(raw, &rec); err != nil {
+		return "", err
+	}
+	migrateRecordingMap(rec)
+	out, err := json.Marshal(rec)
+	if err != nil {
+		return "", err
+	}
+	return string(out), nil
 }
 
 

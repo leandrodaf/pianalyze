@@ -13,9 +13,17 @@ export function ImportAnyFile():Promise<main.ImportResult>;
 
 export function ImportScoreFile():Promise<string>;
 
+export function ListBuiltinLibrary():Promise<Array<main.RecordingSummary>>;
+
+export function ListBuiltinLibrary():Promise<Array<main.RecordingSummary>>;
+
 export function ListDevices():Promise<Array<main.DeviceInfo>>;
 
 export function ListRecordings(arg1:string):Promise<Array<main.RecordingSummary>>;
+
+export function LoadBuiltinPiece(arg1:string):Promise<string>;
+
+export function LoadBuiltinPiece(arg1:string):Promise<string>;
 
 export function LoadGradingProfile(arg1:grading.Profile):Promise<void>;
 

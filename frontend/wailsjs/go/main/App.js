@@ -22,12 +22,20 @@ export function ImportScoreFile() {
   return window['go']['main']['App']['ImportScoreFile']();
 }
 
+export function ListBuiltinLibrary() {
+  return window['go']['main']['App']['ListBuiltinLibrary']();
+}
+
 export function ListDevices() {
   return window['go']['main']['App']['ListDevices']();
 }
 
 export function ListRecordings(arg1) {
   return window['go']['main']['App']['ListRecordings'](arg1);
+}
+
+export function LoadBuiltinPiece(arg1) {
+  return window['go']['main']['App']['LoadBuiltinPiece'](arg1);
 }
 
 export function LoadGradingProfile(arg1) {
