@@ -835,7 +835,7 @@
   padding: .6rem 1.1rem .6rem .85rem;
   background: rgba(255,255,255,.06);
   border: 1px solid rgba(255,255,255,.1);
-  border-radius: 30px;
+  border-radius: 8px;
   cursor: pointer; color: #fff; text-align: left;
   transition: background .15s, border-color .15s, transform .12s;
   outline: none;

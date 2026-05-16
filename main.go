@@ -38,6 +38,10 @@ func main() {
 		},
 		Menu: app.buildMenu(),
 
+		// Disable the browser's default right-click context menu (hides
+		// "Inspect Element" and other WebView internals from end users).
+		EnableDefaultContextMenu: false,
+
 		// Elements with style="--wails-draggable:drag" become window drag handles.
 		CSSDragProperty: "--wails-draggable",
 		CSSDragValue:    "drag",
