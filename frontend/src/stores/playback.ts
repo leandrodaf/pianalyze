@@ -10,7 +10,7 @@
 
 import { writable, get } from 'svelte/store'
 import { midiStore } from './midi'
-import { initAudio, playNote, stopNote, stopAllNotes } from './audio'
+import { initAudio, playNote, stopNote, stopAllNotes, audioStore } from './audio'
 import type {
   Recording, RecordedEvent, NoteInterval, Hand, Dynamic, Articulation,
   GradingProfile, DifficultyPreset,
@@ -255,7 +255,10 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
 
       // Audio: plays in both review and practice modes.
       if (on) {
-        playNote(ev.note, ev.vel)
+        // Scale velocity by per-hand volume (read at fire-time so slider changes apply immediately).
+        const hand = ev.hand ?? (ev.note >= 60 ? 'right' : 'left')
+        const hvol = get(audioStore).handVolumes[hand]
+        if (hvol > 0) playNote(ev.note, Math.round(ev.vel * hvol / 100))
         audioPedalSustained.delete(ev.note)  // re-strike clears pending release
       } else if (audioPedalHeld) {
         audioPedalSustained.add(ev.note)     // defer release until pedal lifts

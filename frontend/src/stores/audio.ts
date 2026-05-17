@@ -5,6 +5,8 @@ export interface AudioState {
   status: 'unloaded' | 'loading' | 'ready' | 'error'
   volume: number  // 0–100
   muted: boolean
+  /** Per-hand volume multiplier 0–100. Applied as velocity scale during playback. */
+  handVolumes: { left: number; right: number }
 }
 
 // Salamander Grand Piano subset — covers full 88-key range with ~minor-third intervals.
@@ -25,20 +27,27 @@ const STORAGE_KEY = 'pianalyze.audio'
 let sampler: Tone.Sampler | null = null
 let volNode: Tone.Volume | null = null
 
-function loadPersisted(): Pick<AudioState, 'volume' | 'muted'> {
+function loadPersisted(): Pick<AudioState, 'volume' | 'muted' | 'handVolumes'> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const p = JSON.parse(raw) as Partial<AudioState>
-      return { volume: p.volume ?? 80, muted: p.muted ?? false }
+      return {
+        volume:      p.volume ?? 80,
+        muted:       p.muted ?? false,
+        handVolumes: p.handVolumes ?? { left: 100, right: 100 },
+      }
     }
   } catch { /* ignore */ }
-  return { volume: 80, muted: false }
+  return { volume: 80, muted: false, handVolumes: { left: 100, right: 100 } }
 }
 
 function savePersisted(s: AudioState): void {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ volume: s.volume, muted: s.muted })) }
-  catch { /* ignore */ }
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      volume: s.volume, muted: s.muted, handVolumes: s.handVolumes,
+    }))
+  } catch { /* ignore */ }
 }
 
 export const audioStore = writable<AudioState>({
@@ -116,6 +125,18 @@ export function toggleMute(): void {
     const next: AudioState = { ...s, muted: !s.muted }
     savePersisted(next)
     if (volNode) volNode.volume.value = volToDb(next.muted ? 0 : next.volume)
+    return next
+  })
+}
+
+export function setHandVolume(hand: 'left' | 'right', vol: number): void {
+  const clamped = Math.max(0, Math.min(100, vol))
+  audioStore.update(s => {
+    const next: AudioState = {
+      ...s,
+      handVolumes: { ...s.handVolumes, [hand]: clamped },
+    }
+    savePersisted(next)
     return next
   })
 }

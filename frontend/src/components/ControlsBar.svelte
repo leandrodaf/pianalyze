@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { playbackStore, play, pause, stop, rewind, setSpeed, toggleLoop, seekTo, setLoop } from '../stores/playback'
-  import { audioStore, setVolume, toggleMute } from '../stores/audio'
+  import { playbackStore, noteIntervals, play, pause, stop, rewind, setSpeed, toggleLoop, seekTo, setLoop } from '../stores/playback'
+  import { audioStore, setVolume, toggleMute, setHandVolume } from '../stores/audio'
+  import { HAND_SPLIT } from '../lib/waterfall-layout'
   import { bpmAt } from '../lib/recording-types'
   import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
   import { DIFFICULTY_COLOR } from '../lib/exercise-types'
@@ -22,9 +23,23 @@
   $: audio  = $audioStore
   $: isMuted = audio.muted || audio.volume === 0
   $: isLoading = audio.status === 'loading'
+  $: handVolumes = audio.handVolumes
+
+  $: ivs = $noteIntervals
+  $: hasBothHands = hasRec &&
+    ivs.some(iv => iv.hand === 'right' || (!iv.hand && iv.note >= HAND_SPLIT)) &&
+    ivs.some(iv => iv.hand === 'left'  || (!iv.hand && iv.note <  HAND_SPLIT))
 
   function onVolumeInput(e: Event) {
     setVolume(+(e.currentTarget as HTMLInputElement).value)
+  }
+
+  function onRightHandInput(e: Event) {
+    setHandVolume('right', +(e.currentTarget as HTMLInputElement).value)
+  }
+
+  function onLeftHandInput(e: Event) {
+    setHandVolume('left', +(e.currentTarget as HTMLInputElement).value)
   }
 
   function goToSection(idx: number) {
@@ -87,6 +102,30 @@
     </svg>
   </button>
   <div class="sep"></div>
+
+  {#if hasBothHands}
+    <div class="sep"></div>
+    <div class="hand-balance-group">
+      <div class="hand-row">
+        <span class="hand-tag right" class:dim={handVolumes.right === 0}>MD</span>
+        <input
+          type="range" class="hand-slider" min="0" max="100" step="1"
+          value={handVolumes.right}
+          on:input={onRightHandInput}
+          title="Mão direita: {handVolumes.right}%"
+        />
+      </div>
+      <div class="hand-row">
+        <span class="hand-tag left" class:dim={handVolumes.left === 0}>ME</span>
+        <input
+          type="range" class="hand-slider" min="0" max="100" step="1"
+          value={handVolumes.left}
+          on:input={onLeftHandInput}
+          title="Mão esquerda: {handVolumes.left}%"
+        />
+      </div>
+    </div>
+  {/if}
 
   <div class="volume-group">
     <button
@@ -347,5 +386,65 @@
     background: rgba(255,255,255,0.08);
     flex-shrink: 0;
     margin: 0 0.1rem;
+  }
+
+  /* ── Hand balance ───────────────────────────────────────────────────────── */
+  .hand-balance-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    justify-content: center;
+  }
+
+  .hand-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .hand-tag {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    width: 18px;
+    text-align: right;
+    transition: color 0.15s;
+    flex-shrink: 0;
+  }
+
+  .hand-tag.right { color: rgba(185,154,244,0.75); }
+  .hand-tag.left  { color: rgba(240,138,91,0.75);  }
+  .hand-tag.dim   { color: rgba(255,255,255,0.20); }
+
+  .hand-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 64px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.13);
+    outline: none;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+
+  .hand-slider:hover {
+    background: rgba(255,255,255,0.22);
+  }
+
+  .hand-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.70);
+    cursor: pointer;
+    transition: background 0.12s, transform 0.1s;
+  }
+
+  .hand-slider:hover::-webkit-slider-thumb {
+    background: #fff;
+    transform: scale(1.2);
   }
 </style>
