@@ -404,7 +404,7 @@
             >
               <div class="card-cover"
                 style={coverStyle(ex.style.gradient, ex.style.coverImage)}>
-                <span class="card-icon">{ex.style.icon}</span>
+                {#if ex.style.icon}<span class="card-icon">{ex.style.icon}</span>{/if}
                 {#if !ex.comingSoon}
                   <div class="card-play">▶</div>
                 {:else}
@@ -450,7 +450,7 @@
         style={coverStyle(detail.style.gradient, detail.style.coverImage)}>
         <button class="modal-close" on:click={closeDetail} title={$t('modal.close')}>✕</button>
         <div class="modal-hero">
-          <div class="modal-icon">{detail.style.icon}</div>
+          {#if detail.style.icon}<div class="modal-icon">{detail.style.icon}</div>{/if}
           <div class="modal-title-block">
             <span class="modal-category">{$t('category.' + detail.category)}</span>
             <h2 class="modal-title">{localText(detail.i18n, 'title', detail.title, $locale)}</h2>

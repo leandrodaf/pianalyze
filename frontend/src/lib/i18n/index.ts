@@ -45,13 +45,16 @@ export const t = derived(locale, $locale => {
   return (key: string): string => msgs[key] ?? fallback[key] ?? key
 })
 
-/** Returns the best available localized text for an exercise field. */
+/** Returns the best available localized text for an exercise field.
+ *  pt-BR is the base language (stored in `fallback`), not in the i18n map.
+ *  Fallback chain: currentLocale → 'en' → fallback (pt-BR).
+ */
 export function localText(
   i18n: Record<string, { title?: string; subtitle?: string; description?: string; bio?: string }> | undefined,
   field: 'title' | 'subtitle' | 'description' | 'bio',
   fallback: string,
   currentLocale: Locale,
 ): string {
-  if (!i18n) return fallback
+  if (!i18n || currentLocale === 'pt-BR') return fallback
   return i18n[currentLocale]?.[field] ?? i18n['en']?.[field] ?? fallback
 }

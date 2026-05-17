@@ -62,8 +62,8 @@ export interface ExerciseAuthor {
 export interface ExerciseStyle {
   /** CSS gradient stops, e.g. ["#7c3aed","#2563eb"] */
   gradient: readonly [string, string]
-  /** Single emoji or unicode symbol shown on the card cover */
-  icon: string
+  /** Optional symbol/character shown on the card cover; omit or leave empty to hide */
+  icon?: string
   /**
    * Optional cover image URL (absolute, relative to the app, or bundled path).
    * The gradient is applied as a semi-transparent overlay on top of the image,
