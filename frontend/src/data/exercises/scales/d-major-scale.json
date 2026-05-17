@@ -11,9 +11,9 @@
   "tempoMap": [
     {
       "atMs": 0,
-      "bpm": 92,
+      "bpm": 72,
       "beatUnit": "quarter",
-      "label": "Moderato"
+      "label": "Andante"
     }
   ],
   "timeSignatureMap": [
@@ -29,15 +29,15 @@
     },
     {
       "measure": 2,
-      "atMs": 2609
+      "atMs": 3334
     },
     {
       "measure": 3,
-      "atMs": 5217
+      "atMs": 6666
     },
     {
       "measure": 4,
-      "atMs": 7826
+      "atMs": 10000
     }
   ],
   "sections": [
@@ -50,7 +50,7 @@
     },
     {
       "name": "Descida",
-      "startMs": 5217,
+      "startMs": 6666,
       "type": "bridge",
       "rehearsalMark": "B",
       "difficulty": 2
@@ -58,8 +58,8 @@
   ],
   "gradingProfile": {
     "velocityTolerance": 30,
-    "earlyToleranceMs": 383,
-    "lateToleranceMs": 230
+    "earlyToleranceMs": 489,
+    "lateToleranceMs": 294
   },
   "events": [
     {
@@ -74,13 +74,13 @@
       "tip": "Posição de Ré Maior — polegar em D4"
     },
     {
-      "t": 535,
+      "t": 684,
       "cmd": 144,
       "note": 62,
       "vel": 0
     },
     {
-      "t": 652,
+      "t": 833,
       "cmd": 144,
       "note": 64,
       "vel": 72,
@@ -89,13 +89,13 @@
       "dynamic": "mf"
     },
     {
-      "t": 1187,
+      "t": 1517,
       "cmd": 144,
       "note": 64,
       "vel": 0
     },
     {
-      "t": 1304,
+      "t": 1666,
       "cmd": 144,
       "note": 66,
       "vel": 72,
@@ -104,13 +104,13 @@
       "dynamic": "mf"
     },
     {
-      "t": 1839,
+      "t": 2350,
       "cmd": 144,
       "note": 66,
       "vel": 0
     },
     {
-      "t": 1957,
+      "t": 2501,
       "cmd": 144,
       "note": 67,
       "vel": 72,
@@ -120,13 +120,13 @@
       "tip": "Cruzar polegar"
     },
     {
-      "t": 2491,
+      "t": 3183,
       "cmd": 144,
       "note": 67,
       "vel": 0
     },
     {
-      "t": 2609,
+      "t": 3334,
       "cmd": 144,
       "note": 69,
       "vel": 72,
@@ -135,13 +135,13 @@
       "dynamic": "mf"
     },
     {
-      "t": 3143,
+      "t": 4016,
       "cmd": 144,
       "note": 69,
       "vel": 0
     },
     {
-      "t": 3261,
+      "t": 4167,
       "cmd": 144,
       "note": 71,
       "vel": 72,
@@ -150,13 +150,13 @@
       "dynamic": "mf"
     },
     {
-      "t": 3796,
+      "t": 4850,
       "cmd": 144,
       "note": 71,
       "vel": 0
     },
     {
-      "t": 3913,
+      "t": 5000,
       "cmd": 144,
       "note": 73,
       "vel": 72,
@@ -165,13 +165,13 @@
       "dynamic": "mf"
     },
     {
-      "t": 4448,
+      "t": 5684,
       "cmd": 144,
       "note": 73,
       "vel": 0
     },
     {
-      "t": 4565,
+      "t": 5833,
       "cmd": 144,
       "note": 74,
       "vel": 72,
@@ -182,13 +182,13 @@
       "fermata": true
     },
     {
-      "t": 5100,
+      "t": 6517,
       "cmd": 144,
       "note": 74,
       "vel": 0
     },
     {
-      "t": 5217,
+      "t": 6666,
       "cmd": 144,
       "note": 73,
       "vel": 72,
@@ -199,13 +199,13 @@
       "handPosition": "Início da descida — dedo 4 em C#5"
     },
     {
-      "t": 5752,
+      "t": 7350,
       "cmd": 144,
       "note": 73,
       "vel": 0
     },
     {
-      "t": 5870,
+      "t": 7501,
       "cmd": 144,
       "note": 71,
       "vel": 72,
@@ -214,13 +214,13 @@
       "dynamic": "mf"
     },
     {
-      "t": 6404,
+      "t": 8183,
       "cmd": 144,
       "note": 71,
       "vel": 0
     },
     {
-      "t": 6522,
+      "t": 8334,
       "cmd": 144,
       "note": 69,
       "vel": 72,
@@ -229,13 +229,13 @@
       "dynamic": "mf"
     },
     {
-      "t": 7057,
+      "t": 9017,
       "cmd": 144,
       "note": 69,
       "vel": 0
     },
     {
-      "t": 7174,
+      "t": 9167,
       "cmd": 144,
       "note": 67,
       "vel": 72,
@@ -245,13 +245,13 @@
       "tip": "Passar 3° dedo sobre polegar"
     },
     {
-      "t": 7709,
+      "t": 9850,
       "cmd": 144,
       "note": 67,
       "vel": 0
     },
     {
-      "t": 7826,
+      "t": 10000,
       "cmd": 144,
       "note": 66,
       "vel": 72,
@@ -260,13 +260,13 @@
       "dynamic": "mf"
     },
     {
-      "t": 8361,
+      "t": 10684,
       "cmd": 144,
       "note": 66,
       "vel": 0
     },
     {
-      "t": 8478,
+      "t": 10833,
       "cmd": 144,
       "note": 64,
       "vel": 72,
@@ -275,13 +275,13 @@
       "dynamic": "mf"
     },
     {
-      "t": 9013,
+      "t": 11517,
       "cmd": 144,
       "note": 64,
       "vel": 0
     },
     {
-      "t": 9130,
+      "t": 11666,
       "cmd": 144,
       "note": 62,
       "vel": 72,
@@ -292,7 +292,7 @@
       "fermata": true
     },
     {
-      "t": 9665,
+      "t": 12350,
       "cmd": 144,
       "note": 62,
       "vel": 0
