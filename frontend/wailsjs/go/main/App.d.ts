@@ -49,8 +49,6 @@ export function SelectDevice(arg1:number):Promise<void>;
 
 export function SetLanguage(arg1:string):Promise<void>;
 
-export function SetLanguage(arg1:string):Promise<void>;
-
 export function StartCapture():Promise<void>;
 
 export function StartPractice(arg1:number,arg2:number):Promise<void>;
