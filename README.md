@@ -21,23 +21,45 @@
 
 ## ✨ Screenshots
 
-> 📸 _Screenshots coming soon — add yours here!_
->
-> To contribute screenshots, place images in `docs/screenshots/` and reference them below.
-
-<!-- Uncomment and replace the paths once you have screenshots:
-
 <p align="center">
-  <img src="docs/screenshots/home.png" alt="Home screen" width="700"/>
-</p>
-<p align="center">
-  <img src="docs/screenshots/waterfall.png" alt="Note waterfall practice mode" width="700"/>
-</p>
-<p align="center">
-  <img src="docs/screenshots/chords.png" alt="Real-time chord detection" width="700"/>
+  <img src="docs/screenshots/exercise-runing.png" alt="Note waterfall — practice mode" width="800"/>
+  <br/><sub>Note waterfall — notes fall in real time as you practice</sub>
 </p>
 
--->
+<br/>
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="docs/screenshots/home.png" alt="Home screen — exercise library"/>
+      <br/><sub><b>Home</b> — browse exercises by category & difficulty</sub>
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/open-library.png" alt="Library — pieces by composer"/>
+      <br/><sub><b>Library</b> — classical pieces organised by composer</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/screenshots/exercise-descriptions.png" alt="Exercise detail"/>
+      <br/><sub><b>Exercise detail</b> — BPM, difficulty, tags and description</sub>
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/exercise-confirm-use-keys.png" alt="Warmup — prepare your fingers"/>
+      <br/><sub><b>Warmup</b> — touch each highlighted key to start</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/screenshots/settings.png" alt="Settings — language and difficulty profile"/>
+      <br/><sub><b>Settings</b> — student profile, language, import by link</sub>
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/recordings.png" alt="Recordings library"/>
+      <br/><sub><b>Recordings</b> — saved performances ready to replay</sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
