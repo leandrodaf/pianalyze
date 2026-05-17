@@ -43,6 +43,8 @@ export const DEFAULT_LEAD_TIME_SEC  = 4      // seconds for notes to travel righ
 // Increase this value to push the staves further apart.
 const HAND_GAP_EXTRA_SLOTS = 7
 
+export type ActiveHands = 'both' | 'right' | 'left'
+
 export interface WaterfallLayout {
   W: number
   H: number
@@ -54,19 +56,48 @@ export interface WaterfallLayout {
   nowX: number        // golden line X — same as judgeX
   judgeX: number      // judgment line X — same as nowX
   practiceScrollPxPerSec: number  // (W - judgeX) / leadTimeSec
+  whiteOffset: number  // lowest white-key slot index in the displayed range
+  activeHands: ActiveHands
 }
 
-export function computeLayout(W: number, H: number, leadTimeSec: number): WaterfallLayout {
+export function computeLayout(
+  W: number,
+  H: number,
+  leadTimeSec: number,
+  activeHands: ActiveHands = 'both',
+): WaterfallLayout {
   const bottomPad = H * 0.02
-  // Shrink wKeyH to fit the extra gap without clipping the top/bottom keys
-  const wKeyH     = (H - bottomPad * 2) / (TOTAL_WHITE - 1 + HAND_GAP_EXTRA_SLOTS)
-  const handGapPx = wKeyH * HAND_GAP_EXTRA_SLOTS
+
+  // When showing a single hand, remove the gap and fit only that zone's white keys.
+  let whiteOffset: number
+  let totalSlots: number
+  let gapSlots: number
+
+  if (activeHands === 'right') {
+    whiteOffset = C4_WHITE_IDX            // 23 — start from C4
+    totalSlots  = TOTAL_WHITE - 1 - C4_WHITE_IDX  // 28 white-key spans (C4→C8)
+    gapSlots    = 0
+  } else if (activeHands === 'left') {
+    whiteOffset = 0
+    totalSlots  = C4_WHITE_IDX - 1       // 22 white-key spans (A0→B3)
+    gapSlots    = 0
+  } else {
+    whiteOffset = 0
+    totalSlots  = TOTAL_WHITE - 1        // 51
+    gapSlots    = HAND_GAP_EXTRA_SLOTS
+  }
+
+  const wKeyH     = (H - bottomPad * 2) / (totalSlots + gapSlots)
+  const handGapPx = wKeyH * gapSlots
   const barHwhite = Math.max(wKeyH * 1.10, 6)
   const barHblack = Math.max(wKeyH * 0.78, 5)
   const nowX      = LEFT_MARGIN + (W - LEFT_MARGIN) * LINE_X_RATIO
   const judgeX    = nowX
   const practiceScrollPxPerSec = (W - judgeX) / leadTimeSec
-  return { W, H, bottomPad, wKeyH, barHwhite, barHblack, handGapPx, nowX, judgeX, practiceScrollPxPerSec }
+  return {
+    W, H, bottomPad, wKeyH, barHwhite, barHblack, handGapPx,
+    nowX, judgeX, practiceScrollPxPerSec, whiteOffset, activeHands,
+  }
 }
 
 /**
@@ -75,14 +106,14 @@ export function computeLayout(W: number, H: number, leadTimeSec: number): Waterf
  * create visual separation between the two hand zones.
  */
 export function pitchY(midi: number, layout: WaterfallLayout): number {
-  const { H, bottomPad, wKeyH, handGapPx } = layout
-  const gap = midi >= HAND_SPLIT ? handGapPx : 0
+  const { H, bottomPad, wKeyH, handGapPx, whiteOffset, activeHands } = layout
+  const gap = (midi >= HAND_SPLIT && activeHands === 'both') ? handGapPx : 0
 
   if (!BLACK_PC.has(midi % 12)) {
-    return H - bottomPad - WHITE_IDX[midi] * wKeyH - gap
+    return H - bottomPad - (WHITE_IDX[midi] - whiteOffset) * wKeyH - gap
   }
-  const yLo = H - bottomPad - WHITE_IDX[midi - 1] * wKeyH - gap
-  const yHi = H - bottomPad - WHITE_IDX[midi + 1] * wKeyH - gap
+  const yLo = H - bottomPad - (WHITE_IDX[midi - 1] - whiteOffset) * wKeyH - gap
+  const yHi = H - bottomPad - (WHITE_IDX[midi + 1] - whiteOffset) * wKeyH - gap
   return (yLo + yHi) / 2
 }
 
@@ -91,8 +122,8 @@ export function pitchY(midi: number, layout: WaterfallLayout): number {
  * Indices at or above C4_WHITE_IDX receive the treble-zone gap offset.
  */
 export function idxY(whiteIdx: number, layout: WaterfallLayout): number {
-  const gap = whiteIdx >= C4_WHITE_IDX ? layout.handGapPx : 0
-  return layout.H - layout.bottomPad - whiteIdx * layout.wKeyH - gap
+  const gap = (whiteIdx >= C4_WHITE_IDX && layout.activeHands === 'both') ? layout.handGapPx : 0
+  return layout.H - layout.bottomPad - (whiteIdx - layout.whiteOffset) * layout.wKeyH - gap
 }
 
 /** Bar height for a MIDI note (thinner for accidentals). */
