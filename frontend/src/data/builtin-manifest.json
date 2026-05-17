@@ -596,6 +596,198 @@
         "bpm": 72
       },
       "dataUrl": "exercises/pieces/jingle-bells.json"
+    },
+    {
+      "id": "mary-had-a-little-lamb",
+      "title": "Mary Had a Little Lamb",
+      "subtitle": "Melodia clássica para primeiríssimos passos",
+      "description": "Uma das primeiras músicas que qualquer pianista aprende. Padrão simples de 5 notas que treina movimento escalar e repetição rítmica.",
+      "author": {
+        "name": "Tradição Americana (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": ["peça","melodia","iniciante","mão direita","infantil"],
+      "style": {
+        "gradient": ["#16a34a","#15803d"],
+        "icon": "🐑"
+      },
+      "stats": {
+        "durationSec": 27,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/mary-had-a-little-lamb.json"
+    },
+    {
+      "id": "hot-cross-buns",
+      "title": "Hot Cross Buns",
+      "subtitle": "Três notas, ritmo simples, muito eficaz",
+      "description": "Exercício perfeito para o primeiro dia ao piano: usa apenas E, D e C. Concentre-se em pressão uniforme e articulação limpa de cada nota.",
+      "author": {
+        "name": "Tradição Inglesa (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": ["peça","iniciante","3 notas","mão direita","básico"],
+      "style": {
+        "gradient": ["#f59e0b","#d97706"],
+        "icon": "🍞"
+      },
+      "stats": {
+        "durationSec": 17,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/hot-cross-buns.json"
+    },
+    {
+      "id": "frere-jacques",
+      "title": "Frère Jacques",
+      "subtitle": "Canção popular francesa em cânone",
+      "description": "Melodia ternária que combina colcheias e semibreves. A seção de colcheias (sonnez les matines) é ótima para treinar velocidade controlada.",
+      "author": {
+        "name": "Canção Popular Francesa (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": ["peça","francês","canção popular","iniciante","mão direita"],
+      "style": {
+        "gradient": ["#3b82f6","#6366f1"],
+        "icon": "🔔"
+      },
+      "stats": {
+        "durationSec": 27,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/frere-jacques.json"
+    },
+    {
+      "id": "london-bridge",
+      "title": "London Bridge",
+      "subtitle": "London Bridge is Falling Down",
+      "description": "Melodia que percorre uma quinta e usa intervalos de grau conjunto. Excelente para desenvolver fluidez e sentido de frase musical.",
+      "author": {
+        "name": "Canção Popular Inglesa (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": ["peça","inglês","canção popular","iniciante","mão direita"],
+      "style": {
+        "gradient": ["#0284c7","#0369a1"],
+        "icon": "🌉"
+      },
+      "stats": {
+        "durationSec": 27,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/london-bridge.json"
+    },
+    {
+      "id": "amazing-grace",
+      "title": "Amazing Grace",
+      "subtitle": "John Newton, 1779 — Hino em 3/4",
+      "description": "Hino clássico em compasso ternário com nota de anacruse. Perfeito para desenvolver o senso de pulso em 3 tempos e expressividade melódica.",
+      "author": {
+        "name": "John Newton, 1779 (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 2,
+      "tags": ["peça","hino","3/4","valsa","expressivo","mão direita"],
+      "style": {
+        "gradient": ["#7c3aed","#6d28d9"],
+        "icon": "🙏"
+      },
+      "stats": {
+        "durationSec": 23,
+        "timeSignature": "3/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/amazing-grace.json"
+    },
+    {
+      "id": "yankee-doodle",
+      "title": "Yankee Doodle",
+      "subtitle": "Marcha americana com refrão animado",
+      "description": "Melodia marcial com ritmo pontuado e saltos. O refrão usa um Sib que exige transposição de posição da mão — ótimo desafio para iniciantes.",
+      "author": {
+        "name": "Tradição Americana (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 2,
+      "tags": ["peça","marcha","americano","iniciante","mão direita"],
+      "style": {
+        "gradient": ["#dc2626","#1d4ed8"],
+        "icon": "🎺"
+      },
+      "stats": {
+        "durationSec": 40,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/yankee-doodle.json"
+    },
+    {
+      "id": "old-macdonald",
+      "title": "Old MacDonald Had a Farm",
+      "subtitle": "E-I-E-I-O — Canção americana clássica",
+      "description": "Melodia com saltos divertidos entre oitavas e padrão repetitivo que facilita a memorização. Ideal para crianças e adultos iniciantes.",
+      "author": {
+        "name": "Tradição Americana (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": ["peça","infantil","americano","iniciante","mão direita"],
+      "style": {
+        "gradient": ["#65a30d","#ca8a04"],
+        "icon": "🐄"
+      },
+      "stats": {
+        "durationSec": 33,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/old-macdonald.json"
+    },
+    {
+      "id": "when-the-saints",
+      "title": "When the Saints Go Marching In",
+      "subtitle": "Espiritual americano — Jazz tradicional",
+      "description": "Melodia de jazz tradicional com nota de anacruse e saltos de terça. Excelente para desenvolver senso de swing e musicalidade expressiva.",
+      "author": {
+        "name": "Espiritual Americano (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 2,
+      "tags": ["peça","jazz","espiritual","americano","mão direita"],
+      "style": {
+        "gradient": ["#1e3a5f","#0891b2"],
+        "icon": "⛪"
+      },
+      "stats": {
+        "durationSec": 32,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/when-the-saints.json"
     }
   ]
 }
