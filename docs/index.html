@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pianalyze — Aprenda piano com feedback em tempo real | Grátis</title>
+  <meta name="description" content="Aprenda piano mais rápido com exercícios guiados e feedback instantâneo. Veja notas, acordes e dinâmicas em tempo real enquanto toca. Grátis, open source." />
+  <meta name="keywords" content="aprender piano, exercícios de piano, aprender acordes piano, como aprender piano sozinho, aprenda piano grátis, piano para iniciantes, learn piano, piano exercises, piano chords, piano app, MIDI piano, aprender musica" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://leandrodaf.github.io/pianalyze/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Pianalyze — Aprenda piano com feedback em tempo real" />
+  <meta property="og:description" content="Exercícios guiados + análise em tempo real de notas e acordes. O app gratuito para quem quer aprender piano de verdade." />
+  <meta property="og:image" content="https://leandrodaf.github.io/pianalyze/screenshots/home.png" />
+  <meta property="og:url" content="https://leandrodaf.github.io/pianalyze/" />
+  <meta property="og:site_name" content="Pianalyze" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Pianalyze — Aprenda piano com feedback em tempo real" />
+  <meta name="twitter:description" content="Exercícios guiados + análise em tempo real. Grátis, open source." />
+  <meta name="twitter:image" content="https://leandrodaf.github.io/pianalyze/screenshots/home.png" />
+
+  <link rel="icon" href="logo.png" />
+
+  <!-- Schema.org: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Pianalyze",
+    "description": "App gratuito para aprender piano com exercícios guiados e análise em tempo real de notas, acordes e dinâmicas via MIDI.",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Windows, macOS, Linux",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "url": "https://leandrodaf.github.io/pianalyze/",
+    "downloadUrl": "https://github.com/leandrodaf/pianalyze/releases/latest",
+    "softwareVersion": "latest",
+    "author": {
+      "@type": "Person",
+      "name": "Leandro Ferreira",
+      "url": "https://github.com/leandrodaf"
+    }
+  }
+  </script>
+  <style>
+    :root {
+      --bg: #0d0d1a;
+      --bg2: #12122a;
+      --bg3: #1a1a35;
+      --purple: #7c3aed;
+      --purple-light: #a855f7;
+      --cyan: #06b6d4;
+      --cyan-light: #22d3ee;
+      --white: #f0f0ff;
+      --muted: #8888aa;
+      --glow-purple: 0 0 20px rgba(124,58,237,0.6);
+      --glow-cyan: 0 0 20px rgba(6,182,212,0.6);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(13,13,26,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(124,58,237,0.2);
+      gap: 1rem;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--white);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .nav-logo img { width: 28px; height: 28px; border-radius: 6px; }
+    .nav-logo span {
+      background: linear-gradient(90deg, var(--purple-light), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; white-space: nowrap; }
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+
+    /* Language switcher */
+    .lang-switcher {
+      display: flex;
+      gap: 2px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 2px;
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.03em;
+    }
+
+    .lang-btn:hover { color: var(--white); background: rgba(255,255,255,0.07); }
+    .lang-btn.active { background: rgba(124,58,237,0.35); color: var(--purple-light); }
+
+    .nav-github {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      border: 1px solid rgba(124,58,237,0.5);
+      border-radius: 20px;
+      color: var(--purple-light);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .nav-github:hover { background: rgba(124,58,237,0.15); box-shadow: var(--glow-purple); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 7rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-glow {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 30%, rgba(124,58,237,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 60%, rgba(6,182,212,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.9rem;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(124,58,237,0.4);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: var(--purple-light);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.3rem;
+    }
+
+    .h1-gradient {
+      background: linear-gradient(135deg, var(--purple-light) 0%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--muted);
+      max-width: 560px;
+      margin: 1.2rem auto 2.5rem;
+      line-height: 1.75;
+    }
+
+    .hero-sub strong { color: var(--white); font-weight: 500; }
+
+    .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 4rem; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.9rem 2.2rem;
+      background: linear-gradient(135deg, var(--purple), #5b21b6);
+      border: none; border-radius: 10px;
+      color: #fff; font-size: 1rem; font-weight: 600;
+      text-decoration: none; cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(124,58,237,0.6); }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.9rem 2.2rem;
+      background: transparent;
+      border: 1px solid rgba(6,182,212,0.5);
+      border-radius: 10px;
+      color: var(--cyan-light); font-size: 1rem; font-weight: 600;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(6,182,212,0.1); box-shadow: var(--glow-cyan); transform: translateY(-2px); }
+
+    /* Screenshot frame */
+    .hero-screenshot { position: relative; max-width: 900px; width: 100%; margin: 0 auto; }
+
+    .screenshot-frame {
+      background: var(--bg2);
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 30px 80px rgba(0,0,0,0.5), 0 0 60px rgba(124,58,237,0.15);
+    }
+
+    .screenshot-bar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1rem;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red { background: #ff5f57; }
+    .dot-yellow { background: #febc2e; }
+    .dot-green { background: #28c840; }
+
+    .screenshot-frame img { width: 100%; display: block; border-radius: 0 0 15px 15px; }
+
+    .float-card {
+      position: absolute;
+      background: rgba(13,13,26,0.92);
+      border: 1px solid rgba(124,58,237,0.35);
+      border-radius: 12px;
+      padding: 0.8rem 1.2rem;
+      backdrop-filter: blur(10px);
+      font-size: 0.85rem;
+    }
+
+    .float-card-left { left: -30px; bottom: 30%; box-shadow: var(--glow-purple); animation: float 3s ease-in-out infinite; }
+    .float-card-right { right: -30px; top: 25%; border-color: rgba(6,182,212,0.35); box-shadow: var(--glow-cyan); animation: float 3.5s ease-in-out infinite reverse; }
+
+    .float-label { color: var(--muted); font-size: 0.7rem; margin-bottom: 0.2rem; }
+    .float-value { color: var(--purple-light); font-weight: 700; font-size: 1rem; }
+    .float-value.cyan { color: var(--cyan-light); }
+
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    /* ── PIANO ── */
+    .piano-divider { width: 100%; overflow: hidden; display: flex; justify-content: center; background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%); }
+    .piano-keys { display: flex; gap: 3px; padding: 0 20px; }
+
+    .key-white {
+      width: 36px; height: 130px;
+      background: linear-gradient(180deg, #e8e8f0 0%, #d0d0e0 100%);
+      border-radius: 0 0 6px 6px;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative; cursor: pointer; transition: all 0.1s;
+    }
+    .key-black {
+      width: 24px; height: 80px;
+      background: linear-gradient(180deg, #2a2a3a 0%, #1a1a25 100%);
+      border-radius: 0 0 5px 5px;
+      position: absolute; top: 0; z-index: 2;
+      border: 1px solid rgba(124,58,237,0.2);
+      cursor: pointer; transition: all 0.1s;
+    }
+    .key-white.lit { background: linear-gradient(180deg, #c4b5fd 0%, #8b5cf6 100%); box-shadow: 0 0 15px rgba(124,58,237,0.7), 0 0 30px rgba(124,58,237,0.3); }
+    .key-black.lit { background: linear-gradient(180deg, #7c3aed 0%, #5b21b6 100%); box-shadow: 0 0 15px rgba(124,58,237,0.9); }
+    .key-white.cyan-lit { background: linear-gradient(180deg, #a5f3fc 0%, #06b6d4 100%); box-shadow: 0 0 15px rgba(6,182,212,0.7); }
+
+    /* ── SECTIONS ── */
+    section { padding: 5rem 2rem; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 0.8rem;
+    }
+
+    .section-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+    .section-desc { color: var(--muted); max-width: 520px; line-height: 1.75; font-size: 1.05rem; }
+
+    /* ── FEATURES ── */
+    #features { background: var(--bg2); }
+
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+
+    .feature-card {
+      background: var(--bg3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; padding: 2rem;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .feature-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; border-radius: 16px; }
+    .feature-card.purple::before { background: radial-gradient(ellipse at top left, rgba(124,58,237,0.12) 0%, transparent 60%); }
+    .feature-card.cyan::before { background: radial-gradient(ellipse at top left, rgba(6,182,212,0.12) 0%, transparent 60%); }
+    .feature-card:hover { transform: translateY(-4px); border-color: rgba(124,58,237,0.3); }
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.2rem; }
+    .feature-icon.purple { background: rgba(124,58,237,0.2); }
+    .feature-icon.cyan { background: rgba(6,182,212,0.2); }
+
+    .feature-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.6rem; }
+    .feature-desc { color: var(--muted); font-size: 0.92rem; line-height: 1.65; }
+
+    /* ── HOW ── */
+    #how { background: var(--bg); }
+
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; margin-top: 3rem; }
+
+    .step { text-align: center; padding: 2rem 1.5rem; }
+
+    .step-number {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), #5b21b6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 800;
+      margin: 0 auto 1.2rem;
+      box-shadow: 0 0 20px rgba(124,58,237,0.4);
+    }
+
+    .step-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.6rem; }
+    .step-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+
+    /* ── SCREENSHOTS ── */
+    #screenshots { background: var(--bg2); }
+
+    .screenshots-scroller {
+      display: flex; gap: 1.5rem;
+      overflow-x: auto;
+      padding: 2rem 0 1rem; margin-top: 1.5rem;
+      scrollbar-width: thin; scrollbar-color: rgba(124,58,237,0.4) transparent;
+    }
+    .screenshots-scroller::-webkit-scrollbar { height: 4px; }
+    .screenshots-scroller::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.4); border-radius: 2px; }
+
+    .screenshot-thumb {
+      flex-shrink: 0; width: 320px;
+      border-radius: 12px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: all 0.3s; cursor: pointer;
+    }
+    .screenshot-thumb:hover { border-color: rgba(124,58,237,0.5); box-shadow: 0 0 30px rgba(124,58,237,0.2); transform: scale(1.02); }
+    .screenshot-thumb img { width: 100%; display: block; }
+    .screenshot-caption { background: var(--bg3); padding: 0.6rem 0.8rem; font-size: 0.8rem; color: var(--muted); }
+
+    /* ── DOWNLOAD ── */
+    #download { background: var(--bg); }
+
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      margin-top: 3rem;
+    }
+
+    .download-card {
+      background: var(--bg2);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      opacity: 0; transition: opacity 0.3s;
+      border-radius: 16px;
+      background: radial-gradient(ellipse at top, rgba(124,58,237,0.12) 0%, transparent 70%);
+    }
+
+    .download-card:hover { transform: translateY(-4px); border-color: rgba(124,58,237,0.4); box-shadow: var(--glow-purple); }
+    .download-card:hover::before { opacity: 1; }
+
+    .download-os { font-size: 3rem; margin-bottom: 0.8rem; }
+    .download-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .download-meta { color: var(--muted); font-size: 0.82rem; margin-bottom: 1.5rem; }
+
+    .btn-download {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.5rem;
+      background: linear-gradient(135deg, var(--purple), #5b21b6);
+      border: none; border-radius: 8px;
+      color: #fff; font-size: 0.9rem; font-weight: 600;
+      text-decoration: none; cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(124,58,237,0.3);
+    }
+    .btn-download:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.5); }
+
+    .download-note {
+      margin-top: 2.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+
+    .download-note a { color: var(--purple-light); text-decoration: none; }
+    .download-note a:hover { text-decoration: underline; }
+
+    /* ── CTA ── */
+    #cta { background: var(--bg2); text-align: center; }
+
+    .cta-box {
+      max-width: 600px; margin: 0 auto;
+      background: var(--bg3);
+      border: 1px solid rgba(124,58,237,0.25);
+      border-radius: 24px; padding: 4rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .cta-box::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-box h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; margin-bottom: 0.8rem; }
+    .cta-box p { color: var(--muted); margin-bottom: 2rem; line-height: 1.65; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 2.5rem 2rem; text-align: center;
+      color: var(--muted); font-size: 0.85rem;
+    }
+    footer a { color: var(--purple-light); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .footer-logo { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; font-size: 1rem; font-weight: 700; }
+    .footer-logo img { width: 22px; border-radius: 5px; }
+
+    .footer-links { display: flex; justify-content: center; gap: 2rem; list-style: none; margin-bottom: 1.5rem; flex-wrap: wrap; }
+
+    /* ── TEACHERS ── */
+    #teachers { background: var(--bg2); }
+
+    .teachers-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .teachers-left .section-tag { color: var(--cyan); }
+
+    .teachers-left .section-title { margin-bottom: 1rem; }
+
+    .teachers-left .section-desc { margin-bottom: 2rem; }
+
+    .teachers-cta-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .teachers-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .teacher-card {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      background: var(--bg3);
+      border: 1px solid rgba(6,182,212,0.15);
+      border-radius: 14px;
+      padding: 1.2rem 1.4rem;
+      transition: all 0.3s;
+    }
+
+    .teacher-card:hover {
+      border-color: rgba(6,182,212,0.4);
+      box-shadow: var(--glow-cyan);
+      transform: translateX(4px);
+    }
+
+    .teacher-card-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .teacher-card-text strong {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: var(--white);
+    }
+
+    .teacher-card-text span {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .teachers-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.9rem;
+      background: rgba(6,182,212,0.12);
+      border: 1px solid rgba(6,182,212,0.35);
+      border-radius: 20px;
+      font-size: 0.78rem;
+      color: var(--cyan-light);
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 768px) {
+      .teachers-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 2rem; }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 12px; box-shadow: 0 0 60px rgba(124,58,237,0.4); }
+    .lightbox-close { position: fixed; top: 1.5rem; right: 1.5rem; background: none; border: none; color: white; font-size: 2rem; cursor: pointer; opacity: 0.7; transition: opacity 0.2s; }
+    .lightbox-close:hover { opacity: 1; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .float-card { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="logo.png" alt="Pianalyze" />
+    <span>Pianalyze</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features" data-i18n="nav.features">O que faz</a></li>
+    <li><a href="#teachers" data-i18n="nav.teachers">Professores</a></li>
+    <li><a href="#how" data-i18n="nav.how">Como usar</a></li>
+    <li><a href="#download" data-i18n="nav.download">Download</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" onclick="setLang('zh')">中文</button>
+    </div>
+    <a href="https://github.com/leandrodaf/pianalyze" class="nav-github" target="_blank" rel="noopener">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-glow"></div>
+
+  <div class="hero-badge" data-i18n="hero.badge">✦ Grátis &nbsp;·&nbsp; Open source &nbsp;·&nbsp; Para quem está aprendendo piano</div>
+
+  <h1>
+    <span data-i18n="hero.title1">Aprender piano</span>
+    <span class="h1-gradient" data-i18n="hero.title2">ficou muito mais fácil.</span>
+  </h1>
+
+  <p class="hero-sub" data-i18n-html="hero.sub">
+    Exercícios guiados, feedback em tempo real e o nome de cada nota e acorde logo que você toca — <strong>tudo grátis, no seu piano de verdade</strong>. Você não precisa de professor para começar.
+  </p>
+
+  <div class="hero-cta">
+    <a href="#download" class="btn-primary" data-i18n="hero.cta1">⬇ Baixar grátis</a>
+    <a href="#features" class="btn-secondary" data-i18n="hero.cta2">Ver exercícios →</a>
+  </div>
+
+  <div class="hero-screenshot">
+    <div class="screenshot-frame">
+      <div class="screenshot-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <img src="screenshots/home.png" alt="Pianalyze" />
+    </div>
+    <div class="float-card float-card-left">
+      <div class="float-label" data-i18n="hero.float1label">Você acabou de tocar</div>
+      <div class="float-value" data-i18n="hero.float1value">Dó maior (Cmaj7)</div>
+    </div>
+    <div class="float-card float-card-right">
+      <div class="float-label" data-i18n="hero.float2label">Intensidade</div>
+      <div class="float-value cyan" data-i18n="hero.float2value">forte (f)</div>
+    </div>
+  </div>
+</section>
+
+<!-- PIANO -->
+<div class="piano-divider">
+  <div class="piano-keys" id="pianoKeys"></div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <span class="section-tag" data-i18n="features.tag">Para quem está aprendendo</span>
+    <h2 class="section-title" data-i18n="features.title">Tudo que você precisa para evoluir no piano</h2>
+    <p class="section-desc" data-i18n="features.desc">Não importa se você é iniciante ou já toca há algum tempo — o Pianalyze se adapta ao seu nível.</p>
+
+    <div class="features-grid">
+      <div class="feature-card cyan">
+        <div class="feature-icon cyan">📚</div>
+        <div class="feature-title" data-i18n="features.f4.title">Exercícios guiados para aprender piano</div>
+        <p class="feature-desc" data-i18n="features.f4.desc">Escalas, progressões de acordes, leitura à primeira vista e muito mais — exercícios variados que você pratica ao seu ritmo, no seu piano de verdade, sem precisar de professor.</p>
+      </div>
+      <div class="feature-card purple">
+        <div class="feature-icon purple">🎵</div>
+        <div class="feature-title" data-i18n="features.f1.title">Aprenda os nomes das notas tocando</div>
+        <p class="feature-desc" data-i18n="features.f1.desc">Cada tecla que você pressiona aparece na tela com seu nome — Dó, Ré sustenido, Lá bemol. Sem decorar: você aprende de forma natural enquanto toca.</p>
+      </div>
+      <div class="feature-card cyan">
+        <div class="feature-icon cyan">🎹</div>
+        <div class="feature-title" data-i18n="features.f2.title">Entenda os acordes que você forma</div>
+        <p class="feature-desc" data-i18n="features.f2.desc">Tocou três ou quatro notas juntas? O app identifica o acorde na hora — nome e inversão. Você começa a entender harmonia sem perceber. Mais de 80 acordes reconhecidos.</p>
+      </div>
+      <div class="feature-card purple">
+        <div class="feature-icon purple">🔊</div>
+        <div class="feature-title" data-i18n="features.f3.title">Desenvolva sua expressividade</div>
+        <p class="feature-desc" data-i18n="features.f3.desc">Você toca piano, forte ou mezzo-forte? O Pianalyze mostra a intensidade de cada nota e te ajuda a desenvolver controle de toque — fundamental para tocar com sentimento.</p>
+      </div>
+      <div class="feature-card cyan">
+        <div class="feature-icon cyan">🎙</div>
+        <div class="feature-title" data-i18n="features.f5.title">Veja sua evolução</div>
+        <p class="feature-desc" data-i18n="features.f5.desc">O app grava suas sessões de prática. Volte e veja exatamente quais notas tocou, onde errou e como você está evoluindo — sessão por sessão.</p>
+      </div>
+      <div class="feature-card purple">
+        <div class="feature-icon purple">🆓</div>
+        <div class="feature-title" data-i18n="features.f6.title">100% grátis. Para sempre.</div>
+        <p class="feature-desc" data-i18n="features.f6.desc">Nenhuma assinatura, nenhuma versão premium, nenhum paywall. Aprender piano não deveria custar caro — e com o Pianalyze, não custa nada.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how">
+  <div class="section-inner">
+    <span class="section-tag" data-i18n="how.tag">Como usar</span>
+    <h2 class="section-title" data-i18n="how.title">Três passos e você já está praticando</h2>
+    <p class="section-desc" data-i18n="how.desc">Você não precisa configurar nada complicado. Se seu piano MIDI liga, funciona.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-title" data-i18n="how.s1.title">Conecte seu piano</div>
+        <p class="step-desc" data-i18n="how.s1.desc">Ligue seu teclado ou piano digital via USB ou MIDI. O Pianalyze detecta automaticamente — sem configuração manual.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-title" data-i18n="how.s2.title">Abra o app e toque</div>
+        <p class="step-desc" data-i18n="how.s2.desc">Inicie o Pianalyze, escolha seu dispositivo na lista e comece a tocar. É isso. Não tem mais nenhum passo.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-title" data-i18n="how.s3.title">Veja o que está tocando</div>
+        <p class="step-desc" data-i18n="how.s3.desc">As notas e acordes aparecem na tela em tempo real. Com o tempo, você começa a reconhecer os padrões sem precisar olhar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section id="screenshots">
+  <div class="section-inner">
+    <span class="section-tag" data-i18n="screens.tag">Screenshots</span>
+    <h2 class="section-title" data-i18n="screens.title">Veja como é simples</h2>
+    <p class="section-desc" data-i18n="screens.desc">Interface direta ao ponto — nada de menu complicado.</p>
+
+    <div class="screenshots-scroller">
+      <div class="screenshot-thumb" onclick="openLightbox('screenshots/home.png')">
+        <img src="screenshots/home.png" alt="" />
+        <div class="screenshot-caption" data-i18n="screens.cap1">🏠 Análise ao vivo</div>
+      </div>
+      <div class="screenshot-thumb" onclick="openLightbox('screenshots/open-library.png')">
+        <img src="screenshots/open-library.png" alt="" />
+        <div class="screenshot-caption" data-i18n="screens.cap2">🎵 Biblioteca de músicas</div>
+      </div>
+      <div class="screenshot-thumb" onclick="openLightbox('screenshots/exercise-descriptions.png')">
+        <img src="screenshots/exercise-descriptions.png" alt="" />
+        <div class="screenshot-caption" data-i18n="screens.cap3">📋 Escolha um exercício</div>
+      </div>
+      <div class="screenshot-thumb" onclick="openLightbox('screenshots/exercise-runing.png')">
+        <img src="screenshots/exercise-runing.png" alt="" />
+        <div class="screenshot-caption" data-i18n="screens.cap4">▶ Pratique no seu ritmo</div>
+      </div>
+      <div class="screenshot-thumb" onclick="openLightbox('screenshots/recordings.png')">
+        <img src="screenshots/recordings.png" alt="" />
+        <div class="screenshot-caption" data-i18n="screens.cap5">🎙 Reveja suas sessões</div>
+      </div>
+      <div class="screenshot-thumb" onclick="openLightbox('screenshots/settings.png')">
+        <img src="screenshots/settings.png" alt="" />
+        <div class="screenshot-caption" data-i18n="screens.cap6">⚙ Configurações simples</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEACHERS -->
+<section id="teachers">
+  <div class="teachers-inner">
+    <div class="teachers-left">
+      <div class="teachers-badge" data-i18n="tc.badge">🎓 Para professores e escolas de música</div>
+      <span class="section-tag" data-i18n="tc.tag">Uso profissional</span>
+      <h2 class="section-title" data-i18n="tc.title">Dê ao seu aluno feedback que só você daria — mesmo quando não estiver lá</h2>
+      <p class="section-desc" data-i18n="tc.desc">O Pianalyze foi construído como open source justamente para que escolas de música e professores possam usá-lo e adaptá-lo sem custo. Seus alunos praticam em casa e chegam na aula mais avançados.</p>
+      <br/>
+      <div class="teachers-cta-group">
+        <a href="https://github.com/leandrodaf/pianalyze" class="btn-primary" target="_blank" rel="noopener" data-i18n="tc.cta1">Ver código-fonte</a>
+        <a href="#download" class="btn-secondary" data-i18n="tc.cta2">Baixar grátis →</a>
+      </div>
+    </div>
+
+    <div class="teachers-right">
+      <div class="teacher-card">
+        <div class="teacher-card-icon">🏠</div>
+        <div class="teacher-card-text">
+          <strong data-i18n="tc.c1.title">Prática em casa com qualidade de aula</strong>
+          <span data-i18n="tc.c1.desc">Seu aluno pratica sozinho em casa e recebe feedback real sobre notas, acordes e dinâmica — sem depender de você estar presente.</span>
+        </div>
+      </div>
+      <div class="teacher-card">
+        <div class="teacher-card-icon">💰</div>
+        <div class="teacher-card-text">
+          <strong data-i18n="tc.c2.title">Zero custo para a escola inteira</strong>
+          <span data-i18n="tc.c2.desc">Sem licença por aluno, sem plano escolar, sem contrato. Instale em quantos computadores quiser — é grátis para sempre.</span>
+        </div>
+      </div>
+      <div class="teacher-card">
+        <div class="teacher-card-icon">🛠</div>
+        <div class="teacher-card-text">
+          <strong data-i18n="tc.c3.title">Customize para o seu método de ensino</strong>
+          <span data-i18n="tc.c3.desc">Open source — você pode criar exercícios específicos do seu currículo, adaptar a interface ou integrar com outras ferramentas da escola.</span>
+        </div>
+      </div>
+      <div class="teacher-card">
+        <div class="teacher-card-icon">🎹</div>
+        <div class="teacher-card-text">
+          <strong data-i18n="tc.c4.title">Funciona com qualquer piano MIDI</strong>
+          <span data-i18n="tc.c4.desc">Sem hardware proprietário. Funciona com teclados simples de entrada até pianos digitais de alto nível — o que o aluno já tiver em casa.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download">
+  <div class="section-inner">
+    <span class="section-tag" data-i18n="dl.tag">Download</span>
+    <h2 class="section-title" data-i18n="dl.title">Escolha seu sistema operacional</h2>
+    <p class="section-desc" data-i18n="dl.desc">Disponível para Windows, macOS e Linux. Instale em segundos, sem criar conta.</p>
+
+    <div class="download-grid">
+      <div class="download-card">
+        <div class="download-os">🪟</div>
+        <div class="download-name">Windows</div>
+        <div class="download-meta" data-i18n="dl.win.meta">Windows 10 ou superior · 64-bit</div>
+        <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" target="_blank" rel="noopener" data-i18n="dl.btn">⬇ Baixar</a>
+      </div>
+
+      <div class="download-card">
+        <div class="download-os">🍎</div>
+        <div class="download-name">macOS</div>
+        <div class="download-meta" data-i18n="dl.mac.meta">macOS 11 ou superior · Intel &amp; Apple Silicon</div>
+        <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" target="_blank" rel="noopener" data-i18n="dl.btn">⬇ Baixar</a>
+      </div>
+
+      <div class="download-card">
+        <div class="download-os">🐧</div>
+        <div class="download-name">Linux</div>
+        <div class="download-meta" data-i18n="dl.linux.meta">Ubuntu, Debian, Fedora e outras · 64-bit</div>
+        <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" target="_blank" rel="noopener" data-i18n="dl.btn">⬇ Baixar</a>
+      </div>
+    </div>
+
+    <p class="download-note" data-i18n-html="dl.note">
+      Todos os downloads ficam na <a href="https://github.com/leandrodaf/pianalyze/releases" target="_blank" rel="noopener">página de releases do GitHub</a>.<br/>
+      Código aberto sob licença MIT — sem rastreamento, sem telemetria obrigatória.
+    </p>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section id="cta">
+  <div class="section-inner">
+    <div class="cta-box">
+      <h2 data-i18n="cta.title">Pronto para finalmente entender seu piano?</h2>
+      <p data-i18n="cta.desc">Baixe grátis, abra, conecte o piano e toque. É só isso.</p>
+      <a href="#download" class="btn-primary" style="font-size:1.1rem; padding:1rem 2.5rem;" data-i18n="cta.btn">⬇ Baixar o Pianalyze — grátis</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="logo.png" alt="Pianalyze" />
+    <span style="background:linear-gradient(90deg,#a855f7,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Pianalyze</span>
+  </div>
+  <ul class="footer-links">
+    <li><a href="https://github.com/leandrodaf/pianalyze" target="_blank" rel="noopener">GitHub</a></li>
+    <li><a href="https://github.com/leandrodaf/pianalyze/releases" target="_blank" rel="noopener" data-i18n="footer.releases">Releases</a></li>
+    <li><a href="https://github.com/leandrodaf/pianalyze/issues" target="_blank" rel="noopener" data-i18n="footer.issues">Reportar problema</a></li>
+    <li><a href="https://github.com/leandrodaf/pianalyze/blob/main/LICENSE" target="_blank" rel="noopener" data-i18n="footer.license">Licença MIT</a></li>
+  </ul>
+  <p data-i18n-html="footer.credit">Feito com ♥ por <a href="https://github.com/leandrodaf" target="_blank" rel="noopener">Leandro Ferreira</a> &nbsp;·&nbsp; Open source, grátis para sempre</p>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="" />
+</div>
+
+<script>
+// ── TRANSLATIONS ──────────────────────────────────────────────
+const TRANSLATIONS = {
+  pt: {
+    'nav.features': 'O que faz',
+    'nav.teachers': 'Professores',
+    'nav.how': 'Como usar',
+    'nav.download': 'Download',
+    'hero.badge': '✦ Grátis · Open source · Para quem está aprendendo piano',
+    'hero.title1': 'Aprender piano',
+    'hero.title2': 'ficou muito mais fácil.',
+    'hero.sub': 'Exercícios guiados, feedback em tempo real e o nome de cada nota e acorde logo que você toca — <strong>tudo grátis, no seu piano de verdade</strong>. Você não precisa de professor para começar.',
+    'hero.cta1': '⬇ Baixar grátis',
+    'hero.cta2': 'Ver exercícios →',
+    'hero.float1label': 'Você acabou de tocar',
+    'hero.float1value': 'Dó maior (Cmaj7)',
+    'hero.float2label': 'Intensidade',
+    'hero.float2value': 'forte (f)',
+    'features.tag': 'Para quem está aprendendo',
+    'features.title': 'Tudo que você precisa para evoluir no piano',
+    'features.desc': 'Não importa se você é iniciante ou já toca há algum tempo — o Pianalyze se adapta ao seu nível.',
+    'features.f4.title': 'Exercícios guiados para aprender piano',
+    'features.f4.desc': 'Escalas, progressões de acordes, leitura à primeira vista e muito mais — exercícios variados que você pratica ao seu ritmo, no seu piano de verdade, sem precisar de professor.',
+    'features.f1.title': 'Aprenda os nomes das notas tocando',
+    'features.f1.desc': 'Cada tecla que você pressiona aparece na tela com seu nome — Dó, Ré sustenido, Lá bemol. Sem decorar: você aprende de forma natural enquanto toca.',
+    'features.f2.title': 'Entenda os acordes que você forma',
+    'features.f2.desc': 'Tocou três ou quatro notas juntas? O app identifica o acorde na hora — nome e inversão. Você começa a entender harmonia sem perceber. Mais de 80 acordes reconhecidos.',
+    'features.f3.title': 'Desenvolva sua expressividade',
+    'features.f3.desc': 'Você toca piano, forte ou mezzo-forte? O Pianalyze mostra a intensidade de cada nota e te ajuda a desenvolver controle de toque — fundamental para tocar com sentimento.',
+    'features.f5.title': 'Veja sua evolução',
+    'features.f5.desc': 'O app grava suas sessões de prática. Volte e veja exatamente quais notas tocou, onde errou e como você está evoluindo — sessão por sessão.',
+    'features.f6.title': '100% grátis. Para sempre.',
+    'features.f6.desc': 'Nenhuma assinatura, nenhuma versão premium, nenhum paywall. Aprender piano não deveria custar caro — e com o Pianalyze, não custa nada.',
+    'how.tag': 'Como usar',
+    'how.title': 'Três passos e você já está praticando',
+    'how.desc': 'Você não precisa configurar nada complicado. Se seu piano MIDI liga, funciona.',
+    'how.s1.title': 'Conecte seu piano',
+    'how.s1.desc': 'Ligue seu teclado ou piano digital via USB ou MIDI. O Pianalyze detecta automaticamente — sem configuração manual.',
+    'how.s2.title': 'Abra o app e toque',
+    'how.s2.desc': 'Inicie o Pianalyze, escolha seu dispositivo na lista e comece a tocar. É isso. Não tem mais nenhum passo.',
+    'how.s3.title': 'Veja o que está tocando',
+    'how.s3.desc': 'As notas e acordes aparecem na tela em tempo real. Com o tempo, você começa a reconhecer os padrões sem precisar olhar.',
+    'screens.tag': 'Screenshots',
+    'screens.title': 'Veja como é simples',
+    'screens.desc': 'Interface direta ao ponto — nada de menu complicado.',
+    'screens.cap1': '🏠 Análise ao vivo',
+    'screens.cap2': '🎵 Biblioteca de músicas',
+    'screens.cap3': '📋 Escolha um exercício',
+    'screens.cap4': '▶ Pratique no seu ritmo',
+    'screens.cap5': '🎙 Reveja suas sessões',
+    'screens.cap6': '⚙ Configurações simples',
+    'dl.tag': 'Download',
+    'dl.title': 'Escolha seu sistema operacional',
+    'dl.desc': 'Disponível para Windows, macOS e Linux. Instale em segundos, sem criar conta.',
+    'dl.win.meta': 'Windows 10 ou superior · 64-bit',
+    'dl.mac.meta': 'macOS 11 ou superior · Intel & Apple Silicon',
+    'dl.linux.meta': 'Ubuntu, Debian, Fedora e outras · 64-bit',
+    'dl.btn': '⬇ Baixar',
+    'dl.note': 'Todos os downloads ficam na <a href="https://github.com/leandrodaf/pianalyze/releases" target="_blank" rel="noopener">página de releases do GitHub</a>.<br/>Código aberto sob licença MIT — sem rastreamento, sem telemetria obrigatória.',
+    'cta.title': 'Pronto para finalmente entender seu piano?',
+    'cta.desc': 'Baixe grátis, abra, conecte o piano e toque. É só isso.',
+    'cta.btn': '⬇ Baixar o Pianalyze — grátis',
+    'footer.releases': 'Releases',
+    'footer.issues': 'Reportar problema',
+    'footer.license': 'Licença MIT',
+    'tc.badge': '🎓 Para professores e escolas de música',
+    'tc.tag': 'Uso profissional',
+    'tc.title': 'Dê ao seu aluno feedback que só você daria — mesmo quando não estiver lá',
+    'tc.desc': 'O Pianalyze foi construído como open source justamente para que escolas de música e professores possam usá-lo e adaptá-lo sem custo. Seus alunos praticam em casa e chegam na aula mais avançados.',
+    'tc.cta1': 'Ver código-fonte',
+    'tc.cta2': 'Baixar grátis →',
+    'tc.c1.title': 'Prática em casa com qualidade de aula',
+    'tc.c1.desc': 'Seu aluno pratica sozinho em casa e recebe feedback real sobre notas, acordes e dinâmica — sem depender de você estar presente.',
+    'tc.c2.title': 'Zero custo para a escola inteira',
+    'tc.c2.desc': 'Sem licença por aluno, sem plano escolar, sem contrato. Instale em quantos computadores quiser — é grátis para sempre.',
+    'tc.c3.title': 'Customize para o seu método de ensino',
+    'tc.c3.desc': 'Open source — você pode criar exercícios específicos do seu currículo, adaptar a interface ou integrar com outras ferramentas da escola.',
+    'tc.c4.title': 'Funciona com qualquer piano MIDI',
+    'tc.c4.desc': 'Sem hardware proprietário. Funciona com teclados simples de entrada até pianos digitais de alto nível — o que o aluno já tiver em casa.',
+    'footer.credit': 'Feito com ♥ por <a href="https://github.com/leandrodaf" target="_blank" rel="noopener">Leandro Ferreira</a> &nbsp;·&nbsp; Open source, grátis para sempre',
+  },
+
+  en: {
+    'nav.features': 'Features',
+    'nav.teachers': 'Teachers',
+    'nav.how': 'How it works',
+    'nav.download': 'Download',
+    'hero.badge': '✦ Free · Open source · Built for piano learners',
+    'hero.title1': 'Learning piano',
+    'hero.title2': 'just got a lot easier.',
+    'hero.sub': 'Guided exercises, real-time feedback and the name of every note and chord the moment you play — <strong>all free, on your real piano</strong>. You don\'t need a teacher to get started.',
+    'hero.cta1': '⬇ Download free',
+    'hero.cta2': 'See exercises →',
+    'hero.float1label': 'You just played',
+    'hero.float1value': 'C major (Cmaj7)',
+    'hero.float2label': 'Intensity',
+    'hero.float2value': 'forte (f)',
+    'features.tag': 'Features',
+    'features.title': 'Your piano finally talks to you',
+    'features.desc': 'Everything you\'d need from a theory teacher — always available, at no cost.',
+    'features.f1.title': 'Note names in real time',
+    'features.f1.desc': 'Every key you press shows up on screen with its name — C, D#, Ab. You learn by reading as you play.',
+    'features.f2.title': 'Recognizes the chord you formed',
+    'features.f2.desc': 'Played three or four notes together? The app tells you instantly — the chord name and its inversion. Over 80 chords recognized.',
+    'features.f3.title': 'Shows your dynamics',
+    'features.f3.desc': 'Are you playing piano, forte or mezzo-forte? Pianalyze detects the intensity of each note and helps you develop touch control.',
+    'features.f4.title': 'Guided exercises',
+    'features.f4.desc': 'Scales, chord progressions, sight reading — exercises you practice at your own pace, on your real piano.',
+    'features.f5.title': 'Review what you played',
+    'features.f5.desc': 'The app records your practice sessions. Go back and see exactly which notes you played, where you made mistakes and how you progressed.',
+    'features.f6.title': 'Free. Forever.',
+    'features.f6.desc': 'No subscription, no premium version, no paywall. Open source — you can even contribute to the code.',
+    'how.tag': 'How it works',
+    'how.title': 'Three steps and you\'re already practicing',
+    'how.desc': 'You don\'t need to configure anything complicated. If your MIDI piano connects, it works.',
+    'how.s1.title': 'Connect your piano',
+    'how.s1.desc': 'Plug in your keyboard or digital piano via USB or MIDI. Pianalyze detects it automatically — no manual setup.',
+    'how.s2.title': 'Open the app and play',
+    'how.s2.desc': 'Launch Pianalyze, choose your device from the list and start playing. That\'s it. There are no more steps.',
+    'how.s3.title': 'See what you\'re playing',
+    'how.s3.desc': 'Notes and chords appear on screen in real time. Over time, you start recognizing patterns without even looking.',
+    'screens.tag': 'Screenshots',
+    'screens.title': 'See how simple it is',
+    'screens.desc': 'Straight to the point — no complicated menus.',
+    'screens.cap1': '🏠 Live analysis',
+    'screens.cap2': '🎵 Song library',
+    'screens.cap3': '📋 Choose an exercise',
+    'screens.cap4': '▶ Practice at your pace',
+    'screens.cap5': '🎙 Review your sessions',
+    'screens.cap6': '⚙ Simple settings',
+    'dl.tag': 'Download',
+    'dl.title': 'Choose your operating system',
+    'dl.desc': 'Available for Windows, macOS and Linux. Install in seconds, no account needed.',
+    'dl.win.meta': 'Windows 10 or later · 64-bit',
+    'dl.mac.meta': 'macOS 11 or later · Intel & Apple Silicon',
+    'dl.linux.meta': 'Ubuntu, Debian, Fedora and more · 64-bit',
+    'dl.btn': '⬇ Download',
+    'dl.note': 'All downloads are on the <a href="https://github.com/leandrodaf/pianalyze/releases" target="_blank" rel="noopener">GitHub releases page</a>.<br/>MIT licensed open source — no tracking, no mandatory telemetry.',
+    'cta.title': 'Ready to finally understand your piano?',
+    'cta.desc': 'Download free, open it, connect your piano and play. That\'s all.',
+    'cta.btn': '⬇ Download Pianalyze — free',
+    'footer.releases': 'Releases',
+    'footer.issues': 'Report an issue',
+    'footer.license': 'MIT License',
+    'tc.badge': '🎓 For piano teachers & music schools',
+    'tc.tag': 'Professional use',
+    'tc.title': 'Give your students feedback only you could give — even when you\'re not there',
+    'tc.desc': 'Pianalyze is open source precisely so music schools and teachers can use and adapt it at no cost. Students practice at home and arrive at lessons more advanced.',
+    'tc.cta1': 'View source code',
+    'tc.cta2': 'Download free →',
+    'tc.c1.title': 'Home practice with lesson-quality feedback',
+    'tc.c1.desc': 'Students practice alone at home and get real feedback on notes, chords and dynamics — without needing you to be present.',
+    'tc.c2.title': 'Zero cost for the entire school',
+    'tc.c2.desc': 'No per-student license, no school plan, no contract. Install on as many computers as you want — free forever.',
+    'tc.c3.title': 'Customize for your teaching method',
+    'tc.c3.desc': 'Open source — you can create exercises specific to your curriculum, adapt the interface or integrate with other tools your school uses.',
+    'tc.c4.title': 'Works with any MIDI piano',
+    'tc.c4.desc': 'No proprietary hardware. Works from basic entry-level keyboards to high-end digital pianos — whatever the student already has at home.',
+    'footer.credit': 'Made with ♥ by <a href="https://github.com/leandrodaf" target="_blank" rel="noopener">Leandro Ferreira</a> &nbsp;·&nbsp; Open source, free forever',
+  },
+
+  es: {
+    'nav.features': 'Funciones',
+    'nav.teachers': 'Profesores',
+    'nav.how': 'Cómo usar',
+    'nav.download': 'Descargar',
+    'hero.badge': '✦ Gratis · Código abierto · Para quienes aprenden piano',
+    'hero.title1': 'Aprender piano',
+    'hero.title2': 'nunca fue tan fácil.',
+    'hero.sub': 'Ejercicios guiados, retroalimentación en tiempo real y el nombre de cada nota y acorde justo cuando tocas — <strong>todo gratis, en tu piano real</strong>. No necesitas un profesor para empezar.',
+    'hero.cta1': '⬇ Descargar gratis',
+    'hero.cta2': 'Ver ejercicios →',
+    'hero.float1label': 'Acabas de tocar',
+    'hero.float1value': 'Do mayor (Cmaj7)',
+    'hero.float2label': 'Intensidad',
+    'hero.float2value': 'forte (f)',
+    'features.tag': 'Funciones',
+    'features.title': 'Tu piano finalmente te habla',
+    'features.desc': 'Todo lo que necesitarías de un profesor de teoría — siempre disponible, sin costo.',
+    'features.f1.title': 'Nombre de las notas en tiempo real',
+    'features.f1.desc': 'Cada tecla que presionas aparece en pantalla con su nombre — Do, Re#, Lab. Aprendes leyendo mientras tocas.',
+    'features.f2.title': 'Reconoce el acorde que formaste',
+    'features.f2.desc': '¿Tocaste tres o cuatro notas juntas? La app te dice al instante el nombre del acorde y su inversión. Más de 80 acordes reconocidos.',
+    'features.f3.title': 'Muestra tu dinámica',
+    'features.f3.desc': '¿Tocas piano, forte o mezzo-forte? Pianalyze detecta la intensidad de cada nota y te ayuda a desarrollar control de toque.',
+    'features.f4.title': 'Ejercicios guiados',
+    'features.f4.desc': 'Escalas, progresiones de acordes, lectura a primera vista — ejercicios que practicas a tu ritmo, en tu piano real.',
+    'features.f5.title': 'Revisa lo que tocaste',
+    'features.f5.desc': 'La app graba tus sesiones de práctica. Vuelve y ve exactamente qué notas tocaste, dónde fallaste y cómo progresaste.',
+    'features.f6.title': 'Gratis. Para siempre.',
+    'features.f6.desc': 'Sin suscripción, sin versión premium, sin paywall. Código abierto — hasta puedes contribuir al código.',
+    'how.tag': 'Cómo usar',
+    'how.title': 'Tres pasos y ya estás practicando',
+    'how.desc': 'No necesitas configurar nada complicado. Si tu piano MIDI se conecta, funciona.',
+    'how.s1.title': 'Conecta tu piano',
+    'how.s1.desc': 'Enchufa tu teclado o piano digital por USB o MIDI. Pianalyze lo detecta automáticamente — sin configuración manual.',
+    'how.s2.title': 'Abre la app y toca',
+    'how.s2.desc': 'Inicia Pianalyze, elige tu dispositivo de la lista y empieza a tocar. Eso es todo. No hay más pasos.',
+    'how.s3.title': 'Ve lo que estás tocando',
+    'how.s3.desc': 'Las notas y acordes aparecen en pantalla en tiempo real. Con el tiempo, empiezas a reconocer los patrones sin necesidad de mirar.',
+    'screens.tag': 'Capturas',
+    'screens.title': 'Mira qué sencillo es',
+    'screens.desc': 'Interfaz directa — sin menús complicados.',
+    'screens.cap1': '🏠 Análisis en vivo',
+    'screens.cap2': '🎵 Biblioteca de músicas',
+    'screens.cap3': '📋 Elige un ejercicio',
+    'screens.cap4': '▶ Practica a tu ritmo',
+    'screens.cap5': '🎙 Revisa tus sesiones',
+    'screens.cap6': '⚙ Configuración simple',
+    'dl.tag': 'Descargar',
+    'dl.title': 'Elige tu sistema operativo',
+    'dl.desc': 'Disponible para Windows, macOS y Linux. Instala en segundos, sin crear cuenta.',
+    'dl.win.meta': 'Windows 10 o superior · 64-bit',
+    'dl.mac.meta': 'macOS 11 o superior · Intel & Apple Silicon',
+    'dl.linux.meta': 'Ubuntu, Debian, Fedora y más · 64-bit',
+    'dl.btn': '⬇ Descargar',
+    'dl.note': 'Todas las descargas están en la <a href="https://github.com/leandrodaf/pianalyze/releases" target="_blank" rel="noopener">página de releases de GitHub</a>.<br/>Código abierto bajo licencia MIT — sin rastreo, sin telemetría obligatoria.',
+    'cta.title': '¿Listo para finalmente entender tu piano?',
+    'cta.desc': 'Descarga gratis, ábrelo, conecta el piano y toca. Es todo.',
+    'cta.btn': '⬇ Descargar Pianalyze — gratis',
+    'footer.releases': 'Releases',
+    'footer.issues': 'Reportar problema',
+    'footer.license': 'Licencia MIT',
+    'tc.badge': '🎓 Para profesores y escuelas de música',
+    'tc.tag': 'Uso profesional',
+    'tc.title': 'Dale a tu alumno la retroalimentación que solo tú darías — aunque no estés ahí',
+    'tc.desc': 'Pianalyze es open source precisamente para que escuelas de música y profesores puedan usarlo y adaptarlo sin costo. Tus alumnos practican en casa y llegan más avanzados a la clase.',
+    'tc.cta1': 'Ver código fuente',
+    'tc.cta2': 'Descargar gratis →',
+    'tc.c1.title': 'Práctica en casa con calidad de clase',
+    'tc.c1.desc': 'El alumno practica solo en casa y recibe retroalimentación real sobre notas, acordes y dinámica — sin que tengas que estar presente.',
+    'tc.c2.title': 'Costo cero para toda la escuela',
+    'tc.c2.desc': 'Sin licencia por alumno, sin plan escolar, sin contrato. Instálalo en cuantas computadoras quieras — gratis para siempre.',
+    'tc.c3.title': 'Personalízalo para tu método de enseñanza',
+    'tc.c3.desc': 'Open source — puedes crear ejercicios específicos de tu currículo, adaptar la interfaz o integrarlo con otras herramientas de la escuela.',
+    'tc.c4.title': 'Funciona con cualquier piano MIDI',
+    'tc.c4.desc': 'Sin hardware propietario. Funciona desde teclados básicos hasta pianos digitales de gama alta — lo que el alumno ya tenga en casa.',
+    'footer.credit': 'Hecho con ♥ por <a href="https://github.com/leandrodaf" target="_blank" rel="noopener">Leandro Ferreira</a> &nbsp;·&nbsp; Código abierto, gratis para siempre',
+  },
+
+  zh: {
+    'nav.features': '功能',
+    'nav.teachers': '教师',
+    'nav.how': '使用方法',
+    'nav.download': '下载',
+    'hero.badge': '✦ 免费 · 开源 · 专为钢琴学习者打造',
+    'hero.title1': '学钢琴，',
+    'hero.title2': '从未如此简单。',
+    'hero.sub': '引导练习、实时反馈，以及你弹下去的瞬间就显示每个音符和和弦的名称——<strong>全部免费，在你真实的钢琴上</strong>。不需要老师，你也可以开始。',
+    'hero.cta1': '⬇ 免费下载',
+    'hero.cta2': '查看练习 →',
+    'hero.float1label': '你刚刚弹了',
+    'hero.float1value': 'C 大调七和弦 (Cmaj7)',
+    'hero.float2label': '力度',
+    'hero.float2value': '强 (forte)',
+    'features.tag': '功能',
+    'features.title': '你的钢琴终于开口说话了',
+    'features.desc': '你需要从乐理老师那里学到的一切——随时可用，完全免费。',
+    'features.f1.title': '实时显示音符名称',
+    'features.f1.desc': '你按下的每个键都会在屏幕上显示其名称——C、D#、Ab。边弹边学，自然而然。',
+    'features.f2.title': '识别你弹出的和弦',
+    'features.f2.desc': '同时弹了三四个音？应用会立刻告诉你和弦名称及转位。支持 80 多种和弦识别。',
+    'features.f3.title': '显示你的力度',
+    'features.f3.desc': '你弹的是弱、强还是中强？Pianalyze 检测每个音符的力度，帮助你培养触键控制能力。',
+    'features.f4.title': '引导练习',
+    'features.f4.desc': '音阶、和弦进行、视奏——按你自己的节奏，在你的真实钢琴上练习。',
+    'features.f5.title': '回顾你的演奏',
+    'features.f5.desc': '应用录制你的练习。回放后可以看到你弹了哪些音符、哪里出错，以及如何进步。',
+    'features.f6.title': '永久免费。',
+    'features.f6.desc': '无订阅、无高级版、无付费墙。开源——你甚至可以参与代码贡献。',
+    'how.tag': '使用方法',
+    'how.title': '三步即可开始练习',
+    'how.desc': '无需复杂配置。只要你的 MIDI 钢琴能连接，就可以使用。',
+    'how.s1.title': '连接你的钢琴',
+    'how.s1.desc': '通过 USB 或 MIDI 接口连接你的键盘或数字钢琴。Pianalyze 自动识别——无需手动配置。',
+    'how.s2.title': '打开应用并弹奏',
+    'how.s2.desc': '启动 Pianalyze，从列表中选择你的设备，然后开始弹奏。就这样，没有更多步骤了。',
+    'how.s3.title': '看看你在弹什么',
+    'how.s3.desc': '音符和和弦实时显示在屏幕上。随着时间推移，你会开始不看屏幕就能识别这些模式。',
+    'screens.tag': '截图',
+    'screens.title': '看看有多简单',
+    'screens.desc': '界面简洁直接——没有复杂的菜单。',
+    'screens.cap1': '🏠 实时分析',
+    'screens.cap2': '🎵 曲库',
+    'screens.cap3': '📋 选择练习',
+    'screens.cap4': '▶ 按自己节奏练习',
+    'screens.cap5': '🎙 回顾练习记录',
+    'screens.cap6': '⚙ 简单设置',
+    'dl.tag': '下载',
+    'dl.title': '选择你的操作系统',
+    'dl.desc': '支持 Windows、macOS 和 Linux。几秒钟即可安装，无需注册账号。',
+    'dl.win.meta': 'Windows 10 或更高版本 · 64位',
+    'dl.mac.meta': 'macOS 11 或更高版本 · Intel & Apple Silicon',
+    'dl.linux.meta': 'Ubuntu、Debian、Fedora 等 · 64位',
+    'dl.btn': '⬇ 下载',
+    'dl.note': '所有下载文件在 <a href="https://github.com/leandrodaf/pianalyze/releases" target="_blank" rel="noopener">GitHub releases 页面</a>。<br/>MIT 开源许可——无追踪，无强制遥测。',
+    'cta.title': '准备好终于理解你的钢琴了吗？',
+    'cta.desc': '免费下载，打开，连接钢琴，弹奏。就这么简单。',
+    'cta.btn': '⬇ 下载 Pianalyze — 免费',
+    'footer.releases': 'Releases',
+    'footer.issues': '报告问题',
+    'footer.license': 'MIT 许可证',
+    'tc.badge': '🎓 面向钢琴老师和音乐学校',
+    'tc.tag': '专业使用',
+    'tc.title': '让学生在家也能得到只有你才能给的反馈',
+    'tc.desc': 'Pianalyze 之所以是开源的，正是为了让音乐学校和老师能够免费使用和定制它。学生在家练习，来上课时进步更明显。',
+    'tc.cta1': '查看源代码',
+    'tc.cta2': '免费下载 →',
+    'tc.c1.title': '在家练习，课堂质量的反馈',
+    'tc.c1.desc': '学生独自在家练习，仍能获得关于音符、和弦和力度的真实反馈——无需你在场。',
+    'tc.c2.title': '全校零成本',
+    'tc.c2.desc': '无需按学生收费，无校园计划，无合同。可安装在任意数量的电脑上——永久免费。',
+    'tc.c3.title': '根据你的教学方法自定义',
+    'tc.c3.desc': '开源代码——你可以创建符合自己课程的专属练习、调整界面，或与学校其他工具整合。',
+    'tc.c4.title': '兼容任何 MIDI 钢琴',
+    'tc.c4.desc': '无需专有硬件。从入门级键盘到高端数字钢琴都可使用——学生家里有什么就用什么。',
+    'footer.credit': '由 <a href="https://github.com/leandrodaf" target="_blank" rel="noopener">Leandro Ferreira</a> 用 ♥ 制作 &nbsp;·&nbsp; 开源，永久免费',
+  },
+};
+
+let currentLang = 'pt';
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = TRANSLATIONS[lang];
+
+  // Update <html lang>
+  document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang === 'zh' ? 'zh-CN' : lang;
+
+  // Update text nodes
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+
+  // Update HTML nodes
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+
+  // Update active button
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim() === lang.toUpperCase() || (lang === 'zh' && btn.textContent.trim() === '中文'));
+  });
+}
+
+// ── PIANO ─────────────────────────────────────────────────────
+(function() {
+  const container = document.getElementById('pianoKeys');
+  const pattern = [0,1,0,1,0,0,1,0,1,0,1,0];
+  const litNotes = [0, 4, 7, 11];
+
+  for (let oct = 0; oct < 4; oct++) {
+    for (let n = 0; n < 12; n++) {
+      if (pattern[n] === 0) {
+        const wrap = document.createElement('div');
+        wrap.style.position = 'relative';
+        const white = document.createElement('div');
+        white.className = 'key-white';
+        if (litNotes.includes(n)) white.classList.add(n === 11 ? 'cyan-lit' : 'lit');
+        if (n < 11 && pattern[n+1] === 1) {
+          const black = document.createElement('div');
+          black.className = 'key-black';
+          black.style.left = '22px';
+          if (litNotes.includes(n+1)) black.classList.add('lit');
+          white.appendChild(black);
+        }
+        wrap.appendChild(white);
+        container.appendChild(wrap);
+      }
+    }
+  }
+
+  setInterval(() => {
+    const whites = document.querySelectorAll('.key-white:not(.lit):not(.cyan-lit)');
+    if (!whites.length) return;
+    const pick = whites[Math.floor(Math.random() * whites.length)];
+    pick.style.background = 'linear-gradient(180deg,#c4b5fd 0%,#8b5cf6 100%)';
+    pick.style.boxShadow = '0 0 15px rgba(124,58,237,0.6)';
+    setTimeout(() => { pick.style.background = ''; pick.style.boxShadow = ''; }, 300);
+  }, 400);
+})();
+
+// ── LIGHTBOX ───────────────────────────────────────────────────
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+</body>
+</html>
