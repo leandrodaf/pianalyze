@@ -5,6 +5,7 @@ import { vi } from 'vitest'
 // Use a relative filesystem path to bypass the package.json exports conditions
 // and load the browser bundle directly.
 vi.mock('svelte', async () => {
+  // @ts-expect-error — no declaration file for the internal Svelte browser bundle
   return await import('../../node_modules/svelte/src/index-client.js')
 })
 
