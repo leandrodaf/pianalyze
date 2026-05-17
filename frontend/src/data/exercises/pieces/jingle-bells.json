@@ -1,1 +1,759 @@
-{"version":2,"meta":{"title":"Jingle Bells","composer":"James Pierpont","source":{"format":"manual"}},"keySignature":"C","tempoMap":[{"atMs":0,"bpm":72,"beatUnit":"quarter","label":"Allegro"}],"timeSignatureMap":[{"atMs":0,"value":"4/4"}],"measureMap":[{"measure":1,"atMs":0},{"measure":2,"atMs":3333},{"measure":3,"atMs":6667},{"measure":4,"atMs":10000},{"measure":5,"atMs":13333},{"measure":6,"atMs":16667},{"measure":7,"atMs":20000},{"measure":8,"atMs":23333},{"measure":9,"atMs":26667},{"measure":10,"atMs":30000},{"measure":11,"atMs":33333},{"measure":12,"atMs":36667},{"measure":13,"atMs":40000},{"measure":14,"atMs":43333},{"measure":15,"atMs":46667},{"measure":16,"atMs":50000}],"sections":[{"name":"Refrão","startMs":0,"type":"verse","rehearsalMark":"A","difficulty":1},{"name":"Verso","startMs":13333,"type":"bridge","rehearsalMark":"B","difficulty":2},{"name":"Reprise","startMs":26667,"type":"verse","rehearsalMark":"A","difficulty":1}],"gradingProfile":{"velocityTolerance":30,"earlyToleranceMs":489,"lateToleranceMs":293},"events":[{"t":0,"cmd":144,"note":64,"vel":72},{"t":683,"cmd":144,"note":64,"vel":0},{"t":833,"cmd":144,"note":64,"vel":72},{"t":1517,"cmd":144,"note":64,"vel":0},{"t":1667,"cmd":144,"note":64,"vel":72},{"t":3033,"cmd":144,"note":64,"vel":0},{"t":3333,"cmd":144,"note":64,"vel":72},{"t":4017,"cmd":144,"note":64,"vel":0},{"t":4167,"cmd":144,"note":64,"vel":72},{"t":4850,"cmd":144,"note":64,"vel":0},{"t":5000,"cmd":144,"note":64,"vel":72},{"t":6367,"cmd":144,"note":64,"vel":0},{"t":6667,"cmd":144,"note":64,"vel":72},{"t":7350,"cmd":144,"note":64,"vel":0},{"t":7500,"cmd":144,"note":67,"vel":72},{"t":8183,"cmd":144,"note":67,"vel":0},{"t":8333,"cmd":144,"note":60,"vel":72},{"t":9017,"cmd":144,"note":60,"vel":0},{"t":9167,"cmd":144,"note":62,"vel":72},{"t":9850,"cmd":144,"note":62,"vel":0},{"t":10000,"cmd":144,"note":64,"vel":72},{"t":12733,"cmd":144,"note":64,"vel":0},{"t":13333,"cmd":144,"note":65,"vel":72},{"t":14017,"cmd":144,"note":65,"vel":0},{"t":14167,"cmd":144,"note":65,"vel":72},{"t":14850,"cmd":144,"note":65,"vel":0},{"t":15000,"cmd":144,"note":65,"vel":72},{"t":15683,"cmd":144,"note":65,"vel":0},{"t":15833,"cmd":144,"note":65,"vel":72},{"t":16517,"cmd":144,"note":65,"vel":0},{"t":16667,"cmd":144,"note":65,"vel":72},{"t":17350,"cmd":144,"note":65,"vel":0},{"t":17500,"cmd":144,"note":64,"vel":72},{"t":18183,"cmd":144,"note":64,"vel":0},{"t":18333,"cmd":144,"note":64,"vel":72},{"t":19017,"cmd":144,"note":64,"vel":0},{"t":19167,"cmd":144,"note":64,"vel":72},{"t":19850,"cmd":144,"note":64,"vel":0},{"t":20000,"cmd":144,"note":64,"vel":72},{"t":20683,"cmd":144,"note":64,"vel":0},{"t":20833,"cmd":144,"note":62,"vel":72},{"t":21517,"cmd":144,"note":62,"vel":0},{"t":21667,"cmd":144,"note":62,"vel":72},{"t":22350,"cmd":144,"note":62,"vel":0},{"t":22500,"cmd":144,"note":64,"vel":72},{"t":23183,"cmd":144,"note":64,"vel":0},{"t":23333,"cmd":144,"note":62,"vel":72},{"t":24700,"cmd":144,"note":62,"vel":0},{"t":25000,"cmd":144,"note":67,"vel":72},{"t":26367,"cmd":144,"note":67,"vel":0},{"t":26667,"cmd":144,"note":64,"vel":72},{"t":27350,"cmd":144,"note":64,"vel":0},{"t":27500,"cmd":144,"note":64,"vel":72},{"t":28183,"cmd":144,"note":64,"vel":0},{"t":28333,"cmd":144,"note":64,"vel":72},{"t":29700,"cmd":144,"note":64,"vel":0},{"t":30000,"cmd":144,"note":64,"vel":72},{"t":30683,"cmd":144,"note":64,"vel":0},{"t":30833,"cmd":144,"note":64,"vel":72},{"t":31517,"cmd":144,"note":64,"vel":0},{"t":31667,"cmd":144,"note":64,"vel":72},{"t":33033,"cmd":144,"note":64,"vel":0},{"t":33333,"cmd":144,"note":64,"vel":72},{"t":34017,"cmd":144,"note":64,"vel":0},{"t":34167,"cmd":144,"note":67,"vel":72},{"t":34850,"cmd":144,"note":67,"vel":0},{"t":35000,"cmd":144,"note":60,"vel":72},{"t":35683,"cmd":144,"note":60,"vel":0},{"t":35833,"cmd":144,"note":62,"vel":72},{"t":36517,"cmd":144,"note":62,"vel":0},{"t":36667,"cmd":144,"note":64,"vel":72},{"t":39400,"cmd":144,"note":64,"vel":0},{"t":40000,"cmd":144,"note":65,"vel":72},{"t":40683,"cmd":144,"note":65,"vel":0},{"t":40833,"cmd":144,"note":65,"vel":72},{"t":41517,"cmd":144,"note":65,"vel":0},{"t":41667,"cmd":144,"note":65,"vel":72},{"t":42350,"cmd":144,"note":65,"vel":0},{"t":42500,"cmd":144,"note":65,"vel":72},{"t":43183,"cmd":144,"note":65,"vel":0},{"t":43333,"cmd":144,"note":65,"vel":72},{"t":44017,"cmd":144,"note":65,"vel":0},{"t":44167,"cmd":144,"note":64,"vel":72},{"t":44850,"cmd":144,"note":64,"vel":0},{"t":45000,"cmd":144,"note":64,"vel":72},{"t":45683,"cmd":144,"note":64,"vel":0},{"t":45833,"cmd":144,"note":64,"vel":72},{"t":46517,"cmd":144,"note":64,"vel":0},{"t":46667,"cmd":144,"note":67,"vel":72},{"t":47350,"cmd":144,"note":67,"vel":0},{"t":47500,"cmd":144,"note":67,"vel":72},{"t":48183,"cmd":144,"note":67,"vel":0},{"t":48333,"cmd":144,"note":65,"vel":72},{"t":49017,"cmd":144,"note":65,"vel":0},{"t":49167,"cmd":144,"note":62,"vel":72},{"t":49850,"cmd":144,"note":62,"vel":0},{"t":50000,"cmd":144,"note":60,"vel":72},{"t":52733,"cmd":144,"note":60,"vel":0}]}
+{
+  "version": 2,
+  "meta": {
+    "title": "Jingle Bells",
+    "composer": "James Pierpont",
+    "source": {
+      "format": "manual"
+    }
+  },
+  "keySignature": "C",
+  "tempoMap": [
+    {
+      "atMs": 0,
+      "bpm": 72,
+      "beatUnit": "quarter",
+      "label": "Allegro"
+    }
+  ],
+  "timeSignatureMap": [
+    {
+      "atMs": 0,
+      "value": "4/4"
+    }
+  ],
+  "measureMap": [
+    {
+      "measure": 1,
+      "atMs": 0
+    },
+    {
+      "measure": 2,
+      "atMs": 3333
+    },
+    {
+      "measure": 3,
+      "atMs": 6667
+    },
+    {
+      "measure": 4,
+      "atMs": 10000
+    },
+    {
+      "measure": 5,
+      "atMs": 13333
+    },
+    {
+      "measure": 6,
+      "atMs": 16667
+    },
+    {
+      "measure": 7,
+      "atMs": 20000
+    },
+    {
+      "measure": 8,
+      "atMs": 23333
+    },
+    {
+      "measure": 9,
+      "atMs": 26667
+    },
+    {
+      "measure": 10,
+      "atMs": 30000
+    },
+    {
+      "measure": 11,
+      "atMs": 33333
+    },
+    {
+      "measure": 12,
+      "atMs": 36667
+    },
+    {
+      "measure": 13,
+      "atMs": 40000
+    },
+    {
+      "measure": 14,
+      "atMs": 43333
+    },
+    {
+      "measure": 15,
+      "atMs": 46667
+    },
+    {
+      "measure": 16,
+      "atMs": 50000
+    }
+  ],
+  "sections": [
+    {
+      "name": "Refrão",
+      "startMs": 0,
+      "type": "verse",
+      "rehearsalMark": "A",
+      "difficulty": 1
+    },
+    {
+      "name": "Verso",
+      "startMs": 13333,
+      "type": "bridge",
+      "rehearsalMark": "B",
+      "difficulty": 2
+    },
+    {
+      "name": "Reprise",
+      "startMs": 26667,
+      "type": "verse",
+      "rehearsalMark": "A",
+      "difficulty": 1
+    }
+  ],
+  "gradingProfile": {
+    "velocityTolerance": 30,
+    "earlyToleranceMs": 489,
+    "lateToleranceMs": 293
+  },
+  "events": [
+    {
+      "t": 0,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3,
+      "tip": "Posição de Dó — polegar em Dó4"
+    },
+    {
+      "t": 683,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 833,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 1517,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 1667,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 3033,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 3333,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 4017,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 4167,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 4850,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 5000,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 6367,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 6667,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 7350,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 7500,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 8183,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 8333,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 9017,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 9167,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 2
+    },
+    {
+      "t": 9850,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 10000,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 12733,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 13333,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 14017,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 14167,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 14850,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 15000,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 15683,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 15833,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 16517,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 16667,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 17350,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 17500,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 18183,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 18333,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 19017,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 19167,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 19850,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 20000,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 20683,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 20833,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 2
+    },
+    {
+      "t": 21517,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 21667,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 2
+    },
+    {
+      "t": 22350,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 22500,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 23183,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 23333,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 2
+    },
+    {
+      "t": 24700,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 25000,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 26367,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 26667,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 27350,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 27500,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 28183,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 28333,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 29700,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 30000,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 30683,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 30833,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 31517,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 31667,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 33033,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 33333,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 34017,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 34167,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 34850,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 35000,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 35683,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 35833,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 2
+    },
+    {
+      "t": 36517,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 36667,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 39400,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 40000,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 40683,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 40833,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 41517,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 41667,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 42350,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 42500,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 43183,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 43333,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 44017,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 44167,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 44850,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 45000,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 45683,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 45833,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 46517,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 46667,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 47350,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 47500,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 48183,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 48333,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 49017,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 49167,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 2
+    },
+    {
+      "t": 49850,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 50000,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 52733,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    }
+  ]
+}

@@ -67,8 +67,9 @@
       "cmd": 144,
       "note": 57,
       "vel": 72,
+      "finger": 1,
       "hand": "right",
-      "tip": "A3"
+      "tip": "Polegar em Lá3 — início"
     },
     {
       "t": 683,
@@ -81,6 +82,7 @@
       "cmd": 144,
       "note": 59,
       "vel": 72,
+      "finger": 2,
       "hand": "right"
     },
     {
@@ -94,6 +96,7 @@
       "cmd": 144,
       "note": 60,
       "vel": 72,
+      "finger": 3,
       "hand": "right"
     },
     {
@@ -107,7 +110,9 @@
       "cmd": 144,
       "note": 62,
       "vel": 72,
-      "hand": "right"
+      "finger": 1,
+      "hand": "right",
+      "tip": "Cruzar polegar"
     },
     {
       "t": 3182,
@@ -120,6 +125,7 @@
       "cmd": 144,
       "note": 64,
       "vel": 72,
+      "finger": 2,
       "hand": "right"
     },
     {
@@ -133,6 +139,7 @@
       "cmd": 144,
       "note": 65,
       "vel": 72,
+      "finger": 3,
       "hand": "right"
     },
     {
@@ -146,8 +153,9 @@
       "cmd": 144,
       "note": 68,
       "vel": 72,
+      "finger": 4,
       "hand": "right",
-      "tip": "G#4 — 7ª maior, característica da harmônica"
+      "tip": "Sol♯4 — 7ª maior característica"
     },
     {
       "t": 5681,
@@ -160,6 +168,7 @@
       "cmd": 144,
       "note": 69,
       "vel": 72,
+      "finger": 5,
       "hand": "right"
     },
     {
@@ -173,6 +182,7 @@
       "cmd": 144,
       "note": 68,
       "vel": 72,
+      "finger": 4,
       "hand": "right"
     },
     {
@@ -186,6 +196,7 @@
       "cmd": 144,
       "note": 65,
       "vel": 72,
+      "finger": 3,
       "hand": "right"
     },
     {
@@ -199,6 +210,7 @@
       "cmd": 144,
       "note": 64,
       "vel": 72,
+      "finger": 2,
       "hand": "right"
     },
     {
@@ -212,6 +224,7 @@
       "cmd": 144,
       "note": 62,
       "vel": 72,
+      "finger": 1,
       "hand": "right"
     },
     {
@@ -225,7 +238,9 @@
       "cmd": 144,
       "note": 60,
       "vel": 72,
-      "hand": "right"
+      "finger": 3,
+      "hand": "right",
+      "tip": "Passar dedo sobre polegar"
     },
     {
       "t": 10679,
@@ -238,6 +253,7 @@
       "cmd": 144,
       "note": 59,
       "vel": 72,
+      "finger": 2,
       "hand": "right"
     },
     {
@@ -251,6 +267,7 @@
       "cmd": 144,
       "note": 57,
       "vel": 72,
+      "finger": 1,
       "hand": "right",
       "fermata": true
     },

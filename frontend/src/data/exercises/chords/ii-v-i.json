@@ -82,25 +82,30 @@
       "t": 0,
       "cmd": 144,
       "note": 62,
-      "vel": 72
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Ré4 — 1-2-4-5: acorde de 7ª"
     },
     {
       "t": 0,
       "cmd": 144,
       "note": 65,
-      "vel": 72
+      "vel": 72,
+      "finger": 2
     },
     {
       "t": 0,
       "cmd": 144,
       "note": 69,
-      "vel": 72
+      "vel": 72,
+      "finger": 4
     },
     {
       "t": 0,
       "cmd": 144,
       "note": 72,
-      "vel": 72
+      "vel": 72,
+      "finger": 5
     },
     {
       "t": 2733,
@@ -130,25 +135,30 @@
       "t": 3333,
       "cmd": 144,
       "note": 55,
-      "vel": 72
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Sol3 — 1-2-4-5: acorde de 7ª"
     },
     {
       "t": 3333,
       "cmd": 144,
       "note": 59,
-      "vel": 72
+      "vel": 72,
+      "finger": 2
     },
     {
       "t": 3333,
       "cmd": 144,
       "note": 62,
-      "vel": 72
+      "vel": 72,
+      "finger": 4
     },
     {
       "t": 3333,
       "cmd": 144,
       "note": 65,
-      "vel": 72
+      "vel": 72,
+      "finger": 5
     },
     {
       "t": 6066,
@@ -178,25 +188,30 @@
       "t": 6666,
       "cmd": 144,
       "note": 60,
-      "vel": 72
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Dó4 — 1-2-4-5: acorde de 7ª"
     },
     {
       "t": 6666,
       "cmd": 144,
       "note": 64,
-      "vel": 72
+      "vel": 72,
+      "finger": 2
     },
     {
       "t": 6666,
       "cmd": 144,
       "note": 67,
-      "vel": 72
+      "vel": 72,
+      "finger": 4
     },
     {
       "t": 6666,
       "cmd": 144,
       "note": 71,
-      "vel": 72
+      "vel": 72,
+      "finger": 5
     },
     {
       "t": 9399,
@@ -226,25 +241,30 @@
       "t": 9999,
       "cmd": 144,
       "note": 60,
-      "vel": 72
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Dó4 — 1-2-4-5: acorde de 7ª"
     },
     {
       "t": 9999,
       "cmd": 144,
       "note": 64,
-      "vel": 72
+      "vel": 72,
+      "finger": 2
     },
     {
       "t": 9999,
       "cmd": 144,
       "note": 67,
-      "vel": 72
+      "vel": 72,
+      "finger": 4
     },
     {
       "t": 9999,
       "cmd": 144,
       "note": 71,
-      "vel": 72
+      "vel": 72,
+      "finger": 5
     },
     {
       "t": 12732,
@@ -274,25 +294,30 @@
       "t": 13332,
       "cmd": 144,
       "note": 62,
-      "vel": 72
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Ré4 — 1-2-4-5: acorde de 7ª"
     },
     {
       "t": 13332,
       "cmd": 144,
       "note": 65,
-      "vel": 72
+      "vel": 72,
+      "finger": 2
     },
     {
       "t": 13332,
       "cmd": 144,
       "note": 69,
-      "vel": 72
+      "vel": 72,
+      "finger": 4
     },
     {
       "t": 13332,
       "cmd": 144,
       "note": 72,
-      "vel": 72
+      "vel": 72,
+      "finger": 5
     },
     {
       "t": 16065,
@@ -322,25 +347,30 @@
       "t": 16665,
       "cmd": 144,
       "note": 55,
-      "vel": 72
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Sol3 — 1-2-4-5: acorde de 7ª"
     },
     {
       "t": 16665,
       "cmd": 144,
       "note": 59,
-      "vel": 72
+      "vel": 72,
+      "finger": 2
     },
     {
       "t": 16665,
       "cmd": 144,
       "note": 62,
-      "vel": 72
+      "vel": 72,
+      "finger": 4
     },
     {
       "t": 16665,
       "cmd": 144,
       "note": 65,
-      "vel": 72
+      "vel": 72,
+      "finger": 5
     },
     {
       "t": 19398,
@@ -370,25 +400,30 @@
       "t": 19998,
       "cmd": 144,
       "note": 60,
-      "vel": 72
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Dó4 — 1-2-4-5: acorde de 7ª"
     },
     {
       "t": 19998,
       "cmd": 144,
       "note": 64,
-      "vel": 72
+      "vel": 72,
+      "finger": 2
     },
     {
       "t": 19998,
       "cmd": 144,
       "note": 67,
-      "vel": 72
+      "vel": 72,
+      "finger": 4
     },
     {
       "t": 19998,
       "cmd": 144,
       "note": 71,
-      "vel": 72
+      "vel": 72,
+      "finger": 5
     },
     {
       "t": 22731,
@@ -418,25 +453,30 @@
       "t": 23331,
       "cmd": 144,
       "note": 60,
-      "vel": 72
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Dó4 — 1-2-4-5: acorde de 7ª"
     },
     {
       "t": 23331,
       "cmd": 144,
       "note": 64,
-      "vel": 72
+      "vel": 72,
+      "finger": 2
     },
     {
       "t": 23331,
       "cmd": 144,
       "note": 67,
-      "vel": 72
+      "vel": 72,
+      "finger": 4
     },
     {
       "t": 23331,
       "cmd": 144,
       "note": 71,
-      "vel": 72
+      "vel": 72,
+      "finger": 5
     },
     {
       "t": 26064,

@@ -1,1 +1,402 @@
-{"version":2,"meta":{"title":"Progressão Menor","composer":"Exercício Harmônico","source":{"format":"manual"}},"keySignature":"Am","tempoMap":[{"atMs":0,"bpm":72,"beatUnit":"quarter","label":"Andante"}],"timeSignatureMap":[{"atMs":0,"value":"4/4"}],"measureMap":[{"measure":1,"atMs":0},{"measure":2,"atMs":3333},{"measure":3,"atMs":6667},{"measure":4,"atMs":10000},{"measure":5,"atMs":13333},{"measure":6,"atMs":16667},{"measure":7,"atMs":20000},{"measure":8,"atMs":23333}],"sections":[{"name":"i → iv → V → i","startMs":0,"type":"verse","rehearsalMark":"A","difficulty":2},{"name":"Repetição","startMs":13333,"type":"bridge","rehearsalMark":"B","difficulty":2}],"gradingProfile":{"velocityTolerance":30,"earlyToleranceMs":489,"lateToleranceMs":293},"events":[{"t":0,"cmd":144,"note":57,"vel":72},{"t":0,"cmd":144,"note":60,"vel":72},{"t":0,"cmd":144,"note":64,"vel":72},{"t":2733,"cmd":144,"note":57,"vel":0},{"t":2733,"cmd":144,"note":60,"vel":0},{"t":2733,"cmd":144,"note":64,"vel":0},{"t":3333,"cmd":144,"note":62,"vel":72},{"t":3333,"cmd":144,"note":65,"vel":72},{"t":3333,"cmd":144,"note":69,"vel":72},{"t":6067,"cmd":144,"note":62,"vel":0},{"t":6067,"cmd":144,"note":65,"vel":0},{"t":6067,"cmd":144,"note":69,"vel":0},{"t":6667,"cmd":144,"note":64,"vel":72},{"t":6667,"cmd":144,"note":68,"vel":72},{"t":6667,"cmd":144,"note":71,"vel":72},{"t":9400,"cmd":144,"note":64,"vel":0},{"t":9400,"cmd":144,"note":68,"vel":0},{"t":9400,"cmd":144,"note":71,"vel":0},{"t":10000,"cmd":144,"note":57,"vel":72},{"t":10000,"cmd":144,"note":60,"vel":72},{"t":10000,"cmd":144,"note":64,"vel":72},{"t":12733,"cmd":144,"note":57,"vel":0},{"t":12733,"cmd":144,"note":60,"vel":0},{"t":12733,"cmd":144,"note":64,"vel":0},{"t":13333,"cmd":144,"note":57,"vel":72},{"t":13333,"cmd":144,"note":60,"vel":72},{"t":13333,"cmd":144,"note":64,"vel":72},{"t":16067,"cmd":144,"note":57,"vel":0},{"t":16067,"cmd":144,"note":60,"vel":0},{"t":16067,"cmd":144,"note":64,"vel":0},{"t":16667,"cmd":144,"note":62,"vel":72},{"t":16667,"cmd":144,"note":65,"vel":72},{"t":16667,"cmd":144,"note":69,"vel":72},{"t":19400,"cmd":144,"note":62,"vel":0},{"t":19400,"cmd":144,"note":65,"vel":0},{"t":19400,"cmd":144,"note":69,"vel":0},{"t":20000,"cmd":144,"note":64,"vel":72},{"t":20000,"cmd":144,"note":68,"vel":72},{"t":20000,"cmd":144,"note":71,"vel":72},{"t":22733,"cmd":144,"note":64,"vel":0},{"t":22733,"cmd":144,"note":68,"vel":0},{"t":22733,"cmd":144,"note":71,"vel":0},{"t":23333,"cmd":144,"note":57,"vel":72},{"t":23333,"cmd":144,"note":60,"vel":72},{"t":23333,"cmd":144,"note":64,"vel":72},{"t":26067,"cmd":144,"note":57,"vel":0},{"t":26067,"cmd":144,"note":60,"vel":0},{"t":26067,"cmd":144,"note":64,"vel":0}]}
+{
+  "version": 2,
+  "meta": {
+    "title": "Progressão Menor",
+    "composer": "Exercício Harmônico",
+    "source": {
+      "format": "manual"
+    }
+  },
+  "keySignature": "Am",
+  "tempoMap": [
+    {
+      "atMs": 0,
+      "bpm": 72,
+      "beatUnit": "quarter",
+      "label": "Andante"
+    }
+  ],
+  "timeSignatureMap": [
+    {
+      "atMs": 0,
+      "value": "4/4"
+    }
+  ],
+  "measureMap": [
+    {
+      "measure": 1,
+      "atMs": 0
+    },
+    {
+      "measure": 2,
+      "atMs": 3333
+    },
+    {
+      "measure": 3,
+      "atMs": 6667
+    },
+    {
+      "measure": 4,
+      "atMs": 10000
+    },
+    {
+      "measure": 5,
+      "atMs": 13333
+    },
+    {
+      "measure": 6,
+      "atMs": 16667
+    },
+    {
+      "measure": 7,
+      "atMs": 20000
+    },
+    {
+      "measure": 8,
+      "atMs": 23333
+    }
+  ],
+  "sections": [
+    {
+      "name": "i → iv → V → i",
+      "startMs": 0,
+      "type": "verse",
+      "rehearsalMark": "A",
+      "difficulty": 2
+    },
+    {
+      "name": "Repetição",
+      "startMs": 13333,
+      "type": "bridge",
+      "rehearsalMark": "B",
+      "difficulty": 2
+    }
+  ],
+  "gradingProfile": {
+    "velocityTolerance": 30,
+    "earlyToleranceMs": 489,
+    "lateToleranceMs": 293
+  },
+  "events": [
+    {
+      "t": 0,
+      "cmd": 144,
+      "note": 57,
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Lá3 — 1-3-5: acorde"
+    },
+    {
+      "t": 0,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 0,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 2733,
+      "cmd": 144,
+      "note": 57,
+      "vel": 0
+    },
+    {
+      "t": 2733,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 2733,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 3333,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Ré4 — 1-3-5: acorde"
+    },
+    {
+      "t": 3333,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 3333,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 6067,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 6067,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 6067,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 6667,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Mi4 — 1-3-5: acorde"
+    },
+    {
+      "t": 6667,
+      "cmd": 144,
+      "note": 68,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 6667,
+      "cmd": 144,
+      "note": 71,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 9400,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 9400,
+      "cmd": 144,
+      "note": 68,
+      "vel": 0
+    },
+    {
+      "t": 9400,
+      "cmd": 144,
+      "note": 71,
+      "vel": 0
+    },
+    {
+      "t": 10000,
+      "cmd": 144,
+      "note": 57,
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Lá3 — 1-3-5: acorde"
+    },
+    {
+      "t": 10000,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 10000,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 12733,
+      "cmd": 144,
+      "note": 57,
+      "vel": 0
+    },
+    {
+      "t": 12733,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 12733,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 13333,
+      "cmd": 144,
+      "note": 57,
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Lá3 — 1-3-5: acorde"
+    },
+    {
+      "t": 13333,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 13333,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 16067,
+      "cmd": 144,
+      "note": 57,
+      "vel": 0
+    },
+    {
+      "t": 16067,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 16067,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 16667,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Ré4 — 1-3-5: acorde"
+    },
+    {
+      "t": 16667,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 16667,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 19400,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 19400,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 19400,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 20000,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Mi4 — 1-3-5: acorde"
+    },
+    {
+      "t": 20000,
+      "cmd": 144,
+      "note": 68,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 20000,
+      "cmd": 144,
+      "note": 71,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 22733,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 22733,
+      "cmd": 144,
+      "note": 68,
+      "vel": 0
+    },
+    {
+      "t": 22733,
+      "cmd": 144,
+      "note": 71,
+      "vel": 0
+    },
+    {
+      "t": 23333,
+      "cmd": 144,
+      "note": 57,
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Lá3 — 1-3-5: acorde"
+    },
+    {
+      "t": 23333,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 23333,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 26067,
+      "cmd": 144,
+      "note": 57,
+      "vel": 0
+    },
+    {
+      "t": 26067,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 26067,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    }
+  ]
+}

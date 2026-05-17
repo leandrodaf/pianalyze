@@ -1,1 +1,426 @@
-{"version":2,"meta":{"title":"Parabéns pra Você","composer":"Tradição Popular","source":{"format":"manual"}},"keySignature":"C","tempoMap":[{"atMs":0,"bpm":72,"beatUnit":"quarter","label":"Andante"}],"timeSignatureMap":[{"atMs":0,"value":"3/4"}],"measureMap":[{"measure":1,"atMs":0},{"measure":2,"atMs":833},{"measure":3,"atMs":3333},{"measure":4,"atMs":5833},{"measure":5,"atMs":6667},{"measure":6,"atMs":9167},{"measure":7,"atMs":11667},{"measure":8,"atMs":12500},{"measure":9,"atMs":15000},{"measure":10,"atMs":17500},{"measure":11,"atMs":18333},{"measure":12,"atMs":20833}],"sections":[{"name":"Parabéns pra você","startMs":0,"type":"verse","rehearsalMark":"A","difficulty":2},{"name":"Muitos anos de vida","startMs":15000,"type":"bridge","rehearsalMark":"B","difficulty":2}],"gradingProfile":{"velocityTolerance":30,"earlyToleranceMs":489,"lateToleranceMs":293},"events":[{"t":0,"cmd":144,"note":60,"vel":72},{"t":342,"cmd":144,"note":60,"vel":0},{"t":417,"cmd":144,"note":60,"vel":72},{"t":758,"cmd":144,"note":60,"vel":0},{"t":833,"cmd":144,"note":62,"vel":72},{"t":1517,"cmd":144,"note":62,"vel":0},{"t":1667,"cmd":144,"note":60,"vel":72},{"t":2350,"cmd":144,"note":60,"vel":0},{"t":2500,"cmd":144,"note":65,"vel":72},{"t":3183,"cmd":144,"note":65,"vel":0},{"t":3333,"cmd":144,"note":64,"vel":72},{"t":4700,"cmd":144,"note":64,"vel":0},{"t":5833,"cmd":144,"note":60,"vel":72},{"t":6175,"cmd":144,"note":60,"vel":0},{"t":6250,"cmd":144,"note":60,"vel":72},{"t":6592,"cmd":144,"note":60,"vel":0},{"t":6667,"cmd":144,"note":62,"vel":72},{"t":7350,"cmd":144,"note":62,"vel":0},{"t":7500,"cmd":144,"note":60,"vel":72},{"t":8183,"cmd":144,"note":60,"vel":0},{"t":8333,"cmd":144,"note":67,"vel":72},{"t":9017,"cmd":144,"note":67,"vel":0},{"t":9167,"cmd":144,"note":65,"vel":72},{"t":10533,"cmd":144,"note":65,"vel":0},{"t":11667,"cmd":144,"note":60,"vel":72},{"t":12008,"cmd":144,"note":60,"vel":0},{"t":12083,"cmd":144,"note":60,"vel":72},{"t":12425,"cmd":144,"note":60,"vel":0},{"t":12500,"cmd":144,"note":72,"vel":72},{"t":13183,"cmd":144,"note":72,"vel":0},{"t":13333,"cmd":144,"note":69,"vel":72},{"t":14017,"cmd":144,"note":69,"vel":0},{"t":14167,"cmd":144,"note":65,"vel":72},{"t":14850,"cmd":144,"note":65,"vel":0},{"t":15000,"cmd":144,"note":64,"vel":72},{"t":15683,"cmd":144,"note":64,"vel":0},{"t":15833,"cmd":144,"note":62,"vel":72},{"t":17200,"cmd":144,"note":62,"vel":0},{"t":17500,"cmd":144,"note":70,"vel":72},{"t":17842,"cmd":144,"note":70,"vel":0},{"t":17917,"cmd":144,"note":70,"vel":72},{"t":18258,"cmd":144,"note":70,"vel":0},{"t":18333,"cmd":144,"note":69,"vel":72},{"t":19017,"cmd":144,"note":69,"vel":0},{"t":19167,"cmd":144,"note":65,"vel":72},{"t":19850,"cmd":144,"note":65,"vel":0},{"t":20000,"cmd":144,"note":67,"vel":72},{"t":20683,"cmd":144,"note":67,"vel":0},{"t":20833,"cmd":144,"note":65,"vel":72},{"t":22200,"cmd":144,"note":65,"vel":0}]}
+{
+  "version": 2,
+  "meta": {
+    "title": "Parabéns pra Você",
+    "composer": "Tradição Popular",
+    "source": {
+      "format": "manual"
+    }
+  },
+  "keySignature": "C",
+  "tempoMap": [
+    {
+      "atMs": 0,
+      "bpm": 72,
+      "beatUnit": "quarter",
+      "label": "Andante"
+    }
+  ],
+  "timeSignatureMap": [
+    {
+      "atMs": 0,
+      "value": "3/4"
+    }
+  ],
+  "measureMap": [
+    {
+      "measure": 1,
+      "atMs": 0
+    },
+    {
+      "measure": 2,
+      "atMs": 833
+    },
+    {
+      "measure": 3,
+      "atMs": 3333
+    },
+    {
+      "measure": 4,
+      "atMs": 5833
+    },
+    {
+      "measure": 5,
+      "atMs": 6667
+    },
+    {
+      "measure": 6,
+      "atMs": 9167
+    },
+    {
+      "measure": 7,
+      "atMs": 11667
+    },
+    {
+      "measure": 8,
+      "atMs": 12500
+    },
+    {
+      "measure": 9,
+      "atMs": 15000
+    },
+    {
+      "measure": 10,
+      "atMs": 17500
+    },
+    {
+      "measure": 11,
+      "atMs": 18333
+    },
+    {
+      "measure": 12,
+      "atMs": 20833
+    }
+  ],
+  "sections": [
+    {
+      "name": "Parabéns pra você",
+      "startMs": 0,
+      "type": "verse",
+      "rehearsalMark": "A",
+      "difficulty": 2
+    },
+    {
+      "name": "Muitos anos de vida",
+      "startMs": 15000,
+      "type": "bridge",
+      "rehearsalMark": "B",
+      "difficulty": 2
+    }
+  ],
+  "gradingProfile": {
+    "velocityTolerance": 30,
+    "earlyToleranceMs": 489,
+    "lateToleranceMs": 293
+  },
+  "events": [
+    {
+      "t": 0,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1,
+      "tip": "Polegar em Dó4 — início"
+    },
+    {
+      "t": 342,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 417,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 758,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 833,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 2
+    },
+    {
+      "t": 1517,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 1667,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 2350,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 2500,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 3183,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 3333,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 4700,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 5833,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 6175,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 6250,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 6592,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 6667,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 2
+    },
+    {
+      "t": 7350,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 7500,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 8183,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 8333,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 5
+    },
+    {
+      "t": 9017,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 9167,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 10533,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 11667,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 12008,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 12083,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 12425,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 12500,
+      "cmd": 144,
+      "note": 72,
+      "vel": 72,
+      "finger": 5,
+      "tip": "Suba a mão para Dó5"
+    },
+    {
+      "t": 13183,
+      "cmd": 144,
+      "note": 72,
+      "vel": 0
+    },
+    {
+      "t": 13333,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 14017,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 14167,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 2
+    },
+    {
+      "t": 14850,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 15000,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 15683,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 15833,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 2
+    },
+    {
+      "t": 17200,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 17500,
+      "cmd": 144,
+      "note": 70,
+      "vel": 72,
+      "finger": 4,
+      "tip": "Si♭4 com dedo 4"
+    },
+    {
+      "t": 17842,
+      "cmd": 144,
+      "note": 70,
+      "vel": 0
+    },
+    {
+      "t": 17917,
+      "cmd": 144,
+      "note": 70,
+      "vel": 72,
+      "finger": 4
+    },
+    {
+      "t": 18258,
+      "cmd": 144,
+      "note": 70,
+      "vel": 0
+    },
+    {
+      "t": 18333,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 3
+    },
+    {
+      "t": 19017,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 19167,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 19850,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 20000,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 2
+    },
+    {
+      "t": 20683,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 20833,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 1
+    },
+    {
+      "t": 22200,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    }
+  ]
+}
