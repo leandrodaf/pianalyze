@@ -83,7 +83,7 @@ Pre-built binaries are available on the [**Releases page**](https://github.com/l
 | Your Mac | Chip | File to download |
 |---|---|---|
 | MacBook / iMac / Mac Mini **M1, M2, M3, M4** | Apple Silicon | `pianalyze_*_darwin-arm64.tar.gz` |
-| MacBook / iMac **2020 or older (Intel)** | Intel x86_64 | ⚠️ Sem binário pré-compilado — veja abaixo |
+| MacBook / iMac **2020 or older (Intel)** | Intel x86_64 | ⚠️ No pre-built binary — see below |
 
 > Not sure which chip you have? Click the Apple menu → **About This Mac** and look for "Apple M…" (Silicon) or "Intel" in the chip/processor line.
 
@@ -108,29 +108,29 @@ If you see *"Apple could not verify…"* in System Settings: go to **System Sett
 
 #### 🖥️ macOS Intel (build from source)
 
-Não há binário pré-compilado para Macs com processador Intel. Você precisa compilar o app localmente — o processo é simples:
+There is no pre-built binary for Intel Macs. You need to compile the app locally — the process is straightforward:
 
-**1. Instale as dependências:**
-- [Go 1.26+](https://go.dev/dl/) — escolha o instalador macOS (Intel/amd64)
+**1. Install the dependencies:**
+- [Go 1.26+](https://go.dev/dl/) — choose the macOS (Intel/amd64) installer
 - [Node.js 18+](https://nodejs.org/)
 - [Wails CLI](https://wails.io/docs/gettingstarted/installation):
   ```bash
   go install github.com/wailsapp/wails/v2/cmd/wails@latest
   ```
 
-**2. Clone e compile:**
+**2. Clone and build:**
 ```bash
 git clone https://github.com/leandrodaf/pianalyze.git
 cd pianalyze
 wails build
 ```
 
-**3. O binário estará em `build/bin/pianalyze` — execute:**
+**3. The binary will be at `build/bin/pianalyze` — run it:**
 ```bash
 open build/bin/pianalyze.app
 ```
 
-> O primeiro build pode demorar alguns minutos enquanto baixa as dependências.
+> The first build may take a few minutes while dependencies are downloaded.
 
 ---
 
