@@ -39,6 +39,7 @@ function bundledEntryToExercise(entry: BundledExerciseEntry): Exercise {
     style:       entry.style,
     stats:       entry.stats,
     comingSoon:  entry.comingSoon,
+    i18n:        entry.i18n,
     data:        resolveBuiltinData(entry.dataUrl),
   }
 }
@@ -75,6 +76,7 @@ function manifestEntryToExercise(
     tags:        entry.tags ?? [],
     style:       entry.style,
     stats:       entry.stats,
+    i18n:        entry.i18n,
     data,
   }
 }

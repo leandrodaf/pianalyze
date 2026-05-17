@@ -4,7 +4,7 @@
   import { ListDevices, SelectDevice, StartCapture, StopCapture, ImportAnyFile } from '../../wailsjs/go/main/App'
   import type { main } from '../../wailsjs/go/models'
   import { exerciseStore, exercisesByCategory } from '../stores/exercises'
-  import { LOCALE_NAMES, locale, t, type Locale } from '../lib/i18n'
+  import { LOCALE_NAMES, locale, t, localText, type Locale } from '../lib/i18n'
   import {
     type Category,
     type Exercise,
@@ -400,7 +400,7 @@
               class="ex-card"
               class:coming-soon={ex.comingSoon}
               on:click={() => openDetail(ex)}
-              title={ex.title}
+              title={localText(ex.i18n, 'title', ex.title, $locale)}
             >
               <div class="card-cover"
                 style={coverStyle(ex.style.gradient, ex.style.coverImage)}>
@@ -412,7 +412,7 @@
                 {/if}
               </div>
               <div class="card-info">
-                <span class="card-title">{ex.title}</span>
+                <span class="card-title">{localText(ex.i18n, 'title', ex.title, $locale)}</span>
                 <div class="card-meta">
                   <span class="card-by">{$t('common.by')} {ex.author.name}</span>
                 </div>
@@ -453,8 +453,8 @@
           <div class="modal-icon">{detail.style.icon}</div>
           <div class="modal-title-block">
             <span class="modal-category">{$t('category.' + detail.category)}</span>
-            <h2 class="modal-title">{detail.title}</h2>
-            <p class="modal-subtitle">{detail.subtitle}</p>
+            <h2 class="modal-title">{localText(detail.i18n, 'title', detail.title, $locale)}</h2>
+            <p class="modal-subtitle">{localText(detail.i18n, 'subtitle', detail.subtitle, $locale)}</p>
           </div>
         </div>
       </div>
@@ -463,7 +463,7 @@
       <div class="modal-body">
 
         <!-- Description -->
-        <p class="modal-desc">{detail.description}</p>
+        <p class="modal-desc">{localText(detail.i18n, 'description', detail.description, $locale)}</p>
 
         <!-- Contributor card -->
         <div class="contributor-card">

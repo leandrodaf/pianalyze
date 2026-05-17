@@ -118,6 +118,13 @@ export interface Exercise {
   /** Set to true for placeholder exercises not yet shipping with data */
   comingSoon?: boolean
 
+  /**
+   * Locale-specific overrides for display text.
+   * Keys are locale codes (e.g. "en", "es", "zh-CN").
+   * Falls back to the base `title`/`subtitle`/`description` fields (pt-BR).
+   */
+  i18n?: Record<string, { title?: string; subtitle?: string; description?: string }>
+
   /** Loaded recording data — undefined if not yet fetched / builtin placeholder */
   data?: Recording
 }

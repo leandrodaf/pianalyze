@@ -57,7 +57,24 @@
         "timeSignature": "4/4",
         "hands": "both"
       },
-      "dataUrl": "exercises/scales/c-major-scale.json"
+      "dataUrl": "exercises/scales/c-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "C Major Scale",
+          "subtitle": "C · D · E · F · G · A · B · C",
+          "description": "The most fundamental scale on the piano and the starting point for every beginner. Practice it slowly, focusing on an even touch and smooth thumb crossings."
+        },
+        "es": {
+          "title": "Escala de Do Mayor",
+          "subtitle": "Do · Re · Mi · Fa · Sol · La · Si · Do",
+          "description": "La escala más fundamental del piano y punto de partida para todo principiante. Practícala despacio, concentrándote en un toque uniforme y cruces de pulgar suaves."
+        },
+        "zh-CN": {
+          "title": "C大调音阶",
+          "subtitle": "C · D · E · F · G · A · B · C",
+          "description": "钢琴上最基础的音阶，是每位初学者的起点。慢速练习，注意触键均匀和拇指过指流畅。"
+        }
+      }
     },
     {
       "id": "g-major-scale",
@@ -97,7 +114,24 @@
         "timeSignature": "4/4",
         "hands": "both"
       },
-      "dataUrl": "exercises/scales/g-major-scale.json"
+      "dataUrl": "exercises/scales/g-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "G Major Scale",
+          "subtitle": "G · A · B · C · D · E · F# · G",
+          "description": "Scale with one sharp (F#), great for training thumb crossings and position changes. Maintain consistent pressure across all eight notes."
+        },
+        "es": {
+          "title": "Escala de Sol Mayor",
+          "subtitle": "Sol · La · Si · Do · Re · Mi · Fa# · Sol",
+          "description": "Escala con un sostenido (Fa#), excelente para entrenar el cruce de pulgar y los cambios de posición. Mantén una presión uniforme en las ocho notas."
+        },
+        "zh-CN": {
+          "title": "G大调音阶",
+          "subtitle": "G · A · B · C · D · E · F# · G",
+          "description": "含一个升号（F#），适合练习拇指过指和换位。保持八个音的触键力度一致。"
+        }
+      }
     },
     {
       "id": "a-minor-scale",
@@ -137,7 +171,24 @@
         "timeSignature": "4/4",
         "hands": "both"
       },
-      "dataUrl": "exercises/scales/a-minor-scale.json"
+      "dataUrl": "exercises/scales/a-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "A Minor Scale",
+          "subtitle": "A · B · C · D · E · F · G · A",
+          "description": "The natural minor scale relative to C major. Feel the difference in emotional character — darker and more introspective. Focus on consistent tone across all notes."
+        },
+        "es": {
+          "title": "Escala de La Menor",
+          "subtitle": "La · Si · Do · Re · Mi · Fa · Sol · La",
+          "description": "La escala menor natural relativa a Do Mayor. Siente la diferencia de carácter emocional — más oscuro e introspectivo. Busca un tono uniforme en todas las notas."
+        },
+        "zh-CN": {
+          "title": "A小调音阶",
+          "subtitle": "A · B · C · D · E · F · G · A",
+          "description": "C大调的关系小调音阶。感受情感色彩的差异——更暗沉、更内省。注意保持各音色调一致。"
+        }
+      }
     },
     {
       "id": "d-major-scale",
@@ -177,7 +228,24 @@
         "timeSignature": "4/4",
         "hands": "both"
       },
-      "dataUrl": "exercises/scales/d-major-scale.json"
+      "dataUrl": "exercises/scales/d-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "D Major Scale",
+          "subtitle": "D · E · F# · G · A · B · C# · D",
+          "description": "Two sharps (F# and C#). Excellent for building finger independence in the middle octave. Pay special attention to the smooth transition at the thumb crossings."
+        },
+        "es": {
+          "title": "Escala de Re Mayor",
+          "subtitle": "Re · Mi · Fa# · Sol · La · Si · Do# · Re",
+          "description": "Dos sostenidos (Fa# y Do#). Excelente para desarrollar la independencia de los dedos. Presta especial atención a la transición suave en los cruces de pulgar."
+        },
+        "zh-CN": {
+          "title": "D大调音阶",
+          "subtitle": "D · E · F# · G · A · B · C# · D",
+          "description": "含两个升号（F# 和 C#）。适合培养中音区的手指独立性。特别注意拇指过指处的流畅衔接。"
+        }
+      }
     },
     {
       "id": "chromatic-scale",
@@ -218,7 +286,24 @@
         "timeSignature": "4/4",
         "hands": "right"
       },
-      "dataUrl": "exercises/scales/chromatic-scale.json"
+      "dataUrl": "exercises/scales/chromatic-scale.json",
+      "i18n": {
+        "en": {
+          "title": "Chromatic Scale",
+          "subtitle": "All 12 semitones · C4 → C5",
+          "description": "Covers every semitone of the octave, involving all black and white keys. Essential for technical development and understanding the piano keyboard layout."
+        },
+        "es": {
+          "title": "Escala Cromática",
+          "subtitle": "Los 12 semitonos · Do4 → Do5",
+          "description": "Recorre todos los semitonos de la octava, involucrando todas las teclas negras y blancas. Esencial para el desarrollo técnico y la comprensión del teclado."
+        },
+        "zh-CN": {
+          "title": "半音阶",
+          "subtitle": "全部12个半音 · C4 → C5",
+          "description": "涵盖一个八度内的所有半音，涉及所有黑键和白键。对于技术发展和理解钢琴键盘布局至关重要。"
+        }
+      }
     },
     {
       "id": "i-iv-v-i",
@@ -259,7 +344,24 @@
         "hands": "both",
         "bpm": 72
       },
-      "dataUrl": "exercises/chords/i-iv-v-i.json"
+      "dataUrl": "exercises/chords/i-iv-v-i.json",
+      "i18n": {
+        "en": {
+          "title": "I–IV–V–I Progression",
+          "subtitle": "C · F · G · C (4 chords)",
+          "description": "The most important chord progression in Western music. Foundation for countless songs across rock, pop, blues and classical music."
+        },
+        "es": {
+          "title": "Progresión I–IV–V–I",
+          "subtitle": "Do · Fa · Sol · Do (4 acordes)",
+          "description": "La progresión de acordes más importante de la música occidental. Base de innumerables canciones de rock, pop, blues y música clásica."
+        },
+        "zh-CN": {
+          "title": "I–IV–V–I和弦进行",
+          "subtitle": "C · F · G · C（4个和弦）",
+          "description": "西方音乐中最重要的和弦进行，是无数摇滚、流行、蓝调和古典音乐的基础。"
+        }
+      }
     },
     {
       "id": "minor-progression",
@@ -300,7 +402,24 @@
         "hands": "both",
         "bpm": 72
       },
-      "dataUrl": "exercises/chords/minor-progression.json"
+      "dataUrl": "exercises/chords/minor-progression.json",
+      "i18n": {
+        "en": {
+          "title": "Minor Chord Progression",
+          "subtitle": "Am · F · C · G (4 chords)",
+          "description": "A widely used minor key progression found in pop and rock ballads. Develops smooth chord transitions and an understanding of tonal contrast."
+        },
+        "es": {
+          "title": "Progresión Menor",
+          "subtitle": "Lam · Fa · Do · Sol (4 acordes)",
+          "description": "Una progresión menor muy utilizada en baladas pop y rock. Desarrolla transiciones suaves entre acordes y comprensión del contraste tonal."
+        },
+        "zh-CN": {
+          "title": "小调和弦进行",
+          "subtitle": "Am · F · C · G（4个和弦）",
+          "description": "流行和摇滚抒情曲中常用的小调进行，培养和弦间的流畅过渡和调性对比感。"
+        }
+      }
     },
     {
       "id": "seventh-chords",
@@ -341,7 +460,24 @@
         "bpm": 72,
         "timeSignature": "4/4"
       },
-      "dataUrl": "exercises/chords/seventh-chords.json"
+      "dataUrl": "exercises/chords/seventh-chords.json",
+      "i18n": {
+        "en": {
+          "title": "Seventh Chords",
+          "subtitle": "Cmaj7 · Dm7 · Em7 (3 chords)",
+          "description": "Seventh chords add colour and richness beyond basic triads. Essential for jazz, soul and contemporary music. Focus on the balance between all four voices."
+        },
+        "es": {
+          "title": "Acordes de Séptima",
+          "subtitle": "Cmaj7 · Rem7 · Mim7 (3 acordes)",
+          "description": "Los acordes de séptima añaden color y riqueza más allá de las tríadas básicas. Imprescindibles para el jazz, el soul y la música contemporánea."
+        },
+        "zh-CN": {
+          "title": "七和弦",
+          "subtitle": "Cmaj7 · Dm7 · Em7（3个和弦）",
+          "description": "七和弦在基础三和弦的基础上增添了色彩与丰富感，是爵士乐、灵魂乐和当代音乐的必备内容。"
+        }
+      }
     },
     {
       "id": "inversions",
@@ -381,7 +517,24 @@
         "bpm": 72,
         "timeSignature": "4/4"
       },
-      "dataUrl": "exercises/chords/inversions.json"
+      "dataUrl": "exercises/chords/inversions.json",
+      "i18n": {
+        "en": {
+          "title": "Chord Inversions",
+          "subtitle": "Root · 1st inv. · 2nd inv.",
+          "description": "Learn to play chords in all three positions. Inversions allow smoother voice leading and are fundamental for professional chord work."
+        },
+        "es": {
+          "title": "Inversiones de Acorde",
+          "subtitle": "Posición raíz · 1ª inv. · 2ª inv.",
+          "description": "Aprende a tocar acordes en las tres posiciones. Las inversiones permiten un movimiento de voz más fluido y son fundamentales para el trabajo con acordes."
+        },
+        "zh-CN": {
+          "title": "和弦转位",
+          "subtitle": "原位 · 第一转位 · 第二转位",
+          "description": "学习在三种位置上演奏和弦。转位可实现更流畅的声部进行，是专业和弦演奏的基础。"
+        }
+      }
     },
     {
       "id": "jazz-voicings",
@@ -422,7 +575,24 @@
         "bpm": 72,
         "timeSignature": "4/4"
       },
-      "dataUrl": "exercises/chords/jazz-voicings.json"
+      "dataUrl": "exercises/chords/jazz-voicings.json",
+      "i18n": {
+        "en": {
+          "title": "Jazz Voicings",
+          "subtitle": "Drop-2 · Shell voicings",
+          "description": "Extended voicings used in jazz piano. Learn to voice chords with 9ths, 11ths and 13ths for a professional jazz sound."
+        },
+        "es": {
+          "title": "Voicings de Jazz",
+          "subtitle": "Drop-2 · Shell voicings",
+          "description": "Disposiciones extendidas usadas en el piano de jazz. Aprende a voicear acordes con 9nas, 11nas y 13nas para un sonido de jazz profesional."
+        },
+        "zh-CN": {
+          "title": "爵士和声",
+          "subtitle": "Drop-2 · Shell voicings",
+          "description": "爵士钢琴中的扩展和声配置，学习用九音、十一音和十三音来配置和弦，打造专业的爵士风格。"
+        }
+      }
     },
     {
       "id": "triads-c-major-rh",
@@ -467,7 +637,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-c-major-rh.json"
+      "dataUrl": "exercises/triads/triads-c-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "C Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of C Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Do Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Do Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "C大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习C大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-c-major-lh",
@@ -512,7 +699,24 @@
         "hands": "left",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-c-major-lh.json"
+      "dataUrl": "exercises/triads/triads-c-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "C Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of C Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Do Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Do Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "C大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习C大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-g-major-rh",
@@ -557,7 +761,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-g-major-rh.json"
+      "dataUrl": "exercises/triads/triads-g-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "G Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of G Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Sol Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Sol Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "G大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习G大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-g-major-lh",
@@ -602,7 +823,24 @@
         "hands": "left",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-g-major-lh.json"
+      "dataUrl": "exercises/triads/triads-g-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "G Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of G Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Sol Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Sol Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "G大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习G大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-d-major-rh",
@@ -647,7 +885,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-d-major-rh.json"
+      "dataUrl": "exercises/triads/triads-d-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "D Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of D Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Re Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Re Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "D大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习D大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-d-major-lh",
@@ -692,7 +947,24 @@
         "hands": "left",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-d-major-lh.json"
+      "dataUrl": "exercises/triads/triads-d-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "D Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of D Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Re Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Re Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "D大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习D大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-a-major-rh",
@@ -737,7 +1009,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-a-major-rh.json"
+      "dataUrl": "exercises/triads/triads-a-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "A Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of A Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en La Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de La Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "A大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习A大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-a-major-lh",
@@ -782,7 +1071,24 @@
         "hands": "left",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-a-major-lh.json"
+      "dataUrl": "exercises/triads/triads-a-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "A Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of A Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en La Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de La Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "A大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习A大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-e-major-rh",
@@ -827,7 +1133,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-e-major-rh.json"
+      "dataUrl": "exercises/triads/triads-e-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "E Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of E Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Mi Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Mi Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "E大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习E大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-e-major-lh",
@@ -872,7 +1195,24 @@
         "hands": "left",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-e-major-lh.json"
+      "dataUrl": "exercises/triads/triads-e-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "E Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of E Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Mi Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Mi Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "E大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习E大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-f-major-rh",
@@ -917,7 +1257,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-f-major-rh.json"
+      "dataUrl": "exercises/triads/triads-f-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "F Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of F Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Fa Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Fa Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "F大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习F大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-f-major-lh",
@@ -962,7 +1319,24 @@
         "hands": "left",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-f-major-lh.json"
+      "dataUrl": "exercises/triads/triads-f-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "F Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of F Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Fa Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Fa Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "F大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习F大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-bb-major-rh",
@@ -1007,7 +1381,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-bb-major-rh.json"
+      "dataUrl": "exercises/triads/triads-bb-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "B♭ Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of B♭ Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Si♭ Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Si♭ Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "B♭大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习B♭大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-bb-major-lh",
@@ -1052,7 +1443,24 @@
         "hands": "left",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-bb-major-lh.json"
+      "dataUrl": "exercises/triads/triads-bb-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "B♭ Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of B♭ Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Si♭ Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Si♭ Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "B♭大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习B♭大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-a-minor-rh",
@@ -1097,7 +1505,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-a-minor-rh.json"
+      "dataUrl": "exercises/triads/triads-a-minor-rh.json",
+      "i18n": {
+        "en": {
+          "title": "A Minor Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of A Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en La Menor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de La Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "A小调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习A小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-a-minor-lh",
@@ -1142,7 +1567,24 @@
         "hands": "left",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-a-minor-lh.json"
+      "dataUrl": "exercises/triads/triads-a-minor-lh.json",
+      "i18n": {
+        "en": {
+          "title": "A Minor Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of A Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en La Menor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de La Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "A小调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习A小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-e-minor-rh",
@@ -1187,7 +1629,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-e-minor-rh.json"
+      "dataUrl": "exercises/triads/triads-e-minor-rh.json",
+      "i18n": {
+        "en": {
+          "title": "E Minor Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of E Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Mi Menor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Mi Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "E小调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习E小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-e-minor-lh",
@@ -1232,7 +1691,24 @@
         "hands": "left",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-e-minor-lh.json"
+      "dataUrl": "exercises/triads/triads-e-minor-lh.json",
+      "i18n": {
+        "en": {
+          "title": "E Minor Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of E Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Mi Menor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Mi Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "E小调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习E小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-d-minor-rh",
@@ -1277,7 +1753,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-d-minor-rh.json"
+      "dataUrl": "exercises/triads/triads-d-minor-rh.json",
+      "i18n": {
+        "en": {
+          "title": "D Minor Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of D Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Re Menor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Re Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "D小调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习D小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "triads-d-minor-lh",
@@ -1322,7 +1815,24 @@
         "hands": "left",
         "bpm": 72
       },
-      "dataUrl": "exercises/triads/triads-d-minor-lh.json"
+      "dataUrl": "exercises/triads/triads-d-minor-lh.json",
+      "i18n": {
+        "en": {
+          "title": "D Minor Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of D Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Re Menor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Re Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "D小调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习D小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "twinkle",
@@ -1363,7 +1873,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/twinkle.json"
+      "dataUrl": "exercises/pieces/twinkle.json",
+      "i18n": {
+        "en": {
+          "title": "Twinkle Twinkle Little Star",
+          "subtitle": "C major · Right hand melody",
+          "description": "A classic nursery rhyme and ideal first piece for beginners. Based on a simple 5-note melody, it builds finger coordination and confidence at the keyboard."
+        },
+        "es": {
+          "title": "Estrellita",
+          "subtitle": "Do mayor · Melodía mano derecha",
+          "description": "Una canción infantil clásica e ideal como primera pieza para principiantes. Basada en una melodía simple de 5 notas, desarrolla la coordinación de los dedos y la confianza en el teclado."
+        },
+        "zh-CN": {
+          "title": "小星星",
+          "subtitle": "C大调 · 右手旋律",
+          "description": "经典儿歌，是初学者的理想入门曲目。基于简单的五音旋律，培养手指协调能力和键盘信心。"
+        }
+      }
     },
     {
       "id": "fur-elise",
@@ -1396,7 +1923,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/fur-elise.json"
+      "dataUrl": "exercises/pieces/fur-elise.json",
+      "i18n": {
+        "en": {
+          "title": "Für Elise",
+          "subtitle": "A minor · Beethoven · Opening theme",
+          "description": "The iconic opening theme of one of Beethoven's most beloved piano pieces. Focuses on legato playing and precise finger control in the right hand."
+        },
+        "es": {
+          "title": "Para Elisa",
+          "subtitle": "La menor · Beethoven · Tema inicial",
+          "description": "El icónico tema inicial de una de las piezas para piano más queridas de Beethoven. Se centra en el fraseo legato y el control preciso de los dedos de la mano derecha."
+        },
+        "zh-CN": {
+          "title": "致爱丽丝",
+          "subtitle": "A小调 · 贝多芬 · 开头主题",
+          "description": "贝多芬最受喜爱的钢琴作品之一的标志性开头主题，专注于连奏演奏和右手精准的手指控制。"
+        }
+      }
     },
     {
       "id": "ode-to-joy",
@@ -1429,7 +1973,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/ode-to-joy.json"
+      "dataUrl": "exercises/pieces/ode-to-joy.json",
+      "i18n": {
+        "en": {
+          "title": "Ode to Joy",
+          "subtitle": "D major · Beethoven · Symphony No. 9",
+          "description": "The main melody from Beethoven's 9th Symphony, arranged for solo piano. A wonderful piece for building consistent rhythm and even tone across the keyboard."
+        },
+        "es": {
+          "title": "Oda a la Alegría",
+          "subtitle": "Re mayor · Beethoven · Sinfonía Nº 9",
+          "description": "La melodía principal de la 9ª Sinfonía de Beethoven, arreglada para piano solo. Una pieza maravillosa para desarrollar un ritmo consistente y un tono uniforme."
+        },
+        "zh-CN": {
+          "title": "欢乐颂",
+          "subtitle": "D大调 · 贝多芬 · 第九交响曲",
+          "description": "贝多芬第九交响曲主旋律，改编为钢琴独奏。适合培养稳定的节奏感和均匀的触键音色。"
+        }
+      }
     },
     {
       "id": "happy-birthday",
@@ -1462,7 +2023,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/happy-birthday.json"
+      "dataUrl": "exercises/pieces/happy-birthday.json",
+      "i18n": {
+        "en": {
+          "title": "Happy Birthday",
+          "subtitle": "C major · 3/4 time · Classic melody",
+          "description": "The world's most recognized song, great for practicing 3/4 time signature and dotted rhythms. Simple enough for beginners, satisfying to play from the first lesson."
+        },
+        "es": {
+          "title": "Cumpleaños Feliz",
+          "subtitle": "Do mayor · Compás 3/4 · Melodía clásica",
+          "description": "La canción más reconocida del mundo, ideal para practicar el compás de 3/4 y los ritmos con puntillo. Sencilla para principiantes y satisfactoria desde la primera lección."
+        },
+        "zh-CN": {
+          "title": "生日快乐",
+          "subtitle": "C大调 · 3/4拍 · 经典旋律",
+          "description": "世界上最广为人知的歌曲，适合练习3/4拍和附点节奏。简单易学，第一课就能弹奏。"
+        }
+      }
     },
     {
       "id": "jingle-bells",
@@ -1495,7 +2073,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/jingle-bells.json"
+      "dataUrl": "exercises/pieces/jingle-bells.json",
+      "i18n": {
+        "en": {
+          "title": "Jingle Bells",
+          "subtitle": "G major · Christmas classic",
+          "description": "One of the most popular Christmas songs. Great for practicing even eighth-note rhythms and building right-hand speed in G major position."
+        },
+        "es": {
+          "title": "Cascabeles",
+          "subtitle": "Sol mayor · Villancico clásico",
+          "description": "Una de las canciones navideñas más populares. Ideal para practicar ritmos de corcheas uniformes y desarrollar velocidad en la mano derecha en posición de Sol mayor."
+        },
+        "zh-CN": {
+          "title": "铃儿响叮当",
+          "subtitle": "G大调 · 圣诞经典",
+          "description": "最受欢迎的圣诞歌曲之一，适合练习均匀的八分音符节奏，培养右手在G大调指位上的速度。"
+        }
+      }
     },
     {
       "id": "mary-had-a-little-lamb",
@@ -1528,7 +2123,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/mary-had-a-little-lamb.json"
+      "dataUrl": "exercises/pieces/mary-had-a-little-lamb.json",
+      "i18n": {
+        "en": {
+          "title": "Mary Had a Little Lamb",
+          "subtitle": "C major · Easy 5-finger melody",
+          "description": "A beloved children's song using only 5 notes in C major position. Perfect for absolute beginners learning finger numbers and basic rhythm."
+        },
+        "es": {
+          "title": "María Tenía un Corderito",
+          "subtitle": "Do mayor · Melodía fácil de 5 dedos",
+          "description": "Una canción infantil querida que usa solo 5 notas en la posición de Do mayor. Perfecta para principiantes absolutos que aprenden números de dedos y ritmo básico."
+        },
+        "zh-CN": {
+          "title": "玛丽有只小羊羔",
+          "subtitle": "C大调 · 简单五指旋律",
+          "description": "只用C大调指位5个音的经典儿歌，非常适合零基础初学者学习手指编号和基本节奏。"
+        }
+      }
     },
     {
       "id": "hot-cross-buns",
@@ -1561,7 +2173,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/hot-cross-buns.json"
+      "dataUrl": "exercises/pieces/hot-cross-buns.json",
+      "i18n": {
+        "en": {
+          "title": "Hot Cross Buns",
+          "subtitle": "C major · 3-note beginner piece",
+          "description": "One of the simplest melodies to learn — uses only three notes (E, D, C). The ideal first song for absolute beginners building hand position and finger control."
+        },
+        "es": {
+          "title": "Hot Cross Buns",
+          "subtitle": "Do mayor · Pieza de 3 notas",
+          "description": "Una de las melodías más simples para aprender: usa solo tres notas (Mi, Re, Do). La primera canción ideal para principiantes absolutos que trabajan la posición de mano y el control de dedos."
+        },
+        "zh-CN": {
+          "title": "Hot Cross Buns",
+          "subtitle": "C大调 · 三音初学曲",
+          "description": "最简单的旋律之一，只用三个音（E、D、C）。是零基础初学者建立手位和手指控制的理想入门曲。"
+        }
+      }
     },
     {
       "id": "frere-jacques",
@@ -1594,7 +2223,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/frere-jacques.json"
+      "dataUrl": "exercises/pieces/frere-jacques.json",
+      "i18n": {
+        "en": {
+          "title": "Frère Jacques",
+          "subtitle": "C major · French round",
+          "description": "A classic French children's song that works beautifully as a piano exercise. Develops legato touch, phrase awareness, and smooth position shifts."
+        },
+        "es": {
+          "title": "Fray Felipe",
+          "subtitle": "Do mayor · Canon francés",
+          "description": "Una clásica canción infantil francesa que funciona muy bien como ejercicio de piano. Desarrolla el toque legato, la conciencia de frase y los desplazamientos de posición."
+        },
+        "zh-CN": {
+          "title": "雅克兄弟",
+          "subtitle": "C大调 · 法国轮唱曲",
+          "description": "经典法国儿歌，非常适合作为钢琴练习曲。培养连奏触键、乐句意识和流畅的换位能力。"
+        }
+      }
     },
     {
       "id": "london-bridge",
@@ -1627,7 +2273,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/london-bridge.json"
+      "dataUrl": "exercises/pieces/london-bridge.json",
+      "i18n": {
+        "en": {
+          "title": "London Bridge",
+          "subtitle": "G major · English nursery rhyme",
+          "description": "A well-known English nursery rhyme ideal for practicing in G major position. Focuses on clean articulation and consistent finger weight."
+        },
+        "es": {
+          "title": "El Puente de Londres",
+          "subtitle": "Sol mayor · Canción infantil inglesa",
+          "description": "Una conocida canción infantil inglesa ideal para practicar en la posición de Sol mayor. Se centra en una articulación limpia y un peso de dedo consistente."
+        },
+        "zh-CN": {
+          "title": "伦敦桥",
+          "subtitle": "G大调 · 英国儿歌",
+          "description": "著名的英国儿歌，适合在G大调指位上练习。专注于清晰的吐音和一致的手指力度。"
+        }
+      }
     },
     {
       "id": "amazing-grace",
@@ -1661,7 +2324,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/amazing-grace.json"
+      "dataUrl": "exercises/pieces/amazing-grace.json",
+      "i18n": {
+        "en": {
+          "title": "Amazing Grace",
+          "subtitle": "G major · 3/4 time · Hymn",
+          "description": "One of the world's best-loved hymns, played in 3/4 time. Perfect for developing a singing, legato tone and expressive phrasing."
+        },
+        "es": {
+          "title": "Sublime Gracia",
+          "subtitle": "Sol mayor · Compás 3/4 · Himno",
+          "description": "Uno de los himnos más queridos del mundo, en compás de 3/4. Perfecto para desarrollar un tono cantable y legato y un fraseo expresivo."
+        },
+        "zh-CN": {
+          "title": "奇异恩典",
+          "subtitle": "G大调 · 3/4拍 · 赞美诗",
+          "description": "世界上最受喜爱的赞美诗之一，3/4拍演奏。非常适合培养歌唱性的连奏音色和富有表情的乐句。"
+        }
+      }
     },
     {
       "id": "yankee-doodle",
@@ -1694,7 +2374,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/yankee-doodle.json"
+      "dataUrl": "exercises/pieces/yankee-doodle.json",
+      "i18n": {
+        "en": {
+          "title": "Yankee Doodle",
+          "subtitle": "G major · American patriotic song",
+          "description": "An energetic American tune perfect for practicing eighth-note patterns and building right-hand speed. Great for adding a lively staccato touch."
+        },
+        "es": {
+          "title": "Yankee Doodle",
+          "subtitle": "Sol mayor · Canción patriótica americana",
+          "description": "Una animada melodía americana perfecta para practicar patrones de corcheas y desarrollar la velocidad de la mano derecha. Ideal para un toque staccato vivo."
+        },
+        "zh-CN": {
+          "title": "洋基歌",
+          "subtitle": "G大调 · 美国爱国歌曲",
+          "description": "充满活力的美国曲调，适合练习八分音符模式和培养右手速度，也是练习跳音触键的好素材。"
+        }
+      }
     },
     {
       "id": "old-macdonald",
@@ -1727,7 +2424,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/old-macdonald.json"
+      "dataUrl": "exercises/pieces/old-macdonald.json",
+      "i18n": {
+        "en": {
+          "title": "Old MacDonald Had a Farm",
+          "subtitle": "G major · Call-and-response melody",
+          "description": "A fun folk song with a memorable call-and-response structure. Great for beginners developing steady beat, hand position, and simple ornamentation."
+        },
+        "es": {
+          "title": "El Viejo MacDonald",
+          "subtitle": "Sol mayor · Melodía pregunta-respuesta",
+          "description": "Una divertida canción folclórica con una memorable estructura de pregunta-respuesta. Ideal para principiantes que desarrollan pulso estable y posición de mano."
+        },
+        "zh-CN": {
+          "title": "王老先生有块地",
+          "subtitle": "G大调 · 对答式旋律",
+          "description": "有趣的民谣，结构为问答呼应。适合初学者培养稳定的节拍感、手位和简单的装饰音。"
+        }
+      }
     },
     {
       "id": "when-the-saints",
@@ -1760,7 +2474,24 @@
         "hands": "right",
         "bpm": 72
       },
-      "dataUrl": "exercises/pieces/when-the-saints.json"
+      "dataUrl": "exercises/pieces/when-the-saints.json",
+      "i18n": {
+        "en": {
+          "title": "When the Saints Go Marching In",
+          "subtitle": "C major · Jazz / Gospel classic",
+          "description": "One of the most famous jazz and gospel tunes. Develops a strong sense of pulse and swing feel. Great for building right-hand confidence across two octaves."
+        },
+        "es": {
+          "title": "Cuando los Santos Marchen",
+          "subtitle": "Do mayor · Clásico jazz / gospel",
+          "description": "Una de las melodías de jazz y gospel más famosas. Desarrolla un fuerte sentido del pulso y el swing. Ideal para ganar confianza con la mano derecha en dos octavas."
+        },
+        "zh-CN": {
+          "title": "当圣徒进行时",
+          "subtitle": "C大调 · 爵士/福音经典",
+          "description": "最著名的爵士乐和福音音乐曲调之一，培养强烈的节拍感和摇摆感，适合在两个八度内建立右手演奏信心。"
+        }
+      }
     }
   ]
 }

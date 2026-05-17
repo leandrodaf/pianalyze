@@ -1,1 +1,414 @@
-{"version":2,"meta":{"title":"Tríades em Si♭ Maior — Mão Direita","composer":"Exercício — Tríades em Si♭ Maior","source":{"format":"manual"}},"keySignature":"Bb","tempoMap":[{"atMs":0,"bpm":72,"beatUnit":"quarter","label":"Andante"}],"timeSignatureMap":[{"atMs":0,"value":"4/4"}],"measureMap":[{"measure":1,"atMs":0},{"measure":2,"atMs":3333},{"measure":3,"atMs":6667},{"measure":4,"atMs":10000},{"measure":5,"atMs":13333},{"measure":6,"atMs":16667},{"measure":7,"atMs":20000}],"sections":[{"name":"I — A#3-D4-F4","startMs":0,"type":"verse","rehearsalMark":"1","difficulty":1},{"name":"ii — C4-D#4-G4","startMs":3333,"type":"verse","rehearsalMark":"2","difficulty":1},{"name":"iii — D4-F4-A4","startMs":6667,"type":"verse","rehearsalMark":"3","difficulty":1},{"name":"IV — D#4-G4-A#4","startMs":10000,"type":"verse","rehearsalMark":"4","difficulty":1},{"name":"V — F4-A4-C5","startMs":13333,"type":"bridge","rehearsalMark":"5","difficulty":1},{"name":"vi — G4-A#4-D5","startMs":16667,"type":"bridge","rehearsalMark":"6","difficulty":1},{"name":"vii° — A4-C5-D#5","startMs":20000,"type":"bridge","rehearsalMark":"7","difficulty":2}],"gradingProfile":{"velocityTolerance":40,"earlyToleranceMs":600,"lateToleranceMs":400},"events":[{"t":0,"cmd":144,"note":58,"vel":72,"finger":2,"hand":"right","tip":"I – A#3-D4-F4 (Maior)"},{"t":0,"cmd":144,"note":62,"vel":72,"finger":3,"hand":"right"},{"t":0,"cmd":144,"note":65,"vel":72,"finger":5,"hand":"right"},{"t":2733,"cmd":144,"note":58,"vel":0},{"t":2733,"cmd":144,"note":62,"vel":0},{"t":2733,"cmd":144,"note":65,"vel":0},{"t":3333,"cmd":144,"note":60,"vel":72,"finger":1,"hand":"right","tip":"ii – C4-D#4-G4 (menor)"},{"t":3333,"cmd":144,"note":63,"vel":72,"finger":2,"hand":"right"},{"t":3333,"cmd":144,"note":67,"vel":72,"finger":5,"hand":"right"},{"t":6066,"cmd":144,"note":60,"vel":0},{"t":6066,"cmd":144,"note":63,"vel":0},{"t":6066,"cmd":144,"note":67,"vel":0},{"t":6667,"cmd":144,"note":62,"vel":72,"finger":1,"hand":"right","tip":"iii – D4-F4-A4 (menor)"},{"t":6667,"cmd":144,"note":65,"vel":72,"finger":3,"hand":"right"},{"t":6667,"cmd":144,"note":69,"vel":72,"finger":5,"hand":"right"},{"t":9400,"cmd":144,"note":62,"vel":0},{"t":9400,"cmd":144,"note":65,"vel":0},{"t":9400,"cmd":144,"note":69,"vel":0},{"t":10000,"cmd":144,"note":63,"vel":72,"finger":2,"hand":"right","tip":"IV – D#4-G4-A#4 (Maior)"},{"t":10000,"cmd":144,"note":67,"vel":72,"finger":3,"hand":"right"},{"t":10000,"cmd":144,"note":70,"vel":72,"finger":5,"hand":"right"},{"t":12733,"cmd":144,"note":63,"vel":0},{"t":12733,"cmd":144,"note":67,"vel":0},{"t":12733,"cmd":144,"note":70,"vel":0},{"t":13333,"cmd":144,"note":65,"vel":72,"finger":1,"hand":"right","tip":"V – F4-A4-C5 (Maior)"},{"t":13333,"cmd":144,"note":69,"vel":72,"finger":3,"hand":"right"},{"t":13333,"cmd":144,"note":72,"vel":72,"finger":5,"hand":"right"},{"t":16066,"cmd":144,"note":65,"vel":0},{"t":16066,"cmd":144,"note":69,"vel":0},{"t":16066,"cmd":144,"note":72,"vel":0},{"t":16667,"cmd":144,"note":67,"vel":72,"finger":1,"hand":"right","tip":"vi – G4-A#4-D5 (menor)"},{"t":16667,"cmd":144,"note":70,"vel":72,"finger":2,"hand":"right"},{"t":16667,"cmd":144,"note":74,"vel":72,"finger":5,"hand":"right"},{"t":19400,"cmd":144,"note":67,"vel":0},{"t":19400,"cmd":144,"note":70,"vel":0},{"t":19400,"cmd":144,"note":74,"vel":0},{"t":20000,"cmd":144,"note":69,"vel":72,"finger":1,"hand":"right","tip":"vii° – A4-C5-D#5 (diminuto)"},{"t":20000,"cmd":144,"note":72,"vel":72,"finger":3,"hand":"right"},{"t":20000,"cmd":144,"note":75,"vel":72,"finger":5,"hand":"right"},{"t":22733,"cmd":144,"note":69,"vel":0},{"t":22733,"cmd":144,"note":72,"vel":0},{"t":22733,"cmd":144,"note":75,"vel":0}]}
+{
+  "version": 2,
+  "meta": {
+    "title": "Tríades em Si♭ Maior — Mão Direita",
+    "composer": "Exercício — Tríades em Si♭ Maior",
+    "source": {
+      "format": "manual"
+    }
+  },
+  "keySignature": "Bb",
+  "tempoMap": [
+    {
+      "atMs": 0,
+      "bpm": 72,
+      "beatUnit": "quarter",
+      "label": "Andante"
+    }
+  ],
+  "timeSignatureMap": [
+    {
+      "atMs": 0,
+      "value": "4/4"
+    }
+  ],
+  "measureMap": [
+    {
+      "measure": 1,
+      "atMs": 0
+    },
+    {
+      "measure": 2,
+      "atMs": 3333
+    },
+    {
+      "measure": 3,
+      "atMs": 6667
+    },
+    {
+      "measure": 4,
+      "atMs": 10000
+    },
+    {
+      "measure": 5,
+      "atMs": 13333
+    },
+    {
+      "measure": 6,
+      "atMs": 16667
+    },
+    {
+      "measure": 7,
+      "atMs": 20000
+    }
+  ],
+  "sections": [
+    {
+      "name": "I — A#3-D4-F4",
+      "startMs": 0,
+      "type": "verse",
+      "rehearsalMark": "1",
+      "difficulty": 1
+    },
+    {
+      "name": "ii — C4-D#4-G4",
+      "startMs": 3333,
+      "type": "verse",
+      "rehearsalMark": "2",
+      "difficulty": 1
+    },
+    {
+      "name": "iii — D4-F4-A4",
+      "startMs": 6667,
+      "type": "verse",
+      "rehearsalMark": "3",
+      "difficulty": 1
+    },
+    {
+      "name": "IV — D#4-G4-A#4",
+      "startMs": 10000,
+      "type": "verse",
+      "rehearsalMark": "4",
+      "difficulty": 1
+    },
+    {
+      "name": "V — F4-A4-C5",
+      "startMs": 13333,
+      "type": "bridge",
+      "rehearsalMark": "5",
+      "difficulty": 1
+    },
+    {
+      "name": "vi — G4-A#4-D5",
+      "startMs": 16667,
+      "type": "bridge",
+      "rehearsalMark": "6",
+      "difficulty": 1
+    },
+    {
+      "name": "vii° — A4-C5-D#5",
+      "startMs": 20000,
+      "type": "bridge",
+      "rehearsalMark": "7",
+      "difficulty": 2
+    }
+  ],
+  "gradingProfile": {
+    "velocityTolerance": 40,
+    "earlyToleranceMs": 600,
+    "lateToleranceMs": 400
+  },
+  "events": [
+    {
+      "t": 0,
+      "cmd": 144,
+      "note": 58,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right",
+      "tip": "I – A#3-D4-F4 (Major)"
+    },
+    {
+      "t": 0,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right"
+    },
+    {
+      "t": 0,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 5,
+      "hand": "right"
+    },
+    {
+      "t": 2733,
+      "cmd": 144,
+      "note": 58,
+      "vel": 0
+    },
+    {
+      "t": 2733,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 2733,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 3333,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "tip": "ii – C4-D#4-G4 (minor)"
+    },
+    {
+      "t": 3333,
+      "cmd": 144,
+      "note": 63,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right"
+    },
+    {
+      "t": 3333,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 5,
+      "hand": "right"
+    },
+    {
+      "t": 6066,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 6066,
+      "cmd": 144,
+      "note": 63,
+      "vel": 0
+    },
+    {
+      "t": 6066,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 6667,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "tip": "iii – D4-F4-A4 (minor)"
+    },
+    {
+      "t": 6667,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right"
+    },
+    {
+      "t": 6667,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 5,
+      "hand": "right"
+    },
+    {
+      "t": 9400,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 9400,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 9400,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 10000,
+      "cmd": 144,
+      "note": 63,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right",
+      "tip": "IV – D#4-G4-A#4 (Major)"
+    },
+    {
+      "t": 10000,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right"
+    },
+    {
+      "t": 10000,
+      "cmd": 144,
+      "note": 70,
+      "vel": 72,
+      "finger": 5,
+      "hand": "right"
+    },
+    {
+      "t": 12733,
+      "cmd": 144,
+      "note": 63,
+      "vel": 0
+    },
+    {
+      "t": 12733,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 12733,
+      "cmd": 144,
+      "note": 70,
+      "vel": 0
+    },
+    {
+      "t": 13333,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "tip": "V – F4-A4-C5 (Major)"
+    },
+    {
+      "t": 13333,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right"
+    },
+    {
+      "t": 13333,
+      "cmd": 144,
+      "note": 72,
+      "vel": 72,
+      "finger": 5,
+      "hand": "right"
+    },
+    {
+      "t": 16066,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 16066,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 16066,
+      "cmd": 144,
+      "note": 72,
+      "vel": 0
+    },
+    {
+      "t": 16667,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "tip": "vi – G4-A#4-D5 (minor)"
+    },
+    {
+      "t": 16667,
+      "cmd": 144,
+      "note": 70,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right"
+    },
+    {
+      "t": 16667,
+      "cmd": 144,
+      "note": 74,
+      "vel": 72,
+      "finger": 5,
+      "hand": "right"
+    },
+    {
+      "t": 19400,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 19400,
+      "cmd": 144,
+      "note": 70,
+      "vel": 0
+    },
+    {
+      "t": 19400,
+      "cmd": 144,
+      "note": 74,
+      "vel": 0
+    },
+    {
+      "t": 20000,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "tip": "vii° – A4-C5-D#5 (dim)"
+    },
+    {
+      "t": 20000,
+      "cmd": 144,
+      "note": 72,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right"
+    },
+    {
+      "t": 20000,
+      "cmd": 144,
+      "note": 75,
+      "vel": 72,
+      "finger": 5,
+      "hand": "right"
+    },
+    {
+      "t": 22733,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 22733,
+      "cmd": 144,
+      "note": 72,
+      "vel": 0
+    },
+    {
+      "t": 22733,
+      "cmd": 144,
+      "note": 75,
+      "vel": 0
+    }
+  ]
+}

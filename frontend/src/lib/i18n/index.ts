@@ -44,3 +44,14 @@ export const t = derived(locale, $locale => {
   const fallback = MESSAGES['en']
   return (key: string): string => msgs[key] ?? fallback[key] ?? key
 })
+
+/** Returns the best available localized text for an exercise field. */
+export function localText(
+  i18n: Record<string, { title?: string; subtitle?: string; description?: string }> | undefined,
+  field: 'title' | 'subtitle' | 'description',
+  fallback: string,
+  currentLocale: Locale,
+): string {
+  if (!i18n) return fallback
+  return i18n[currentLocale]?.[field] ?? i18n['en']?.[field] ?? fallback
+}
