@@ -1,0 +1,301 @@
+{
+  "version": 2,
+  "meta": {
+    "title": "Escala de Ré Menor",
+    "composer": "Exercício Clássico",
+    "source": {
+      "format": "manual"
+    }
+  },
+  "keySignature": "F",
+  "tempoMap": [
+    {
+      "atMs": 0,
+      "bpm": 72,
+      "beatUnit": "quarter",
+      "label": "Andante"
+    }
+  ],
+  "timeSignatureMap": [
+    {
+      "atMs": 0,
+      "value": "4/4"
+    }
+  ],
+  "measureMap": [
+    {
+      "measure": 1,
+      "atMs": 0
+    },
+    {
+      "measure": 2,
+      "atMs": 3333
+    },
+    {
+      "measure": 3,
+      "atMs": 6667
+    },
+    {
+      "measure": 4,
+      "atMs": 10000
+    }
+  ],
+  "sections": [
+    {
+      "name": "Subida",
+      "startMs": 0,
+      "type": "verse",
+      "rehearsalMark": "A",
+      "difficulty": 1
+    },
+    {
+      "name": "Descida",
+      "startMs": 6667,
+      "type": "bridge",
+      "rehearsalMark": "B",
+      "difficulty": 1
+    }
+  ],
+  "gradingProfile": {
+    "velocityTolerance": 30,
+    "earlyToleranceMs": 489,
+    "lateToleranceMs": 293
+  },
+  "events": [
+    {
+      "t": 0,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "dynamic": "mf",
+      "slur": "start",
+      "tip": "Start: thumb on D4"
+    },
+    {
+      "t": 683,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 833,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 1516,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 1666,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 2349,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 2499,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "dynamic": "mf",
+      "tip": "Cross thumb"
+    },
+    {
+      "t": 3182,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 3332,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 4015,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 4165,
+      "cmd": 144,
+      "note": 70,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 4848,
+      "cmd": 144,
+      "note": 70,
+      "vel": 0
+    },
+    {
+      "t": 4998,
+      "cmd": 144,
+      "note": 72,
+      "vel": 72,
+      "finger": 4,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 5681,
+      "cmd": 144,
+      "note": 72,
+      "vel": 0
+    },
+    {
+      "t": 5831,
+      "cmd": 144,
+      "note": 74,
+      "vel": 72,
+      "finger": 5,
+      "hand": "right",
+      "dynamic": "mf",
+      "slur": "end",
+      "fermata": true
+    },
+    {
+      "t": 6514,
+      "cmd": 144,
+      "note": 74,
+      "vel": 0
+    },
+    {
+      "t": 6664,
+      "cmd": 144,
+      "note": 72,
+      "vel": 72,
+      "finger": 4,
+      "hand": "right",
+      "dynamic": "mf",
+      "slur": "start",
+      "tip": "Descending — cross 3rd finger over thumb"
+    },
+    {
+      "t": 7347,
+      "cmd": 144,
+      "note": 72,
+      "vel": 0
+    },
+    {
+      "t": 7497,
+      "cmd": 144,
+      "note": 70,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 8180,
+      "cmd": 144,
+      "note": 70,
+      "vel": 0
+    },
+    {
+      "t": 8330,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 9013,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 9163,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "dynamic": "mf",
+      "tip": "Cross thumb"
+    },
+    {
+      "t": 9846,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 9996,
+      "cmd": 144,
+      "note": 65,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 10679,
+      "cmd": 144,
+      "note": 65,
+      "vel": 0
+    },
+    {
+      "t": 10829,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right",
+      "dynamic": "mf"
+    },
+    {
+      "t": 11512,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 11662,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "dynamic": "mf",
+      "slur": "end",
+      "fermata": true
+    },
+    {
+      "t": 12345,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    }
+  ]
+}
