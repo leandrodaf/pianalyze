@@ -423,11 +423,13 @@ func (a *App) StartCapture() error {
 	eventChannel, err := a.midiClient.StartCapture(captureCtx)
 	if err != nil {
 		cancel()
+		sentryCaptureErr(err)
 		return err
 	}
 
 	a.capturing = true
 	a.stopFn = cancel
+	sentryCount("midi.capture.started", 1)
 
 	processor := pipeline.NewProcessorWithEmitter(a.logger, a.handleEvent)
 
@@ -441,6 +443,7 @@ func (a *App) StartCapture() error {
 			pCtx := pipelinectx.NewPipelineContext(captureCtx, event)
 			if err := processor.Process(pCtx); err != nil {
 				a.logger.Error(constants.MsgMIDIProcessingError, zap.Error(err))
+				sentryCaptureErr(err)
 			}
 		}
 	}()
@@ -456,6 +459,7 @@ func (a *App) StartRecording() error {
 	a.recStart = time.Now()
 	a.recBuf = a.recBuf[:0]
 	a.isRec = true
+	sentryCount("recording.started", 1)
 	return nil
 }
 
@@ -474,6 +478,8 @@ func (a *App) StopRecording() (string, error) {
 		RecordedAt: start.UTC().Format(time.RFC3339),
 		Events:     events,
 	}
+	sentryDist("recording.note_count", float64(len(events)))
+	sentryDist("recording.duration_ms", float64(time.Since(start).Milliseconds()))
 	data, err := json.Marshal(rec)
 	if err != nil {
 		return "", err
@@ -504,7 +510,12 @@ func (a *App) SaveRecording(jsonData, defaultFilename, defaultDir string) error 
 	if err != nil || path == "" {
 		return err
 	}
-	return os.WriteFile(path, []byte(jsonData), 0o644)
+	if err := os.WriteFile(path, []byte(jsonData), 0o644); err != nil {
+		sentryCaptureErr(err)
+		return err
+	}
+	sentryCount("recording.saved", 1)
+	return nil
 }
 
 // GetDefaultSavePath returns the platform-appropriate recordings directory and
@@ -675,11 +686,13 @@ func (a *App) LoadBuiltinPiece(filename string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	sentryCount("piece.loaded", 1)
 	return string(out), nil
 }
 
-// chosen path. title is the dialog window title, supplied by the frontend so
-// it can be localised. Returns ("", nil) if the user cancels.
+// PickSaveDirectory opens a native directory picker. title is the dialog window
+// title, supplied by the frontend so it can be localised. Returns ("", nil) if
+// the user cancels.
 func (a *App) PickSaveDirectory(title string) (string, error) {
 	defaultDir := a.GetDefaultSavePath() // creates the directory if missing
 	dir, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
@@ -699,7 +712,12 @@ func (a *App) AutoSaveRecording(jsonData, dir, filename string) (string, error) 
 		return "", err
 	}
 	p := filepath.Join(dir, filename)
-	return p, os.WriteFile(p, []byte(jsonData), 0o644)
+	if err := os.WriteFile(p, []byte(jsonData), 0o644); err != nil {
+		sentryCaptureErr(err)
+		return "", err
+	}
+	sentryCount("recording.saved", 1)
+	return p, nil
 }
 
 // PauseRecording suspends event buffering without clearing the buffer.
@@ -1055,6 +1073,7 @@ func (a *App) ImportAnyFile() (*ImportResult, error) {
 		if err := os.WriteFile(savedPath, out, 0o644); err != nil {
 			return nil, fmt.Errorf("save to library: %w", err)
 		}
+		sentryCount("file.imported", 1)
 		return &ImportResult{Kind: "score", Data: savedPath}, nil
 
 	default: // .pia / .json
@@ -1074,6 +1093,7 @@ func (a *App) ImportAnyFile() (*ImportResult, error) {
 		if err != nil {
 			return nil, err
 		}
+		sentryCount("file.imported", 1)
 		return &ImportResult{Kind: "recording", Data: string(out)}, nil
 	}
 }
@@ -1101,6 +1121,7 @@ func (a *App) LoadGradingProfile(profile *grading.Profile) {
 // playback speed (1.0 = normal).
 func (a *App) StartPractice(fromMs int64, speedMult float64) {
 	a.grader.Start(fromMs, speedMult)
+	sentryCount("practice.started", 1)
 }
 
 // PausePractice records the current position and pauses grading.

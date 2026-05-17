@@ -51,6 +51,12 @@ jobs:
 
       - name: Build frontend
         working-directory: frontend
+        env:
+          VITE_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          VITE_RELEASE: ${{ github.ref_name }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         run: npm ci && npm run build
 
       # Explicit per-OS build — no variable expansion tricks for build tags.
