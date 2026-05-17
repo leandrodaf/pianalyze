@@ -5,6 +5,8 @@ import {grading} from '../models';
 
 export function AutoSaveRecording(arg1:string,arg2:string,arg3:string):Promise<string>;
 
+export function ReportError(arg1:string,arg2:string):Promise<void>;
+
 export function DeleteRecording(arg1:string):Promise<void>;
 
 export function GetDefaultSavePath():Promise<string>;
@@ -38,6 +40,8 @@ export function PauseRecording():Promise<void>;
 export function PickSaveDirectory(arg1:string):Promise<string>;
 
 export function ReadRecordingByPath(arg1:string):Promise<string>;
+
+export function ReportError(arg1:string,arg2:string):Promise<void>;
 
 export function ResumeRecording():Promise<void>;
 

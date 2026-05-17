@@ -5,6 +5,9 @@ import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
+  // SENTRY_AUTH_TOKEN is a CI-only secret read from process.env at build time.
+  // It is NEVER baked into the JS bundle — only the Vite plugin uses it to
+  // upload source maps to Sentry's API, then the maps are deleted from dist/.
   const hasSentryToken = !!process.env.SENTRY_AUTH_TOKEN
 
   return {
@@ -18,17 +21,16 @@ export default defineConfig(({ mode }) => {
         }
       }),
       svelteTesting(),
-      // Upload source maps to Sentry only on production builds with auth token.
-      // After upload the plugin deletes the map files so they never end up
-      // embedded in the Wails binary.
+      // Source map upload: active only in production builds that have a Sentry
+      // auth token available (CI release builds only). Maps are deleted from
+      // dist/ after upload so they are never embedded in the Wails binary.
       ...(isProduction && hasSentryToken
         ? [sentryVitePlugin({
             org: process.env.SENTRY_ORG,
             project: process.env.SENTRY_PROJECT,
             authToken: process.env.SENTRY_AUTH_TOKEN,
-            release: { name: process.env.VITE_RELEASE },
+            release: { name: process.env.SENTRY_RELEASE },
             sourcemaps: {
-              // Delete .map files after upload — they must not be shipped in the binary.
               filesToDeleteAfterUpload: ['./dist/**/*.map'],
             },
             telemetry: false,
@@ -41,9 +43,8 @@ export default defineConfig(({ mode }) => {
       }
     },
     build: {
-      // 'hidden' = source maps are generated but the sourceMappingURL comment is
-      // NOT added to JS files, so end users see no reference to them. The Sentry
-      // plugin uploads and then deletes them, keeping the dist folder clean.
+      // Generate source maps for release builds. 'hidden' keeps the
+      // sourceMappingURL comment out of JS files — end users never see them.
       sourcemap: isProduction ? 'hidden' : false,
     },
     test: {

@@ -349,6 +349,13 @@ func (a *App) shutdown(_ context.Context) {
 	_ = a.StopCapture()
 }
 
+// ReportError receives an unhandled JavaScript error from the frontend and
+// forwards it to Sentry through the Go backend. The frontend never holds any
+// Sentry credentials — all telemetry flows exclusively through this method.
+func (a *App) ReportError(message, stack string) {
+	sentryCaptureErr(fmt.Errorf("frontend: %s\n%s", message, stack))
+}
+
 // GetVersion returns the application version string injected at build time via -ldflags.
 // Returns "dev" when running outside a release build.
 func (a *App) GetVersion() string {
