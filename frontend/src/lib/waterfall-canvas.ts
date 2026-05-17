@@ -101,6 +101,7 @@ export interface WaterfallCanvas {
   setHandLabels(right: string, left: string): void
   setScaleKey(pcs: Set<number> | null): void
   setActiveHands(hands: ActiveHands): void
+  setNoteRange(min: number, max: number): void
   resize(w: number, h: number): void
   destroy(): void
 }
@@ -133,9 +134,11 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   /** Pitch classes (0–11) belonging to the currently selected scale key. */
   let scalePCs: Set<number> | null = null
   let activeHands: ActiveHands = 'both'
+  let visibleNoteMin = MIDI_MIN
+  let visibleNoteMax = MIDI_MAX
 
   function refreshLayout() {
-    layout = computeLayout(W, H, leadTimeSec, activeHands)
+    layout = computeLayout(W, H, leadTimeSec, activeHands, visibleNoteMin, visibleNoteMax)
   }
 
   // ── Live-mode helpers ─────────────────────────────────────────────────────
@@ -613,7 +616,9 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
 
   function drawHairpins() {
     if (hairpins.length === 0) return
-    const y = idxY(BASS_BOT_IDX, layout) + layout.wKeyH * 2.2
+    // Anchor below the lowest visible staff: bass in both-hands mode, treble otherwise.
+    const anchorIdx = layout.activeHands !== 'right' ? BASS_BOT_IDX : TREBLE_BOT_IDX
+    const y = idxY(anchorIdx, layout) + layout.wKeyH * 2.2
     const hH = layout.wKeyH * 1.0
 
     ctx.save()
@@ -983,6 +988,12 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
 
     setActiveHands(hands: ActiveHands) {
       activeHands = hands
+      refreshLayout()
+    },
+
+    setNoteRange(min: number, max: number) {
+      visibleNoteMin = min
+      visibleNoteMax = max
       refreshLayout()
     },
 
