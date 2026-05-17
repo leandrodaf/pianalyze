@@ -17,6 +17,10 @@
   <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey?style=flat-square"/>
 </p>
 
+<p align="center">
+  <a href="https://leandrodaf.github.io/pianalyze/">🌐 Website</a>
+</p>
+
 ---
 
 ## ✨ Screenshots
