@@ -48,8 +48,10 @@ export interface ExerciseAuthor {
   name: string
   /** Main website, GitHub profile, or portfolio */
   url?: string
-  /** Short bio shown in the exercise detail card */
+  /** Short bio shown in the exercise detail card (pt-BR base) */
   bio?: string
+  /** Per-locale overrides for bio */
+  i18n?: Record<string, { bio?: string }>
   /** Public contact — email address or @handle (Twitter, etc.) */
   contact?: string
   /** Extra links: YouTube channel, Instagram, school page, etc. */

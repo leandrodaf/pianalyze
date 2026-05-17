@@ -47,8 +47,8 @@ export const t = derived(locale, $locale => {
 
 /** Returns the best available localized text for an exercise field. */
 export function localText(
-  i18n: Record<string, { title?: string; subtitle?: string; description?: string }> | undefined,
-  field: 'title' | 'subtitle' | 'description',
+  i18n: Record<string, { title?: string; subtitle?: string; description?: string; bio?: string }> | undefined,
+  field: 'title' | 'subtitle' | 'description' | 'bio',
   fallback: string,
   currentLocale: Locale,
 ): string {

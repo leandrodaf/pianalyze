@@ -12,7 +12,18 @@
         "label": "GitHub",
         "url": "https://github.com/leandrodaf/pianalyze"
       }
-    ]
+    ],
+    "i18n": {
+      "en": {
+        "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+      },
+      "es": {
+        "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+      },
+      "zh-CN": {
+        "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+      }
+    }
   },
   "license": "MIT",
   "website": "https://github.com/leandrodaf/pianalyze",
@@ -32,7 +43,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "scales",
       "difficulty": 1,
@@ -91,7 +113,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "scales",
       "difficulty": 1,
@@ -148,7 +181,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "scales",
       "difficulty": 1,
@@ -205,7 +249,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "scales",
       "difficulty": 2,
@@ -262,7 +317,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "scales",
       "difficulty": 2,
@@ -1291,7 +1357,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "chords",
       "difficulty": 1,
@@ -1349,7 +1426,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "chords",
       "difficulty": 1,
@@ -1407,7 +1495,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "chords",
       "difficulty": 3,
@@ -1465,7 +1564,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "chords",
       "difficulty": 3,
@@ -1522,7 +1632,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "chords",
       "difficulty": 5,
@@ -1580,7 +1701,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -1642,7 +1774,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -1704,7 +1847,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -1766,7 +1920,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -1828,7 +1993,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -1890,7 +2066,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -1952,7 +2139,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2014,7 +2212,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2076,7 +2285,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2138,7 +2358,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2200,7 +2431,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2262,7 +2504,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2324,7 +2577,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2386,7 +2650,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2448,7 +2723,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2510,7 +2796,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2572,7 +2869,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2634,7 +2942,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2696,7 +3015,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2758,7 +3088,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "triads",
       "difficulty": 2,
@@ -2820,7 +3161,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "pieces",
       "difficulty": 1,

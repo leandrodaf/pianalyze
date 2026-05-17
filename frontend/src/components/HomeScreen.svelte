@@ -477,8 +477,8 @@
               {:else}
                 <span class="contributor-name plain">{detail.author.name}</span>
               {/if}
-              {#if detail.author.bio}
-                <p class="contributor-bio">{detail.author.bio}</p>
+              {#if detail.author.bio || detail.author.i18n}
+                <p class="contributor-bio">{localText(detail.author.i18n, 'bio', detail.author.bio ?? '', $locale)}</p>
               {/if}
             </div>
           </div>
