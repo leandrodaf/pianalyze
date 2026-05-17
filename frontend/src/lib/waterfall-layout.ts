@@ -43,6 +43,8 @@ export const DEFAULT_LEAD_TIME_SEC  = 4      // seconds for notes to travel righ
 // Increase this value to push the staves further apart.
 const HAND_GAP_EXTRA_SLOTS = 7
 
+export type ActiveHands = 'both' | 'right' | 'left'
+
 export interface WaterfallLayout {
   W: number
   H: number
@@ -54,19 +56,74 @@ export interface WaterfallLayout {
   nowX: number        // golden line X — same as judgeX
   judgeX: number      // judgment line X — same as nowX
   practiceScrollPxPerSec: number  // (W - judgeX) / leadTimeSec
+  whiteOffset: number  // lowest white-key slot index in the displayed range
+  activeHands: ActiveHands
 }
 
-export function computeLayout(W: number, H: number, leadTimeSec: number): WaterfallLayout {
-  const bottomPad = H * 0.02
-  // Shrink wKeyH to fit the extra gap without clipping the top/bottom keys
-  const wKeyH     = (H - bottomPad * 2) / (TOTAL_WHITE - 1 + HAND_GAP_EXTRA_SLOTS)
-  const handGapPx = wKeyH * HAND_GAP_EXTRA_SLOTS
+// Semitones of extra room added above and below the actual note range.
+const RANGE_PAD_SEMITONES = 5
+
+// Maximum pixels per white-key slot. Prevents over-zoom when the piece spans
+// a narrow range. When triggered, content is centered vertically via effectivePad
+// so whiteOffset is never modified — keeping staves and note bars in perfect sync.
+const MAX_WKEY_HEIGHT = 24
+
+/** Snap a MIDI note downward to the nearest white key. */
+function snapWhiteDown(midi: number): number {
+  let n = Math.max(MIDI_MIN, midi)
+  while (BLACK_PC.has(n % 12) && n > MIDI_MIN) n--
+  return n
+}
+
+/** Snap a MIDI note upward to the nearest white key. */
+function snapWhiteUp(midi: number): number {
+  let n = Math.min(MIDI_MAX, midi)
+  while (BLACK_PC.has(n % 12) && n < MIDI_MAX) n++
+  return n
+}
+
+export function computeLayout(
+  W: number,
+  H: number,
+  leadTimeSec: number,
+  activeHands: ActiveHands = 'both',
+  /** Actual lowest MIDI note in the piece — used to zoom the visible range. */
+  noteMin: number = MIDI_MIN,
+  /** Actual highest MIDI note in the piece — used to zoom the visible range. */
+  noteMax: number = MIDI_MAX,
+): WaterfallLayout {
+  const bottomPad = H * 0.03
+
+  // Expand by padding then snap to white keys for clean boundaries.
+  const loMidi = snapWhiteDown(Math.max(MIDI_MIN, noteMin - RANGE_PAD_SEMITONES))
+  const hiMidi = snapWhiteUp(Math.min(MIDI_MAX, noteMax + RANGE_PAD_SEMITONES))
+
+  const whiteOffset = WHITE_IDX[loMidi]
+  const whiteHi     = WHITE_IDX[hiMidi]
+
+  // Add the inter-hand gap only when both hands are visible and the range crosses C4.
+  const spansBoth = loMidi < HAND_SPLIT && hiMidi >= HAND_SPLIT
+  const gapSlots  = (activeHands === 'both' && spansBoth) ? HAND_GAP_EXTRA_SLOTS : 0
+  const totalSlots = whiteHi - whiteOffset
+
+  // Cap key height to avoid over-zoom on narrow-range pieces.
+  // Never modify whiteOffset — doing so desyncs note bars from stave lines.
+  const rawWKeyH     = (H - bottomPad * 2) / (totalSlots + gapSlots)
+  const wKeyH        = Math.min(rawWKeyH, MAX_WKEY_HEIGHT)
+  const usedH        = wKeyH * (totalSlots + gapSlots)
+  // Recompute bottomPad so the capped content is vertically centered.
+  const effectivePad = Math.max(bottomPad, (H - usedH) / 2)
+
+  const handGapPx = wKeyH * gapSlots
   const barHwhite = Math.max(wKeyH * 1.10, 6)
   const barHblack = Math.max(wKeyH * 0.78, 5)
   const nowX      = LEFT_MARGIN + (W - LEFT_MARGIN) * LINE_X_RATIO
   const judgeX    = nowX
   const practiceScrollPxPerSec = (W - judgeX) / leadTimeSec
-  return { W, H, bottomPad, wKeyH, barHwhite, barHblack, handGapPx, nowX, judgeX, practiceScrollPxPerSec }
+  return {
+    W, H, bottomPad: effectivePad, wKeyH, barHwhite, barHblack, handGapPx,
+    nowX, judgeX, practiceScrollPxPerSec, whiteOffset, activeHands,
+  }
 }
 
 /**
@@ -75,14 +132,14 @@ export function computeLayout(W: number, H: number, leadTimeSec: number): Waterf
  * create visual separation between the two hand zones.
  */
 export function pitchY(midi: number, layout: WaterfallLayout): number {
-  const { H, bottomPad, wKeyH, handGapPx } = layout
-  const gap = midi >= HAND_SPLIT ? handGapPx : 0
+  const { H, bottomPad, wKeyH, handGapPx, whiteOffset, activeHands } = layout
+  const gap = (midi >= HAND_SPLIT && activeHands === 'both') ? handGapPx : 0
 
   if (!BLACK_PC.has(midi % 12)) {
-    return H - bottomPad - WHITE_IDX[midi] * wKeyH - gap
+    return H - bottomPad - (WHITE_IDX[midi] - whiteOffset) * wKeyH - gap
   }
-  const yLo = H - bottomPad - WHITE_IDX[midi - 1] * wKeyH - gap
-  const yHi = H - bottomPad - WHITE_IDX[midi + 1] * wKeyH - gap
+  const yLo = H - bottomPad - (WHITE_IDX[midi - 1] - whiteOffset) * wKeyH - gap
+  const yHi = H - bottomPad - (WHITE_IDX[midi + 1] - whiteOffset) * wKeyH - gap
   return (yLo + yHi) / 2
 }
 
@@ -91,8 +148,8 @@ export function pitchY(midi: number, layout: WaterfallLayout): number {
  * Indices at or above C4_WHITE_IDX receive the treble-zone gap offset.
  */
 export function idxY(whiteIdx: number, layout: WaterfallLayout): number {
-  const gap = whiteIdx >= C4_WHITE_IDX ? layout.handGapPx : 0
-  return layout.H - layout.bottomPad - whiteIdx * layout.wKeyH - gap
+  const gap = (whiteIdx >= C4_WHITE_IDX && layout.activeHands === 'both') ? layout.handGapPx : 0
+  return layout.H - layout.bottomPad - (whiteIdx - layout.whiteOffset) * layout.wKeyH - gap
 }
 
 /** Bar height for a MIDI note (thinner for accidentals). */

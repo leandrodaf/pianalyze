@@ -28,25 +28,39 @@ export function keyToPitchClasses(key: string): Set<number> | null {
 }
 
 /** All key options shown in the picker — ordered by the circle of fifths. */
-export const KEY_OPTIONS: { value: string; label: string }[] = [
-  { value: 'C',  label: 'Dó M' },
-  { value: 'G',  label: 'Sol M' },
-  { value: 'D',  label: 'Ré M' },
-  { value: 'A',  label: 'Lá M' },
-  { value: 'E',  label: 'Mi M' },
-  { value: 'B',  label: 'Si M' },
-  { value: 'F#', label: 'F# M' },
-  { value: 'F',  label: 'Fá M' },
-  { value: 'Bb', label: 'Sib M' },
-  { value: 'Eb', label: 'Mib M' },
-  { value: 'Ab', label: 'Láb M' },
-  { value: 'Db', label: 'Réb M' },
-  { value: 'Am', label: 'Lá m' },
-  { value: 'Em', label: 'Mi m' },
-  { value: 'Bm', label: 'Si m' },
-  { value: 'Dm', label: 'Ré m' },
-  { value: 'Gm', label: 'Sol m' },
-  { value: 'Cm', label: 'Dó m' },
-  { value: 'Fm', label: 'Fá m' },
-  { value: 'F#m',label: 'F#m' },
+const KEY_OPTION_DEFS: { value: string; pc: number; minor: boolean }[] = [
+  { value: 'C',   pc: 0,  minor: false },
+  { value: 'G',   pc: 7,  minor: false },
+  { value: 'D',   pc: 2,  minor: false },
+  { value: 'A',   pc: 9,  minor: false },
+  { value: 'E',   pc: 4,  minor: false },
+  { value: 'B',   pc: 11, minor: false },
+  { value: 'F#',  pc: 6,  minor: false },
+  { value: 'F',   pc: 5,  minor: false },
+  { value: 'Bb',  pc: 10, minor: false },
+  { value: 'Eb',  pc: 3,  minor: false },
+  { value: 'Ab',  pc: 8,  minor: false },
+  { value: 'Db',  pc: 1,  minor: false },
+  { value: 'Am',  pc: 9,  minor: true  },
+  { value: 'Em',  pc: 4,  minor: true  },
+  { value: 'Bm',  pc: 11, minor: true  },
+  { value: 'Dm',  pc: 2,  minor: true  },
+  { value: 'Gm',  pc: 7,  minor: true  },
+  { value: 'Cm',  pc: 0,  minor: true  },
+  { value: 'Fm',  pc: 5,  minor: true  },
+  { value: 'F#m', pc: 6,  minor: true  },
 ]
+
+/** Returns localized key picker options using i18n note names and major/minor abbreviations. */
+export function getKeyOptions(t: (key: string) => string): { value: string; label: string }[] {
+  return KEY_OPTION_DEFS.map(({ value, pc, minor }) => ({
+    value,
+    label: `${t(`note.${pc}`)} ${t(minor ? 'key.minor.abbr' : 'key.major.abbr')}`,
+  }))
+}
+
+/** @deprecated Use getKeyOptions(t) for localized labels. */
+export const KEY_OPTIONS: { value: string; label: string }[] = KEY_OPTION_DEFS.map(({ value, pc, minor }) => ({
+  value,
+  label: value,
+}))

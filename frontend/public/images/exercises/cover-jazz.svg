@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a0a08"/>
+      <stop offset="100%" style="stop-color:#2d1a00"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="480" height="300" fill="url(#bg)"/>
+  <!-- Jazz chord: 4-note voicing with extensions -->
+  <g transform="translate(35, 55)">
+    <rect x="0"   y="0" width="38" height="155" rx="4" fill="#e8c97a" opacity="0.88"/>
+    <rect x="41"  y="0" width="38" height="155" rx="4" fill="#e8c97a" opacity="0.88"/>
+    <rect x="82"  y="0" width="38" height="155" rx="4" fill="#e8c97a" opacity="0.88"/>
+    <rect x="123" y="0" width="38" height="155" rx="4" fill="#e8c97a" opacity="0.88"/>
+    <rect x="164" y="0" width="38" height="155" rx="4" fill="#e8c97a" opacity="0.88"/>
+    <rect x="205" y="0" width="38" height="155" rx="4" fill="#e8c97a" opacity="0.88"/>
+    <rect x="246" y="0" width="38" height="155" rx="4" fill="#e8c97a" opacity="0.88"/>
+    <rect x="287" y="0" width="38" height="155" rx="4" fill="#e8c97a" opacity="0.88"/>
+    <rect x="328" y="0" width="38" height="155" rx="4" fill="#e8c97a" opacity="0.88"/>
+    <rect x="369" y="0" width="38" height="155" rx="4" fill="#e8c97a" opacity="0.88"/>
+    <!-- Black keys -->
+    <rect x="27"  y="0" width="24" height="97" rx="2" fill="#1a0800"/>
+    <rect x="68"  y="0" width="24" height="97" rx="2" fill="#1a0800"/>
+    <rect x="150" y="0" width="24" height="97" rx="2" fill="#1a0800"/>
+    <rect x="191" y="0" width="24" height="97" rx="2" fill="#1a0800"/>
+    <rect x="232" y="0" width="24" height="97" rx="2" fill="#1a0800"/>
+    <rect x="314" y="0" width="24" height="97" rx="2" fill="#1a0800"/>
+    <rect x="355" y="0" width="24" height="97" rx="2" fill="#1a0800"/>
+    <!-- Jazz Cmaj7 voicing: C E G B highlighted + color by interval -->
+    <rect x="0"   y="110" width="38" height="45" rx="3" fill="#ffd700" filter="url(#glow)" opacity="0.95"/>
+    <rect x="68"  y="63"  width="24" height="34" rx="2" fill="#ff9f1c" filter="url(#glow)" opacity="0.9"/>
+    <rect x="164" y="110" width="38" height="45" rx="3" fill="#ff4e50" filter="url(#glow)" opacity="0.95"/>
+    <rect x="287" y="110" width="38" height="45" rx="3" fill="#8bdc9f" filter="url(#glow)" opacity="0.95"/>
+  </g>
+  <!-- Jazz chord symbol -->
+  <text x="420" y="50" fill="#e8c97a" opacity="0.45" font-family="serif" font-size="32" font-weight="bold" text-anchor="middle">♭7</text>
+  <text x="420" y="82" fill="#e8c97a" opacity="0.45" font-family="serif" font-size="32" font-weight="bold" text-anchor="middle">9</text>
+  <text x="420" y="114" fill="#e8c97a" opacity="0.45" font-family="serif" font-size="32" font-weight="bold" text-anchor="middle">11</text>
+  <g opacity="0.12">
+    <line x1="0" y1="262" x2="480" y2="262" stroke="#e8c97a" stroke-width="1.5"/>
+    <line x1="0" y1="271" x2="480" y2="271" stroke="#e8c97a" stroke-width="1.5"/>
+    <line x1="0" y1="280" x2="480" y2="280" stroke="#e8c97a" stroke-width="1.5"/>
+    <line x1="0" y1="289" x2="480" y2="289" stroke="#e8c97a" stroke-width="1.5"/>
+    <line x1="0" y1="298" x2="480" y2="298" stroke="#e8c97a" stroke-width="1.5"/>
+  </g>
+</svg>

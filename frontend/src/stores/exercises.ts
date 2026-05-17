@@ -30,7 +30,7 @@ function bundledEntryToExercise(entry: BundledExerciseEntry): Exercise {
   return {
     id:          entry.id,
     title:       entry.title,
-    subtitle:    entry.subtitle,
+    subtitle:    entry.subtitle ?? '',
     description: entry.description ?? '',
     author:      entry.author,
     category:    entry.category,
@@ -39,6 +39,7 @@ function bundledEntryToExercise(entry: BundledExerciseEntry): Exercise {
     style:       entry.style,
     stats:       entry.stats,
     comingSoon:  entry.comingSoon,
+    i18n:        entry.i18n,
     data:        resolveBuiltinData(entry.dataUrl),
   }
 }
@@ -56,6 +57,7 @@ export const exerciseStore = writable<ExerciseStore>({
 export const exercisesByCategory = derived(exerciseStore, $s => ({
   scales: $s.exercises.filter(e => e.category === 'scales'),
   chords: $s.exercises.filter(e => e.category === 'chords'),
+  triads: $s.exercises.filter(e => e.category === 'triads'),
   pieces: $s.exercises.filter(e => e.category === 'pieces'),
 }))
 
@@ -74,6 +76,7 @@ function manifestEntryToExercise(
     tags:        entry.tags ?? [],
     style:       entry.style,
     stats:       entry.stats,
+    i18n:        entry.i18n,
     data,
   }
 }

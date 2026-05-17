@@ -4,7 +4,7 @@
   import { DIFFICULTY_PRESETS, type DifficultyPreset } from '../lib/recording-types'
   import { loadFromUrl } from '../stores/exercises'
   import { exerciseStore } from '../stores/exercises'
-  import { PickSaveDirectory } from '../../wailsjs/go/main/App'
+  import { PickSaveDirectory, GetVersion } from '../../wailsjs/go/main/App'
   import type { Recording } from '../lib/recording-types'
 
   export let onClose: () => void
@@ -61,7 +61,9 @@
     if (e.key === 'Escape') onClose()
   }
 
-  // ── Save path ──────────────────────────────────────────────────────────────
+  // ── App version ────────────────────────────────────────────────────────────
+  let appVersion = ''
+  GetVersion().then(v => { appVersion = v })
   let pathLoading = false
   let pathError = ''
   let localSavePath = ''
@@ -125,7 +127,7 @@
             on:click={() => settingsStore.setSkillLevel($settingsStore.skillLevel === key ? null : key)}
           >
             <span class="pc-icon">{cfg.icon}</span>
-            <span class="pc-label">{cfg.label}</span>
+            <span class="pc-label">{$t(cfg.label)}</span>
             <span class="pc-speed">{cfg.speed * 100 | 0}%</span>
           </button>
         {/each}
@@ -252,6 +254,11 @@
       </div>
       {#if pathError}<p class="error-text">{pathError}</p>{/if}
     </section>
+
+    <!-- ── Versão ─────────────────────────────────────────────────────────── -->
+    {#if appVersion}
+      <div class="version-badge">{$t('settings.version')} {appVersion}</div>
+    {/if}
 
   </div>
 </div>
@@ -440,6 +447,14 @@
 
   .error-text { font-size: 0.72rem; color: #f87171; margin: 4px 0 0; }
   .success-text { font-size: 0.85rem; color: #4ade80; margin: 4px 0 0; }
+
+  .version-badge {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.05em;
+  }
 
   .spin { display: inline-block; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }

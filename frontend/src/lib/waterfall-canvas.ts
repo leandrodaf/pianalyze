@@ -16,7 +16,7 @@ import {
   TREBLE_BOT_IDX, TREBLE_TOP_IDX, BASS_BOT_IDX, BASS_TOP_IDX,
   LEFT_MARGIN, LIVE_SCROLL_PX_PER_SEC,
   DEFAULT_LEAD_TIME_SEC, MIDI_MIN, MIDI_MAX,
-  type WaterfallLayout,
+  type WaterfallLayout, type ActiveHands,
   computeLayout, pitchY, idxY, barH, ledgerSlots,
 } from './waterfall-layout'
 
@@ -100,6 +100,8 @@ export interface WaterfallCanvas {
   setBpm(bpm: number | null): void
   setHandLabels(right: string, left: string): void
   setScaleKey(pcs: Set<number> | null): void
+  setActiveHands(hands: ActiveHands): void
+  setNoteRange(min: number, max: number): void
   resize(w: number, h: number): void
   destroy(): void
 }
@@ -131,9 +133,12 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   let handLabelLeft  = 'LEFT HAND'
   /** Pitch classes (0–11) belonging to the currently selected scale key. */
   let scalePCs: Set<number> | null = null
+  let activeHands: ActiveHands = 'both'
+  let visibleNoteMin = MIDI_MIN
+  let visibleNoteMax = MIDI_MAX
 
   function refreshLayout() {
-    layout = computeLayout(W, H, leadTimeSec)
+    layout = computeLayout(W, H, leadTimeSec, activeHands, visibleNoteMin, visibleNoteMax)
   }
 
   // ── Live-mode helpers ─────────────────────────────────────────────────────
@@ -187,15 +192,19 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     ctx.fillStyle = '#0f1014'
     ctx.fillRect(0, 0, W, H)
 
-    const trebleTop = idxY(TREBLE_TOP_IDX, layout) - layout.wKeyH
-    const trebleBot = idxY(TREBLE_BOT_IDX, layout) + layout.wKeyH
-    ctx.fillStyle = 'rgba(123,95,240,0.07)'
-    ctx.fillRect(LEFT_MARGIN, trebleTop, W - LEFT_MARGIN, trebleBot - trebleTop)
+    if (activeHands !== 'left') {
+      const trebleTop = idxY(TREBLE_TOP_IDX, layout) - layout.wKeyH
+      const trebleBot = idxY(TREBLE_BOT_IDX, layout) + layout.wKeyH
+      ctx.fillStyle = 'rgba(123,95,240,0.07)'
+      ctx.fillRect(LEFT_MARGIN, trebleTop, W - LEFT_MARGIN, trebleBot - trebleTop)
+    }
 
-    const bassTop = idxY(BASS_TOP_IDX, layout) - layout.wKeyH
-    const bassBot = idxY(BASS_BOT_IDX, layout) + layout.wKeyH
-    ctx.fillStyle = 'rgba(240,138,91,0.07)'
-    ctx.fillRect(LEFT_MARGIN, bassTop, W - LEFT_MARGIN, bassBot - bassTop)
+    if (activeHands !== 'right') {
+      const bassTop = idxY(BASS_TOP_IDX, layout) - layout.wKeyH
+      const bassBot = idxY(BASS_BOT_IDX, layout) + layout.wKeyH
+      ctx.fillStyle = 'rgba(240,138,91,0.07)'
+      ctx.fillRect(LEFT_MARGIN, bassTop, W - LEFT_MARGIN, bassBot - bassTop)
+    }
 
     drawScaleGuides()
   }
@@ -215,6 +224,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   }
 
   function drawHandSeparator() {
+    if (activeHands !== 'both') return
     const c4y = Math.round(pitchY(60, layout)) + 0.5
     const bandTop = idxY(TREBLE_BOT_IDX, layout) - layout.wKeyH * 0.4
     const bandBot = idxY(BASS_TOP_IDX,   layout) + layout.wKeyH * 0.4
@@ -257,45 +267,56 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
   function drawStaves() {
     ctx.strokeStyle = 'rgba(255,255,255,0.07)'
     ctx.lineWidth = 1
-    for (const n of TREBLE_LINES) {
-      const y = Math.round(pitchY(n, layout)) + 0.5
-      ctx.beginPath(); ctx.moveTo(LEFT_MARGIN, y); ctx.lineTo(W, y); ctx.stroke()
-    }
-    for (const n of BASS_LINES) {
-      const y = Math.round(pitchY(n, layout)) + 0.5
-      ctx.beginPath(); ctx.moveTo(LEFT_MARGIN, y); ctx.lineTo(W, y); ctx.stroke()
-    }
     const fs = Math.max(Math.round(layout.wKeyH * 0.9), 8)
     ctx.textAlign = 'left'
-    ctx.textBaseline = 'bottom'
     ctx.font = `bold ${fs}px sans-serif`
-    ctx.fillStyle = 'rgba(185,154,244,0.45)'
-    ctx.fillText(handLabelRight, LEFT_MARGIN, idxY(TREBLE_TOP_IDX, layout) - layout.wKeyH - 2)
-    ctx.fillStyle = 'rgba(240,138,91,0.45)'
-    ctx.fillText(handLabelLeft,  LEFT_MARGIN, idxY(BASS_TOP_IDX, layout)   - layout.wKeyH - 2)
+
+    if (activeHands !== 'left') {
+      for (const n of TREBLE_LINES) {
+        const y = Math.round(pitchY(n, layout)) + 0.5
+        ctx.beginPath(); ctx.moveTo(LEFT_MARGIN, y); ctx.lineTo(W, y); ctx.stroke()
+      }
+      ctx.textBaseline = 'bottom'
+      ctx.fillStyle = 'rgba(185,154,244,0.45)'
+      ctx.fillText(handLabelRight, LEFT_MARGIN, idxY(TREBLE_TOP_IDX, layout) - layout.wKeyH - 2)
+    }
+
+    if (activeHands !== 'right') {
+      for (const n of BASS_LINES) {
+        const y = Math.round(pitchY(n, layout)) + 0.5
+        ctx.beginPath(); ctx.moveTo(LEFT_MARGIN, y); ctx.lineTo(W, y); ctx.stroke()
+      }
+      ctx.textBaseline = 'bottom'
+      ctx.fillStyle = 'rgba(240,138,91,0.45)'
+      ctx.fillText(handLabelLeft, LEFT_MARGIN, idxY(BASS_TOP_IDX, layout) - layout.wKeyH - 2)
+    }
+
     ctx.textBaseline = 'alphabetic'
   }
 
   function drawClefs() {
     ctx.save()
-    // Clip to the margin strip so clef glyphs never bleed into the note area
     ctx.beginPath()
     ctx.rect(0, 0, LEFT_MARGIN - 2, H)
     ctx.clip()
 
     ctx.fillStyle = 'rgba(255,255,255,0.28)'
     ctx.textAlign = 'center'
-    const cx = LEFT_MARGIN * 0.46   // slightly left of center to add breathing room
+    const cx = LEFT_MARGIN * 0.46
 
-    const g4y = pitchY(67, layout)
-    ctx.font = `${Math.round(layout.wKeyH * 7)}px serif`
-    ctx.textBaseline = 'bottom'
-    ctx.fillText('𝄞', cx, g4y + layout.wKeyH * 3.5)
+    if (activeHands !== 'left') {
+      const g4y = pitchY(67, layout)
+      ctx.font = `${Math.round(layout.wKeyH * 7)}px serif`
+      ctx.textBaseline = 'bottom'
+      ctx.fillText('𝄞', cx, g4y + layout.wKeyH * 3.5)
+    }
 
-    const f3y = pitchY(53, layout)
-    ctx.font = `${Math.round(layout.wKeyH * 4)}px serif`
-    ctx.textBaseline = 'middle'
-    ctx.fillText('𝄢', cx, f3y - layout.wKeyH * 0.3)
+    if (activeHands !== 'right') {
+      const f3y = pitchY(53, layout)
+      ctx.font = `${Math.round(layout.wKeyH * 4)}px serif`
+      ctx.textBaseline = 'middle'
+      ctx.fillText('𝄢', cx, f3y - layout.wKeyH * 0.3)
+    }
 
     ctx.restore()
     ctx.textBaseline = 'alphabetic'
@@ -315,7 +336,9 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     ctx.restore()
 
     if (!practiceActive || practiceBars.length === 0) {
-      for (const midi of [71, 50]) {
+      // Decorative dots: treble (B4=71) and bass (D3=50) — only for active zones
+      const dotNotes = activeHands === 'right' ? [71] : activeHands === 'left' ? [50] : [71, 50]
+      for (const midi of dotNotes) {
         const by = pitchY(midi, layout)
         ctx.save()
         ctx.fillStyle = 'rgba(255, 230, 80, 0.95)'
@@ -408,12 +431,14 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
     }
   }
 
+  const MIN_BAR_PX = 3
+
   function drawBars() {
     for (const bar of bars) {
       const { left, right } = barScreenX(bar)
       if (right < LEFT_MARGIN || left > W) continue
       const cx = Math.max(left, LEFT_MARGIN)
-      const cw = Math.min(right, W) - cx
+      const cw = Math.max(MIN_BAR_PX, Math.min(right, W) - cx)
       if (cw <= 0) continue
 
       drawLedgerLines(bar.note, cx, cw)
@@ -447,7 +472,7 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
       const right = msToX(pb.iv.endMs)
       if (right < LEFT_MARGIN || left > W) continue
       const cx = Math.max(left, LEFT_MARGIN)
-      const cw = Math.min(right, W) - cx
+      const cw = Math.max(MIN_BAR_PX, Math.min(right, W) - cx)
       if (cw <= 0) continue
 
       drawLedgerLines(pb.iv.note, cx, cw)
@@ -591,7 +616,9 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
 
   function drawHairpins() {
     if (hairpins.length === 0) return
-    const y = idxY(BASS_BOT_IDX, layout) + layout.wKeyH * 2.2
+    // Anchor below the lowest visible staff: bass in both-hands mode, treble otherwise.
+    const anchorIdx = layout.activeHands !== 'right' ? BASS_BOT_IDX : TREBLE_BOT_IDX
+    const y = idxY(anchorIdx, layout) + layout.wKeyH * 2.2
     const hH = layout.wKeyH * 1.0
 
     ctx.save()
@@ -957,6 +984,17 @@ export function createWaterfallCanvas(canvas: HTMLCanvasElement): WaterfallCanva
 
     setScaleKey(pcs: Set<number> | null) {
       scalePCs = pcs
+    },
+
+    setActiveHands(hands: ActiveHands) {
+      activeHands = hands
+      refreshLayout()
+    },
+
+    setNoteRange(min: number, max: number) {
+      visibleNoteMin = min
+      visibleNoteMax = max
+      refreshLayout()
     },
 
     resize(w: number, h: number) {

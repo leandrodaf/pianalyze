@@ -2,7 +2,7 @@ import type { Recording } from './recording-types'
 
 // ── Enums / constants ─────────────────────────────────────────────────────────
 
-export type Category = 'scales' | 'chords' | 'pieces'
+export type Category = 'scales' | 'chords' | 'triads' | 'pieces'
 
 /** 1 = Iniciante … 5 = Expert */
 export type DifficultyLevel = 1 | 2 | 3 | 4 | 5
@@ -26,6 +26,7 @@ export const DIFFICULTY_COLOR: Record<DifficultyLevel, string> = {
 export const CATEGORY_LABEL: Record<Category, string> = {
   scales: 'Escalas',
   chords: 'Acordes',
+  triads: 'Tríades',
   pieces: 'Peças',
 }
 
@@ -47,8 +48,10 @@ export interface ExerciseAuthor {
   name: string
   /** Main website, GitHub profile, or portfolio */
   url?: string
-  /** Short bio shown in the exercise detail card */
+  /** Short bio shown in the exercise detail card (pt-BR base) */
   bio?: string
+  /** Per-locale overrides for bio */
+  i18n?: Record<string, { bio?: string }>
   /** Public contact — email address or @handle (Twitter, etc.) */
   contact?: string
   /** Extra links: YouTube channel, Instagram, school page, etc. */
@@ -59,8 +62,8 @@ export interface ExerciseAuthor {
 export interface ExerciseStyle {
   /** CSS gradient stops, e.g. ["#7c3aed","#2563eb"] */
   gradient: readonly [string, string]
-  /** Single emoji or unicode symbol shown on the card cover */
-  icon: string
+  /** Optional symbol/character shown on the card cover; omit or leave empty to hide */
+  icon?: string
   /**
    * Optional cover image URL (absolute, relative to the app, or bundled path).
    * The gradient is applied as a semi-transparent overlay on top of the image,
@@ -116,6 +119,13 @@ export interface Exercise {
 
   /** Set to true for placeholder exercises not yet shipping with data */
   comingSoon?: boolean
+
+  /**
+   * Locale-specific overrides for display text.
+   * Keys are locale codes (e.g. "en", "es", "zh-CN").
+   * Falls back to the base `title`/`subtitle`/`description` fields (pt-BR).
+   */
+  i18n?: Record<string, { title?: string; subtitle?: string; description?: string }>
 
   /** Loaded recording data — undefined if not yet fetched / builtin placeholder */
   data?: Recording

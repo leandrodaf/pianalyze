@@ -14,6 +14,10 @@ export function GetDefaultSavePath() {
   return window['go']['main']['App']['GetDefaultSavePath']();
 }
 
+export function GetVersion() {
+  return window['go']['main']['App']['GetVersion']();
+}
+
 export function ImportAnyFile() {
   return window['go']['main']['App']['ImportAnyFile']();
 }
@@ -70,6 +74,10 @@ export function ReadRecordingByPath(arg1) {
   return window['go']['main']['App']['ReadRecordingByPath'](arg1);
 }
 
+export function ReportError(arg1, arg2) {
+  return window['go']['main']['App']['ReportError'](arg1, arg2);
+}
+
 export function ResumeRecording() {
   return window['go']['main']['App']['ResumeRecording']();
 }
@@ -80,6 +88,10 @@ export function SaveRecording(arg1, arg2, arg3) {
 
 export function SelectDevice(arg1) {
   return window['go']['main']['App']['SelectDevice'](arg1);
+}
+
+export function SetLanguage(arg1) {
+  return window['go']['main']['App']['SetLanguage'](arg1);
 }
 
 export function StartCapture() {

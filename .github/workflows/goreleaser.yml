@@ -51,18 +51,26 @@ jobs:
 
       - name: Build frontend
         working-directory: frontend
+        env:
+          SENTRY_RELEASE: ${{ github.ref_name }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         run: npm ci && npm run build
 
       # Explicit per-OS build — no variable expansion tricks for build tags.
       - name: Build binary (Linux)
         if: runner.os == 'Linux'
-        run: go build -tags webkit2_41,production -trimpath -ldflags "-s -w" -o pianalyze .
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: go build -tags webkit2_41,production -trimpath -ldflags "-s -w -X main.BuildMode=production -X main.Version=${GITHUB_REF_NAME#v} -X main.SentryDSN=$SENTRY_DSN" -o pianalyze .
 
       - name: Build binary (macOS)
         if: runner.os == 'macOS'
         env:
           CGO_LDFLAGS: "-framework UniformTypeIdentifiers"
-        run: go build -tags production -trimpath -ldflags "-s -w" -o pianalyze .
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: go build -tags production -trimpath -ldflags "-s -w -X main.BuildMode=production -X main.Version=${GITHUB_REF_NAME#v} -X main.SentryDSN=$SENTRY_DSN" -o pianalyze .
 
       - name: Embed icon (Windows)
         if: runner.os == 'Windows'
@@ -73,7 +81,9 @@ jobs:
 
       - name: Build binary (Windows)
         if: runner.os == 'Windows'
-        run: go build -tags production -trimpath -ldflags "-s -w" -o pianalyze.exe .
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: go build -tags production -trimpath -ldflags "-s -w -X main.BuildMode=production -X main.Version=$($env:GITHUB_REF_NAME -replace '^v','') -X main.SentryDSN=$env:SENTRY_DSN" -o pianalyze.exe .
 
       # ── Archive ──────────────────────────────────────────────────────────────
 

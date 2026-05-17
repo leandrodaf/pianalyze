@@ -10,6 +10,7 @@
 
 import { writable, get } from 'svelte/store'
 import { midiStore } from './midi'
+import { initAudio, playNote, stopNote, stopAllNotes, audioStore } from './audio'
 import type {
   Recording, RecordedEvent, NoteInterval, Hand, Dynamic, Articulation,
   GradingProfile, DifficultyPreset,
@@ -63,11 +64,18 @@ let wallStart = 0
 let segmentOffset = 0
 let liveNotes = new Set<number>()
 
+// Audio sustain pedal state — reset on cancelAll() and seekTo()
+let audioPedalHeld = false
+const audioPedalSustained = new Set<number>()
+
 function cancelAll() {
   for (const t of pending) clearTimeout(t)
   pending = []
   cancelAnimationFrame(rafId)
   rafId = 0
+  audioPedalHeld = false
+  audioPedalSustained.clear()
+  stopAllNotes()
 }
 
 function releaseAll() {
@@ -97,8 +105,10 @@ function restartPlaybackAt(ms: number): void {
 
 /** Convert a flat event list into note-on/off pairs, preserving all pedagogical fields. */
 function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
-  const CMD_NOTE_ON  = 0x90
+  const CMD_NOTE_ON = 0x90
   const CMD_NOTE_OFF = 0x80
+  const CMD_CC = 0xB0
+  const CC_SUSTAIN = 64
 
   type Active = {
     startMs: number
@@ -114,17 +124,62 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
     slur?: NoteInterval['slur']
   }
 
+  function pushInterval(note: number, entry: Active, endMs: number) {
+    out.push({
+      note,
+      startMs: entry.startMs,
+      endMs,
+      finger: entry.finger,
+      hand: entry.hand,
+      dynamic: entry.dynamic,
+      articulation: entry.articulation,
+      grace: entry.grace,
+      voice: entry.voice,
+      tip: entry.tip,
+      handPosition: entry.handPosition,
+      fermata: entry.fermata,
+      slur: entry.slur,
+    })
+  }
+
   const active = new Map<number, Active>()
   const out: NoteInterval[] = []
 
-  for (const ev of events) {
-    // Skip CC events (pedals) — they don't contribute to note intervals
-    if (ev.cmd === 0xB0) continue
+  // Sustain pedal state (CC 64)
+  let sustainHeld = false
+  // Notes with key released while pedal held — note → key-release time
+  const pedalSustained = new Map<number, number>()
 
-    const isNoteOn = (ev.cmd === CMD_NOTE_ON || ev.cmd === CMD_NOTE_OFF) && ev.vel > 0
-    const isNoteOff = ev.vel === 0 || ev.cmd === CMD_NOTE_OFF
+  for (const ev of events) {
+    if (ev.cmd === CMD_CC) {
+      if (ev.note === CC_SUSTAIN) {
+        if (ev.vel >= 64) {
+          sustainHeld = true
+        } else {
+          // Pedal release — end all pedal-sustained notes at the pedal release time
+          sustainHeld = false
+          for (const [note] of pedalSustained) {
+            const entry = active.get(note)
+            if (entry) { pushInterval(note, entry, ev.t); active.delete(note) }
+          }
+          pedalSustained.clear()
+        }
+      }
+      continue
+    }
+
+    // 0x90 vel>0 = NoteOn;  0x90 vel=0 or 0x80 any vel = NoteOff
+    const isNoteOn = ev.cmd === CMD_NOTE_ON && ev.vel > 0
+    const isNoteOff = ev.cmd === CMD_NOTE_OFF || (ev.cmd === CMD_NOTE_ON && ev.vel === 0)
 
     if (isNoteOn) {
+      // Re-striking a note that is already active (trill, or pedal-held re-press)
+      if (active.has(ev.note)) {
+        const prev = active.get(ev.note)!
+        pushInterval(ev.note, prev, pedalSustained.get(ev.note) ?? ev.t)
+        pedalSustained.delete(ev.note)
+        active.delete(ev.note)
+      }
       active.set(ev.note, {
         startMs: ev.t,
         finger: ev.finger,
@@ -141,43 +196,23 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
     } else if (isNoteOff) {
       const entry = active.get(ev.note)
       if (entry !== undefined) {
-        out.push({
-          note: ev.note,
-          startMs: entry.startMs,
-          endMs: ev.t,
-          finger: entry.finger,
-          hand: entry.hand,
-          dynamic: entry.dynamic,
-          articulation: entry.articulation,
-          grace: entry.grace,
-          voice: entry.voice,
-          tip: entry.tip,
-          handPosition: entry.handPosition,
-          fermata: entry.fermata,
-          slur: entry.slur,
-        })
-        active.delete(ev.note)
+        if (sustainHeld) {
+          // Defer release — pedal extends the note
+          pedalSustained.set(ev.note, ev.t)
+        } else {
+          pushInterval(ev.note, entry, ev.t)
+          active.delete(ev.note)
+        }
       }
     }
   }
 
-  // Close any notes still held at end of recording
+  // Close any notes still active at end of recording
   for (const [note, entry] of active) {
-    out.push({
-      note,
-      startMs: entry.startMs,
-      endMs: entry.startMs + 500,
-      finger: entry.finger,
-      hand: entry.hand,
-      dynamic: entry.dynamic,
-      articulation: entry.articulation,
-      grace: entry.grace,
-      voice: entry.voice,
-      tip: entry.tip,
-      handPosition: entry.handPosition,
-      fermata: entry.fermata,
-      slur: entry.slur,
-    })
+    const endMs = pedalSustained.has(note)
+      ? pedalSustained.get(note)! + 500
+      : entry.startMs + 500
+    pushInterval(note, entry, endMs)
   }
   return out
 }
@@ -189,32 +224,59 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
   const initialState = get(playbackStore)
   const durationMs = initialState.durationMs
   const speed = initialState.speedMultiplier
-  // In review mode the waterfall renders bars with LEAD_MS preview, so MIDI events
-  // must be delayed by the same amount so the keyboard fires exactly when the bar
-  // reaches the golden line.
-  const reviewOffset = initialState.practice ? 0 : DEFAULT_LEAD_TIME_SEC * 1000
+  // The waterfall always shows bars with a lead-time preview (notes scroll from the
+  // right edge to the golden line). Audio and visual injection must fire exactly when
+  // the bar hits the golden line, which is always DEFAULT_LEAD_TIME_SEC after the bar
+  // appears on screen — regardless of review vs practice mode.
+  const leadOffset = DEFAULT_LEAD_TIME_SEC * 1000
 
   for (const ev of events) {
-    const delay = ev.t - fromMs + reviewOffset
+    const delay = ev.t - fromMs + leadOffset
     if (delay < 0) continue
 
     const tid = setTimeout(() => {
-      // In practice mode we do NOT feed recording notes into the MIDI store —
-      // the student's keyboard is the only input there.
-      if (get(playbackStore).practice) return
+      // Sustain pedal (CC 64): tracked for audio; never injected into visual store.
+      if (ev.cmd === 0xB0) {
+        if (ev.note === 64) {
+          if (ev.vel >= 64) {
+            audioPedalHeld = true
+          } else {
+            audioPedalHeld = false
+            for (const note of audioPedalSustained) stopNote(note)
+            audioPedalSustained.clear()
+          }
+        }
+        return
+      }
 
-      // CC events (pedals) are not injected into midiStore for visual display.
-      if (ev.cmd === 0xB0) return
+      // 0x90 vel>0 = NoteOn; 0x90 vel=0 or 0x80 any vel = NoteOff
+      const on = ev.cmd === 0x90 && ev.vel > 0
+      const isPractice = get(playbackStore).practice
 
-      const on = ev.vel > 0
-      if (on) liveNotes.add(ev.note)
-      else    liveNotes.delete(ev.note)
+      // Audio: plays in both review and practice modes.
+      if (on) {
+        // Scale velocity by per-hand volume (read at fire-time so slider changes apply immediately).
+        const hand = ev.hand ?? (ev.note >= 60 ? 'right' : 'left')
+        const hvol = get(audioStore).handVolumes[hand]
+        if (hvol > 0) playNote(ev.note, Math.round(ev.vel * hvol / 100))
+        audioPedalSustained.delete(ev.note)  // re-strike clears pending release
+      } else if (audioPedalHeld) {
+        audioPedalSustained.add(ev.note)     // defer release until pedal lifts
+      } else {
+        stopNote(ev.note)
+      }
 
-      midiStore.update(s => ({
-        ...s,
-        pressedNotes: Array.from(liveNotes),
-        velocity: on ? ev.vel : 0,
-      }))
+      // Visual MIDI injection: review mode only.
+      if (!isPractice) {
+        if (on) liveNotes.add(ev.note)
+        else    liveNotes.delete(ev.note)
+
+        midiStore.update(s => ({
+          ...s,
+          pressedNotes: Array.from(liveNotes),
+          velocity: on ? ev.vel : 0,
+        }))
+      }
     }, delay / speed)
     pending.push(tid)
   }
@@ -276,9 +338,12 @@ export function setPractice(on: boolean): void {
   playbackStore.update(s => ({ ...s, practice: on, status: 'idle', positionMs: 0 }))
 }
 
-export function play(): void {
+export async function play(): Promise<void> {
   const state = get(playbackStore)
   if (!state.recording || state.status === 'playing') return
+
+  // Must be called from a user gesture — initializes Web Audio on first play.
+  await initAudio()
 
   let fromMs = state.positionMs
   if (state.status === 'idle' && fromMs >= state.durationMs) {

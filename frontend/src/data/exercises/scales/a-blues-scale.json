@@ -1,0 +1,252 @@
+{
+  "version": 2,
+  "meta": {
+    "title": "Escala de Blues em Lá",
+    "composer": "Exercício Clássico",
+    "source": {
+      "format": "manual"
+    }
+  },
+  "keySignature": "Am",
+  "tempoMap": [
+    {
+      "atMs": 0,
+      "bpm": 72,
+      "beatUnit": "quarter",
+      "label": "Andante"
+    }
+  ],
+  "timeSignatureMap": [
+    {
+      "atMs": 0,
+      "value": "4/4"
+    }
+  ],
+  "measureMap": [
+    {
+      "measure": 1,
+      "atMs": 0
+    },
+    {
+      "measure": 2,
+      "atMs": 3333
+    },
+    {
+      "measure": 3,
+      "atMs": 6666
+    },
+    {
+      "measure": 4,
+      "atMs": 9999
+    }
+  ],
+  "sections": [
+    {
+      "name": "Subida",
+      "startMs": 0,
+      "type": "verse",
+      "rehearsalMark": "A",
+      "difficulty": 2
+    },
+    {
+      "name": "Descida",
+      "startMs": 5833,
+      "type": "bridge",
+      "rehearsalMark": "B",
+      "difficulty": 2
+    }
+  ],
+  "gradingProfile": {
+    "velocityTolerance": 30,
+    "earlyToleranceMs": 489,
+    "lateToleranceMs": 293
+  },
+  "events": [
+    {
+      "t": 0,
+      "cmd": 144,
+      "note": 57,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "tip": "Polegar em Lá3 — início"
+    },
+    {
+      "t": 683,
+      "cmd": 144,
+      "note": 57,
+      "vel": 0
+    },
+    {
+      "t": 833,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right"
+    },
+    {
+      "t": 1516,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 1666,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right"
+    },
+    {
+      "t": 2349,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 2499,
+      "cmd": 144,
+      "note": 63,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "tip": "Mi♭4 — blue note; cruzar polegar"
+    },
+    {
+      "t": 3182,
+      "cmd": 144,
+      "note": 63,
+      "vel": 0
+    },
+    {
+      "t": 3332,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right"
+    },
+    {
+      "t": 4015,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 4165,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right"
+    },
+    {
+      "t": 4848,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 4998,
+      "cmd": 144,
+      "note": 69,
+      "vel": 72,
+      "finger": 4,
+      "hand": "right"
+    },
+    {
+      "t": 5681,
+      "cmd": 144,
+      "note": 69,
+      "vel": 0
+    },
+    {
+      "t": 5831,
+      "cmd": 144,
+      "note": 67,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right"
+    },
+    {
+      "t": 6514,
+      "cmd": 144,
+      "note": 67,
+      "vel": 0
+    },
+    {
+      "t": 6664,
+      "cmd": 144,
+      "note": 64,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right"
+    },
+    {
+      "t": 7347,
+      "cmd": 144,
+      "note": 64,
+      "vel": 0
+    },
+    {
+      "t": 7497,
+      "cmd": 144,
+      "note": 63,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right"
+    },
+    {
+      "t": 8180,
+      "cmd": 144,
+      "note": 63,
+      "vel": 0
+    },
+    {
+      "t": 8330,
+      "cmd": 144,
+      "note": 62,
+      "vel": 72,
+      "finger": 3,
+      "hand": "right",
+      "tip": "Passar dedo sobre polegar"
+    },
+    {
+      "t": 9013,
+      "cmd": 144,
+      "note": 62,
+      "vel": 0
+    },
+    {
+      "t": 9163,
+      "cmd": 144,
+      "note": 60,
+      "vel": 72,
+      "finger": 2,
+      "hand": "right"
+    },
+    {
+      "t": 9846,
+      "cmd": 144,
+      "note": 60,
+      "vel": 0
+    },
+    {
+      "t": 9996,
+      "cmd": 144,
+      "note": 57,
+      "vel": 72,
+      "finger": 1,
+      "hand": "right",
+      "fermata": true
+    },
+    {
+      "t": 10679,
+      "cmd": 144,
+      "note": 57,
+      "vel": 0
+    }
+  ]
+}

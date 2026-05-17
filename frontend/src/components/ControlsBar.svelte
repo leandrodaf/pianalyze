@@ -1,8 +1,11 @@
 <script lang="ts">
-  import { playbackStore, play, pause, stop, rewind, setSpeed, toggleLoop, seekTo, setLoop } from '../stores/playback'
+  import { playbackStore, noteIntervals, play, pause, stop, rewind, setSpeed, toggleLoop, seekTo, setLoop } from '../stores/playback'
+  import { audioStore, setVolume, toggleMute, setHandVolume } from '../stores/audio'
+  import { HAND_SPLIT } from '../lib/waterfall-layout'
   import { bpmAt } from '../lib/recording-types'
   import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
   import { DIFFICULTY_COLOR } from '../lib/exercise-types'
+  import { t } from '../lib/i18n'
 
   const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
   const SPEEDS = [0.25, 0.5, 0.75, 1, 1.5, 2] as const
@@ -17,6 +20,28 @@
 
   $: liveBpm    = s.recording ? bpmAt(s.recording, s.positionMs) : null
   $: currentBpm = liveBpm ? Math.round(liveBpm * speed) : null
+
+  $: audio  = $audioStore
+  $: isMuted = audio.muted || audio.volume === 0
+  $: isLoading = audio.status === 'loading'
+  $: handVolumes = audio.handVolumes
+
+  $: ivs = $noteIntervals
+  $: hasBothHands = hasRec &&
+    ivs.some(iv => iv.hand === 'right' || (!iv.hand && iv.note >= HAND_SPLIT)) &&
+    ivs.some(iv => iv.hand === 'left'  || (!iv.hand && iv.note <  HAND_SPLIT))
+
+  function onVolumeInput(e: Event) {
+    setVolume(+(e.currentTarget as HTMLInputElement).value)
+  }
+
+  function onRightHandInput(e: Event) {
+    setHandVolume('right', +(e.currentTarget as HTMLInputElement).value)
+  }
+
+  function onLeftHandInput(e: Event) {
+    setHandVolume('left', +(e.currentTarget as HTMLInputElement).value)
+  }
 
   function goToSection(idx: number) {
     const sec = sections[idx]
@@ -45,7 +70,7 @@
   <div class="sep"></div>
 
   <div class="speed-group">
-    <span class="speed-label">velocidade</span>
+    <span class="speed-label">{$t('controls.speed')}</span>
     {#each SPEEDS as x}
       <button
         class="speed-pill"
@@ -68,7 +93,7 @@
     class:active={loopEnabled}
     disabled={!hasLoop}
     on:click={toggleLoop}
-    title={loopEnabled ? 'Desativar loop' : 'Ativar loop (arraste na timeline para definir região)'}
+    title={loopEnabled ? $t('controls.loop.disable') : $t('controls.loop.enable')}
   >
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="17 1 21 5 17 9"/>
@@ -77,11 +102,75 @@
       <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
     </svg>
   </button>
+  <div class="sep"></div>
+
+  {#if hasBothHands}
+    <div class="sep"></div>
+    <div class="hand-balance-group">
+      <div class="hand-row">
+        <span class="hand-tag right" class:dim={handVolumes.right === 0}>{$t('waterfall.hand.right.abbr')}</span>
+        <input
+          type="range" class="hand-slider" min="0" max="100" step="1"
+          value={handVolumes.right}
+          on:input={onRightHandInput}
+          title="{$t('waterfall.hand.right')}: {handVolumes.right}%"
+        />
+      </div>
+      <div class="hand-row">
+        <span class="hand-tag left" class:dim={handVolumes.left === 0}>{$t('waterfall.hand.left.abbr')}</span>
+        <input
+          type="range" class="hand-slider" min="0" max="100" step="1"
+          value={handVolumes.left}
+          on:input={onLeftHandInput}
+          title="{$t('waterfall.hand.left')}: {handVolumes.left}%"
+        />
+      </div>
+    </div>
+  {/if}
+
+  <div class="volume-group">
+    <button
+      class="btn mute-btn"
+      class:muted={isMuted}
+      on:click={toggleMute}
+      title={isMuted ? $t('controls.unmute') : $t('controls.mute')}
+      disabled={isLoading}
+    >
+      {#if isMuted}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+        </svg>
+      {:else if audio.volume < 40}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+      {:else}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+      {/if}
+    </button>
+    <input
+      type="range"
+      class="volume-slider"
+      min="0"
+      max="100"
+      step="1"
+      value={audio.muted ? 0 : audio.volume}
+      on:input={onVolumeInput}
+      title="Volume: {audio.muted ? 0 : audio.volume}%"
+    />
+  </div>
+
   {#if sections.length > 0}
     <div class="sep"></div>
     <div class="group sections-group">
       {#each sections as sec, i}
-        <button class="section-pill" on:click={() => goToSection(i)} title="Ir para {sec.name}">
+        <button class="section-pill" on:click={() => goToSection(i)} title="{$t('controls.goto')} {sec.name}">
           {#if sec.rehearsalMark}
             <span class="rehearsal-mark">[{sec.rehearsalMark}]</span>
           {/if}
@@ -242,6 +331,54 @@
     flex-shrink: 0;
   }
 
+  /* ── Volume control ─────────────────────────────────────────────────────── */
+  .volume-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mute-btn {
+    padding: 0 0.4rem;
+    flex-shrink: 0;
+  }
+
+  .mute-btn.muted {
+    color: rgba(255,255,255,0.3);
+  }
+
+  .volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 72px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.15);
+    outline: none;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+
+  .volume-slider:hover {
+    background: rgba(255,255,255,0.25);
+  }
+
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.75);
+    cursor: pointer;
+    transition: background 0.12s, transform 0.1s;
+  }
+
+  .volume-slider:hover::-webkit-slider-thumb {
+    background: #fff;
+    transform: scale(1.15);
+  }
+
   /* ── Difficulty presets — moved to App.svelte top-bar ───────────────────── */
 
   .sep {
@@ -250,5 +387,65 @@
     background: rgba(255,255,255,0.08);
     flex-shrink: 0;
     margin: 0 0.1rem;
+  }
+
+  /* ── Hand balance ───────────────────────────────────────────────────────── */
+  .hand-balance-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    justify-content: center;
+  }
+
+  .hand-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .hand-tag {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    width: 18px;
+    text-align: right;
+    transition: color 0.15s;
+    flex-shrink: 0;
+  }
+
+  .hand-tag.right { color: rgba(185,154,244,0.75); }
+  .hand-tag.left  { color: rgba(240,138,91,0.75);  }
+  .hand-tag.dim   { color: rgba(255,255,255,0.20); }
+
+  .hand-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 64px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.13);
+    outline: none;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+
+  .hand-slider:hover {
+    background: rgba(255,255,255,0.22);
+  }
+
+  .hand-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.70);
+    cursor: pointer;
+    transition: background 0.12s, transform 0.1s;
+  }
+
+  .hand-slider:hover::-webkit-slider-thumb {
+    background: #fff;
+    transform: scale(1.2);
   }
 </style>

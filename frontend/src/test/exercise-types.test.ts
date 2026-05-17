@@ -44,10 +44,10 @@ describe('DIFFICULTY_COLOR', () => {
 })
 
 describe('CATEGORY_LABEL', () => {
-  const categories: Category[] = ['scales', 'chords', 'pieces']
+  const categories: Category[] = ['scales', 'chords', 'triads', 'pieces']
 
-  it('has entries for all 3 categories', () => {
-    expect(Object.keys(CATEGORY_LABEL)).toHaveLength(3)
+  it('has entries for all 4 categories', () => {
+    expect(Object.keys(CATEGORY_LABEL)).toHaveLength(4)
   })
 
   it.each(categories)('category "%s" has a non-empty label', (cat) => {

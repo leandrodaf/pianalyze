@@ -3,6 +3,7 @@
   import { midiStore } from '../stores/midi'
   import { playbackStore, noteIntervals, buildGradingIntervals } from '../stores/playback'
   import { createWaterfallCanvas, type WaterfallCanvas } from '../lib/waterfall-canvas'
+  import { HAND_SPLIT, MIDI_MIN, MIDI_MAX } from '../lib/waterfall-layout'
   import { bpmAt } from '../lib/recording-types'
   import { keyToPitchClasses } from '../lib/key-utils'
   import { get } from 'svelte/store'
@@ -89,6 +90,14 @@
         prevPractice = state.practice
         if (hasRecording) {
           const ivs = get(noteIntervals)
+          const hasLeft  = ivs.some(iv => iv.hand === 'left'  || (!iv.hand && iv.note < HAND_SPLIT))
+          const hasRight = ivs.some(iv => iv.hand === 'right' || (!iv.hand && iv.note >= HAND_SPLIT))
+          waterfall.setActiveHands(hasLeft && hasRight ? 'both' : hasLeft ? 'left' : 'right')
+          const notes = ivs.map(iv => iv.note)
+          waterfall.setNoteRange(
+            notes.length ? Math.min(...notes) : MIDI_MIN,
+            notes.length ? Math.max(...notes) : MIDI_MAX,
+          )
           waterfall.enablePractice(ivs, state.practice)
           if (state.practice) {
             const gradingIvs = buildGradingIntervals(ivs)
@@ -101,6 +110,8 @@
             prevProfileOverride = state.gradingProfileOverride
           }
         } else {
+          waterfall.setActiveHands('both')
+          waterfall.setNoteRange(MIDI_MIN, MIDI_MAX)
           waterfall.disablePractice()
           StopPractice().catch(() => {})
         }

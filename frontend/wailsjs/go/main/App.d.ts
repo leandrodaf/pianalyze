@@ -9,6 +9,8 @@ export function DeleteRecording(arg1:string):Promise<void>;
 
 export function GetDefaultSavePath():Promise<string>;
 
+export function GetVersion():Promise<string>;
+
 export function ImportAnyFile():Promise<main.ImportResult>;
 
 export function ImportScoreFile():Promise<string>;
@@ -37,11 +39,15 @@ export function PickSaveDirectory(arg1:string):Promise<string>;
 
 export function ReadRecordingByPath(arg1:string):Promise<string>;
 
+export function ReportError(arg1:string,arg2:string):Promise<void>;
+
 export function ResumeRecording():Promise<void>;
 
 export function SaveRecording(arg1:string,arg2:string,arg3:string):Promise<void>;
 
 export function SelectDevice(arg1:number):Promise<void>;
+
+export function SetLanguage(arg1:string):Promise<void>;
 
 export function StartCapture():Promise<void>;
 

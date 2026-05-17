@@ -12,7 +12,18 @@
         "label": "GitHub",
         "url": "https://github.com/leandrodaf/pianalyze"
       }
-    ]
+    ],
+    "i18n": {
+      "en": {
+        "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+      },
+      "es": {
+        "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+      },
+      "zh-CN": {
+        "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+      }
+    }
   },
   "license": "MIT",
   "website": "https://github.com/leandrodaf/pianalyze",
@@ -32,7 +43,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "scales",
       "difficulty": 1,
@@ -48,8 +70,7 @@
           "#7c3aed",
           "#2563eb"
         ],
-        "icon": "🎵",
-        "coverImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Frederic_Chopin_photo.jpeg/800px-Frederic_Chopin_photo.jpeg"
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 10,
@@ -57,7 +78,24 @@
         "timeSignature": "4/4",
         "hands": "both"
       },
-      "dataUrl": "exercises/scales/c-major-scale.json"
+      "dataUrl": "exercises/scales/c-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "C Major Scale",
+          "subtitle": "C · D · E · F · G · A · B · C",
+          "description": "The most fundamental scale on the piano and the starting point for every beginner. Practice it slowly, focusing on an even touch and smooth thumb crossings."
+        },
+        "es": {
+          "title": "Escala de Do Mayor",
+          "subtitle": "Do · Re · Mi · Fa · Sol · La · Si · Do",
+          "description": "La escala más fundamental del piano y punto de partida para todo principiante. Practícala despacio, concentrándote en un toque uniforme y cruces de pulgar suaves."
+        },
+        "zh-CN": {
+          "title": "C大调音阶",
+          "subtitle": "C · D · E · F · G · A · B · C",
+          "description": "钢琴上最基础的音阶，是每位初学者的起点。慢速练习，注意触键均匀和拇指过指流畅。"
+        }
+      }
     },
     {
       "id": "g-major-scale",
@@ -74,7 +112,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "scales",
       "difficulty": 1,
@@ -89,7 +138,7 @@
           "#0891b2",
           "#059669"
         ],
-        "icon": "🎵"
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 10,
@@ -97,7 +146,24 @@
         "timeSignature": "4/4",
         "hands": "both"
       },
-      "dataUrl": "exercises/scales/g-major-scale.json"
+      "dataUrl": "exercises/scales/g-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "G Major Scale",
+          "subtitle": "G · A · B · C · D · E · F# · G",
+          "description": "Scale with one sharp (F#), great for training thumb crossings and position changes. Maintain consistent pressure across all eight notes."
+        },
+        "es": {
+          "title": "Escala de Sol Mayor",
+          "subtitle": "Sol · La · Si · Do · Re · Mi · Fa# · Sol",
+          "description": "Escala con un sostenido (Fa#), excelente para entrenar el cruce de pulgar y los cambios de posición. Mantén una presión uniforme en las ocho notas."
+        },
+        "zh-CN": {
+          "title": "G大调音阶",
+          "subtitle": "G · A · B · C · D · E · F# · G",
+          "description": "含一个升号（F#），适合练习拇指过指和换位。保持八个音的触键力度一致。"
+        }
+      }
     },
     {
       "id": "a-minor-scale",
@@ -114,7 +180,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "scales",
       "difficulty": 1,
@@ -129,7 +206,7 @@
           "#be185d",
           "#9333ea"
         ],
-        "icon": "🎵"
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 10,
@@ -137,7 +214,24 @@
         "timeSignature": "4/4",
         "hands": "both"
       },
-      "dataUrl": "exercises/scales/a-minor-scale.json"
+      "dataUrl": "exercises/scales/a-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "A Minor Scale",
+          "subtitle": "A · B · C · D · E · F · G · A",
+          "description": "The natural minor scale relative to C major. Feel the difference in emotional character — darker and more introspective. Focus on consistent tone across all notes."
+        },
+        "es": {
+          "title": "Escala de La Menor",
+          "subtitle": "La · Si · Do · Re · Mi · Fa · Sol · La",
+          "description": "La escala menor natural relativa a Do Mayor. Siente la diferencia de carácter emocional — más oscuro e introspectivo. Busca un tono uniforme en todas las notas."
+        },
+        "zh-CN": {
+          "title": "A小调音阶",
+          "subtitle": "A · B · C · D · E · F · G · A",
+          "description": "C大调的关系小调音阶。感受情感色彩的差异——更暗沉、更内省。注意保持各音色调一致。"
+        }
+      }
     },
     {
       "id": "d-major-scale",
@@ -154,7 +248,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "scales",
       "difficulty": 2,
@@ -169,7 +274,7 @@
           "#065f46",
           "#0891b2"
         ],
-        "icon": "🎵"
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 10,
@@ -177,7 +282,24 @@
         "timeSignature": "4/4",
         "hands": "both"
       },
-      "dataUrl": "exercises/scales/d-major-scale.json"
+      "dataUrl": "exercises/scales/d-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "D Major Scale",
+          "subtitle": "D · E · F# · G · A · B · C# · D",
+          "description": "Two sharps (F# and C#). Excellent for building finger independence in the middle octave. Pay special attention to the smooth transition at the thumb crossings."
+        },
+        "es": {
+          "title": "Escala de Re Mayor",
+          "subtitle": "Re · Mi · Fa# · Sol · La · Si · Do# · Re",
+          "description": "Dos sostenidos (Fa# y Do#). Excelente para desarrollar la independencia de los dedos. Presta especial atención a la transición suave en los cruces de pulgar."
+        },
+        "zh-CN": {
+          "title": "D大调音阶",
+          "subtitle": "D · E · F# · G · A · B · C# · D",
+          "description": "含两个升号（F# 和 C#）。适合培养中音区的手指独立性。特别注意拇指过指处的流畅衔接。"
+        }
+      }
     },
     {
       "id": "chromatic-scale",
@@ -194,7 +316,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "scales",
       "difficulty": 2,
@@ -210,7 +343,7 @@
           "#1d4ed8",
           "#6d28d9"
         ],
-        "icon": "🎼"
+        "coverImage": "/images/exercises/cover-chromatic.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -218,7 +351,995 @@
         "timeSignature": "4/4",
         "hands": "right"
       },
-      "dataUrl": "exercises/scales/chromatic-scale.json"
+      "dataUrl": "exercises/scales/chromatic-scale.json",
+      "i18n": {
+        "en": {
+          "title": "Chromatic Scale",
+          "subtitle": "All 12 semitones · C4 → C5",
+          "description": "Covers every semitone of the octave, involving all black and white keys. Essential for technical development and understanding the piano keyboard layout."
+        },
+        "es": {
+          "title": "Escala Cromática",
+          "subtitle": "Los 12 semitonos · Do4 → Do5",
+          "description": "Recorre todos los semitonos de la octava, involucrando todas las teclas negras y blancas. Esencial para el desarrollo técnico y la comprensión del teclado."
+        },
+        "zh-CN": {
+          "title": "半音阶",
+          "subtitle": "全部12个半音 · C4 → C5",
+          "description": "涵盖一个八度内的所有半音，涉及所有黑键和白键。对于技术发展和理解钢琴键盘布局至关重要。"
+        }
+      }
+    },
+    {
+      "id": "a-major-scale",
+      "title": "Escala de Lá Maior",
+      "subtitle": "A · B · C# · D · E · F# · G# · A",
+      "description": "Três sustenidos (F#, C# e G#). Tonalidade brilhante e expressiva usada em inúmeras obras clássicas e populares. Foque nos cruzamentos de polegar uniformes e no toque equalizado nas teclas pretas.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 1,
+      "tags": [
+        "escalas",
+        "lá maior",
+        "#"
+      ],
+      "style": {
+        "gradient": [
+          "#f59e0b",
+          "#ef4444"
+        ],
+        "coverImage": "/images/exercises/cover-scales-major.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/a-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "A Major Scale",
+          "subtitle": "A · B · C# · D · E · F# · G# · A",
+          "description": "Three sharps (F#, C#, G#). A bright and expressive key used in countless classical and popular works. Focus on even thumb crossings and consistent tone on the black keys."
+        },
+        "es": {
+          "title": "Escala de La Mayor",
+          "subtitle": "La · Si · Do# · Re · Mi · Fa# · Sol# · La",
+          "description": "Tres sostenidos (Fa#, Do#, Sol#). Una tonalidad brillante y expresiva usada en innumerables obras clásicas y populares. Enfócate en los cruces de pulgar uniformes."
+        },
+        "zh-CN": {
+          "title": "A大调音阶",
+          "subtitle": "A · B · C# · D · E · F# · G# · A",
+          "description": "含三个升号（F#、C#、G#）。明亮而富有表现力的调性，在无数古典和流行作品中使用。注意均匀的拇指过指和黑键上的一致音色。"
+        }
+      }
+    },
+    {
+      "id": "e-major-scale",
+      "title": "Escala de Mi Maior",
+      "subtitle": "E · F# · G# · A · B · C# · D# · E",
+      "description": "Quatro sustenidos (F#, C#, G# e D#). Exige atenção especial às teclas pretas. Muito apreciada por instrumentistas de cordas e frequente no repertório romântico.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escalas",
+        "mi maior",
+        "#"
+      ],
+      "style": {
+        "gradient": [
+          "#10b981",
+          "#3b82f6"
+        ],
+        "coverImage": "/images/exercises/cover-scales-major.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/e-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "E Major Scale",
+          "subtitle": "E · F# · G# · A · B · C# · D# · E",
+          "description": "Four sharps (F#, C#, G#, D#). Requires careful attention to the black keys. Beloved by string players and used frequently in Romantic piano music."
+        },
+        "es": {
+          "title": "Escala de Mi Mayor",
+          "subtitle": "Mi · Fa# · Sol# · La · Si · Do# · Re# · Mi",
+          "description": "Cuatro sostenidos (Fa#, Do#, Sol#, Re#). Requiere atención cuidadosa en las teclas negras. Muy querida por los intérpretes de cuerda y frecuente en la música romántica."
+        },
+        "zh-CN": {
+          "title": "E大调音阶",
+          "subtitle": "E · F# · G# · A · B · C# · D# · E",
+          "description": "含四个升号（F#、C#、G#、D#）。需要仔细注意黑键。深受弦乐演奏者喜爱，在浪漫主义钢琴音乐中频繁出现。"
+        }
+      }
+    },
+    {
+      "id": "b-major-scale",
+      "title": "Escala de Si Maior",
+      "subtitle": "B · C# · D# · E · F# · G# · A# · B",
+      "description": "Cinco sustenidos (F#, C#, G#, D# e A#). O cruzamento do polegar ocorre após o Mi (4ª nota), diferente de Dó–Lá maior. Desenvolve a adaptabilidade técnica e prepara para repertório avançado.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escalas",
+        "si maior",
+        "#"
+      ],
+      "style": {
+        "gradient": [
+          "#8b5cf6",
+          "#06b6d4"
+        ],
+        "coverImage": "/images/exercises/cover-scales-major.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/b-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "B Major Scale",
+          "subtitle": "B · C# · D# · E · F# · G# · A# · B",
+          "description": "Five sharps (F#, C#, G#, D#, A#). The fingering shifts: cross under after E (4th note), different from C–A major. Develops adaptability and prepares for advanced repertoire."
+        },
+        "es": {
+          "title": "Escala de Si Mayor",
+          "subtitle": "Si · Do# · Re# · Mi · Fa# · Sol# · La# · Si",
+          "description": "Cinco sostenidos (Fa#, Do#, Sol#, Re#, La#). El cruce de pulgar ocurre después del Mi (4ª nota), diferente de Do–La mayor. Desarrolla adaptabilidad técnica."
+        },
+        "zh-CN": {
+          "title": "B大调音阶",
+          "subtitle": "B · C# · D# · E · F# · G# · A# · B",
+          "description": "含五个升号（F#、C#、G#、D#、A#）。拇指过指在第4个音（E）之后，与C到A大调不同。培养技术适应性，为高级曲目做准备。"
+        }
+      }
+    },
+    {
+      "id": "fs-major-scale",
+      "title": "Escala de Fá# Maior",
+      "subtitle": "F# · G# · A# · B · C# · D# · E# · F#",
+      "description": "Seis sustenidos. Começa no dedo 2 (indicador) porque Fá# é uma tecla preta. Exercício técnico desafiador que treina a posição da mão direita em passagens com muitas teclas pretas.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 3,
+      "tags": [
+        "escalas",
+        "fá# maior",
+        "#"
+      ],
+      "style": {
+        "gradient": [
+          "#f97316",
+          "#eab308"
+        ],
+        "coverImage": "/images/exercises/cover-scales-major.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/fs-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "F# Major Scale",
+          "subtitle": "F# · G# · A# · B · C# · D# · F · F#",
+          "description": "Six sharps. Starts on finger 2 (index) since F# is a black key. A challenging technical exercise that trains the right-hand position for black-key-heavy passages."
+        },
+        "es": {
+          "title": "Escala de Fa# Mayor",
+          "subtitle": "Fa# · Sol# · La# · Si · Do# · Re# · Mi# · Fa#",
+          "description": "Seis sostenidos. Empieza en el dedo 2 (índice) ya que Fa# es una tecla negra. Un ejercicio técnico desafiante que entrena la posición de la mano derecha."
+        },
+        "zh-CN": {
+          "title": "F#大调音阶",
+          "subtitle": "F# · G# · A# · B · C# · D# · F · F#",
+          "description": "含六个升号。从食指（2）开始，因为F#是黑键。具有挑战性的技术练习，训练右手在多黑键段落中的手型。"
+        }
+      }
+    },
+    {
+      "id": "f-major-scale",
+      "title": "Escala de Fá Maior",
+      "subtitle": "F · G · A · B♭ · C · D · E · F",
+      "description": "Um bemol (Bb). O cruzamento do polegar ocorre após o Si♭ (4ª nota), padrão importante para dominar. Fá maior aparece com frequência na música orquestral e de câmara.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 1,
+      "tags": [
+        "escalas",
+        "fá maior",
+        "b"
+      ],
+      "style": {
+        "gradient": [
+          "#3b82f6",
+          "#6366f1"
+        ],
+        "coverImage": "/images/exercises/cover-scales-major.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/f-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "F Major Scale",
+          "subtitle": "F · G · A · B♭ · C · D · E · F",
+          "description": "One flat (Bb). The fingering crosses under after Bb (4th note), an important pattern to master. F major appears frequently in orchestral and chamber music."
+        },
+        "es": {
+          "title": "Escala de Fa Mayor",
+          "subtitle": "Fa · Sol · La · Si♭ · Do · Re · Mi · Fa",
+          "description": "Un bemol (Si♭). El cruce de pulgar ocurre después del Si♭ (4ª nota), un patrón importante que dominar. Fa mayor aparece frecuentemente en música orquestal y de cámara."
+        },
+        "zh-CN": {
+          "title": "F大调音阶",
+          "subtitle": "F · G · A · B♭ · C · D · E · F",
+          "description": "含一个降号（Bb）。拇指过指在第4个音（Bb）之后，这是需要掌握的重要模式。F大调在管弦乐和室内乐中频繁出现。"
+        }
+      }
+    },
+    {
+      "id": "bb-major-scale",
+      "title": "Escala de Si♭ Maior",
+      "subtitle": "B♭ · C · D · E♭ · F · G · A · B♭",
+      "description": "Dois bemóis (Bb e Eb). Começa no dedo 4 porque Si♭ é uma tecla preta. Uma das tonalidades mais comuns em música para banda e jazz. Excelente para desenvolver conforto com teclas pretas.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escalas",
+        "si♭ maior",
+        "b"
+      ],
+      "style": {
+        "gradient": [
+          "#ec4899",
+          "#f43f5e"
+        ],
+        "coverImage": "/images/exercises/cover-scales-major.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/bb-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "B♭ Major Scale",
+          "subtitle": "B♭ · C · D · E♭ · F · G · A · B♭",
+          "description": "Two flats (Bb, Eb). Starts on finger 4 since Bb is a black key. One of the most common keys in wind-band music and jazz. Great for developing black-key comfort."
+        },
+        "es": {
+          "title": "Escala de Si♭ Mayor",
+          "subtitle": "Si♭ · Do · Re · Mi♭ · Fa · Sol · La · Si♭",
+          "description": "Dos bemoles (Si♭, Mi♭). Empieza en el dedo 4 ya que Si♭ es una tecla negra. Una de las tonalidades más comunes en música de banda y jazz."
+        },
+        "zh-CN": {
+          "title": "B♭大调音阶",
+          "subtitle": "B♭ · C · D · E♭ · F · G · A · B♭",
+          "description": "含两个降号（Bb、Eb）。从无名指（4）开始，因为Bb是黑键。管乐和爵士乐中最常见的调性之一，非常适合培养黑键适应性。"
+        }
+      }
+    },
+    {
+      "id": "eb-major-scale",
+      "title": "Escala de Mi♭ Maior",
+      "subtitle": "E♭ · F · G · A♭ · B♭ · C · D · E♭",
+      "description": "Três bemóis (Bb, Eb e Ab). Começa no dedo 3 porque Mi♭ é uma tecla preta. Tonalidade quente e rica adorada pelos compositores românticos e essencial no repertório pianístico clássico.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escalas",
+        "mi♭ maior",
+        "b"
+      ],
+      "style": {
+        "gradient": [
+          "#14b8a6",
+          "#6366f1"
+        ],
+        "coverImage": "/images/exercises/cover-scales-major.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/eb-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "E♭ Major Scale",
+          "subtitle": "E♭ · F · G · A♭ · B♭ · C · D · E♭",
+          "description": "Three flats (Bb, Eb, Ab). Starts on finger 3 since Eb is a black key. A warm, rich key beloved by Romantic composers and essential for classical piano literature."
+        },
+        "es": {
+          "title": "Escala de Mi♭ Mayor",
+          "subtitle": "Mi♭ · Fa · Sol · La♭ · Si♭ · Do · Re · Mi♭",
+          "description": "Tres bemoles (Si♭, Mi♭, La♭). Empieza en el dedo 3 ya que Mi♭ es una tecla negra. Una tonalidad cálida y rica, muy querida por los compositores románticos."
+        },
+        "zh-CN": {
+          "title": "E♭大调音阶",
+          "subtitle": "E♭ · F · G · A♭ · B♭ · C · D · E♭",
+          "description": "含三个降号（Bb、Eb、Ab）。从中指（3）开始，因为Eb是黑键。浪漫主义作曲家钟爱的温暖而丰富的调性，是古典钢琴文献的必备曲目。"
+        }
+      }
+    },
+    {
+      "id": "ab-major-scale",
+      "title": "Escala de Lá♭ Maior",
+      "subtitle": "A♭ · B♭ · C · D♭ · E♭ · F · G · A♭",
+      "description": "Quatro bemóis (Bb, Eb, Ab e Db). Começa no dedo 3 com o dedo 4 no Bb. Escala tecnicamente desafiadora que desenvolve a fluência em tonalidades com muitos bemóis.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 3,
+      "tags": [
+        "escalas",
+        "lá♭ maior",
+        "b"
+      ],
+      "style": {
+        "gradient": [
+          "#06b6d4",
+          "#0ea5e9"
+        ],
+        "coverImage": "/images/exercises/cover-scales-major.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/ab-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "A♭ Major Scale",
+          "subtitle": "A♭ · B♭ · C · D♭ · E♭ · F · G · A♭",
+          "description": "Four flats (Bb, Eb, Ab, Db). Starts on finger 3 with finger 4 on Bb. A technically challenging scale that builds fluency with flat-heavy key signatures."
+        },
+        "es": {
+          "title": "Escala de La♭ Mayor",
+          "subtitle": "La♭ · Si♭ · Do · Re♭ · Mi♭ · Fa · Sol · La♭",
+          "description": "Cuatro bemoles (Si♭, Mi♭, La♭, Re♭). Empieza en el dedo 3 con el dedo 4 en Si♭. Una escala técnicamente desafiante que desarrolla la fluidez con tonalidades de muchos bemoles."
+        },
+        "zh-CN": {
+          "title": "A♭大调音阶",
+          "subtitle": "A♭ · B♭ · C · D♭ · E♭ · F · G · A♭",
+          "description": "含四个降号（Bb、Eb、Ab、Db）。从中指（3）开始，无名指（4）弹Bb。技术上具有挑战性的音阶，培养在多降号调性中的流畅度。"
+        }
+      }
+    },
+    {
+      "id": "db-major-scale",
+      "title": "Escala de Ré♭ Maior",
+      "subtitle": "D♭ · E♭ · F · G♭ · A♭ · B♭ · C · D♭",
+      "description": "Cinco bemóis (Bb, Eb, Ab, Db e Gb). Começa no dedo 2 porque Ré♭ é uma tecla preta. Escala tecnicamente exigente presente no repertório avançado romântico e impressionista.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 3,
+      "tags": [
+        "escalas",
+        "ré♭ maior",
+        "b"
+      ],
+      "style": {
+        "gradient": [
+          "#a78bfa",
+          "#818cf8"
+        ],
+        "coverImage": "/images/exercises/cover-scales-major.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/db-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "D♭ Major Scale",
+          "subtitle": "D♭ · E♭ · F · G♭ · A♭ · B♭ · C · D♭",
+          "description": "Five flats (Bb, Eb, Ab, Db, Gb). Starts on finger 2 since Db is a black key. A technically demanding scale that appears in advanced Romantic and Impressionist repertoire."
+        },
+        "es": {
+          "title": "Escala de Re♭ Mayor",
+          "subtitle": "Re♭ · Mi♭ · Fa · Sol♭ · La♭ · Si♭ · Do · Re♭",
+          "description": "Cinco bemoles (Si♭, Mi♭, La♭, Re♭, Sol♭). Empieza en el dedo 2. Una escala técnicamente exigente presente en el repertorio romántico e impresionista avanzado."
+        },
+        "zh-CN": {
+          "title": "D♭大调音阶",
+          "subtitle": "D♭ · E♭ · F · G♭ · A♭ · B♭ · C · D♭",
+          "description": "含五个降号（Bb、Eb、Ab、Db、Gb）。从食指（2）开始，因为Db是黑键。技术要求较高的音阶，出现在高级浪漫主义和印象派曲目中。"
+        }
+      }
+    },
+    {
+      "id": "e-minor-scale",
+      "title": "Escala de Mi Menor",
+      "subtitle": "E · F# · G · A · B · C · D · E",
+      "description": "Relativa menor de Sol Maior (um sustenido: F#). Mi menor é uma das tonalidades mais expressivas da música. Pratique com sonoridade cantabile, notando o meio-tom entre D e E no topo.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 1,
+      "tags": [
+        "escalas",
+        "mi menor",
+        "menor",
+        "#"
+      ],
+      "style": {
+        "gradient": [
+          "#1e3a5f",
+          "#1e40af"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/e-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "E Minor Scale",
+          "subtitle": "E · F# · G · A · B · C · D · E",
+          "description": "The relative minor of G major (one sharp: F#). E minor is one of the most expressive keys in music. Practice with singing tone, noticing the characteristic half-step between D and E at the top."
+        },
+        "es": {
+          "title": "Escala de Mi Menor",
+          "subtitle": "Mi · Fa# · Sol · La · Si · Do · Re · Mi",
+          "description": "La menor relativa de Sol Mayor (un sostenido: Fa#). Mi menor es una de las tonalidades más expresivas de la música. Practica con tono cantabile."
+        },
+        "zh-CN": {
+          "title": "E小调音阶",
+          "subtitle": "E · F# · G · A · B · C · D · E",
+          "description": "G大调的关系小调（一个升号：F#）。E小调是音乐中最富表现力的调性之一。以歌唱般的音色练习，注意顶部D到E之间特有的半音。"
+        }
+      }
+    },
+    {
+      "id": "b-minor-scale",
+      "title": "Escala de Si Menor",
+      "subtitle": "B · C# · D · E · F# · G · A · B",
+      "description": "Relativa menor de Ré Maior (dois sustenidos: F# e C#). Si menor é uma tonalidade profundamente expressiva usada em obras-primas barrocas e românticas. Foque no caráter sombrio e rico.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escalas",
+        "si menor",
+        "menor",
+        "#"
+      ],
+      "style": {
+        "gradient": [
+          "#4c1d95",
+          "#7c3aed"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/b-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "B Minor Scale",
+          "subtitle": "B · C# · D · E · F# · G · A · B",
+          "description": "The relative minor of D major (two sharps: F#, C#). B minor is a deeply expressive key used in many Baroque and Romantic masterpieces. Focus on the dark, rich character."
+        },
+        "es": {
+          "title": "Escala de Si Menor",
+          "subtitle": "Si · Do# · Re · Mi · Fa# · Sol · La · Si",
+          "description": "La menor relativa de Re Mayor (dos sostenidos: Fa#, Do#). Si menor es una tonalidad profundamente expresiva usada en muchas obras maestras barrocas y románticas."
+        },
+        "zh-CN": {
+          "title": "B小调音阶",
+          "subtitle": "B · C# · D · E · F# · G · A · B",
+          "description": "D大调的关系小调（两个升号：F#、C#）。B小调是深刻而富于表现力的调性，被许多巴洛克和浪漫主义杰作所使用。"
+        }
+      }
+    },
+    {
+      "id": "fs-minor-scale",
+      "title": "Escala de Fá# Menor",
+      "subtitle": "F# · G# · A · B · C# · D · E · F#",
+      "description": "Relativa menor de Lá Maior (três sustenidos). Começa no dedo 2 porque Fá# é uma tecla preta. Tonalidade apaixonada e intensa muito usada pelos compositores românticos.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escalas",
+        "fá# menor",
+        "menor",
+        "#"
+      ],
+      "style": {
+        "gradient": [
+          "#134e4a",
+          "#065f46"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/fs-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "F# Minor Scale",
+          "subtitle": "F# · G# · A · B · C# · D · E · F#",
+          "description": "The relative minor of A major (three sharps). Starts on finger 2 (index) since F# is a black key. A passionate and intense key used extensively by Romantic composers."
+        },
+        "es": {
+          "title": "Escala de Fa# Menor",
+          "subtitle": "Fa# · Sol# · La · Si · Do# · Re · Mi · Fa#",
+          "description": "La menor relativa de La Mayor (tres sostenidos). Empieza en el dedo 2 ya que Fa# es una tecla negra. Una tonalidad apasionada e intensa usada extensamente por los románticos."
+        },
+        "zh-CN": {
+          "title": "F#小调音阶",
+          "subtitle": "F# · G# · A · B · C# · D · E · F#",
+          "description": "A大调的关系小调（三个升号）。从食指（2）开始，因为F#是黑键。浪漫主义作曲家大量使用的充满激情和张力的调性。"
+        }
+      }
+    },
+    {
+      "id": "cs-minor-scale",
+      "title": "Escala de Dó# Menor",
+      "subtitle": "C# · D# · E · F# · G# · A · B · C#",
+      "description": "Relativa menor de Mi Maior (quatro sustenidos). Começa no dedo 3 porque Dó# é uma tecla preta. Tonalidade profundamente emocional que aparece na \"Sonata ao Luar\" de Beethoven.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 3,
+      "tags": [
+        "escalas",
+        "dó# menor",
+        "menor",
+        "#"
+      ],
+      "style": {
+        "gradient": [
+          "#7f1d1d",
+          "#991b1b"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/cs-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "C# Minor Scale",
+          "subtitle": "C# · D# · E · F# · G# · A · B · C#",
+          "description": "The relative minor of E major (four sharps). Starts on finger 3 since C# is a black key. A deeply emotional key that appears in Beethoven's \"Moonlight Sonata\" and many other masterworks."
+        },
+        "es": {
+          "title": "Escala de Do# Menor",
+          "subtitle": "Do# · Re# · Mi · Fa# · Sol# · La · Si · Do#",
+          "description": "La menor relativa de Mi Mayor (cuatro sostenidos). Empieza en el dedo 3. Una tonalidad profundamente emocional que aparece en la \"Sonata Claro de Luna\" de Beethoven."
+        },
+        "zh-CN": {
+          "title": "C#小调音阶",
+          "subtitle": "C# · D# · E · F# · G# · A · B · C#",
+          "description": "E大调的关系小调（四个升号）。从中指（3）开始，因为C#是黑键。极具情感深度的调性，出现在贝多芬的《月光奏鸣曲》等众多杰作中。"
+        }
+      }
+    },
+    {
+      "id": "gs-minor-scale",
+      "title": "Escala de Sol# Menor",
+      "subtitle": "G# · A# · B · C# · D# · E · F# · G#",
+      "description": "Relativa menor de Si Maior (cinco sustenidos). Começa no dedo 3 porque Sol# é uma tecla preta. Escala avançada com caráter sombrio e misterioso usada em obras românticas dramáticas.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 3,
+      "tags": [
+        "escalas",
+        "sol# menor",
+        "menor",
+        "#"
+      ],
+      "style": {
+        "gradient": [
+          "#3b0764",
+          "#5b21b6"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/gs-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "G# Minor Scale",
+          "subtitle": "G# · A# · B · C# · D# · E · F# · G#",
+          "description": "The relative minor of B major (five sharps). Starts on finger 3 since G# is a black key. An advanced scale with a dark, mysterious character used in dramatic Romantic works."
+        },
+        "es": {
+          "title": "Escala de Sol# Menor",
+          "subtitle": "Sol# · La# · Si · Do# · Re# · Mi · Fa# · Sol#",
+          "description": "La menor relativa de Si Mayor (cinco sostenidos). Empieza en el dedo 3. Una escala avanzada con carácter oscuro y misterioso usada en obras románticas dramáticas."
+        },
+        "zh-CN": {
+          "title": "G#小调音阶",
+          "subtitle": "G# · A# · B · C# · D# · E · F# · G#",
+          "description": "B大调的关系小调（五个升号）。从中指（3）开始，因为G#是黑键。具有黑暗、神秘色彩的高级音阶，用于戏剧性的浪漫主义作品。"
+        }
+      }
+    },
+    {
+      "id": "eb-minor-scale",
+      "title": "Escala de Mi♭ Menor",
+      "subtitle": "E♭ · F · G♭ · A♭ · B♭ · C♭ · D♭ · E♭",
+      "description": "Relativa menor de Sol♭ Maior (seis bemóis). Começa no dedo 3 porque Mi♭ é uma tecla preta. Escala avançada com caráter muito sombrio. Rara na prática mas valiosa para técnica completa.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 3,
+      "tags": [
+        "escalas",
+        "mi♭ menor",
+        "menor",
+        "b"
+      ],
+      "style": {
+        "gradient": [
+          "#1c1917",
+          "#292524"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/eb-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "E♭ Minor Scale",
+          "subtitle": "E♭ · F · G♭ · A♭ · B♭ · C♭ · D♭ · E♭",
+          "description": "The relative minor of Gb major (six flats). Starts on finger 3 since Eb is a black key. An advanced scale with a very dark and serious character. Rare in practical use but valuable for complete technique."
+        },
+        "es": {
+          "title": "Escala de Mi♭ Menor",
+          "subtitle": "Mi♭ · Fa · Sol♭ · La♭ · Si♭ · Do♭ · Re♭ · Mi♭",
+          "description": "La menor relativa de Sol♭ Mayor (seis bemoles). Empieza en el dedo 3. Una escala avanzada con carácter muy oscuro y serio. Rara en uso práctico pero valiosa para una técnica completa."
+        },
+        "zh-CN": {
+          "title": "E♭小调音阶",
+          "subtitle": "E♭ · F · G♭ · A♭ · B♭ · C♭ · D♭ · E♭",
+          "description": "G♭大调的关系小调（六个降号）。从中指（3）开始。具有极其黑暗、严肃色彩的高级音阶。实际演奏中较少见，但对于完整技术训练很有价值。"
+        }
+      }
+    },
+    {
+      "id": "bb-minor-scale",
+      "title": "Escala de Si♭ Menor",
+      "subtitle": "B♭ · C · D♭ · E♭ · F · G♭ · A♭ · B♭",
+      "description": "Relativa menor de Ré♭ Maior (cinco bemóis). Começa no dedo 2 porque Si♭ é uma tecla preta. Tonalidade melancólica e expressiva usada no piano romântico e no jazz.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 3,
+      "tags": [
+        "escalas",
+        "si♭ menor",
+        "menor",
+        "b"
+      ],
+      "style": {
+        "gradient": [
+          "#0f172a",
+          "#1e3a5f"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/bb-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "B♭ Minor Scale",
+          "subtitle": "B♭ · C · D♭ · E♭ · F · G♭ · A♭ · B♭",
+          "description": "The relative minor of Db major (five flats). Starts on finger 2 since Bb is a black key. A soulful, melancholic key used in Romantic and jazz-influenced piano music."
+        },
+        "es": {
+          "title": "Escala de Si♭ Menor",
+          "subtitle": "Si♭ · Do · Re♭ · Mi♭ · Fa · Sol♭ · La♭ · Si♭",
+          "description": "La menor relativa de Re♭ Mayor (cinco bemoles). Empieza en el dedo 2. Una tonalidad soulful y melancólica usada en música de piano romántica e influenciada por el jazz."
+        },
+        "zh-CN": {
+          "title": "B♭小调音阶",
+          "subtitle": "B♭ · C · D♭ · E♭ · F · G♭ · A♭ · B♭",
+          "description": "D♭大调的关系小调（五个降号）。从食指（2）开始，因为Bb是黑键。充满灵魂感和忧郁情绪的调性，用于浪漫主义和爵士影响的钢琴音乐。"
+        }
+      }
+    },
+    {
+      "id": "f-minor-scale",
+      "title": "Escala de Fá Menor",
+      "subtitle": "F · G · A♭ · B♭ · C · D♭ · E♭ · F",
+      "description": "Relativa menor de Lá♭ Maior (quatro bemóis). O cruzamento do polegar ocorre após o Si♭. Tonalidade intensa e apaixonada associada ao drama e à tristeza na música romântica.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escalas",
+        "fá menor",
+        "menor",
+        "b"
+      ],
+      "style": {
+        "gradient": [
+          "#1e1b4b",
+          "#312e81"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/f-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "F Minor Scale",
+          "subtitle": "F · G · A♭ · B♭ · C · D♭ · E♭ · F",
+          "description": "The relative minor of Ab major (four flats). The fingering crosses after Bb (4th note). An intense, passionate key associated with drama and sorrow in Romantic music."
+        },
+        "es": {
+          "title": "Escala de Fa Menor",
+          "subtitle": "Fa · Sol · La♭ · Si♭ · Do · Re♭ · Mi♭ · Fa",
+          "description": "La menor relativa de La♭ Mayor (cuatro bemoles). El cruce de pulgar ocurre después del Si♭. Una tonalidad intensa y apasionada asociada al drama y la tristeza en la música romántica."
+        },
+        "zh-CN": {
+          "title": "F小调音阶",
+          "subtitle": "F · G · A♭ · B♭ · C · D♭ · E♭ · F",
+          "description": "A♭大调的关系小调（四个降号）。拇指过指在第4个音（Bb）之后。在浪漫主义音乐中与戏剧性和悲伤相关联的充满热情的调性。"
+        }
+      }
+    },
+    {
+      "id": "c-minor-scale",
+      "title": "Escala de Dó Menor",
+      "subtitle": "C · D · E♭ · F · G · A♭ · B♭ · C",
+      "description": "Relativa menor de Mi♭ Maior (três bemóis). Dó menor é uma das tonalidades mais poderosas e dramáticas — a 5ª Sinfonia e a Sonata Patética de Beethoven são em Dó menor.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escalas",
+        "dó menor",
+        "menor",
+        "b"
+      ],
+      "style": {
+        "gradient": [
+          "#1a1a2e",
+          "#16213e"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/c-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "C Minor Scale",
+          "subtitle": "C · D · E♭ · F · G · A♭ · B♭ · C",
+          "description": "The relative minor of Eb major (three flats). C minor is one of the most powerful and dramatic keys — Beethoven's 5th Symphony and Pathétique Sonata are both in C minor."
+        },
+        "es": {
+          "title": "Escala de Do Menor",
+          "subtitle": "Do · Re · Mi♭ · Fa · Sol · La♭ · Si♭ · Do",
+          "description": "La menor relativa de Mi♭ Mayor (tres bemoles). Do menor es una de las tonalidades más poderosas y dramáticas. La 5ª Sinfonía y la Sonata Patética de Beethoven están en Do menor."
+        },
+        "zh-CN": {
+          "title": "C小调音阶",
+          "subtitle": "C · D · E♭ · F · G · A♭ · B♭ · C",
+          "description": "E♭大调的关系小调（三个降号）。C小调是最有力、最戏剧性的调性之一——贝多芬的第五交响曲和《悲怆奏鸣曲》都是C小调。"
+        }
+      }
+    },
+    {
+      "id": "g-minor-scale",
+      "title": "Escala de Sol Menor",
+      "subtitle": "G · A · B♭ · C · D · E♭ · F · G",
+      "description": "Relativa menor de Si♭ Maior (dois bemóis). Sol menor é uma tonalidade profundamente melancólica. A famosa Toccata e Fuga de Bach e muitas peças barrocas e românticas estão em Sol menor.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 1,
+      "tags": [
+        "escalas",
+        "sol menor",
+        "menor",
+        "b"
+      ],
+      "style": {
+        "gradient": [
+          "#14532d",
+          "#15803d"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/g-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "G Minor Scale",
+          "subtitle": "G · A · B♭ · C · D · E♭ · F · G",
+          "description": "The relative minor of Bb major (two flats). G minor is a deeply melancholic key. Bach's famous Toccata and Fugue and many beautiful Baroque and Romantic pieces are in G minor."
+        },
+        "es": {
+          "title": "Escala de Sol Menor",
+          "subtitle": "Sol · La · Si♭ · Do · Re · Mi♭ · Fa · Sol",
+          "description": "La menor relativa de Si♭ Mayor (dos bemoles). Sol menor es una tonalidad profundamente melancólica. La famosa Tocata y Fuga de Bach y muchas otras obras están en Sol menor."
+        },
+        "zh-CN": {
+          "title": "G小调音阶",
+          "subtitle": "G · A · B♭ · C · D · E♭ · F · G",
+          "description": "B♭大调的关系小调（两个降号）。G小调是深刻忧郁的调性。巴赫著名的《托卡塔与赋格》和许多巴洛克与浪漫主义美丽作品都是G小调。"
+        }
+      }
+    },
+    {
+      "id": "d-minor-scale",
+      "title": "Escala de Ré Menor",
+      "subtitle": "D · E · F · G · A · B♭ · C · D",
+      "description": "Relativa menor de Fá Maior (um bemol). Ré menor é uma tonalidade rica e expressiva — o Réquiem de Mozart, a Sonata A Tempestade de Beethoven e inúmeras melodias folclóricas estão em Ré menor.",
+      "author": {
+        "name": "Pianalyze Team",
+        "bio": "Equipe de conteúdo da Pianalyze"
+      },
+      "category": "scales",
+      "difficulty": 1,
+      "tags": [
+        "escalas",
+        "ré menor",
+        "menor",
+        "b"
+      ],
+      "style": {
+        "gradient": [
+          "#7c2d12",
+          "#9a3412"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/d-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "D Minor Scale",
+          "subtitle": "D · E · F · G · A · B♭ · C · D",
+          "description": "The relative minor of F major (one flat). D minor is a rich, expressive key — Mozart's Requiem, Beethoven's Tempest Sonata, and countless folk melodies are in D minor."
+        },
+        "es": {
+          "title": "Escala de Re Menor",
+          "subtitle": "Re · Mi · Fa · Sol · La · Si♭ · Do · Re",
+          "description": "La menor relativa de Fa Mayor (un bemol). Re menor es una tonalidad rica y expresiva — el Réquiem de Mozart, la Sonata La Tempestad de Beethoven y muchas melodías folclóricas están en Re menor."
+        },
+        "zh-CN": {
+          "title": "D小调音阶",
+          "subtitle": "D · E · F · G · A · B♭ · C · D",
+          "description": "F大调的关系小调（一个降号）。D小调是丰富而富有表现力的调性——莫扎特的《安魂曲》、贝多芬的《暴风雨奏鸣曲》和无数民间旋律都是D小调。"
+        }
+      }
     },
     {
       "id": "i-iv-v-i",
@@ -235,7 +1356,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "chords",
       "difficulty": 1,
@@ -251,14 +1383,32 @@
           "#b45309",
           "#dc2626"
         ],
-        "icon": "🎹"
+        "coverImage": "/images/exercises/cover-chords.svg"
       },
       "stats": {
-        "durationSec": 16,
+        "durationSec": 27,
         "timeSignature": "4/4",
-        "hands": "both"
+        "hands": "both",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/chords/i-iv-v-i.json",
+      "i18n": {
+        "en": {
+          "title": "I–IV–V–I Progression",
+          "subtitle": "C · F · G · C (4 chords)",
+          "description": "The most important chord progression in Western music. Foundation for countless songs across rock, pop, blues and classical music."
+        },
+        "es": {
+          "title": "Progresión I–IV–V–I",
+          "subtitle": "Do · Fa · Sol · Do (4 acordes)",
+          "description": "La progresión de acordes más importante de la música occidental. Base de innumerables canciones de rock, pop, blues y música clásica."
+        },
+        "zh-CN": {
+          "title": "I–IV–V–I和弦进行",
+          "subtitle": "C · F · G · C（4个和弦）",
+          "description": "西方音乐中最重要的和弦进行，是无数摇滚、流行、蓝调和古典音乐的基础。"
+        }
+      }
     },
     {
       "id": "minor-progression",
@@ -275,7 +1425,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "chords",
       "difficulty": 1,
@@ -291,14 +1452,32 @@
           "#7c3aed",
           "#be185d"
         ],
-        "icon": "🎹"
+        "coverImage": "/images/exercises/cover-chords.svg"
       },
       "stats": {
-        "durationSec": 16,
+        "durationSec": 27,
         "timeSignature": "4/4",
-        "hands": "both"
+        "hands": "both",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/chords/minor-progression.json",
+      "i18n": {
+        "en": {
+          "title": "Minor Chord Progression",
+          "subtitle": "Am · F · C · G (4 chords)",
+          "description": "A widely used minor key progression found in pop and rock ballads. Develops smooth chord transitions and an understanding of tonal contrast."
+        },
+        "es": {
+          "title": "Progresión Menor",
+          "subtitle": "Lam · Fa · Do · Sol (4 acordes)",
+          "description": "Una progresión menor muy utilizada en baladas pop y rock. Desarrolla transiciones suaves entre acordes y comprensión del contraste tonal."
+        },
+        "zh-CN": {
+          "title": "小调和弦进行",
+          "subtitle": "Am · F · C · G（4个和弦）",
+          "description": "流行和摇滚抒情曲中常用的小调进行，培养和弦间的流畅过渡和调性对比感。"
+        }
+      }
     },
     {
       "id": "seventh-chords",
@@ -315,7 +1494,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "chords",
       "difficulty": 3,
@@ -331,13 +1521,32 @@
           "#064e3b",
           "#0891b2"
         ],
-        "icon": "🎹"
+        "coverImage": "/images/exercises/cover-chords.svg"
       },
       "stats": {
-        "durationSec": 20,
-        "hands": "both"
+        "durationSec": 27,
+        "hands": "both",
+        "bpm": 72,
+        "timeSignature": "4/4"
       },
-      "comingSoon": true
+      "dataUrl": "exercises/chords/seventh-chords.json",
+      "i18n": {
+        "en": {
+          "title": "Seventh Chords",
+          "subtitle": "Cmaj7 · Dm7 · Em7 (3 chords)",
+          "description": "Seventh chords add colour and richness beyond basic triads. Essential for jazz, soul and contemporary music. Focus on the balance between all four voices."
+        },
+        "es": {
+          "title": "Acordes de Séptima",
+          "subtitle": "Cmaj7 · Rem7 · Mim7 (3 acordes)",
+          "description": "Los acordes de séptima añaden color y riqueza más allá de las tríadas básicas. Imprescindibles para el jazz, el soul y la música contemporánea."
+        },
+        "zh-CN": {
+          "title": "七和弦",
+          "subtitle": "Cmaj7 · Dm7 · Em7（3个和弦）",
+          "description": "七和弦在基础三和弦的基础上增添了色彩与丰富感，是爵士乐、灵魂乐和当代音乐的必备内容。"
+        }
+      }
     },
     {
       "id": "inversions",
@@ -354,7 +1563,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "chords",
       "difficulty": 3,
@@ -369,13 +1589,32 @@
           "#92400e",
           "#ca8a04"
         ],
-        "icon": "🎹"
+        "coverImage": "/images/exercises/cover-chords.svg"
       },
       "stats": {
-        "durationSec": 18,
-        "hands": "both"
+        "durationSec": 23,
+        "hands": "both",
+        "bpm": 72,
+        "timeSignature": "4/4"
       },
-      "comingSoon": true
+      "dataUrl": "exercises/chords/inversions.json",
+      "i18n": {
+        "en": {
+          "title": "Chord Inversions",
+          "subtitle": "Root · 1st inv. · 2nd inv.",
+          "description": "Learn to play chords in all three positions. Inversions allow smoother voice leading and are fundamental for professional chord work."
+        },
+        "es": {
+          "title": "Inversiones de Acorde",
+          "subtitle": "Posición raíz · 1ª inv. · 2ª inv.",
+          "description": "Aprende a tocar acordes en las tres posiciones. Las inversiones permiten un movimiento de voz más fluido y son fundamentales para el trabajo con acordes."
+        },
+        "zh-CN": {
+          "title": "和弦转位",
+          "subtitle": "原位 · 第一转位 · 第二转位",
+          "description": "学习在三种位置上演奏和弦。转位可实现更流畅的声部进行，是专业和弦演奏的基础。"
+        }
+      }
     },
     {
       "id": "jazz-voicings",
@@ -392,7 +1631,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "chords",
       "difficulty": 5,
@@ -408,13 +1658,1492 @@
           "#1e1b4b",
           "#6d28d9"
         ],
-        "icon": "🎷"
+        "coverImage": "/images/exercises/cover-jazz.svg"
       },
       "stats": {
-        "durationSec": 25,
-        "hands": "both"
+        "durationSec": 27,
+        "hands": "both",
+        "bpm": 72,
+        "timeSignature": "4/4"
       },
-      "comingSoon": true
+      "dataUrl": "exercises/chords/jazz-voicings.json",
+      "i18n": {
+        "en": {
+          "title": "Jazz Voicings",
+          "subtitle": "Drop-2 · Shell voicings",
+          "description": "Extended voicings used in jazz piano. Learn to voice chords with 9ths, 11ths and 13ths for a professional jazz sound."
+        },
+        "es": {
+          "title": "Voicings de Jazz",
+          "subtitle": "Drop-2 · Shell voicings",
+          "description": "Disposiciones extendidas usadas en el piano de jazz. Aprende a voicear acordes con 9nas, 11nas y 13nas para un sonido de jazz profesional."
+        },
+        "zh-CN": {
+          "title": "爵士和声",
+          "subtitle": "Drop-2 · Shell voicings",
+          "description": "爵士钢琴中的扩展和声配置，学习用九音、十一音和十三音来配置和弦，打造专业的爵士风格。"
+        }
+      }
+    },
+    {
+      "id": "triads-c-major-rh",
+      "title": "Tríades em Dó Maior — Mão Direita",
+      "subtitle": "Dó, Ré m, Mi m, Fá, Sol, Lá m, Si°",
+      "description": "Sete tríades diatônicas da escala de Dó Maior — a base harmônica mais fundamental do piano clássico. Sem sustenidos nem bemóis. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "C",
+        "dó maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "sem alterações"
+      ],
+      "style": {
+        "gradient": [
+          "#7c3aed",
+          "#2563eb"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-c-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "C Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of C Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Do Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Do Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "C大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习C大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-c-major-lh",
+      "title": "Tríades em Dó Maior — Mão Esquerda",
+      "subtitle": "Dó, Ré m, Mi m, Fá, Sol, Lá m, Si°",
+      "description": "Sete tríades diatônicas da escala de Dó Maior — a base harmônica mais fundamental do piano clássico. Sem sustenidos nem bemóis. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "C",
+        "dó maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "sem alterações"
+      ],
+      "style": {
+        "gradient": [
+          "#7c3aed",
+          "#2563eb"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-c-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "C Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of C Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Do Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Do Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "C大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习C大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-g-major-rh",
+      "title": "Tríades em Sol Maior — Mão Direita",
+      "subtitle": "Sol, Lá m, Si m, Dó, Ré, Mi m, Fá#°",
+      "description": "Sete tríades de Sol Maior com o F# característico. Observe como o acorde iii (Si menor) e o V (Ré maior) envolvem a nota Fá#. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "G",
+        "sol maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "1 sustenido — F#"
+      ],
+      "style": {
+        "gradient": [
+          "#0891b2",
+          "#059669"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-g-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "G Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of G Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Sol Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Sol Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "G大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习G大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-g-major-lh",
+      "title": "Tríades em Sol Maior — Mão Esquerda",
+      "subtitle": "Sol, Lá m, Si m, Dó, Ré, Mi m, Fá#°",
+      "description": "Sete tríades de Sol Maior com o F# característico. Observe como o acorde iii (Si menor) e o V (Ré maior) envolvem a nota Fá#. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "G",
+        "sol maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "1 sustenido — F#"
+      ],
+      "style": {
+        "gradient": [
+          "#0891b2",
+          "#059669"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-g-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "G Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of G Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Sol Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Sol Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "G大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习G大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-d-major-rh",
+      "title": "Tríades em Ré Maior — Mão Direita",
+      "subtitle": "Ré, Mi m, Fá#m, Sol, Lá, Si m, Dó#°",
+      "description": "Tríades de Ré Maior com dois sustenidos (F# e C#). Os acordes I, IV e V formam a progressão mais importante desta tonalidade. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "D",
+        "ré maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "2 sustenidos — F#, C#"
+      ],
+      "style": {
+        "gradient": [
+          "#065f46",
+          "#0891b2"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-d-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "D Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of D Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Re Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Re Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "D大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习D大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-d-major-lh",
+      "title": "Tríades em Ré Maior — Mão Esquerda",
+      "subtitle": "Ré, Mi m, Fá#m, Sol, Lá, Si m, Dó#°",
+      "description": "Tríades de Ré Maior com dois sustenidos (F# e C#). Os acordes I, IV e V formam a progressão mais importante desta tonalidade. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "D",
+        "ré maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "2 sustenidos — F#, C#"
+      ],
+      "style": {
+        "gradient": [
+          "#065f46",
+          "#0891b2"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-d-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "D Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of D Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Re Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Re Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "D大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习D大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-a-major-rh",
+      "title": "Tríades em Lá Maior — Mão Direita",
+      "subtitle": "Lá, Si m, Dó#m, Ré, Mi, Fá#m, Sol#°",
+      "description": "Lá Maior tem três sustenidos. Preste atenção aos acordes com Dó# e Sol# que definem o caráter brilhante desta escala. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "A",
+        "lá maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "3 sustenidos — F#, C#, G#"
+      ],
+      "style": {
+        "gradient": [
+          "#b45309",
+          "#dc2626"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-a-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "A Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of A Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en La Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de La Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "A大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习A大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-a-major-lh",
+      "title": "Tríades em Lá Maior — Mão Esquerda",
+      "subtitle": "Lá, Si m, Dó#m, Ré, Mi, Fá#m, Sol#°",
+      "description": "Lá Maior tem três sustenidos. Preste atenção aos acordes com Dó# e Sol# que definem o caráter brilhante desta escala. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "A",
+        "lá maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "3 sustenidos — F#, C#, G#"
+      ],
+      "style": {
+        "gradient": [
+          "#b45309",
+          "#dc2626"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-a-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "A Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of A Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en La Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de La Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "A大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习A大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-e-major-rh",
+      "title": "Tríades em Mi Maior — Mão Direita",
+      "subtitle": "Mi, Fá#m, Sol#m, Lá, Si, Dó#m, Ré#°",
+      "description": "Mi Maior com quatro sustenidos é uma tonalidade vibrante. As tríades com Dó#, Sol# e Ré# exigem atenção às teclas pretas. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "E",
+        "mi maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "4 sustenidos — F#, C#, G#, D#"
+      ],
+      "style": {
+        "gradient": [
+          "#92400e",
+          "#ca8a04"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-e-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "E Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of E Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Mi Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Mi Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "E大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习E大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-e-major-lh",
+      "title": "Tríades em Mi Maior — Mão Esquerda",
+      "subtitle": "Mi, Fá#m, Sol#m, Lá, Si, Dó#m, Ré#°",
+      "description": "Mi Maior com quatro sustenidos é uma tonalidade vibrante. As tríades com Dó#, Sol# e Ré# exigem atenção às teclas pretas. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "E",
+        "mi maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "4 sustenidos — F#, C#, G#, D#"
+      ],
+      "style": {
+        "gradient": [
+          "#92400e",
+          "#ca8a04"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-e-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "E Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of E Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Mi Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Mi Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "E大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习E大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-f-major-rh",
+      "title": "Tríades em Fá Maior — Mão Direita",
+      "subtitle": "Fá, Sol m, Lá m, Si♭, Dó, Ré m, Mi°",
+      "description": "Fá Maior introduz o Si♭ — o único bemol. O acorde IV (Si♭ maior) com raiz em tecla preta é o maior desafio desta tonalidade. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "F",
+        "fá maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "1 bemol — Bb"
+      ],
+      "style": {
+        "gradient": [
+          "#be185d",
+          "#9333ea"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-f-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "F Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of F Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Fa Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Fa Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "F大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习F大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-f-major-lh",
+      "title": "Tríades em Fá Maior — Mão Esquerda",
+      "subtitle": "Fá, Sol m, Lá m, Si♭, Dó, Ré m, Mi°",
+      "description": "Fá Maior introduz o Si♭ — o único bemol. O acorde IV (Si♭ maior) com raiz em tecla preta é o maior desafio desta tonalidade. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "F",
+        "fá maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "1 bemol — Bb"
+      ],
+      "style": {
+        "gradient": [
+          "#be185d",
+          "#9333ea"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-f-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "F Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of F Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Fa Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Fa Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "F大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习F大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-bb-major-rh",
+      "title": "Tríades em Si♭ Maior — Mão Direita",
+      "subtitle": "Si♭, Dó m, Ré m, Mi♭, Fá, Sol m, Lá°",
+      "description": "Si♭ Maior com dois bemóis (Bb e Eb). Vários acordes têm raízes em teclas pretas, exigindo ajuste de dedilhado. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Bb",
+        "si♭ maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "2 bemóis — Bb, Eb"
+      ],
+      "style": {
+        "gradient": [
+          "#1d4ed8",
+          "#6d28d9"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-bb-major-rh.json",
+      "i18n": {
+        "en": {
+          "title": "B♭ Major Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of B♭ Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Si♭ Mayor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Si♭ Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "B♭大调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习B♭大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-bb-major-lh",
+      "title": "Tríades em Si♭ Maior — Mão Esquerda",
+      "subtitle": "Si♭, Dó m, Ré m, Mi♭, Fá, Sol m, Lá°",
+      "description": "Si♭ Maior com dois bemóis (Bb e Eb). Vários acordes têm raízes em teclas pretas, exigindo ajuste de dedilhado. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Bb",
+        "si♭ maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "2 bemóis — Bb, Eb"
+      ],
+      "style": {
+        "gradient": [
+          "#1d4ed8",
+          "#6d28d9"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-bb-major-lh.json",
+      "i18n": {
+        "en": {
+          "title": "B♭ Major Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of B♭ Major in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Si♭ Mayor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Si♭ Mayor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "B♭大调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习B♭大调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-a-minor-rh",
+      "title": "Tríades em Lá Menor — Mão Direita",
+      "subtitle": "Lá m, Si°, Dó, Ré m, Mi m, Fá, Sol",
+      "description": "Tríades diatônicas do Lá menor natural — relativa de Dó Maior. Sem alterações; o acorde i (menor) e o III (Maior relativo) são centrais. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Am",
+        "lá menor",
+        "harmonia",
+        "mão direita",
+        "menor",
+        "diatônico",
+        "sem alterações — relativa de Dó Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#7c3aed",
+          "#be185d"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-a-minor-rh.json",
+      "i18n": {
+        "en": {
+          "title": "A Minor Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of A Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en La Menor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de La Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "A小调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习A小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-a-minor-lh",
+      "title": "Tríades em Lá Menor — Mão Esquerda",
+      "subtitle": "Lá m, Si°, Dó, Ré m, Mi m, Fá, Sol",
+      "description": "Tríades diatônicas do Lá menor natural — relativa de Dó Maior. Sem alterações; o acorde i (menor) e o III (Maior relativo) são centrais. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Am",
+        "lá menor",
+        "harmonia",
+        "mão esquerda",
+        "menor",
+        "diatônico",
+        "sem alterações — relativa de Dó Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#7c3aed",
+          "#be185d"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-a-minor-lh.json",
+      "i18n": {
+        "en": {
+          "title": "A Minor Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of A Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en La Menor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de La Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "A小调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习A小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-e-minor-rh",
+      "title": "Tríades em Mi Menor — Mão Direita",
+      "subtitle": "Mi m, Fá#°, Sol, Lá m, Si m, Dó, Ré",
+      "description": "Mi menor natural com F# — relativa de Sol Maior. As sete tríades incluem qualidades menor, diminuta e maior características do modo menor. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Em",
+        "mi menor",
+        "harmonia",
+        "mão direita",
+        "menor",
+        "diatônico",
+        "1 sustenido — relativa de Sol Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#064e3b",
+          "#0891b2"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-e-minor-rh.json",
+      "i18n": {
+        "en": {
+          "title": "E Minor Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of E Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Mi Menor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Mi Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "E小调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习E小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-e-minor-lh",
+      "title": "Tríades em Mi Menor — Mão Esquerda",
+      "subtitle": "Mi m, Fá#°, Sol, Lá m, Si m, Dó, Ré",
+      "description": "Mi menor natural com F# — relativa de Sol Maior. As sete tríades incluem qualidades menor, diminuta e maior características do modo menor. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Em",
+        "mi menor",
+        "harmonia",
+        "mão esquerda",
+        "menor",
+        "diatônico",
+        "1 sustenido — relativa de Sol Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#064e3b",
+          "#0891b2"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-e-minor-lh.json",
+      "i18n": {
+        "en": {
+          "title": "E Minor Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of E Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Mi Menor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Mi Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "E小调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习E小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-d-minor-rh",
+      "title": "Tríades em Ré Menor — Mão Direita",
+      "subtitle": "Ré m, Mi°, Fá, Sol m, Lá m, Si♭, Dó",
+      "description": "Ré menor natural com Si♭ — relativa de Fá Maior. Explore a tensão característica entre os acordes i (menor) e VII (Sol maior). Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Dm",
+        "ré menor",
+        "harmonia",
+        "mão direita",
+        "menor",
+        "diatônico",
+        "1 bemol — relativa de Fá Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#374151",
+          "#6d28d9"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-d-minor-rh.json",
+      "i18n": {
+        "en": {
+          "title": "D Minor Triads — Right Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of D Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Re Menor — Mano Derecha",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Re Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "D小调三和弦 — 右手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习D小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
+    },
+    {
+      "id": "triads-d-minor-lh",
+      "title": "Tríades em Ré Menor — Mão Esquerda",
+      "subtitle": "Ré m, Mi°, Fá, Sol m, Lá m, Si♭, Dó",
+      "description": "Ré menor natural com Si♭ — relativa de Fá Maior. Explore a tensão característica entre os acordes i (menor) e VII (Sol maior). Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Dm",
+        "ré menor",
+        "harmonia",
+        "mão esquerda",
+        "menor",
+        "diatônico",
+        "1 bemol — relativa de Fá Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#374151",
+          "#6d28d9"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-d-minor-lh.json",
+      "i18n": {
+        "en": {
+          "title": "D Minor Triads — Left Hand",
+          "subtitle": "Diatonic triads I – vii°",
+          "description": "Practice all seven diatonic triads of D Minor in root position. Each chord is held for one bar, giving you time to prepare your fingers. Focus on clean voicing and even sound across all three notes."
+        },
+        "es": {
+          "title": "Tríadas en Re Menor — Mano Izquierda",
+          "subtitle": "Tríadas diatónicas I – vii°",
+          "description": "Practica las siete tríadas diatónicas de Re Menor en posición raíz. Cada acorde se mantiene un compás para preparar los dedos. Enfócate en una disposición limpia y un sonido uniforme en las tres notas."
+        },
+        "zh-CN": {
+          "title": "D小调三和弦 — 左手",
+          "subtitle": "自然音三和弦 I – vii°",
+          "description": "练习D小调的七个自然音三和弦（原位）。每个和弦保持一小节，给你足够时间为下一个和弦做好手指准备。注意干净的和声配置和三个音之间均衡的音量。"
+        }
+      }
     },
     {
       "id": "twinkle",
@@ -431,7 +3160,18 @@
             "label": "GitHub",
             "url": "https://github.com/leandrodaf/pianalyze"
           }
-        ]
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
       },
       "category": "pieces",
       "difficulty": 1,
@@ -447,14 +3187,32 @@
           "#15803d",
           "#0891b2"
         ],
-        "icon": "⭐"
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
-        "durationSec": 30,
+        "durationSec": 40,
         "timeSignature": "4/4",
-        "hands": "right"
+        "hands": "right",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/pieces/twinkle.json",
+      "i18n": {
+        "en": {
+          "title": "Twinkle Twinkle Little Star",
+          "subtitle": "C major · Right hand melody",
+          "description": "A classic nursery rhyme and ideal first piece for beginners. Based on a simple 5-note melody, it builds finger coordination and confidence at the keyboard."
+        },
+        "es": {
+          "title": "Estrellita",
+          "subtitle": "Do mayor · Melodía mano derecha",
+          "description": "Una canción infantil clásica e ideal como primera pieza para principiantes. Basada en una melodía simple de 5 notas, desarrolla la coordinación de los dedos y la confianza en el teclado."
+        },
+        "zh-CN": {
+          "title": "小星星",
+          "subtitle": "C大调 · 右手旋律",
+          "description": "经典儿歌，是初学者的理想入门曲目。基于简单的五音旋律，培养手指协调能力和键盘信心。"
+        }
+      }
     },
     {
       "id": "fur-elise",
@@ -479,14 +3237,32 @@
           "#6d28d9",
           "#be185d"
         ],
-        "icon": "🎼"
+        "coverImage": "/images/exercises/beethoven.jpg"
       },
       "stats": {
-        "durationSec": 45,
-        "timeSignature": "3/8",
-        "hands": "both"
+        "durationSec": 38,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/pieces/fur-elise.json",
+      "i18n": {
+        "en": {
+          "title": "Für Elise",
+          "subtitle": "A minor · Beethoven · Opening theme",
+          "description": "The iconic opening theme of one of Beethoven's most beloved piano pieces. Focuses on legato playing and precise finger control in the right hand."
+        },
+        "es": {
+          "title": "Para Elisa",
+          "subtitle": "La menor · Beethoven · Tema inicial",
+          "description": "El icónico tema inicial de una de las piezas para piano más queridas de Beethoven. Se centra en el fraseo legato y el control preciso de los dedos de la mano derecha."
+        },
+        "zh-CN": {
+          "title": "致爱丽丝",
+          "subtitle": "A小调 · 贝多芬 · 开头主题",
+          "description": "贝多芬最受喜爱的钢琴作品之一的标志性开头主题，专注于连奏演奏和右手精准的手指控制。"
+        }
+      }
     },
     {
       "id": "ode-to-joy",
@@ -511,14 +3287,32 @@
           "#92400e",
           "#15803d"
         ],
-        "icon": "🎼"
+        "coverImage": "/images/exercises/beethoven.jpg"
       },
       "stats": {
-        "durationSec": 40,
+        "durationSec": 70,
         "timeSignature": "4/4",
-        "hands": "right"
+        "hands": "right",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/pieces/ode-to-joy.json",
+      "i18n": {
+        "en": {
+          "title": "Ode to Joy",
+          "subtitle": "D major · Beethoven · Symphony No. 9",
+          "description": "The main melody from Beethoven's 9th Symphony, arranged for solo piano. A wonderful piece for building consistent rhythm and even tone across the keyboard."
+        },
+        "es": {
+          "title": "Oda a la Alegría",
+          "subtitle": "Re mayor · Beethoven · Sinfonía Nº 9",
+          "description": "La melodía principal de la 9ª Sinfonía de Beethoven, arreglada para piano solo. Una pieza maravillosa para desarrollar un ritmo consistente y un tono uniforme."
+        },
+        "zh-CN": {
+          "title": "欢乐颂",
+          "subtitle": "D大调 · 贝多芬 · 第九交响曲",
+          "description": "贝多芬第九交响曲主旋律，改编为钢琴独奏。适合培养稳定的节奏感和均匀的触键音色。"
+        }
+      }
     },
     {
       "id": "happy-birthday",
@@ -543,14 +3337,32 @@
           "#be185d",
           "#f59e0b"
         ],
-        "icon": "🎂"
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
-        "durationSec": 20,
+        "durationSec": 23,
         "timeSignature": "3/4",
-        "hands": "right"
+        "hands": "right",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/pieces/happy-birthday.json",
+      "i18n": {
+        "en": {
+          "title": "Happy Birthday",
+          "subtitle": "C major · 3/4 time · Classic melody",
+          "description": "The world's most recognized song, great for practicing 3/4 time signature and dotted rhythms. Simple enough for beginners, satisfying to play from the first lesson."
+        },
+        "es": {
+          "title": "Cumpleaños Feliz",
+          "subtitle": "Do mayor · Compás 3/4 · Melodía clásica",
+          "description": "La canción más reconocida del mundo, ideal para practicar el compás de 3/4 y los ritmos con puntillo. Sencilla para principiantes y satisfactoria desde la primera lección."
+        },
+        "zh-CN": {
+          "title": "生日快乐",
+          "subtitle": "C大调 · 3/4拍 · 经典旋律",
+          "description": "世界上最广为人知的歌曲，适合练习3/4拍和附点节奏。简单易学，第一课就能弹奏。"
+        }
+      }
     },
     {
       "id": "jingle-bells",
@@ -575,14 +3387,1524 @@
           "#b91c1c",
           "#c2410c"
         ],
-        "icon": "🔔"
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
-        "durationSec": 35,
+        "durationSec": 53,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/jingle-bells.json",
+      "i18n": {
+        "en": {
+          "title": "Jingle Bells",
+          "subtitle": "G major · Christmas classic",
+          "description": "One of the most popular Christmas songs. Great for practicing even eighth-note rhythms and building right-hand speed in G major position."
+        },
+        "es": {
+          "title": "Cascabeles",
+          "subtitle": "Sol mayor · Villancico clásico",
+          "description": "Una de las canciones navideñas más populares. Ideal para practicar ritmos de corcheas uniformes y desarrollar velocidad en la mano derecha en posición de Sol mayor."
+        },
+        "zh-CN": {
+          "title": "铃儿响叮当",
+          "subtitle": "G大调 · 圣诞经典",
+          "description": "最受欢迎的圣诞歌曲之一，适合练习均匀的八分音符节奏，培养右手在G大调指位上的速度。"
+        }
+      }
+    },
+    {
+      "id": "mary-had-a-little-lamb",
+      "title": "Mary Had a Little Lamb",
+      "subtitle": "Melodia clássica para primeiríssimos passos",
+      "description": "Uma das primeiras músicas que qualquer pianista aprende. Padrão simples de 5 notas que treina movimento escalar e repetição rítmica.",
+      "author": {
+        "name": "Tradição Americana (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": [
+        "peça",
+        "melodia",
+        "iniciante",
+        "mão direita",
+        "infantil"
+      ],
+      "style": {
+        "gradient": [
+          "#16a34a",
+          "#15803d"
+        ],
+        "coverImage": "/images/exercises/cover-pieces.svg"
+      },
+      "stats": {
+        "durationSec": 27,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/mary-had-a-little-lamb.json",
+      "i18n": {
+        "en": {
+          "title": "Mary Had a Little Lamb",
+          "subtitle": "C major · Easy 5-finger melody",
+          "description": "A beloved children's song using only 5 notes in C major position. Perfect for absolute beginners learning finger numbers and basic rhythm."
+        },
+        "es": {
+          "title": "María Tenía un Corderito",
+          "subtitle": "Do mayor · Melodía fácil de 5 dedos",
+          "description": "Una canción infantil querida que usa solo 5 notas en la posición de Do mayor. Perfecta para principiantes absolutos que aprenden números de dedos y ritmo básico."
+        },
+        "zh-CN": {
+          "title": "玛丽有只小羊羔",
+          "subtitle": "C大调 · 简单五指旋律",
+          "description": "只用C大调指位5个音的经典儿歌，非常适合零基础初学者学习手指编号和基本节奏。"
+        }
+      }
+    },
+    {
+      "id": "hot-cross-buns",
+      "title": "Hot Cross Buns",
+      "subtitle": "Três notas, ritmo simples, muito eficaz",
+      "description": "Exercício perfeito para o primeiro dia ao piano: usa apenas E, D e C. Concentre-se em pressão uniforme e articulação limpa de cada nota.",
+      "author": {
+        "name": "Tradição Inglesa (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": [
+        "peça",
+        "iniciante",
+        "3 notas",
+        "mão direita",
+        "básico"
+      ],
+      "style": {
+        "gradient": [
+          "#f59e0b",
+          "#d97706"
+        ],
+        "coverImage": "/images/exercises/cover-pieces.svg"
+      },
+      "stats": {
+        "durationSec": 17,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/hot-cross-buns.json",
+      "i18n": {
+        "en": {
+          "title": "Hot Cross Buns",
+          "subtitle": "C major · 3-note beginner piece",
+          "description": "One of the simplest melodies to learn — uses only three notes (E, D, C). The ideal first song for absolute beginners building hand position and finger control."
+        },
+        "es": {
+          "title": "Hot Cross Buns",
+          "subtitle": "Do mayor · Pieza de 3 notas",
+          "description": "Una de las melodías más simples para aprender: usa solo tres notas (Mi, Re, Do). La primera canción ideal para principiantes absolutos que trabajan la posición de mano y el control de dedos."
+        },
+        "zh-CN": {
+          "title": "Hot Cross Buns",
+          "subtitle": "C大调 · 三音初学曲",
+          "description": "最简单的旋律之一，只用三个音（E、D、C）。是零基础初学者建立手位和手指控制的理想入门曲。"
+        }
+      }
+    },
+    {
+      "id": "frere-jacques",
+      "title": "Frère Jacques",
+      "subtitle": "Canção popular francesa em cânone",
+      "description": "Melodia ternária que combina colcheias e semibreves. A seção de colcheias (sonnez les matines) é ótima para treinar velocidade controlada.",
+      "author": {
+        "name": "Canção Popular Francesa (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": [
+        "peça",
+        "francês",
+        "canção popular",
+        "iniciante",
+        "mão direita"
+      ],
+      "style": {
+        "gradient": [
+          "#3b82f6",
+          "#6366f1"
+        ],
+        "coverImage": "/images/exercises/cover-pieces.svg"
+      },
+      "stats": {
+        "durationSec": 27,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/frere-jacques.json",
+      "i18n": {
+        "en": {
+          "title": "Frère Jacques",
+          "subtitle": "C major · French round",
+          "description": "A classic French children's song that works beautifully as a piano exercise. Develops legato touch, phrase awareness, and smooth position shifts."
+        },
+        "es": {
+          "title": "Fray Felipe",
+          "subtitle": "Do mayor · Canon francés",
+          "description": "Una clásica canción infantil francesa que funciona muy bien como ejercicio de piano. Desarrolla el toque legato, la conciencia de frase y los desplazamientos de posición."
+        },
+        "zh-CN": {
+          "title": "雅克兄弟",
+          "subtitle": "C大调 · 法国轮唱曲",
+          "description": "经典法国儿歌，非常适合作为钢琴练习曲。培养连奏触键、乐句意识和流畅的换位能力。"
+        }
+      }
+    },
+    {
+      "id": "london-bridge",
+      "title": "London Bridge",
+      "subtitle": "London Bridge is Falling Down",
+      "description": "Melodia que percorre uma quinta e usa intervalos de grau conjunto. Excelente para desenvolver fluidez e sentido de frase musical.",
+      "author": {
+        "name": "Canção Popular Inglesa (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": [
+        "peça",
+        "inglês",
+        "canção popular",
+        "iniciante",
+        "mão direita"
+      ],
+      "style": {
+        "gradient": [
+          "#0284c7",
+          "#0369a1"
+        ],
+        "coverImage": "/images/exercises/cover-pieces.svg"
+      },
+      "stats": {
+        "durationSec": 27,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/london-bridge.json",
+      "i18n": {
+        "en": {
+          "title": "London Bridge",
+          "subtitle": "G major · English nursery rhyme",
+          "description": "A well-known English nursery rhyme ideal for practicing in G major position. Focuses on clean articulation and consistent finger weight."
+        },
+        "es": {
+          "title": "El Puente de Londres",
+          "subtitle": "Sol mayor · Canción infantil inglesa",
+          "description": "Una conocida canción infantil inglesa ideal para practicar en la posición de Sol mayor. Se centra en una articulación limpia y un peso de dedo consistente."
+        },
+        "zh-CN": {
+          "title": "伦敦桥",
+          "subtitle": "G大调 · 英国儿歌",
+          "description": "著名的英国儿歌，适合在G大调指位上练习。专注于清晰的吐音和一致的手指力度。"
+        }
+      }
+    },
+    {
+      "id": "amazing-grace",
+      "title": "Amazing Grace",
+      "subtitle": "John Newton, 1779 — Hino em 3/4",
+      "description": "Hino clássico em compasso ternário com nota de anacruse. Perfeito para desenvolver o senso de pulso em 3 tempos e expressividade melódica.",
+      "author": {
+        "name": "John Newton, 1779 (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 2,
+      "tags": [
+        "peça",
+        "hino",
+        "3/4",
+        "valsa",
+        "expressivo",
+        "mão direita"
+      ],
+      "style": {
+        "gradient": [
+          "#7c3aed",
+          "#6d28d9"
+        ],
+        "coverImage": "/images/exercises/cover-pieces.svg"
+      },
+      "stats": {
+        "durationSec": 23,
+        "timeSignature": "3/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/amazing-grace.json",
+      "i18n": {
+        "en": {
+          "title": "Amazing Grace",
+          "subtitle": "G major · 3/4 time · Hymn",
+          "description": "One of the world's best-loved hymns, played in 3/4 time. Perfect for developing a singing, legato tone and expressive phrasing."
+        },
+        "es": {
+          "title": "Sublime Gracia",
+          "subtitle": "Sol mayor · Compás 3/4 · Himno",
+          "description": "Uno de los himnos más queridos del mundo, en compás de 3/4. Perfecto para desarrollar un tono cantable y legato y un fraseo expresivo."
+        },
+        "zh-CN": {
+          "title": "奇异恩典",
+          "subtitle": "G大调 · 3/4拍 · 赞美诗",
+          "description": "世界上最受喜爱的赞美诗之一，3/4拍演奏。非常适合培养歌唱性的连奏音色和富有表情的乐句。"
+        }
+      }
+    },
+    {
+      "id": "yankee-doodle",
+      "title": "Yankee Doodle",
+      "subtitle": "Marcha americana com refrão animado",
+      "description": "Melodia marcial com ritmo pontuado e saltos. O refrão usa um Sib que exige transposição de posição da mão — ótimo desafio para iniciantes.",
+      "author": {
+        "name": "Tradição Americana (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 2,
+      "tags": [
+        "peça",
+        "marcha",
+        "americano",
+        "iniciante",
+        "mão direita"
+      ],
+      "style": {
+        "gradient": [
+          "#dc2626",
+          "#1d4ed8"
+        ],
+        "coverImage": "/images/exercises/cover-pieces.svg"
+      },
+      "stats": {
+        "durationSec": 40,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/yankee-doodle.json",
+      "i18n": {
+        "en": {
+          "title": "Yankee Doodle",
+          "subtitle": "G major · American patriotic song",
+          "description": "An energetic American tune perfect for practicing eighth-note patterns and building right-hand speed. Great for adding a lively staccato touch."
+        },
+        "es": {
+          "title": "Yankee Doodle",
+          "subtitle": "Sol mayor · Canción patriótica americana",
+          "description": "Una animada melodía americana perfecta para practicar patrones de corcheas y desarrollar la velocidad de la mano derecha. Ideal para un toque staccato vivo."
+        },
+        "zh-CN": {
+          "title": "洋基歌",
+          "subtitle": "G大调 · 美国爱国歌曲",
+          "description": "充满活力的美国曲调，适合练习八分音符模式和培养右手速度，也是练习跳音触键的好素材。"
+        }
+      }
+    },
+    {
+      "id": "old-macdonald",
+      "title": "Old MacDonald Had a Farm",
+      "subtitle": "E-I-E-I-O — Canção americana clássica",
+      "description": "Melodia com saltos divertidos entre oitavas e padrão repetitivo que facilita a memorização. Ideal para crianças e adultos iniciantes.",
+      "author": {
+        "name": "Tradição Americana (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 1,
+      "tags": [
+        "peça",
+        "infantil",
+        "americano",
+        "iniciante",
+        "mão direita"
+      ],
+      "style": {
+        "gradient": [
+          "#65a30d",
+          "#ca8a04"
+        ],
+        "coverImage": "/images/exercises/cover-pieces.svg"
+      },
+      "stats": {
+        "durationSec": 33,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/old-macdonald.json",
+      "i18n": {
+        "en": {
+          "title": "Old MacDonald Had a Farm",
+          "subtitle": "G major · Call-and-response melody",
+          "description": "A fun folk song with a memorable call-and-response structure. Great for beginners developing steady beat, hand position, and simple ornamentation."
+        },
+        "es": {
+          "title": "El Viejo MacDonald",
+          "subtitle": "Sol mayor · Melodía pregunta-respuesta",
+          "description": "Una divertida canción folclórica con una memorable estructura de pregunta-respuesta. Ideal para principiantes que desarrollan pulso estable y posición de mano."
+        },
+        "zh-CN": {
+          "title": "王老先生有块地",
+          "subtitle": "G大调 · 对答式旋律",
+          "description": "有趣的民谣，结构为问答呼应。适合初学者培养稳定的节拍感、手位和简单的装饰音。"
+        }
+      }
+    },
+    {
+      "id": "when-the-saints",
+      "title": "When the Saints Go Marching In",
+      "subtitle": "Espiritual americano — Jazz tradicional",
+      "description": "Melodia de jazz tradicional com nota de anacruse e saltos de terça. Excelente para desenvolver senso de swing e musicalidade expressiva.",
+      "author": {
+        "name": "Espiritual Americano (arr. Pianalyze)",
+        "url": "https://github.com/leandrodaf/pianalyze"
+      },
+      "category": "pieces",
+      "difficulty": 2,
+      "tags": [
+        "peça",
+        "jazz",
+        "espiritual",
+        "americano",
+        "mão direita"
+      ],
+      "style": {
+        "gradient": [
+          "#1e3a5f",
+          "#0891b2"
+        ],
+        "coverImage": "/images/exercises/cover-pieces.svg"
+      },
+      "stats": {
+        "durationSec": 32,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/pieces/when-the-saints.json",
+      "i18n": {
+        "en": {
+          "title": "When the Saints Go Marching In",
+          "subtitle": "C major · Jazz / Gospel classic",
+          "description": "One of the most famous jazz and gospel tunes. Develops a strong sense of pulse and swing feel. Great for building right-hand confidence across two octaves."
+        },
+        "es": {
+          "title": "Cuando los Santos Marchen",
+          "subtitle": "Do mayor · Clásico jazz / gospel",
+          "description": "Una de las melodías de jazz y gospel más famosas. Desarrolla un fuerte sentido del pulso y el swing. Ideal para ganar confianza con la mano derecha en dos octavas."
+        },
+        "zh-CN": {
+          "title": "当圣徒进行时",
+          "subtitle": "C大调 · 爵士/福音经典",
+          "description": "最著名的爵士乐和福音音乐曲调之一，培养强烈的节拍感和摇摆感，适合在两个八度内建立右手演奏信心。"
+        }
+      }
+    },
+    {
+      "id": "c-pentatonic-major-scale",
+      "title": "Escala Pentatônica de Dó Maior",
+      "subtitle": "C · D · E · G · A · C",
+      "description": "A escala pentatônica é formada por 5 notas e é base do blues, jazz e pop. Sem semitons, ela soa naturalmente bem em qualquer contexto. Essencial para improvisação.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "scales",
+      "difficulty": 1,
+      "tags": [
+        "escala",
+        "pentatônica",
+        "dó maior",
+        "iniciante",
+        "improvisação"
+      ],
+      "style": {
+        "gradient": [
+          "#0ea5e9",
+          "#6366f1"
+        ],
+        "coverImage": "/images/exercises/cover-scales-major.svg"
+      },
+      "stats": {
+        "durationSec": 11,
+        "bpm": 72,
         "timeSignature": "4/4",
         "hands": "right"
       },
-      "comingSoon": true
+      "dataUrl": "exercises/scales/c-pentatonic-major-scale.json",
+      "i18n": {
+        "en": {
+          "title": "C Major Pentatonic Scale",
+          "subtitle": "C · D · E · G · A · C",
+          "description": "The pentatonic scale — 5 notes, no semitones — is the foundation of blues, jazz, and pop. Smooth and forgiving, perfect for starting improvisation."
+        },
+        "es": {
+          "title": "Escala Pentatónica de Do Mayor",
+          "subtitle": "Do · Re · Mi · Sol · La · Do",
+          "description": "La escala pentatónica de 5 notas es la base del blues, jazz y pop. Sin semitonos, suena bien en cualquier contexto. Esencial para improvisar."
+        }
+      }
+    },
+    {
+      "id": "a-pentatonic-minor-scale",
+      "title": "Escala Pentatônica de Lá Menor",
+      "subtitle": "A · C · D · E · G · A",
+      "description": "A pentatônica menor é a escala mais usada no blues e rock. Cinco notas com um caráter expressivo e melancólico. Base para solos e improvisações.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "scales",
+      "difficulty": 1,
+      "tags": [
+        "escala",
+        "pentatônica",
+        "lá menor",
+        "blues",
+        "rock",
+        "iniciante"
+      ],
+      "style": {
+        "gradient": [
+          "#be185d",
+          "#6366f1"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 11,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/a-pentatonic-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "A Minor Pentatonic Scale",
+          "subtitle": "A · C · D · E · G · A",
+          "description": "The minor pentatonic is the most-used scale in blues and rock. Five expressive notes with a dark, soulful character — the foundation for solos and improvisation."
+        },
+        "es": {
+          "title": "Escala Pentatónica de La Menor",
+          "subtitle": "La · Do · Re · Mi · Sol · La",
+          "description": "La pentatónica menor es la escala más usada en blues y rock. Cinco notas con carácter expresivo y melancólico. Base para solos e improvisación."
+        }
+      }
+    },
+    {
+      "id": "a-blues-scale",
+      "title": "Escala de Blues em Lá",
+      "subtitle": "A · C · D · D# · E · G · A",
+      "description": "A escala de blues é a pentatônica menor acrescida da 'blue note' (D#/Eb). Essa tensão característica cria o som inconfundível do blues. Toque com expressão!",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escala",
+        "blues",
+        "lá menor",
+        "blue note",
+        "intermediário"
+      ],
+      "style": {
+        "gradient": [
+          "#1d4ed8",
+          "#7c3aed"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 13,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/a-blues-scale.json",
+      "i18n": {
+        "en": {
+          "title": "A Blues Scale",
+          "subtitle": "A · C · D · D# · E · G · A",
+          "description": "The blues scale adds the 'blue note' (D#/Eb) to the minor pentatonic, creating that unmistakable tension and soulful sound. Play it with expression!"
+        },
+        "es": {
+          "title": "Escala de Blues en La",
+          "subtitle": "La · Do · Re · Re# · Mi · Sol · La",
+          "description": "La escala de blues añade la 'blue note' (Re#/Mib) a la pentatónica menor, creando esa tensión inconfundible. ¡Tócala con expresión!"
+        }
+      }
+    },
+    {
+      "id": "a-harmonic-minor-scale",
+      "title": "Escala de Lá Menor Harmônica",
+      "subtitle": "A · B · C · D · E · F · G# · A",
+      "description": "A menor harmônica eleva o 7º grau (G→G#), criando uma tensão dramática característica da música clássica e flamenca. O intervalo aumentado entre F e G# é seu traço marcante.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "scales",
+      "difficulty": 2,
+      "tags": [
+        "escala",
+        "menor harmônica",
+        "lá menor",
+        "clássico",
+        "intermediário"
+      ],
+      "style": {
+        "gradient": [
+          "#9333ea",
+          "#be185d"
+        ],
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
+      },
+      "stats": {
+        "durationSec": 14,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/scales/a-harmonic-minor-scale.json",
+      "i18n": {
+        "en": {
+          "title": "A Harmonic Minor Scale",
+          "subtitle": "A · B · C · D · E · F · G# · A",
+          "description": "The harmonic minor raises the 7th degree (G→G#), creating dramatic tension characteristic of classical and flamenco music. The augmented interval between F and G# is its defining feature."
+        },
+        "es": {
+          "title": "Escala de La Menor Armónica",
+          "subtitle": "La · Si · Do · Re · Mi · Fa · Sol# · La",
+          "description": "La menor armónica sube el 7º grado (Sol→Sol#), creando una tensión dramática característica de la música clásica y flamenca."
+        }
+      }
+    },
+    {
+      "id": "i-v-vi-iv",
+      "title": "Progressão I–V–vi–IV",
+      "subtitle": "C · G · Am · F",
+      "description": "A progressão mais popular da música moderna. Encontrada em centenas de hits dos últimos 50 anos. Pratique a transição suave entre os acordes e ouça como ela soa familiar.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "chords",
+      "difficulty": 2,
+      "tags": [
+        "acorde",
+        "progressão",
+        "pop",
+        "I-V-vi-IV",
+        "dó maior"
+      ],
+      "style": {
+        "gradient": [
+          "#f59e0b",
+          "#ef4444"
+        ],
+        "coverImage": "/images/exercises/cover-chords.svg"
+      },
+      "stats": {
+        "durationSec": 26,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "both"
+      },
+      "dataUrl": "exercises/chords/i-v-vi-iv.json",
+      "i18n": {
+        "en": {
+          "title": "I–V–vi–IV Progression",
+          "subtitle": "C · G · Am · F",
+          "description": "The most popular chord progression in modern music — found in hundreds of hits over the last 50 years. Focus on smooth voice leading and listen to how immediately familiar it sounds."
+        },
+        "es": {
+          "title": "Progresión I–V–vi–IV",
+          "subtitle": "Do · Sol · Lam · Fa",
+          "description": "La progresión más popular de la música moderna — presente en cientos de éxitos de los últimos 50 años. Practica las transiciones suaves entre acordes."
+        }
+      }
+    },
+    {
+      "id": "ii-v-i",
+      "title": "Progressão ii–V–I",
+      "subtitle": "Dm7 · G7 · Cmaj7",
+      "description": "A cadência mais importante do jazz. O ii–V–I é o motor harmônico de incontáveis standards. Pratique os voicings com mão esquerda e observe a resolução natural para a tônica.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "chords",
+      "difficulty": 4,
+      "tags": [
+        "acorde",
+        "jazz",
+        "ii-V-I",
+        "seventh",
+        "progressão",
+        "avançado"
+      ],
+      "style": {
+        "gradient": [
+          "#0f172a",
+          "#1e40af"
+        ],
+        "coverImage": "/images/exercises/cover-jazz.svg"
+      },
+      "stats": {
+        "durationSec": 27,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "both"
+      },
+      "dataUrl": "exercises/chords/ii-v-i.json",
+      "i18n": {
+        "en": {
+          "title": "ii–V–I Progression",
+          "subtitle": "Dm7 · G7 · Cmaj7",
+          "description": "The most important cadence in jazz — the harmonic engine of countless standards. Practice the voicings and feel the natural resolution to the tonic."
+        },
+        "es": {
+          "title": "Progresión ii–V–I",
+          "subtitle": "Rem7 · Sol7 · Domaj7",
+          "description": "La cadencia más importante del jazz. Practica los voicings y observa la resolución natural hacia la tónica."
+        }
+      }
+    },
+    {
+      "id": "twelve-bar-blues",
+      "title": "Blues de 12 Compassos em Dó",
+      "subtitle": "I · IV · V — Estrutura Clássica",
+      "description": "A espinha dorsal do blues, rock e jazz. Os 12 compassos com tônica (I), subdominante (IV) e dominante (V) formam a progressão mais influente da música popular do século XX.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "chords",
+      "difficulty": 2,
+      "tags": [
+        "acorde",
+        "blues",
+        "12-bar",
+        "dó maior",
+        "rock",
+        "jazz",
+        "intermediário"
+      ],
+      "style": {
+        "gradient": [
+          "#78350f",
+          "#b45309"
+        ],
+        "coverImage": "/images/exercises/cover-chords.svg"
+      },
+      "stats": {
+        "durationSec": 40,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "both"
+      },
+      "dataUrl": "exercises/chords/twelve-bar-blues.json",
+      "i18n": {
+        "en": {
+          "title": "12-Bar Blues in C",
+          "subtitle": "I · IV · V — Classic Structure",
+          "description": "The backbone of blues, rock, and jazz. The 12-bar form with tonic (I), subdominant (IV), and dominant (V) is the most influential progression in 20th-century popular music."
+        },
+        "es": {
+          "title": "Blues de 12 Compases en Do",
+          "subtitle": "I · IV · V — Estructura Clásica",
+          "description": "La columna vertebral del blues, rock y jazz. Los 12 compases con tónica, subdominante y dominante forman la progresión más influyente de la música popular."
+        }
+      }
+    },
+    {
+      "id": "triads-g-minor-rh",
+      "title": "Tríades em Sol Menor — Mão Direita",
+      "subtitle": "i · ii° · III · iv · v · VI · VII",
+      "description": "As sete tríades diatônicas de Sol Menor com a mão direita. Pratique cada acorde com os dedos 1-3-5, mantendo o pulso firme e os ombros relaxados.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríade",
+        "sol menor",
+        "mão direita",
+        "básico"
+      ],
+      "style": {
+        "gradient": [
+          "#1e3a5f",
+          "#3b82f6"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/triads/triads-g-minor-rh.json",
+      "i18n": {
+        "en": {
+          "title": "G Minor Triads — Right Hand",
+          "subtitle": "i · ii° · III · iv · v · VI · VII",
+          "description": "All seven diatonic triads of G minor with the right hand. Use fingers 1-3-5 and keep the wrist relaxed."
+        },
+        "es": {
+          "title": "Tríadas en Sol Menor — Mano Derecha",
+          "subtitle": "i · ii° · III · iv · v · VI · VII",
+          "description": "Las siete tríadas diatónicas de Sol menor con la mano derecha. Usa los dedos 1-3-5 con la muñeca relajada."
+        }
+      }
+    },
+    {
+      "id": "triads-g-minor-lh",
+      "title": "Tríades em Sol Menor — Mão Esquerda",
+      "subtitle": "i · ii° · III · iv · v · VI · VII",
+      "description": "As sete tríades diatônicas de Sol Menor com a mão esquerda. Use os dedos 5-3-1 e concentre-se na igualdade de toque entre as três notas.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríade",
+        "sol menor",
+        "mão esquerda",
+        "básico"
+      ],
+      "style": {
+        "gradient": [
+          "#1e3a5f",
+          "#3b82f6"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "left"
+      },
+      "dataUrl": "exercises/triads/triads-g-minor-lh.json",
+      "i18n": {
+        "en": {
+          "title": "G Minor Triads — Left Hand",
+          "subtitle": "i · ii° · III · iv · v · VI · VII",
+          "description": "All seven diatonic triads of G minor with the left hand. Use fingers 5-3-1 and focus on even touch."
+        }
+      }
+    },
+    {
+      "id": "triads-c-minor-rh",
+      "title": "Tríades em Dó Menor — Mão Direita",
+      "subtitle": "i · ii° · III · iv · v · VI · VII",
+      "description": "As sete tríades diatônicas de Dó Menor com a mão direita. Atenção especial ao Eb e Ab — as teclas pretas mudam a posição dos dedos.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríade",
+        "dó menor",
+        "mão direita",
+        "básico"
+      ],
+      "style": {
+        "gradient": [
+          "#312e81",
+          "#7c3aed"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/triads/triads-c-minor-rh.json",
+      "i18n": {
+        "en": {
+          "title": "C Minor Triads — Right Hand",
+          "subtitle": "i · ii° · III · iv · v · VI · VII",
+          "description": "All seven diatonic triads of C minor with the right hand. Pay attention to the Eb and Ab — black keys shift finger position."
+        }
+      }
+    },
+    {
+      "id": "triads-c-minor-lh",
+      "title": "Tríades em Dó Menor — Mão Esquerda",
+      "subtitle": "i · ii° · III · iv · v · VI · VII",
+      "description": "As sete tríades diatônicas de Dó Menor com a mão esquerda. Teclas pretas exigem atenção ao posicionamento do punho — mantenha-o levemente elevado.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríade",
+        "dó menor",
+        "mão esquerda",
+        "básico"
+      ],
+      "style": {
+        "gradient": [
+          "#312e81",
+          "#7c3aed"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "left"
+      },
+      "dataUrl": "exercises/triads/triads-c-minor-lh.json",
+      "i18n": {
+        "en": {
+          "title": "C Minor Triads — Left Hand",
+          "subtitle": "i · ii° · III · iv · v · VI · VII",
+          "description": "All seven diatonic triads of C minor with the left hand. Black keys require extra wrist awareness — keep it slightly elevated."
+        }
+      }
+    },
+    {
+      "id": "triads-f-minor-rh",
+      "title": "Tríades em Fá Menor — Mão Direita",
+      "subtitle": "i · ii° · III · iv · v · VI · VII",
+      "description": "As sete tríades diatônicas de Fá Menor com a mão direita. Tom com quatro bemóis — desafiador para os dedos. Toque devagar e certifique-se de pressionar as teclas pretas completamente.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 3,
+      "tags": [
+        "tríade",
+        "fá menor",
+        "mão direita",
+        "intermediário"
+      ],
+      "style": {
+        "gradient": [
+          "#4a044e",
+          "#be185d"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/triads/triads-f-minor-rh.json",
+      "i18n": {
+        "en": {
+          "title": "F Minor Triads — Right Hand",
+          "subtitle": "i · ii° · III · iv · v · VI · VII",
+          "description": "All seven diatonic triads of F minor with the right hand. Four flats — a real finger workout. Play slowly and ensure full contact with the black keys."
+        }
+      }
+    },
+    {
+      "id": "triads-f-minor-lh",
+      "title": "Tríades em Fá Menor — Mão Esquerda",
+      "subtitle": "i · ii° · III · iv · v · VI · VII",
+      "description": "As sete tríades diatônicas de Fá Menor com a mão esquerda. Tom com quatro bemóis — exige precisão no posicionamento da mão esquerda nas teclas pretas.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 3,
+      "tags": [
+        "tríade",
+        "fá menor",
+        "mão esquerda",
+        "intermediário"
+      ],
+      "style": {
+        "gradient": [
+          "#4a044e",
+          "#be185d"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "left"
+      },
+      "dataUrl": "exercises/triads/triads-f-minor-lh.json",
+      "i18n": {
+        "en": {
+          "title": "F Minor Triads — Left Hand",
+          "subtitle": "i · ii° · III · iv · v · VI · VII",
+          "description": "All seven diatonic triads of F minor with the left hand. Four flats require precise hand positioning on the black keys."
+        }
+      }
+    },
+    {
+      "id": "triads-b-minor-rh",
+      "title": "Tríades em Si Menor — Mão Direita",
+      "subtitle": "i · ii° · III · iv · v · VI · VII",
+      "description": "As sete tríades diatônicas de Si Menor com a mão direita. Tom com dois sustenidos (F# e C#). Toque lento para garantir a precisão nos acordes com sustenidos.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríade",
+        "si menor",
+        "mão direita",
+        "básico"
+      ],
+      "style": {
+        "gradient": [
+          "#14532d",
+          "#15803d"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/triads/triads-b-minor-rh.json",
+      "i18n": {
+        "en": {
+          "title": "B Minor Triads — Right Hand",
+          "subtitle": "i · ii° · III · iv · v · VI · VII",
+          "description": "All seven diatonic triads of B minor with the right hand. Two sharps (F# and C#). Play slowly to ensure accuracy on the sharped notes."
+        }
+      }
+    },
+    {
+      "id": "triads-b-minor-lh",
+      "title": "Tríades em Si Menor — Mão Esquerda",
+      "subtitle": "i · ii° · III · iv · v · VI · VII",
+      "description": "As sete tríades diatônicas de Si Menor com a mão esquerda. Dois sustenidos — boa preparação para tonalidades com mais alterações.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríade",
+        "si menor",
+        "mão esquerda",
+        "básico"
+      ],
+      "style": {
+        "gradient": [
+          "#14532d",
+          "#15803d"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "left"
+      },
+      "dataUrl": "exercises/triads/triads-b-minor-lh.json",
+      "i18n": {
+        "en": {
+          "title": "B Minor Triads — Left Hand",
+          "subtitle": "i · ii° · III · iv · v · VI · VII",
+          "description": "All seven diatonic triads of B minor with the left hand. Two sharps — good preparation for keys with more accidentals."
+        }
+      }
+    },
+    {
+      "id": "triads-fs-minor-rh",
+      "title": "Tríades em Fá# Menor — Mão Direita",
+      "subtitle": "i · ii° · III · iv · v · VI · VII",
+      "description": "As sete tríades diatônicas de Fá# Menor com a mão direita. Tom com três sustenidos. Muito usado em música pop e baladas românticas.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 3,
+      "tags": [
+        "tríade",
+        "fá# menor",
+        "mão direita",
+        "intermediário"
+      ],
+      "style": {
+        "gradient": [
+          "#065f46",
+          "#059669"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/triads/triads-fs-minor-rh.json",
+      "i18n": {
+        "en": {
+          "title": "F# Minor Triads — Right Hand",
+          "subtitle": "i · ii° · III · iv · v · VI · VII",
+          "description": "All seven diatonic triads of F# minor with the right hand. Three sharps — widely used in pop and romantic ballads."
+        }
+      }
+    },
+    {
+      "id": "triads-fs-minor-lh",
+      "title": "Tríades em Fá# Menor — Mão Esquerda",
+      "subtitle": "i · ii° · III · iv · v · VI · VII",
+      "description": "As sete tríades diatônicas de Fá# Menor com a mão esquerda. Três sustenidos e teclas pretas bem posicionadas — exige boa coordenação da mão esquerda.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ],
+        "i18n": {
+          "en": {
+            "bio": "Official Pianalyze exercises — real-time piano analysis and learning."
+          },
+          "es": {
+            "bio": "Ejercicios oficiales de Pianalyze — análisis y aprendizaje de piano en tiempo real."
+          },
+          "zh-CN": {
+            "bio": "Pianalyze 官方练习曲 — 实时钢琴分析与学习。"
+          }
+        }
+      },
+      "category": "triads",
+      "difficulty": 3,
+      "tags": [
+        "tríade",
+        "fá# menor",
+        "mão esquerda",
+        "intermediário"
+      ],
+      "style": {
+        "gradient": [
+          "#065f46",
+          "#059669"
+        ],
+        "coverImage": "/images/exercises/cover-triads.svg"
+      },
+      "stats": {
+        "durationSec": 24,
+        "bpm": 72,
+        "timeSignature": "4/4",
+        "hands": "left"
+      },
+      "dataUrl": "exercises/triads/triads-fs-minor-lh.json",
+      "i18n": {
+        "en": {
+          "title": "F# Minor Triads — Left Hand",
+          "subtitle": "i · ii° · III · iv · v · VI · VII",
+          "description": "All seven diatonic triads of F# minor with the left hand. Three sharps and well-placed black keys — requires good left-hand coordination."
+        }
+      }
+    },
+    {
+      "id": "greensleeves",
+      "title": "Greensleeves",
+      "subtitle": "Tradicional Inglês — Lá Menor · 3/4",
+      "description": "Uma das melodias mais reconhecidas do mundo ocidental, com origens no século XVI. Em Lá Menor e compasso ternário (3/4), é excelente para treinar o ritmo de valsa e o fraseado musical.",
+      "author": {
+        "name": "Tradicional (Anônimo)",
+        "bio": "Melodia tradicional inglesa do século XVI. Arranjo simplificado pelo Pianalyze Team.",
+        "i18n": {
+          "en": {
+            "bio": "Traditional English folk melody from the 16th century. Simplified arrangement by the Pianalyze Team."
+          },
+          "es": {
+            "bio": "Melodía folclórica inglesa tradicional del siglo XVI. Arreglo simplificado por el equipo de Pianalyze."
+          }
+        }
+      },
+      "category": "pieces",
+      "difficulty": 2,
+      "tags": [
+        "peça",
+        "greensleeves",
+        "lá menor",
+        "3/4",
+        "tradicional",
+        "básico"
+      ],
+      "style": {
+        "gradient": [
+          "#064e3b",
+          "#047857"
+        ],
+        "coverImage": "/images/exercises/cover-pieces.svg"
+      },
+      "stats": {
+        "durationSec": 32,
+        "bpm": 72,
+        "timeSignature": "3/4",
+        "hands": "right"
+      },
+      "dataUrl": "exercises/pieces/greensleeves.json",
+      "i18n": {
+        "en": {
+          "title": "Greensleeves",
+          "subtitle": "Traditional English — A Minor · 3/4",
+          "description": "One of the most recognized melodies in Western music, with origins in the 16th century. In A minor with a waltz-like 3/4 feel — great for practicing musical phrasing and lyrical tone."
+        },
+        "es": {
+          "title": "Greensleeves",
+          "subtitle": "Tradicional Inglés — La menor · 3/4",
+          "description": "Una de las melodías más reconocidas de la música occidental, con orígenes en el siglo XVI. En La menor y compás ternario — ideal para practicar el fraseo musical."
+        }
+      }
     }
   ]
 }
