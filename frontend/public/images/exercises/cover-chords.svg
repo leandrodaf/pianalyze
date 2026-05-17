@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a0a2e"/>
+      <stop offset="100%" style="stop-color:#0a1a2e"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="480" height="300" fill="url(#bg)"/>
+  <!-- Three stacked chord voicings -->
+  <g transform="translate(60, 55)">
+    <!-- Chord 1 (I) - C E G highlighted -->
+    <rect x="0"   y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="26"  y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="52"  y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="78"  y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="104" y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="18"  y="0" width="16" height="82"  rx="2" fill="#111"/>
+    <rect x="44"  y="0" width="16" height="82"  rx="2" fill="#111"/>
+    <!-- Chord highlights: C(0) E(52) G(104) -->
+    <rect x="0"   y="90" width="24" height="40" rx="2" fill="#39d2c0" filter="url(#glow)" opacity="0.95"/>
+    <rect x="52"  y="90" width="24" height="40" rx="2" fill="#39d2c0" filter="url(#glow)" opacity="0.95"/>
+    <rect x="104" y="90" width="24" height="40" rx="2" fill="#39d2c0" filter="url(#glow)" opacity="0.95"/>
+    
+    <!-- Chord 2 (IV) - F A C -->
+    <rect x="145" y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="171" y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="197" y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="223" y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="249" y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="163" y="0" width="16" height="82"  rx="2" fill="#111"/>
+    <rect x="215" y="0" width="16" height="82"  rx="2" fill="#111"/>
+    <rect x="145" y="90" width="24" height="40" rx="2" fill="#7c5cfc" filter="url(#glow)" opacity="0.95"/>
+    <rect x="197" y="90" width="24" height="40" rx="2" fill="#7c5cfc" filter="url(#glow)" opacity="0.95"/>
+    <rect x="249" y="90" width="24" height="40" rx="2" fill="#7c5cfc" filter="url(#glow)" opacity="0.95"/>
+
+    <!-- Chord 3 (V) - G B D -->
+    <rect x="290" y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="316" y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="342" y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="368" y="0" width="24" height="130" rx="3" fill="white" opacity="0.85"/>
+    <rect x="308" y="0" width="16" height="82"  rx="2" fill="#111"/>
+    <rect x="358" y="0" width="16" height="82"  rx="2" fill="#111"/>
+    <rect x="290" y="90" width="24" height="40" rx="2" fill="#ee82c3" filter="url(#glow)" opacity="0.95"/>
+    <rect x="342" y="90" width="24" height="40" rx="2" fill="#ee82c3" filter="url(#glow)" opacity="0.95"/>
+  </g>
+  <!-- Roman numerals -->
+  <text x="90" y="220" fill="white" opacity="0.4" font-family="serif" font-size="28" font-weight="bold" text-anchor="middle">I</text>
+  <text x="233" y="220" fill="white" opacity="0.4" font-family="serif" font-size="28" font-weight="bold" text-anchor="middle">IV</text>
+  <text x="368" y="220" fill="white" opacity="0.4" font-family="serif" font-size="28" font-weight="bold" text-anchor="middle">V</text>
+  <g opacity="0.12">
+    <line x1="0" y1="255" x2="480" y2="255" stroke="white" stroke-width="1.5"/>
+    <line x1="0" y1="264" x2="480" y2="264" stroke="white" stroke-width="1.5"/>
+    <line x1="0" y1="273" x2="480" y2="273" stroke="white" stroke-width="1.5"/>
+    <line x1="0" y1="282" x2="480" y2="282" stroke="white" stroke-width="1.5"/>
+    <line x1="0" y1="291" x2="480" y2="291" stroke="white" stroke-width="1.5"/>
+  </g>
+</svg>

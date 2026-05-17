@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0c29"/>
+      <stop offset="100%" style="stop-color:#302b63"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="480" height="300" fill="url(#bg)"/>
+  <!-- White keys (2 octaves, 14 keys) -->
+  <g transform="translate(20, 80)">
+    <!-- Octave 1 -->
+    <rect x="0"   y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="30"  y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="60"  y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="90"  y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="120" y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="150" y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="180" y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <!-- Octave 2 -->
+    <rect x="210" y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="240" y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="270" y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="300" y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="330" y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="360" y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <rect x="390" y="0" width="28" height="140" rx="3" fill="white" opacity="0.9"/>
+    <!-- Black keys -->
+    <rect x="20"  y="0" width="18" height="88" rx="2" fill="#1a1a2e"/>
+    <rect x="50"  y="0" width="18" height="88" rx="2" fill="#1a1a2e"/>
+    <rect x="110" y="0" width="18" height="88" rx="2" fill="#1a1a2e"/>
+    <rect x="140" y="0" width="18" height="88" rx="2" fill="#1a1a2e"/>
+    <rect x="170" y="0" width="18" height="88" rx="2" fill="#1a1a2e"/>
+    <rect x="230" y="0" width="18" height="88" rx="2" fill="#1a1a2e"/>
+    <rect x="260" y="0" width="18" height="88" rx="2" fill="#1a1a2e"/>
+    <rect x="320" y="0" width="18" height="88" rx="2" fill="#1a1a2e"/>
+    <rect x="350" y="0" width="18" height="88" rx="2" fill="#1a1a2e"/>
+    <rect x="380" y="0" width="18" height="88" rx="2" fill="#1a1a2e"/>
+    <!-- Highlighted ascending pattern (major scale: all white keys) -->
+    <rect x="0"   y="100" width="28" height="40" rx="2" fill="#f5c842" filter="url(#glow)" opacity="0.9"/>
+    <rect x="30"  y="100" width="28" height="40" rx="2" fill="#f5c842" filter="url(#glow)" opacity="0.85"/>
+    <rect x="60"  y="100" width="28" height="40" rx="2" fill="#f5c842" filter="url(#glow)" opacity="0.8"/>
+    <rect x="90"  y="100" width="28" height="40" rx="2" fill="#f5c842" filter="url(#glow)" opacity="0.75"/>
+    <rect x="120" y="100" width="28" height="40" rx="2" fill="#f5c842" filter="url(#glow)" opacity="0.7"/>
+    <rect x="150" y="100" width="28" height="40" rx="2" fill="#f5c842" filter="url(#glow)" opacity="0.65"/>
+    <rect x="180" y="100" width="28" height="40" rx="2" fill="#f5c842" filter="url(#glow)" opacity="0.6"/>
+    <rect x="210" y="100" width="28" height="40" rx="2" fill="#f5c842" filter="url(#glow)" opacity="0.9"/>
+  </g>
+  <!-- Staff lines at bottom -->
+  <g opacity="0.15">
+    <line x1="0" y1="255" x2="480" y2="255" stroke="white" stroke-width="1.5"/>
+    <line x1="0" y1="263" x2="480" y2="263" stroke="white" stroke-width="1.5"/>
+    <line x1="0" y1="271" x2="480" y2="271" stroke="white" stroke-width="1.5"/>
+    <line x1="0" y1="279" x2="480" y2="279" stroke="white" stroke-width="1.5"/>
+    <line x1="0" y1="287" x2="480" y2="287" stroke="white" stroke-width="1.5"/>
+  </g>
+</svg>

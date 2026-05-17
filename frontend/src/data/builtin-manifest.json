@@ -71,7 +71,7 @@
           "#2563eb"
         ],
         "icon": "🎵",
-        "coverImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Frederic_Chopin_photo.jpeg/800px-Frederic_Chopin_photo.jpeg"
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 10,
@@ -139,7 +139,8 @@
           "#0891b2",
           "#059669"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 10,
@@ -207,7 +208,8 @@
           "#be185d",
           "#9333ea"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 10,
@@ -275,7 +277,8 @@
           "#065f46",
           "#0891b2"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 10,
@@ -344,7 +347,8 @@
           "#1d4ed8",
           "#6d28d9"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-chromatic.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -392,7 +396,8 @@
           "#f59e0b",
           "#ef4444"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -440,7 +445,8 @@
           "#10b981",
           "#3b82f6"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -488,7 +494,8 @@
           "#8b5cf6",
           "#06b6d4"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -536,7 +543,8 @@
           "#f97316",
           "#eab308"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -584,7 +592,8 @@
           "#3b82f6",
           "#6366f1"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -632,7 +641,8 @@
           "#ec4899",
           "#f43f5e"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -680,7 +690,8 @@
           "#14b8a6",
           "#6366f1"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -728,7 +739,8 @@
           "#06b6d4",
           "#0ea5e9"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -776,7 +788,8 @@
           "#a78bfa",
           "#818cf8"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-scales-major.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -825,7 +838,8 @@
           "#1e3a5f",
           "#1e40af"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -874,7 +888,8 @@
           "#4c1d95",
           "#7c3aed"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -923,7 +938,8 @@
           "#134e4a",
           "#065f46"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -972,7 +988,8 @@
           "#7f1d1d",
           "#991b1b"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -1021,7 +1038,8 @@
           "#3b0764",
           "#5b21b6"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -1070,7 +1088,8 @@
           "#1c1917",
           "#292524"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -1119,7 +1138,8 @@
           "#0f172a",
           "#1e3a5f"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -1168,7 +1188,8 @@
           "#1e1b4b",
           "#312e81"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -1217,7 +1238,8 @@
           "#1a1a2e",
           "#16213e"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -1266,7 +1288,8 @@
           "#14532d",
           "#15803d"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -1315,7 +1338,8 @@
           "#7c2d12",
           "#9a3412"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/cover-scales-minor.svg"
       },
       "stats": {
         "durationSec": 14,
@@ -1384,7 +1408,8 @@
           "#b45309",
           "#dc2626"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-chords.svg"
       },
       "stats": {
         "durationSec": 27,
@@ -1453,7 +1478,8 @@
           "#7c3aed",
           "#be185d"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-chords.svg"
       },
       "stats": {
         "durationSec": 27,
@@ -1522,7 +1548,8 @@
           "#064e3b",
           "#0891b2"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-chords.svg"
       },
       "stats": {
         "durationSec": 27,
@@ -1590,7 +1617,8 @@
           "#92400e",
           "#ca8a04"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-chords.svg"
       },
       "stats": {
         "durationSec": 23,
@@ -1659,7 +1687,8 @@
           "#1e1b4b",
           "#6d28d9"
         ],
-        "icon": "🎷"
+        "icon": "🎷",
+        "coverImage": "/images/exercises/cover-jazz.svg"
       },
       "stats": {
         "durationSec": 27,
@@ -1732,7 +1761,8 @@
           "#7c3aed",
           "#2563eb"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -1805,7 +1835,8 @@
           "#7c3aed",
           "#2563eb"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -1878,7 +1909,8 @@
           "#0891b2",
           "#059669"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -1951,7 +1983,8 @@
           "#0891b2",
           "#059669"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2024,7 +2057,8 @@
           "#065f46",
           "#0891b2"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2097,7 +2131,8 @@
           "#065f46",
           "#0891b2"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2170,7 +2205,8 @@
           "#b45309",
           "#dc2626"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2243,7 +2279,8 @@
           "#b45309",
           "#dc2626"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2316,7 +2353,8 @@
           "#92400e",
           "#ca8a04"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2389,7 +2427,8 @@
           "#92400e",
           "#ca8a04"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2462,7 +2501,8 @@
           "#be185d",
           "#9333ea"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2535,7 +2575,8 @@
           "#be185d",
           "#9333ea"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2608,7 +2649,8 @@
           "#1d4ed8",
           "#6d28d9"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2681,7 +2723,8 @@
           "#1d4ed8",
           "#6d28d9"
         ],
-        "icon": "🎹"
+        "icon": "🎹",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2754,7 +2797,8 @@
           "#7c3aed",
           "#be185d"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2827,7 +2871,8 @@
           "#7c3aed",
           "#be185d"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2900,7 +2945,8 @@
           "#064e3b",
           "#0891b2"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -2973,7 +3019,8 @@
           "#064e3b",
           "#0891b2"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -3046,7 +3093,8 @@
           "#374151",
           "#6d28d9"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -3119,7 +3167,8 @@
           "#374151",
           "#6d28d9"
         ],
-        "icon": "🎵"
+        "icon": "🎵",
+        "coverImage": "/images/exercises/cover-triads.svg"
       },
       "stats": {
         "durationSec": 24,
@@ -3188,7 +3237,8 @@
           "#15803d",
           "#0891b2"
         ],
-        "icon": "⭐"
+        "icon": "⭐",
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
         "durationSec": 40,
@@ -3238,7 +3288,8 @@
           "#6d28d9",
           "#be185d"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/beethoven.jpg"
       },
       "stats": {
         "durationSec": 38,
@@ -3288,7 +3339,8 @@
           "#92400e",
           "#15803d"
         ],
-        "icon": "🎼"
+        "icon": "🎼",
+        "coverImage": "/images/exercises/beethoven.jpg"
       },
       "stats": {
         "durationSec": 70,
@@ -3338,7 +3390,8 @@
           "#be185d",
           "#f59e0b"
         ],
-        "icon": "🎂"
+        "icon": "🎂",
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
         "durationSec": 23,
@@ -3388,7 +3441,8 @@
           "#b91c1c",
           "#c2410c"
         ],
-        "icon": "🔔"
+        "icon": "🔔",
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
         "durationSec": 53,
@@ -3438,7 +3492,8 @@
           "#16a34a",
           "#15803d"
         ],
-        "icon": "🐑"
+        "icon": "🐑",
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
         "durationSec": 27,
@@ -3488,7 +3543,8 @@
           "#f59e0b",
           "#d97706"
         ],
-        "icon": "🍞"
+        "icon": "🍞",
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
         "durationSec": 17,
@@ -3538,7 +3594,8 @@
           "#3b82f6",
           "#6366f1"
         ],
-        "icon": "🔔"
+        "icon": "🔔",
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
         "durationSec": 27,
@@ -3588,7 +3645,8 @@
           "#0284c7",
           "#0369a1"
         ],
-        "icon": "🌉"
+        "icon": "🌉",
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
         "durationSec": 27,
@@ -3639,7 +3697,8 @@
           "#7c3aed",
           "#6d28d9"
         ],
-        "icon": "🙏"
+        "icon": "🙏",
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
         "durationSec": 23,
@@ -3689,7 +3748,8 @@
           "#dc2626",
           "#1d4ed8"
         ],
-        "icon": "🎺"
+        "icon": "🎺",
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
         "durationSec": 40,
@@ -3739,7 +3799,8 @@
           "#65a30d",
           "#ca8a04"
         ],
-        "icon": "🐄"
+        "icon": "🐄",
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
         "durationSec": 33,
@@ -3789,7 +3850,8 @@
           "#1e3a5f",
           "#0891b2"
         ],
-        "icon": "⛪"
+        "icon": "⛪",
+        "coverImage": "/images/exercises/cover-pieces.svg"
       },
       "stats": {
         "durationSec": 32,

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300">
+  <defs>
+    <linearGradient id="bg" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d2137"/>
+      <stop offset="100%" style="stop-color:#1a0a2e"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="480" height="300" fill="url(#bg)"/>
+  <!-- Piano keys wide view -->
+  <g transform="translate(15, 65)">
+    <!-- 7 white keys visible (one octave) -->
+    <rect x="0"   y="0" width="60" height="160" rx="4" fill="white" opacity="0.9"/>
+    <rect x="63"  y="0" width="60" height="160" rx="4" fill="white" opacity="0.9"/>
+    <rect x="126" y="0" width="60" height="160" rx="4" fill="white" opacity="0.9"/>
+    <rect x="189" y="0" width="60" height="160" rx="4" fill="white" opacity="0.9"/>
+    <rect x="252" y="0" width="60" height="160" rx="4" fill="white" opacity="0.9"/>
+    <rect x="315" y="0" width="60" height="160" rx="4" fill="white" opacity="0.9"/>
+    <rect x="378" y="0" width="60" height="160" rx="4" fill="white" opacity="0.9"/>
+    <!-- Black keys -->
+    <rect x="42"  y="0" width="40" height="100" rx="3" fill="#0d1b2a"/>
+    <rect x="105" y="0" width="40" height="100" rx="3" fill="#0d1b2a"/>
+    <rect x="231" y="0" width="40" height="100" rx="3" fill="#0d1b2a"/>
+    <rect x="294" y="0" width="40" height="100" rx="3" fill="#0d1b2a"/>
+    <rect x="357" y="0" width="40" height="100" rx="3" fill="#0d1b2a"/>
+    <!-- Triad C-E-G highlighted (root position) -->
+    <rect x="0"   y="115" width="60" height="45" rx="3" fill="#f97316" filter="url(#glow)" opacity="0.95"/>
+    <rect x="126" y="115" width="60" height="45" rx="3" fill="#f97316" filter="url(#glow)" opacity="0.95"/>
+    <rect x="252" y="115" width="60" height="45" rx="3" fill="#f97316" filter="url(#glow)" opacity="0.95"/>
+  </g>
+  <!-- Triangle shape connecting the 3 notes -->
+  <g opacity="0.25">
+    <line x1="45"  y1="185" x2="171" y2="185" stroke="#f97316" stroke-width="2" stroke-dasharray="5,3"/>
+    <line x1="171" y1="185" x2="297" y2="185" stroke="#f97316" stroke-width="2" stroke-dasharray="5,3"/>
+  </g>
+  <text x="45"  y="255" fill="#f97316" opacity="0.6" font-family="sans-serif" font-size="14" font-weight="bold" text-anchor="middle">1</text>
+  <text x="171" y="255" fill="#f97316" opacity="0.6" font-family="sans-serif" font-size="14" font-weight="bold" text-anchor="middle">3</text>
+  <text x="297" y="255" fill="#f97316" opacity="0.6" font-family="sans-serif" font-size="14" font-weight="bold" text-anchor="middle">5</text>
+  <g opacity="0.1">
+    <line x1="0" y1="270" x2="480" y2="270" stroke="white" stroke-width="1.5"/>
+    <line x1="0" y1="279" x2="480" y2="279" stroke="white" stroke-width="1.5"/>
+    <line x1="0" y1="288" x2="480" y2="288" stroke="white" stroke-width="1.5"/>
+  </g>
+</svg>

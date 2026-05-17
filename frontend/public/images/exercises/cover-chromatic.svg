@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a3e"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="480" height="300" fill="url(#bg)"/>
+  <!-- All 12 chromatic keys highlighted with rainbow spectrum -->
+  <g transform="translate(10, 75)">
+    <!-- White keys -->
+    <rect x="0"   y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="30"  y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="60"  y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="90"  y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="120" y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="150" y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="180" y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="210" y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="240" y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="270" y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="300" y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="330" y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="360" y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="390" y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <rect x="420" y="0" width="28" height="140" rx="3" fill="white" opacity="0.88"/>
+    <!-- Black keys -->
+    <rect x="20"  y="0" width="18" height="88" rx="2" fill="#111"/>
+    <rect x="50"  y="0" width="18" height="88" rx="2" fill="#111"/>
+    <rect x="110" y="0" width="18" height="88" rx="2" fill="#111"/>
+    <rect x="140" y="0" width="18" height="88" rx="2" fill="#111"/>
+    <rect x="170" y="0" width="18" height="88" rx="2" fill="#111"/>
+    <rect x="230" y="0" width="18" height="88" rx="2" fill="#111"/>
+    <rect x="260" y="0" width="18" height="88" rx="2" fill="#111"/>
+    <rect x="320" y="0" width="18" height="88" rx="2" fill="#111"/>
+    <rect x="350" y="0" width="18" height="88" rx="2" fill="#111"/>
+    <rect x="380" y="0" width="18" height="88" rx="2" fill="#111"/>
+    <rect x="410" y="0" width="18" height="88" rx="2" fill="#111"/>
+    <!-- Rainbow chromatic highlights (all 12 semitones) -->
+    <rect x="0"   y="105" width="28" height="35" rx="2" fill="#ff4444" filter="url(#glow)" opacity="0.9"/>
+    <rect x="20"  y="55"  width="18" height="33" rx="2" fill="#ff7733" filter="url(#glow)" opacity="0.85"/>
+    <rect x="30"  y="105" width="28" height="35" rx="2" fill="#ffaa00" filter="url(#glow)" opacity="0.9"/>
+    <rect x="50"  y="55"  width="18" height="33" rx="2" fill="#ffdd00" filter="url(#glow)" opacity="0.85"/>
+    <rect x="60"  y="105" width="28" height="35" rx="2" fill="#aaff00" filter="url(#glow)" opacity="0.9"/>
+    <rect x="90"  y="105" width="28" height="35" rx="2" fill="#00ff88" filter="url(#glow)" opacity="0.9"/>
+    <rect x="110" y="55"  width="18" height="33" rx="2" fill="#00ffdd" filter="url(#glow)" opacity="0.85"/>
+    <rect x="120" y="105" width="28" height="35" rx="2" fill="#00ccff" filter="url(#glow)" opacity="0.9"/>
+    <rect x="140" y="55"  width="18" height="33" rx="2" fill="#4488ff" filter="url(#glow)" opacity="0.85"/>
+    <rect x="150" y="105" width="28" height="35" rx="2" fill="#8844ff" filter="url(#glow)" opacity="0.9"/>
+    <rect x="170" y="55"  width="18" height="33" rx="2" fill="#cc44ff" filter="url(#glow)" opacity="0.85"/>
+    <rect x="180" y="105" width="28" height="35" rx="2" fill="#ff44aa" filter="url(#glow)" opacity="0.9"/>
+    <rect x="210" y="105" width="28" height="35" rx="2" fill="#ff4444" filter="url(#glow)" opacity="0.9"/>
+  </g>
+</svg>
