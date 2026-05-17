@@ -254,11 +254,12 @@
         "icon": "🎹"
       },
       "stats": {
-        "durationSec": 16,
+        "durationSec": 27,
         "timeSignature": "4/4",
-        "hands": "both"
+        "hands": "both",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/chords/i-iv-v-i.json"
     },
     {
       "id": "minor-progression",
@@ -294,11 +295,12 @@
         "icon": "🎹"
       },
       "stats": {
-        "durationSec": 16,
+        "durationSec": 27,
         "timeSignature": "4/4",
-        "hands": "both"
+        "hands": "both",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/chords/minor-progression.json"
     },
     {
       "id": "seventh-chords",
@@ -334,10 +336,12 @@
         "icon": "🎹"
       },
       "stats": {
-        "durationSec": 20,
-        "hands": "both"
+        "durationSec": 27,
+        "hands": "both",
+        "bpm": 72,
+        "timeSignature": "4/4"
       },
-      "comingSoon": true
+      "dataUrl": "exercises/chords/seventh-chords.json"
     },
     {
       "id": "inversions",
@@ -372,10 +376,12 @@
         "icon": "🎹"
       },
       "stats": {
-        "durationSec": 18,
-        "hands": "both"
+        "durationSec": 23,
+        "hands": "both",
+        "bpm": 72,
+        "timeSignature": "4/4"
       },
-      "comingSoon": true
+      "dataUrl": "exercises/chords/inversions.json"
     },
     {
       "id": "jazz-voicings",
@@ -411,10 +417,12 @@
         "icon": "🎷"
       },
       "stats": {
-        "durationSec": 25,
-        "hands": "both"
+        "durationSec": 27,
+        "hands": "both",
+        "bpm": 72,
+        "timeSignature": "4/4"
       },
-      "comingSoon": true
+      "dataUrl": "exercises/chords/jazz-voicings.json"
     },
     {
       "id": "twinkle",
@@ -450,11 +458,12 @@
         "icon": "⭐"
       },
       "stats": {
-        "durationSec": 30,
+        "durationSec": 40,
         "timeSignature": "4/4",
-        "hands": "right"
+        "hands": "right",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/pieces/twinkle.json"
     },
     {
       "id": "fur-elise",
@@ -482,11 +491,12 @@
         "icon": "🎼"
       },
       "stats": {
-        "durationSec": 45,
-        "timeSignature": "3/8",
-        "hands": "both"
+        "durationSec": 38,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/pieces/fur-elise.json"
     },
     {
       "id": "ode-to-joy",
@@ -514,11 +524,12 @@
         "icon": "🎼"
       },
       "stats": {
-        "durationSec": 40,
+        "durationSec": 70,
         "timeSignature": "4/4",
-        "hands": "right"
+        "hands": "right",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/pieces/ode-to-joy.json"
     },
     {
       "id": "happy-birthday",
@@ -546,11 +557,12 @@
         "icon": "🎂"
       },
       "stats": {
-        "durationSec": 20,
+        "durationSec": 23,
         "timeSignature": "3/4",
-        "hands": "right"
+        "hands": "right",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/pieces/happy-birthday.json"
     },
     {
       "id": "jingle-bells",
@@ -578,11 +590,12 @@
         "icon": "🔔"
       },
       "stats": {
-        "durationSec": 35,
+        "durationSec": 53,
         "timeSignature": "4/4",
-        "hands": "right"
+        "hands": "right",
+        "bpm": 72
       },
-      "comingSoon": true
+      "dataUrl": "exercises/pieces/jingle-bells.json"
     }
   ]
 }
