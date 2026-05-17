@@ -90,6 +90,14 @@ export function SelectDevice(arg1) {
   return window['go']['main']['App']['SelectDevice'](arg1);
 }
 
+export function SetLanguage(arg1) {
+  return window['go']['main']['App']['SetLanguage'](arg1);
+}
+
+export function SetLanguage(arg1) {
+  return window['go']['main']['App']['SetLanguage'](arg1);
+}
+
 export function StartCapture() {
   return window['go']['main']['App']['StartCapture']();
 }

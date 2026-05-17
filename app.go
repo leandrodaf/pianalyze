@@ -349,6 +349,13 @@ func (a *App) shutdown(_ context.Context) {
 	_ = a.StopCapture()
 }
 
+// SetLanguage records the active UI locale in Sentry so errors and metrics are
+// tagged with the user's language. Called by the frontend on load and on change.
+func (a *App) SetLanguage(lang string) {
+	sentrySetTag("language", lang)
+	sentryCount("app.language.set", 1, sentryAttr("locale", lang))
+}
+
 // ReportError receives an unhandled JavaScript error from the frontend and
 // forwards it to Sentry through the Go backend. The frontend never holds any
 // Sentry credentials — all telemetry flows exclusively through this method.

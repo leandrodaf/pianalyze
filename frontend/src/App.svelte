@@ -25,11 +25,14 @@
 
   import { translateChord, translateInversion, translateRootNote, chordShorthand } from './lib/chord-i18n'
   import { settingsStore } from './stores/settings'
-  import { SyncMenuState } from '../wailsjs/go/main/App'
+  import { SyncMenuState, SetLanguage } from '../wailsjs/go/main/App'
   import { getKeyOptions } from './lib/key-utils'
 
   $: keyOptions = getKeyOptions($t)
   $: keyLabelMap = new Map(keyOptions.map(o => [o.value, o.label]))
+  // Forward the active locale to Go so Sentry errors and metrics are tagged
+  // with the user's language. Runs on initial load and on every locale change.
+  $: SetLanguage($locale).catch(() => {})
   $: fmtKey = (k: string): string => keyLabelMap.get(k) ?? k
 
   type Page = 'home' | 'playing'

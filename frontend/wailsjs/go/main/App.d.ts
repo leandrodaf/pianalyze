@@ -47,6 +47,10 @@ export function SaveRecording(arg1:string,arg2:string,arg3:string):Promise<void>
 
 export function SelectDevice(arg1:number):Promise<void>;
 
+export function SetLanguage(arg1:string):Promise<void>;
+
+export function SetLanguage(arg1:string):Promise<void>;
+
 export function StartCapture():Promise<void>;
 
 export function StartPractice(arg1:number,arg2:number):Promise<void>;
