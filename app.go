@@ -412,7 +412,21 @@ func (a *App) ListDevices() ([]DeviceInfo, error) {
 
 // SelectDevice sets the active MIDI device by its list index.
 func (a *App) SelectDevice(id int) error {
-	return a.midiClient.SelectDevice(id)
+	if err := a.midiClient.SelectDevice(id); err != nil {
+		return err
+	}
+	// Track which device was selected as a persistent scope tag (shows on all
+	// subsequent errors) and as a metric dimension for device usage analytics.
+	if devices, err := a.ListDevices(); err == nil {
+		for _, d := range devices {
+			if d.ID == id {
+				sentrySetTag("midi_device", d.Name)
+				sentryCount("midi.device.selected", 1, sentryAttr("name", d.Name))
+				break
+			}
+		}
+	}
+	return nil
 }
 
 // StartCapture begins MIDI capture and drives the processing pipeline.
@@ -693,7 +707,7 @@ func (a *App) LoadBuiltinPiece(filename string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	sentryCount("piece.loaded", 1)
+	sentryCount("piece.loaded", 1, sentryAttr("name", strings.TrimSuffix(strings.TrimSuffix(filename, ".pia.gz"), ".pia")))
 	return string(out), nil
 }
 
@@ -1080,7 +1094,7 @@ func (a *App) ImportAnyFile() (*ImportResult, error) {
 		if err := os.WriteFile(savedPath, out, 0o644); err != nil {
 			return nil, fmt.Errorf("save to library: %w", err)
 		}
-		sentryCount("file.imported", 1)
+		sentryCount("file.imported", 1, sentryAttr("type", "score"))
 		return &ImportResult{Kind: "score", Data: savedPath}, nil
 
 	default: // .pia / .json
@@ -1100,7 +1114,7 @@ func (a *App) ImportAnyFile() (*ImportResult, error) {
 		if err != nil {
 			return nil, err
 		}
-		sentryCount("file.imported", 1)
+		sentryCount("file.imported", 1, sentryAttr("type", "recording"))
 		return &ImportResult{Kind: "recording", Data: string(out)}, nil
 	}
 }

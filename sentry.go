@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/getsentry/sentry-go"
+	"github.com/getsentry/sentry-go/attribute"
 	"github.com/leandrodaf/pianalyze/internal/constants"
 )
 
@@ -44,18 +45,36 @@ func flushSentry() {
 	sentry.Flush(2 * time.Second)
 }
 
-// sentryCount increments a named counter by n.
-func sentryCount(name string, n int64) {
+// sentryCount increments a named counter by n. Optional attributes add
+// dimensions (e.g. device name, piece name) visible in the Sentry metrics UI.
+func sentryCount(name string, n int64, opts ...sentry.MeterOption) {
 	if meter != nil {
-		meter.Count(name, n)
+		meter.Count(name, n, opts...)
 	}
 }
 
 // sentryDist records a distribution sample (durations, sizes, counts per event).
-func sentryDist(name string, value float64) {
+func sentryDist(name string, value float64, opts ...sentry.MeterOption) {
 	if meter != nil {
-		meter.Distribution(name, value)
+		meter.Distribution(name, value, opts...)
 	}
+}
+
+// sentryAttr returns a MeterOption that attaches a string attribute to a metric.
+// Use this to add filterable dimensions (e.g. sentryAttr("name", pieceName)).
+func sentryAttr(key, value string) sentry.MeterOption {
+	return sentry.WithAttributes(attribute.String(key, value))
+}
+
+// sentrySetTag sets a persistent tag on the Sentry scope so it appears on all
+// subsequent error and event reports for this session.
+func sentrySetTag(key, value string) {
+	if SentryDSN == "" {
+		return
+	}
+	sentry.ConfigureScope(func(scope *sentry.Scope) {
+		scope.SetTag(key, value)
+	})
 }
 
 // sentryCaptureErr sends a non-nil error to Sentry.
