@@ -43,6 +43,9 @@ var (
 // ErrLoggerInitialization is the prefix used when the logger fails to initialize.
 const ErrLoggerInitialization = "Error initializing logger"
 
+// ErrSentryInitialization is the prefix used when the Sentry SDK fails to initialize.
+const ErrSentryInitialization = "Error initializing Sentry"
+
 // BuildModeProduction selects structured JSON logging when set via -ldflags.
 const BuildModeProduction = "production"
 

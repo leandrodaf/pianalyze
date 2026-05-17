@@ -26,16 +26,11 @@
   import { translateChord, translateInversion, translateRootNote, chordShorthand } from './lib/chord-i18n'
   import { settingsStore } from './stores/settings'
   import { SyncMenuState } from '../wailsjs/go/main/App'
-  import { KEY_OPTIONS } from './lib/key-utils'
+  import { getKeyOptions } from './lib/key-utils'
 
-  const KEY_DISPLAY: Record<string, string> = {
-    'C': 'Dó M', 'G': 'Sol M', 'D': 'Ré M', 'A': 'Lá M',
-    'E': 'Mi M', 'B': 'Si M', 'F': 'Fá M', 'F#': 'F# M',
-    'Bb': 'Sib M', 'Eb': 'Mib M',
-    'Am': 'Lá m', 'Em': 'Mi m', 'Dm': 'Ré m', 'Gm': 'Sol m',
-    'Cm': 'Dó m', 'Bm': 'Si m', 'Fm': 'Fá m',
-  }
-  function fmtKey(k: string): string { return KEY_DISPLAY[k] ?? k }
+  $: keyOptions = getKeyOptions($t)
+  $: keyLabelMap = new Map(keyOptions.map(o => [o.value, o.label]))
+  $: fmtKey = (k: string): string => keyLabelMap.get(k) ?? k
 
   type Page = 'home' | 'playing'
 
@@ -328,7 +323,7 @@
                 title={$t('key.picker.label')}
               >
                 <option value="">{$t('key.picker.none')}</option>
-                {#each KEY_OPTIONS as opt}
+                {#each keyOptions as opt}
                   <option value={opt.value}>{opt.label}</option>
                 {/each}
               </select>
@@ -349,7 +344,7 @@
                 title={$t('key.picker.label')}
               >
                 <option value="">{$t('key.picker.none')}</option>
-                {#each KEY_OPTIONS as opt}
+                {#each keyOptions as opt}
                   <option value={opt.value}>{opt.label}</option>
                 {/each}
               </select>
@@ -370,10 +365,10 @@
                     class="preset-pill"
                     class:active={activePreset === key}
                     on:click={() => applyPreset(key)}
-                    title="{cfg.label} — {cfg.speed * 100 | 0}% velocidade"
+                    title="{$t(cfg.label)} — {cfg.speed * 100 | 0}% {$t('controls.speed')}"
                   >
                     <span class="preset-icon">{cfg.icon}</span>
-                    <span class="preset-name">{cfg.label}</span>
+                    <span class="preset-name">{$t(cfg.label)}</span>
                   </button>
                 {/each}
               </div>
@@ -394,7 +389,7 @@
           class="hud-mode-toggle"
           class:hud-mode-short={isShortMode}
           on:click={() => settingsStore.toggleChordDisplayMode()}
-          title={isShortMode ? 'Mostrar nome completo' : 'Mostrar cifra'}
+          title={isShortMode ? $t('hud.show.fullname') : $t('hud.show.symbol')}
           aria-label="toggle chord display mode"
         >{isShortMode ? 'ABC' : '♪'}</button>
 

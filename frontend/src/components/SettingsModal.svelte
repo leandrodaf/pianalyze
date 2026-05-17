@@ -125,7 +125,7 @@
             on:click={() => settingsStore.setSkillLevel($settingsStore.skillLevel === key ? null : key)}
           >
             <span class="pc-icon">{cfg.icon}</span>
-            <span class="pc-label">{cfg.label}</span>
+            <span class="pc-label">{$t(cfg.label)}</span>
             <span class="pc-speed">{cfg.speed * 100 | 0}%</span>
           </button>
         {/each}

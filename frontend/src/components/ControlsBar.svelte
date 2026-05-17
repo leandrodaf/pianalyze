@@ -5,6 +5,7 @@
   import { bpmAt } from '../lib/recording-types'
   import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
   import { DIFFICULTY_COLOR } from '../lib/exercise-types'
+  import { t } from '../lib/i18n'
 
   const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
   const SPEEDS = [0.25, 0.5, 0.75, 1, 1.5, 2] as const
@@ -69,7 +70,7 @@
   <div class="sep"></div>
 
   <div class="speed-group">
-    <span class="speed-label">velocidade</span>
+    <span class="speed-label">{$t('controls.speed')}</span>
     {#each SPEEDS as x}
       <button
         class="speed-pill"
@@ -92,7 +93,7 @@
     class:active={loopEnabled}
     disabled={!hasLoop}
     on:click={toggleLoop}
-    title={loopEnabled ? 'Desativar loop' : 'Ativar loop (arraste na timeline para definir região)'}
+    title={loopEnabled ? $t('controls.loop.disable') : $t('controls.loop.enable')}
   >
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="17 1 21 5 17 9"/>
@@ -107,21 +108,21 @@
     <div class="sep"></div>
     <div class="hand-balance-group">
       <div class="hand-row">
-        <span class="hand-tag right" class:dim={handVolumes.right === 0}>MD</span>
+        <span class="hand-tag right" class:dim={handVolumes.right === 0}>{$t('waterfall.hand.right.abbr')}</span>
         <input
           type="range" class="hand-slider" min="0" max="100" step="1"
           value={handVolumes.right}
           on:input={onRightHandInput}
-          title="Mão direita: {handVolumes.right}%"
+          title="{$t('waterfall.hand.right')}: {handVolumes.right}%"
         />
       </div>
       <div class="hand-row">
-        <span class="hand-tag left" class:dim={handVolumes.left === 0}>ME</span>
+        <span class="hand-tag left" class:dim={handVolumes.left === 0}>{$t('waterfall.hand.left.abbr')}</span>
         <input
           type="range" class="hand-slider" min="0" max="100" step="1"
           value={handVolumes.left}
           on:input={onLeftHandInput}
-          title="Mão esquerda: {handVolumes.left}%"
+          title="{$t('waterfall.hand.left')}: {handVolumes.left}%"
         />
       </div>
     </div>
@@ -132,7 +133,7 @@
       class="btn mute-btn"
       class:muted={isMuted}
       on:click={toggleMute}
-      title={isMuted ? 'Reativar som' : 'Silenciar'}
+      title={isMuted ? $t('controls.unmute') : $t('controls.mute')}
       disabled={isLoading}
     >
       {#if isMuted}
@@ -169,7 +170,7 @@
     <div class="sep"></div>
     <div class="group sections-group">
       {#each sections as sec, i}
-        <button class="section-pill" on:click={() => goToSection(i)} title="Ir para {sec.name}">
+        <button class="section-pill" on:click={() => goToSection(i)} title="{$t('controls.goto')} {sec.name}">
           {#if sec.rehearsalMark}
             <span class="rehearsal-mark">[{sec.rehearsalMark}]</span>
           {/if}

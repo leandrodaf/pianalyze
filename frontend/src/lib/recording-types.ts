@@ -168,7 +168,7 @@ export interface DifficultyPresetConfig {
  */
 export const DIFFICULTY_PRESETS: Record<DifficultyPreset, DifficultyPresetConfig> = {
   beginner: {
-    label: 'Iniciante',
+    label: 'difficulty.1',
     icon: '🌱',
     speed: 0.5,
     profile: {
@@ -179,7 +179,7 @@ export const DIFFICULTY_PRESETS: Record<DifficultyPreset, DifficultyPresetConfig
     },
   },
   intermediate: {
-    label: 'Intermediário',
+    label: 'difficulty.3',
     icon: '🎹',
     speed: 0.75,
     profile: {
@@ -190,7 +190,7 @@ export const DIFFICULTY_PRESETS: Record<DifficultyPreset, DifficultyPresetConfig
     },
   },
   advanced: {
-    label: 'Avançado',
+    label: 'difficulty.4',
     icon: '🏆',
     speed: 1.0,
     profile: {

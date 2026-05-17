@@ -11,6 +11,10 @@ import (
 // "production" emits structured JSON; any other value uses human-readable development format.
 var BuildMode string
 
+// Version is set at compile time via -ldflags "-X main.Version=<semver>".
+// Empty in dev builds.
+var Version string
+
 func initLogger() *zap.Logger {
 	var (
 		logger *zap.Logger

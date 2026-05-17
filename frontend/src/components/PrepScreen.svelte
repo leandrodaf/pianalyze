@@ -6,6 +6,7 @@
   import { createPianoCanvas } from '../lib/piano-canvas'
   import { FINGER_COLORS } from '../lib/finger-colors'
   import { noteColor } from '../lib/note-colors'
+  import { t } from '../lib/i18n'
 
   export let onComplete: () => void
   export let onSkip:    () => void
@@ -88,23 +89,23 @@
     <div class="prep-titles">
       <span class="prep-icon">🎹</span>
       <div>
-        <div class="prep-title">Prepare os dedos</div>
-        <div class="prep-sub">Toque cada tecla destacada para começar o exercício</div>
+        <div class="prep-title">{$t('prep.title')}</div>
+        <div class="prep-sub">{$t('prep.sub')}</div>
       </div>
     </div>
 
     <div class="prep-counter">
       {#if done}
-        <span class="prep-ready">Iniciando…</span>
+        <span class="prep-ready">{$t('prep.starting')}</span>
       {:else}
         <span class="prep-num">{count}</span>
         <span class="prep-sep">/</span>
         <span class="prep-total">{total}</span>
-        <span class="prep-label">teclas</span>
+        <span class="prep-label">{$t('prep.keys')}</span>
       {/if}
     </div>
 
-    <button class="prep-skip-btn" on:click={onSkip}>Pular</button>
+    <button class="prep-skip-btn" on:click={onSkip}>{$t('prep.skip')}</button>
   </div>
 
   <div class="prep-bar-wrap">

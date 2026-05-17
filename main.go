@@ -25,6 +25,9 @@ var builtinLibrary embed.FS
 var libCovers embed.FS
 
 func main() {
+	initSentry()
+	defer flushSentry()
+
 	app := NewApp()
 
 	err := wails.Run(&options.App{

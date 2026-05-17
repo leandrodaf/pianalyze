@@ -238,5 +238,21 @@
   "home.filter.search": "Buscar ejercicios…",
   "home.filter.all": "Todos",
   "home.filter.clear": "Limpiar",
-  "home.filter.noResults": "No se encontraron ejercicios para esta búsqueda."
+  "home.filter.noResults": "No se encontraron ejercicios para esta búsqueda.",
+  "lang.zh-CN": "Chino (simplificado)",
+  "prep.title": "Prepara los dedos",
+  "prep.sub": "Toca cada tecla resaltada para comenzar el ejercicio",
+  "prep.starting": "Iniciando…",
+  "prep.keys": "teclas",
+  "prep.skip": "Saltar",
+  "controls.speed": "Velocidad",
+  "controls.loop.enable": "Activar bucle (arrastra en la línea de tiempo para definir la región)",
+  "controls.loop.disable": "Desactivar bucle",
+  "controls.mute": "Silenciar",
+  "controls.unmute": "Reactivar sonido",
+  "controls.goto": "Ir a",
+  "hud.show.fullname": "Mostrar nombre completo",
+  "hud.show.symbol": "Mostrar símbolo",
+  "key.major.abbr": "M",
+  "key.minor.abbr": "m"
 }

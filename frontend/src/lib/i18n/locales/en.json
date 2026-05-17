@@ -238,5 +238,21 @@
   "home.filter.search": "Search exercises…",
   "home.filter.all": "All",
   "home.filter.clear": "Clear",
-  "home.filter.noResults": "No exercises found for this search."
+  "home.filter.noResults": "No exercises found for this search.",
+  "lang.zh-CN": "Chinese (Simplified)",
+  "prep.title": "Prepare your fingers",
+  "prep.sub": "Press each highlighted key to start the exercise",
+  "prep.starting": "Starting…",
+  "prep.keys": "keys",
+  "prep.skip": "Skip",
+  "controls.speed": "Speed",
+  "controls.loop.enable": "Enable loop (drag on timeline to set region)",
+  "controls.loop.disable": "Disable loop",
+  "controls.mute": "Mute",
+  "controls.unmute": "Unmute",
+  "controls.goto": "Go to",
+  "hud.show.fullname": "Show full name",
+  "hud.show.symbol": "Show symbol",
+  "key.major.abbr": "Maj",
+  "key.minor.abbr": "min"
 }
