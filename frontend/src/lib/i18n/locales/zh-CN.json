@@ -235,5 +235,9 @@
   "builtin.error": "无法加载曲库。",
   "builtin.difficulty.label": "难度",
   "builtin.search": "搜索曲目…",
-  "builtin.noResults": "未找到曲目。"
+  "builtin.noResults": "未找到曲目。",
+  "home.filter.search": "搜索练习…",
+  "home.filter.all": "全部",
+  "home.filter.clear": "清除",
+  "home.filter.noResults": "未找到相关练习。"
 }

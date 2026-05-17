@@ -234,5 +234,9 @@
   "builtin.error": "No se pudo cargar la biblioteca.",
   "builtin.difficulty.label": "Dificultad",
   "builtin.search": "Buscar piezas…",
-  "builtin.noResults": "No se encontraron piezas."
+  "builtin.noResults": "No se encontraron piezas.",
+  "home.filter.search": "Buscar ejercicios…",
+  "home.filter.all": "Todos",
+  "home.filter.clear": "Limpiar",
+  "home.filter.noResults": "No se encontraron ejercicios para esta búsqueda."
 }

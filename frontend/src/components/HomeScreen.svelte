@@ -218,6 +218,35 @@
     { key: 'triads' },
     { key: 'pieces' },
   ]
+
+  // ── Search & Filter ──────────────────────────────────────────────────────────
+  let search = ''
+  let catFilter: Category | 'all' = 'all'
+  let diffFilter = 0
+
+  $: hasFilter = search.trim().length > 0 || catFilter !== 'all' || diffFilter > 0
+
+  $: filteredSections = (() => {
+    const q = search.trim().toLowerCase()
+    const loc = $locale
+    return SECTIONS
+      .map(({ key }) => {
+        const all = key === 'scales' ? scales : key === 'chords' ? chords : key === 'triads' ? triads : pieces
+        if (catFilter !== 'all' && catFilter !== key) return { key, list: [] as typeof all }
+        const list = all.filter(ex => {
+          if (diffFilter > 0 && ex.difficulty !== diffFilter) return false
+          if (!q) return true
+          const title    = localText(ex.i18n, 'title',    ex.title,    loc).toLowerCase()
+          const subtitle = localText(ex.i18n, 'subtitle', ex.subtitle ?? '', loc).toLowerCase()
+          const tags     = (ex.tags ?? []).join(' ').toLowerCase()
+          return title.includes(q) || subtitle.includes(q) || tags.includes(q)
+        })
+        return { key, list }
+      })
+      .filter(s => s.list.length > 0)
+  })()
+
+  function clearFilters() { search = ''; catFilter = 'all'; diffFilter = 0 }
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -386,9 +415,65 @@
       </div>
     </section>
 
+    <!-- ── Search & Filter bar ─────────────────────────────────────────────── -->
+    <div class="home-filters">
+      <div class="hf-search-wrap">
+        <span class="hf-search-icon">🔍</span>
+        <input
+          class="hf-search-input"
+          type="search"
+          placeholder={$t('home.filter.search')}
+          bind:value={search}
+        />
+        {#if search}
+          <button class="hf-x-btn" on:click={() => search = ''} title={$t('home.filter.clear')}>✕</button>
+        {/if}
+      </div>
+
+      <div class="hf-chips">
+        <button class="hf-chip" class:active={catFilter === 'all'} on:click={() => catFilter = 'all'}>
+          {$t('home.filter.all')}
+        </button>
+        {#each SECTIONS as { key }}
+          <button class="hf-chip" class:active={catFilter === key} on:click={() => catFilter = key}>
+            {$t('category.' + key)}
+          </button>
+        {/each}
+
+        <div class="hf-sep"></div>
+
+        {#each [1,2,3,4,5] as d}
+          <button
+            class="hf-chip hf-diff-chip"
+            class:active={diffFilter === d}
+            on:click={() => diffFilter = diffFilter === d ? 0 : d}
+            title={$t('difficulty.' + d)}
+          >
+            {#each {length: 5} as _, i}
+              <span class="hf-dot" class:hf-dot-filled={i < d}></span>
+            {/each}
+          </button>
+        {/each}
+
+        {#if hasFilter}
+          <button class="hf-chip hf-chip-clear" on:click={clearFilters}>
+            ✕ {$t('home.filter.clear')}
+          </button>
+        {/if}
+      </div>
+    </div>
+
     <!-- Exercise sections -->
-    {#each SECTIONS as { key }}
-      {@const list = key === 'scales' ? scales : key === 'chords' ? chords : key === 'triads' ? triads : pieces}
+    {#if hasFilter && filteredSections.length === 0}
+      <div class="hf-empty">
+        <span class="hf-empty-icon">🎵</span>
+        <p class="hf-empty-msg">{$t('home.filter.noResults')}</p>
+        <button class="hf-chip hf-chip-clear" on:click={clearFilters}>
+          ✕ {$t('home.filter.clear')}
+        </button>
+      </div>
+    {:else}
+    {#each filteredSections as { key, list }}
       <section class="ex-section">
         <div class="section-hdr">
           <h2 class="section-title">{$t('category.' + key)}</h2>
@@ -432,6 +517,7 @@
         </div>
       </section>
     {/each}
+    {/if}
 
     <div style="height:3rem"></div>
     {/if}
@@ -843,6 +929,126 @@
 .pill-text { display: flex; flex-direction: column; gap: 1px; }
 .pill-label { font-size: .82rem; font-weight: 700; color: rgba(255,255,255,.9); line-height: 1.2; }
 .pill-sub { font-size: .65rem; color: rgba(255,255,255,.35); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+
+/* ── Home Search & Filter bar ──────────────────────────────────────────────── */
+.home-filters {
+  padding: 0 clamp(1.2rem,3vw,2.5rem) 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+}
+
+.hf-search-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+}
+.hf-search-icon {
+  position: absolute;
+  left: .65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: .8rem;
+  pointer-events: none;
+  line-height: 1;
+}
+.hf-search-input {
+  width: 100%;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: .84rem;
+  padding: .45rem .75rem .45rem 2rem;
+  outline: none;
+  transition: border-color .15s, background .15s;
+  box-sizing: border-box;
+}
+.hf-search-input::placeholder { color: rgba(255,255,255,.25); }
+.hf-search-input:focus { border-color: rgba(123,95,240,.5); background: rgba(255,255,255,.07); }
+.hf-x-btn {
+  position: absolute;
+  right: .5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.35);
+  font-size: .75rem;
+  cursor: pointer;
+  padding: .1rem .25rem;
+  line-height: 1;
+  transition: color .15s;
+}
+.hf-x-btn:hover { color: rgba(255,255,255,.7); }
+
+.hf-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  align-items: center;
+}
+.hf-sep {
+  width: 1px;
+  height: 18px;
+  background: rgba(255,255,255,.1);
+  margin: 0 .15rem;
+  flex-shrink: 0;
+}
+
+.hf-chip {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 6px;
+  color: rgba(255,255,255,.45);
+  font-size: .74rem;
+  font-weight: 600;
+  padding: .3rem .65rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+  white-space: nowrap;
+}
+.hf-chip:hover { background: rgba(255,255,255,.1); color: rgba(255,255,255,.8); }
+.hf-chip.active {
+  background: rgba(123,95,240,.2);
+  border-color: rgba(123,95,240,.5);
+  color: #c4b5fd;
+}
+
+.hf-diff-chip {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: .35rem .55rem;
+}
+.hf-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  display: inline-block;
+  flex-shrink: 0;
+}
+.hf-dot-filled { background: #7b5ff0; }
+.hf-diff-chip.active .hf-dot-filled { background: #c4b5fd; }
+
+.hf-chip-clear {
+  color: rgba(255,165,100,.7);
+  border-color: rgba(255,140,50,.2);
+  background: rgba(255,140,50,.06);
+}
+.hf-chip-clear:hover { background: rgba(255,140,50,.12); color: #fb923c; border-color: rgba(255,140,50,.35); }
+
+.hf-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  padding: 4rem 2rem;
+  color: rgba(255,255,255,.35);
+}
+.hf-empty-icon { font-size: 2.5rem; line-height: 1; }
+.hf-empty-msg { margin: 0; font-size: .88rem; text-align: center; }
 
 /* Sections */
 .ex-section { padding: 0 clamp(1.2rem,3vw,2.5rem) 2.5rem; }
