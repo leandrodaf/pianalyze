@@ -540,7 +540,7 @@
           <div class="modal-title-block">
             <span class="modal-category">{$t('category.' + detail.category)}</span>
             <h2 class="modal-title">{localText(detail.i18n, 'title', detail.title, $locale)}</h2>
-            <p class="modal-subtitle">{localText(detail.i18n, 'subtitle', detail.subtitle, $locale)}</p>
+            <p class="modal-subtitle">{localText(detail.i18n, 'subtitle', detail.subtitle ?? '', $locale)}</p>
           </div>
         </div>
       </div>

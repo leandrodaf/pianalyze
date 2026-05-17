@@ -30,7 +30,7 @@ function bundledEntryToExercise(entry: BundledExerciseEntry): Exercise {
   return {
     id:          entry.id,
     title:       entry.title,
-    subtitle:    entry.subtitle,
+    subtitle:    entry.subtitle ?? '',
     description: entry.description ?? '',
     author:      entry.author,
     category:    entry.category,

@@ -294,9 +294,9 @@
         </button>
         {#if activeExercise}
           <div class="exercise-tag">
-            <span class="exercise-icon">{activeExercise.style.icon}</span>
+            {#if activeExercise.style.icon}<span class="exercise-icon">{activeExercise.style.icon}</span>{/if}
             <span class="exercise-name">{activeExercise.title}</span>
-            <span class="exercise-diff">{activeExercise.subtitle}</span>
+            <span class="exercise-diff">{activeExercise.subtitle ?? ''}</span>
           </div>
         {:else if isRecordingMode}
           {#if isLiveRecording}
