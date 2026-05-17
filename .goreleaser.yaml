@@ -44,5 +44,25 @@ release:
     owner: leandrodaf
     name: pianalyze
 
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^Merge "
+      - "^chore(deps)"
+  groups:
+    - title: "🚀 Features"
+      regexp: "^feat"
+      order: 0
+    - title: "🐛 Bug Fixes"
+      regexp: "^fix"
+      order: 1
+    - title: "📖 Documentation"
+      regexp: "^docs"
+      order: 2
+    - title: "🔧 Other"
+      order: 999
+
 metadata:
   mod_timestamp: "{{ .CommitTimestamp }}"
