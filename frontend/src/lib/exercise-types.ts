@@ -2,7 +2,7 @@ import type { Recording } from './recording-types'
 
 // ── Enums / constants ─────────────────────────────────────────────────────────
 
-export type Category = 'scales' | 'chords' | 'pieces'
+export type Category = 'scales' | 'chords' | 'triads' | 'pieces'
 
 /** 1 = Iniciante … 5 = Expert */
 export type DifficultyLevel = 1 | 2 | 3 | 4 | 5
@@ -26,6 +26,7 @@ export const DIFFICULTY_COLOR: Record<DifficultyLevel, string> = {
 export const CATEGORY_LABEL: Record<Category, string> = {
   scales: 'Escalas',
   chords: 'Acordes',
+  triads: 'Tríades',
   pieces: 'Peças',
 }
 

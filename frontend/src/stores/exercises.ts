@@ -56,6 +56,7 @@ export const exerciseStore = writable<ExerciseStore>({
 export const exercisesByCategory = derived(exerciseStore, $s => ({
   scales: $s.exercises.filter(e => e.category === 'scales'),
   chords: $s.exercises.filter(e => e.category === 'chords'),
+  triads: $s.exercises.filter(e => e.category === 'triads'),
   pieces: $s.exercises.filter(e => e.category === 'pieces'),
 }))
 

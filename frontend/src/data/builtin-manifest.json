@@ -425,6 +425,906 @@
       "dataUrl": "exercises/chords/jazz-voicings.json"
     },
     {
+      "id": "triads-c-major-rh",
+      "title": "Tríades em Dó Maior — Mão Direita",
+      "subtitle": "Dó, Ré m, Mi m, Fá, Sol, Lá m, Si°",
+      "description": "Sete tríades diatônicas da escala de Dó Maior — a base harmônica mais fundamental do piano clássico. Sem sustenidos nem bemóis. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "C",
+        "dó maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "sem alterações"
+      ],
+      "style": {
+        "gradient": [
+          "#7c3aed",
+          "#2563eb"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-c-major-rh.json"
+    },
+    {
+      "id": "triads-c-major-lh",
+      "title": "Tríades em Dó Maior — Mão Esquerda",
+      "subtitle": "Dó, Ré m, Mi m, Fá, Sol, Lá m, Si°",
+      "description": "Sete tríades diatônicas da escala de Dó Maior — a base harmônica mais fundamental do piano clássico. Sem sustenidos nem bemóis. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "C",
+        "dó maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "sem alterações"
+      ],
+      "style": {
+        "gradient": [
+          "#7c3aed",
+          "#2563eb"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-c-major-lh.json"
+    },
+    {
+      "id": "triads-g-major-rh",
+      "title": "Tríades em Sol Maior — Mão Direita",
+      "subtitle": "Sol, Lá m, Si m, Dó, Ré, Mi m, Fá#°",
+      "description": "Sete tríades de Sol Maior com o F# característico. Observe como o acorde iii (Si menor) e o V (Ré maior) envolvem a nota Fá#. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "G",
+        "sol maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "1 sustenido — F#"
+      ],
+      "style": {
+        "gradient": [
+          "#0891b2",
+          "#059669"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-g-major-rh.json"
+    },
+    {
+      "id": "triads-g-major-lh",
+      "title": "Tríades em Sol Maior — Mão Esquerda",
+      "subtitle": "Sol, Lá m, Si m, Dó, Ré, Mi m, Fá#°",
+      "description": "Sete tríades de Sol Maior com o F# característico. Observe como o acorde iii (Si menor) e o V (Ré maior) envolvem a nota Fá#. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "G",
+        "sol maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "1 sustenido — F#"
+      ],
+      "style": {
+        "gradient": [
+          "#0891b2",
+          "#059669"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-g-major-lh.json"
+    },
+    {
+      "id": "triads-d-major-rh",
+      "title": "Tríades em Ré Maior — Mão Direita",
+      "subtitle": "Ré, Mi m, Fá#m, Sol, Lá, Si m, Dó#°",
+      "description": "Tríades de Ré Maior com dois sustenidos (F# e C#). Os acordes I, IV e V formam a progressão mais importante desta tonalidade. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "D",
+        "ré maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "2 sustenidos — F#, C#"
+      ],
+      "style": {
+        "gradient": [
+          "#065f46",
+          "#0891b2"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-d-major-rh.json"
+    },
+    {
+      "id": "triads-d-major-lh",
+      "title": "Tríades em Ré Maior — Mão Esquerda",
+      "subtitle": "Ré, Mi m, Fá#m, Sol, Lá, Si m, Dó#°",
+      "description": "Tríades de Ré Maior com dois sustenidos (F# e C#). Os acordes I, IV e V formam a progressão mais importante desta tonalidade. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "D",
+        "ré maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "2 sustenidos — F#, C#"
+      ],
+      "style": {
+        "gradient": [
+          "#065f46",
+          "#0891b2"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-d-major-lh.json"
+    },
+    {
+      "id": "triads-a-major-rh",
+      "title": "Tríades em Lá Maior — Mão Direita",
+      "subtitle": "Lá, Si m, Dó#m, Ré, Mi, Fá#m, Sol#°",
+      "description": "Lá Maior tem três sustenidos. Preste atenção aos acordes com Dó# e Sol# que definem o caráter brilhante desta escala. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "A",
+        "lá maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "3 sustenidos — F#, C#, G#"
+      ],
+      "style": {
+        "gradient": [
+          "#b45309",
+          "#dc2626"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-a-major-rh.json"
+    },
+    {
+      "id": "triads-a-major-lh",
+      "title": "Tríades em Lá Maior — Mão Esquerda",
+      "subtitle": "Lá, Si m, Dó#m, Ré, Mi, Fá#m, Sol#°",
+      "description": "Lá Maior tem três sustenidos. Preste atenção aos acordes com Dó# e Sol# que definem o caráter brilhante desta escala. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "A",
+        "lá maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "3 sustenidos — F#, C#, G#"
+      ],
+      "style": {
+        "gradient": [
+          "#b45309",
+          "#dc2626"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-a-major-lh.json"
+    },
+    {
+      "id": "triads-e-major-rh",
+      "title": "Tríades em Mi Maior — Mão Direita",
+      "subtitle": "Mi, Fá#m, Sol#m, Lá, Si, Dó#m, Ré#°",
+      "description": "Mi Maior com quatro sustenidos é uma tonalidade vibrante. As tríades com Dó#, Sol# e Ré# exigem atenção às teclas pretas. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "E",
+        "mi maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "4 sustenidos — F#, C#, G#, D#"
+      ],
+      "style": {
+        "gradient": [
+          "#92400e",
+          "#ca8a04"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-e-major-rh.json"
+    },
+    {
+      "id": "triads-e-major-lh",
+      "title": "Tríades em Mi Maior — Mão Esquerda",
+      "subtitle": "Mi, Fá#m, Sol#m, Lá, Si, Dó#m, Ré#°",
+      "description": "Mi Maior com quatro sustenidos é uma tonalidade vibrante. As tríades com Dó#, Sol# e Ré# exigem atenção às teclas pretas. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "E",
+        "mi maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "4 sustenidos — F#, C#, G#, D#"
+      ],
+      "style": {
+        "gradient": [
+          "#92400e",
+          "#ca8a04"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-e-major-lh.json"
+    },
+    {
+      "id": "triads-f-major-rh",
+      "title": "Tríades em Fá Maior — Mão Direita",
+      "subtitle": "Fá, Sol m, Lá m, Si♭, Dó, Ré m, Mi°",
+      "description": "Fá Maior introduz o Si♭ — o único bemol. O acorde IV (Si♭ maior) com raiz em tecla preta é o maior desafio desta tonalidade. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "F",
+        "fá maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "1 bemol — Bb"
+      ],
+      "style": {
+        "gradient": [
+          "#be185d",
+          "#9333ea"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-f-major-rh.json"
+    },
+    {
+      "id": "triads-f-major-lh",
+      "title": "Tríades em Fá Maior — Mão Esquerda",
+      "subtitle": "Fá, Sol m, Lá m, Si♭, Dó, Ré m, Mi°",
+      "description": "Fá Maior introduz o Si♭ — o único bemol. O acorde IV (Si♭ maior) com raiz em tecla preta é o maior desafio desta tonalidade. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "F",
+        "fá maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "1 bemol — Bb"
+      ],
+      "style": {
+        "gradient": [
+          "#be185d",
+          "#9333ea"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-f-major-lh.json"
+    },
+    {
+      "id": "triads-bb-major-rh",
+      "title": "Tríades em Si♭ Maior — Mão Direita",
+      "subtitle": "Si♭, Dó m, Ré m, Mi♭, Fá, Sol m, Lá°",
+      "description": "Si♭ Maior com dois bemóis (Bb e Eb). Vários acordes têm raízes em teclas pretas, exigindo ajuste de dedilhado. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Bb",
+        "si♭ maior",
+        "harmonia",
+        "mão direita",
+        "maior",
+        "diatônico",
+        "2 bemóis — Bb, Eb"
+      ],
+      "style": {
+        "gradient": [
+          "#1d4ed8",
+          "#6d28d9"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-bb-major-rh.json"
+    },
+    {
+      "id": "triads-bb-major-lh",
+      "title": "Tríades em Si♭ Maior — Mão Esquerda",
+      "subtitle": "Si♭, Dó m, Ré m, Mi♭, Fá, Sol m, Lá°",
+      "description": "Si♭ Maior com dois bemóis (Bb e Eb). Vários acordes têm raízes em teclas pretas, exigindo ajuste de dedilhado. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Bb",
+        "si♭ maior",
+        "harmonia",
+        "mão esquerda",
+        "maior",
+        "diatônico",
+        "2 bemóis — Bb, Eb"
+      ],
+      "style": {
+        "gradient": [
+          "#1d4ed8",
+          "#6d28d9"
+        ],
+        "icon": "🎹"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-bb-major-lh.json"
+    },
+    {
+      "id": "triads-a-minor-rh",
+      "title": "Tríades em Lá Menor — Mão Direita",
+      "subtitle": "Lá m, Si°, Dó, Ré m, Mi m, Fá, Sol",
+      "description": "Tríades diatônicas do Lá menor natural — relativa de Dó Maior. Sem alterações; o acorde i (menor) e o III (Maior relativo) são centrais. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Am",
+        "lá menor",
+        "harmonia",
+        "mão direita",
+        "menor",
+        "diatônico",
+        "sem alterações — relativa de Dó Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#7c3aed",
+          "#be185d"
+        ],
+        "icon": "🎵"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-a-minor-rh.json"
+    },
+    {
+      "id": "triads-a-minor-lh",
+      "title": "Tríades em Lá Menor — Mão Esquerda",
+      "subtitle": "Lá m, Si°, Dó, Ré m, Mi m, Fá, Sol",
+      "description": "Tríades diatônicas do Lá menor natural — relativa de Dó Maior. Sem alterações; o acorde i (menor) e o III (Maior relativo) são centrais. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Am",
+        "lá menor",
+        "harmonia",
+        "mão esquerda",
+        "menor",
+        "diatônico",
+        "sem alterações — relativa de Dó Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#7c3aed",
+          "#be185d"
+        ],
+        "icon": "🎵"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-a-minor-lh.json"
+    },
+    {
+      "id": "triads-e-minor-rh",
+      "title": "Tríades em Mi Menor — Mão Direita",
+      "subtitle": "Mi m, Fá#°, Sol, Lá m, Si m, Dó, Ré",
+      "description": "Mi menor natural com F# — relativa de Sol Maior. As sete tríades incluem qualidades menor, diminuta e maior características do modo menor. Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Em",
+        "mi menor",
+        "harmonia",
+        "mão direita",
+        "menor",
+        "diatônico",
+        "1 sustenido — relativa de Sol Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#064e3b",
+          "#0891b2"
+        ],
+        "icon": "🎵"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-e-minor-rh.json"
+    },
+    {
+      "id": "triads-e-minor-lh",
+      "title": "Tríades em Mi Menor — Mão Esquerda",
+      "subtitle": "Mi m, Fá#°, Sol, Lá m, Si m, Dó, Ré",
+      "description": "Mi menor natural com F# — relativa de Sol Maior. As sete tríades incluem qualidades menor, diminuta e maior características do modo menor. Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Em",
+        "mi menor",
+        "harmonia",
+        "mão esquerda",
+        "menor",
+        "diatônico",
+        "1 sustenido — relativa de Sol Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#064e3b",
+          "#0891b2"
+        ],
+        "icon": "🎵"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-e-minor-lh.json"
+    },
+    {
+      "id": "triads-d-minor-rh",
+      "title": "Tríades em Ré Menor — Mão Direita",
+      "subtitle": "Ré m, Mi°, Fá, Sol m, Lá m, Si♭, Dó",
+      "description": "Ré menor natural com Si♭ — relativa de Fá Maior. Explore a tensão característica entre os acordes i (menor) e VII (Sol maior). Dedilhado mão direita: 1-3-5 (polegare-médio-mínimo) para acordes com raiz em tecla branca. Ajuste automático para 1-2-5 quando a terça é preta ou 2-3-5 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Dm",
+        "ré menor",
+        "harmonia",
+        "mão direita",
+        "menor",
+        "diatônico",
+        "1 bemol — relativa de Fá Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#374151",
+          "#6d28d9"
+        ],
+        "icon": "🎵"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "right",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-d-minor-rh.json"
+    },
+    {
+      "id": "triads-d-minor-lh",
+      "title": "Tríades em Ré Menor — Mão Esquerda",
+      "subtitle": "Ré m, Mi°, Fá, Sol m, Lá m, Si♭, Dó",
+      "description": "Ré menor natural com Si♭ — relativa de Fá Maior. Explore a tensão característica entre os acordes i (menor) e VII (Sol maior). Dedilhado mão esquerda: 5-3-1 (mínimo-médio-polegar) para acordes com raiz em tecla branca. Ajuste para 5-4-1 quando a terça é preta ou 4-2-1 quando a raiz é preta.",
+      "author": {
+        "name": "Pianalyze Team",
+        "url": "https://github.com/leandrodaf/pianalyze",
+        "bio": "Exercícios oficiais do Pianalyze — análise e aprendizado de piano em tempo real.",
+        "contact": "github.com/leandrodaf/pianalyze",
+        "links": [
+          {
+            "label": "GitHub",
+            "url": "https://github.com/leandrodaf/pianalyze"
+          }
+        ]
+      },
+      "category": "triads",
+      "difficulty": 2,
+      "tags": [
+        "tríades",
+        "acordes",
+        "Dm",
+        "ré menor",
+        "harmonia",
+        "mão esquerda",
+        "menor",
+        "diatônico",
+        "1 bemol — relativa de Fá Maior"
+      ],
+      "style": {
+        "gradient": [
+          "#374151",
+          "#6d28d9"
+        ],
+        "icon": "🎵"
+      },
+      "stats": {
+        "durationSec": 24,
+        "timeSignature": "4/4",
+        "hands": "left",
+        "bpm": 72
+      },
+      "dataUrl": "exercises/triads/triads-d-minor-lh.json"
+    },
+    {
       "id": "twinkle",
       "title": "Twinkle Twinkle",
       "subtitle": "Melodia simples para iniciantes",
@@ -608,9 +1508,18 @@
       },
       "category": "pieces",
       "difficulty": 1,
-      "tags": ["peça","melodia","iniciante","mão direita","infantil"],
+      "tags": [
+        "peça",
+        "melodia",
+        "iniciante",
+        "mão direita",
+        "infantil"
+      ],
       "style": {
-        "gradient": ["#16a34a","#15803d"],
+        "gradient": [
+          "#16a34a",
+          "#15803d"
+        ],
         "icon": "🐑"
       },
       "stats": {
@@ -632,9 +1541,18 @@
       },
       "category": "pieces",
       "difficulty": 1,
-      "tags": ["peça","iniciante","3 notas","mão direita","básico"],
+      "tags": [
+        "peça",
+        "iniciante",
+        "3 notas",
+        "mão direita",
+        "básico"
+      ],
       "style": {
-        "gradient": ["#f59e0b","#d97706"],
+        "gradient": [
+          "#f59e0b",
+          "#d97706"
+        ],
         "icon": "🍞"
       },
       "stats": {
@@ -656,9 +1574,18 @@
       },
       "category": "pieces",
       "difficulty": 1,
-      "tags": ["peça","francês","canção popular","iniciante","mão direita"],
+      "tags": [
+        "peça",
+        "francês",
+        "canção popular",
+        "iniciante",
+        "mão direita"
+      ],
       "style": {
-        "gradient": ["#3b82f6","#6366f1"],
+        "gradient": [
+          "#3b82f6",
+          "#6366f1"
+        ],
         "icon": "🔔"
       },
       "stats": {
@@ -680,9 +1607,18 @@
       },
       "category": "pieces",
       "difficulty": 1,
-      "tags": ["peça","inglês","canção popular","iniciante","mão direita"],
+      "tags": [
+        "peça",
+        "inglês",
+        "canção popular",
+        "iniciante",
+        "mão direita"
+      ],
       "style": {
-        "gradient": ["#0284c7","#0369a1"],
+        "gradient": [
+          "#0284c7",
+          "#0369a1"
+        ],
         "icon": "🌉"
       },
       "stats": {
@@ -704,9 +1640,19 @@
       },
       "category": "pieces",
       "difficulty": 2,
-      "tags": ["peça","hino","3/4","valsa","expressivo","mão direita"],
+      "tags": [
+        "peça",
+        "hino",
+        "3/4",
+        "valsa",
+        "expressivo",
+        "mão direita"
+      ],
       "style": {
-        "gradient": ["#7c3aed","#6d28d9"],
+        "gradient": [
+          "#7c3aed",
+          "#6d28d9"
+        ],
         "icon": "🙏"
       },
       "stats": {
@@ -728,9 +1674,18 @@
       },
       "category": "pieces",
       "difficulty": 2,
-      "tags": ["peça","marcha","americano","iniciante","mão direita"],
+      "tags": [
+        "peça",
+        "marcha",
+        "americano",
+        "iniciante",
+        "mão direita"
+      ],
       "style": {
-        "gradient": ["#dc2626","#1d4ed8"],
+        "gradient": [
+          "#dc2626",
+          "#1d4ed8"
+        ],
         "icon": "🎺"
       },
       "stats": {
@@ -752,9 +1707,18 @@
       },
       "category": "pieces",
       "difficulty": 1,
-      "tags": ["peça","infantil","americano","iniciante","mão direita"],
+      "tags": [
+        "peça",
+        "infantil",
+        "americano",
+        "iniciante",
+        "mão direita"
+      ],
       "style": {
-        "gradient": ["#65a30d","#ca8a04"],
+        "gradient": [
+          "#65a30d",
+          "#ca8a04"
+        ],
         "icon": "🐄"
       },
       "stats": {
@@ -776,9 +1740,18 @@
       },
       "category": "pieces",
       "difficulty": 2,
-      "tags": ["peça","jazz","espiritual","americano","mão direita"],
+      "tags": [
+        "peça",
+        "jazz",
+        "espiritual",
+        "americano",
+        "mão direita"
+      ],
       "style": {
-        "gradient": ["#1e3a5f","#0891b2"],
+        "gradient": [
+          "#1e3a5f",
+          "#0891b2"
+        ],
         "icon": "⛪"
       },
       "stats": {

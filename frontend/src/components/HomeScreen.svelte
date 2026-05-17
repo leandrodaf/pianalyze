@@ -202,6 +202,7 @@
   $: connectedDevice  = devices.find(d => d.id === selectedId)
   $: scales           = $exercisesByCategory.scales
   $: chords           = $exercisesByCategory.chords
+  $: triads           = $exercisesByCategory.triads
   $: pieces           = $exercisesByCategory.pieces
 
   const currentHour = new Date().getHours()
@@ -214,6 +215,7 @@
   const SECTIONS: Array<{ key: Category }> = [
     { key: 'scales' },
     { key: 'chords' },
+    { key: 'triads' },
     { key: 'pieces' },
   ]
 </script>
@@ -386,7 +388,7 @@
 
     <!-- Exercise sections -->
     {#each SECTIONS as { key }}
-      {@const list = key === 'scales' ? scales : key === 'chords' ? chords : pieces}
+      {@const list = key === 'scales' ? scales : key === 'chords' ? chords : key === 'triads' ? triads : pieces}
       <section class="ex-section">
         <div class="section-hdr">
           <h2 class="section-title">{$t('category.' + key)}</h2>
