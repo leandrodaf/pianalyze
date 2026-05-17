@@ -349,6 +349,15 @@ func (a *App) shutdown(_ context.Context) {
 	_ = a.StopCapture()
 }
 
+// GetVersion returns the application version string injected at build time via -ldflags.
+// Returns "dev" when running outside a release build.
+func (a *App) GetVersion() string {
+	if Version == "" {
+		return "dev"
+	}
+	return Version
+}
+
 // ListDevices returns available MIDI input devices, filtered to subdevice 0 of
 // each physical port (manufacturer ends with ",0" or contains no ",") to avoid
 // listing every sub-device of the same hardware card. Falls back to the full

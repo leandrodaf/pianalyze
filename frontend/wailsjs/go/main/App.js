@@ -14,6 +14,10 @@ export function GetDefaultSavePath() {
   return window['go']['main']['App']['GetDefaultSavePath']();
 }
 
+export function GetVersion() {
+  return window['go']['main']['App']['GetVersion']();
+}
+
 export function ImportAnyFile() {
   return window['go']['main']['App']['ImportAnyFile']();
 }
