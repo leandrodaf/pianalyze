@@ -1325,6 +1325,13 @@ function closeLightbox() {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// Initialize language from URL param (?lang=en or ?i18n=en)
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const lang = params.get('lang') || params.get('i18n');
+  if (lang && TRANSLATIONS[lang]) setLang(lang);
+})();
 </script>
 </body>
 </html>
