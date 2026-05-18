@@ -435,6 +435,28 @@
     }
     .btn-download:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.5); }
 
+    .btn-download-alt {
+      background: transparent;
+      border: 1px solid rgba(124,58,237,0.45);
+      color: var(--purple-light);
+      box-shadow: none;
+    }
+    .btn-download-alt:hover { box-shadow: 0 4px 12px rgba(124,58,237,0.25); }
+
+    .dl-multi { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+
+    .download-version-badge {
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: -1rem;
+    }
+    .download-version-badge strong { color: var(--purple-light); }
+    .download-version-badge a { color: var(--purple-light); text-decoration: none; }
+    .download-version-badge a:hover { text-decoration: underline; }
+
+    .download-size { margin-top: 0.5rem; font-size: 0.78rem; color: var(--muted); }
+
     .download-note {
       margin-top: 2.5rem;
       text-align: center;
@@ -806,26 +828,39 @@
     <h2 class="section-title" data-i18n="dl.title">Escolha seu sistema operacional</h2>
     <p class="section-desc" data-i18n="dl.desc">Disponível para Windows, macOS e Linux. Instale em segundos, sem criar conta.</p>
 
+    <p class="download-version-badge" id="dl-version-badge" style="display:none">
+      <strong id="dl-version-text"></strong>
+      &nbsp;·&nbsp;
+      <a id="dl-release-url" href="#" target="_blank" rel="noopener" data-i18n="dl.release-notes">Release notes →</a>
+    </p>
+
     <div class="download-grid">
       <div class="download-card">
         <div class="download-os">🪟</div>
         <div class="download-name">Windows</div>
         <div class="download-meta" data-i18n="dl.win.meta">Windows 10 ou superior · 64-bit</div>
-        <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" target="_blank" rel="noopener" data-i18n="dl.btn">⬇ Baixar</a>
+        <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" id="dl-win-btn" target="_blank" rel="noopener" data-i18n="dl.btn">⬇ Baixar</a>
+        <div class="download-size" id="dl-win-size"></div>
       </div>
 
       <div class="download-card">
         <div class="download-os">🍎</div>
         <div class="download-name">macOS</div>
         <div class="download-meta" data-i18n="dl.mac.meta">macOS 11 ou superior · Intel &amp; Apple Silicon</div>
-        <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" target="_blank" rel="noopener" data-i18n="dl.btn">⬇ Baixar</a>
+        <div class="dl-multi">
+          <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" id="dl-mac-arm64-btn" target="_blank" rel="noopener" data-i18n="dl.mac.arm">⬇ Apple Silicon</a>
+          <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download btn-download-alt" id="dl-mac-amd64-btn" target="_blank" rel="noopener" data-i18n="dl.mac.intel">⬇ Intel</a>
+        </div>
       </div>
 
       <div class="download-card">
         <div class="download-os">🐧</div>
         <div class="download-name">Linux</div>
         <div class="download-meta" data-i18n="dl.linux.meta">Ubuntu, Debian, Fedora e outras · 64-bit</div>
-        <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" target="_blank" rel="noopener" data-i18n="dl.btn">⬇ Baixar</a>
+        <div class="dl-multi">
+          <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" id="dl-linux-tar-btn" target="_blank" rel="noopener" data-i18n="dl.linux.tar">⬇ tar.gz</a>
+          <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download btn-download-alt" id="dl-linux-deb-btn" target="_blank" rel="noopener" data-i18n="dl.linux.deb">⬇ .deb</a>
+        </div>
       </div>
     </div>
 
@@ -926,6 +961,11 @@ const TRANSLATIONS = {
     'dl.mac.meta': 'macOS 11 ou superior · Intel & Apple Silicon',
     'dl.linux.meta': 'Ubuntu, Debian, Fedora e outras · 64-bit',
     'dl.btn': '⬇ Baixar',
+    'dl.mac.arm': '⬇ Apple Silicon',
+    'dl.mac.intel': '⬇ Intel',
+    'dl.linux.tar': '⬇ tar.gz',
+    'dl.linux.deb': '⬇ .deb',
+    'dl.release-notes': 'Release notes →',
     'dl.note': 'Todos os downloads ficam na <a href="https://github.com/leandrodaf/pianalyze/releases" target="_blank" rel="noopener">página de releases do GitHub</a>.<br/>Código aberto sob licença MIT — sem rastreamento, sem telemetria obrigatória.',
     'cta.title': 'Pronto para finalmente entender seu piano?',
     'cta.desc': 'Baixe grátis, abra, conecte o piano e toque. É só isso.',
@@ -1005,6 +1045,11 @@ const TRANSLATIONS = {
     'dl.mac.meta': 'macOS 11 or later · Intel & Apple Silicon',
     'dl.linux.meta': 'Ubuntu, Debian, Fedora and more · 64-bit',
     'dl.btn': '⬇ Download',
+    'dl.mac.arm': '⬇ Apple Silicon',
+    'dl.mac.intel': '⬇ Intel',
+    'dl.linux.tar': '⬇ tar.gz',
+    'dl.linux.deb': '⬇ .deb',
+    'dl.release-notes': 'Release notes →',
     'dl.note': 'All downloads are on the <a href="https://github.com/leandrodaf/pianalyze/releases" target="_blank" rel="noopener">GitHub releases page</a>.<br/>MIT licensed open source — no tracking, no mandatory telemetry.',
     'cta.title': 'Ready to finally understand your piano?',
     'cta.desc': 'Download free, open it, connect your piano and play. That\'s all.',
@@ -1084,6 +1129,11 @@ const TRANSLATIONS = {
     'dl.mac.meta': 'macOS 11 o superior · Intel & Apple Silicon',
     'dl.linux.meta': 'Ubuntu, Debian, Fedora y más · 64-bit',
     'dl.btn': '⬇ Descargar',
+    'dl.mac.arm': '⬇ Apple Silicon',
+    'dl.mac.intel': '⬇ Intel',
+    'dl.linux.tar': '⬇ tar.gz',
+    'dl.linux.deb': '⬇ .deb',
+    'dl.release-notes': 'Release notes →',
     'dl.note': 'Todas las descargas están en la <a href="https://github.com/leandrodaf/pianalyze/releases" target="_blank" rel="noopener">página de releases de GitHub</a>.<br/>Código abierto bajo licencia MIT — sin rastreo, sin telemetría obligatoria.',
     'cta.title': '¿Listo para finalmente entender tu piano?',
     'cta.desc': 'Descarga gratis, ábrelo, conecta el piano y toca. Es todo.',
@@ -1163,6 +1213,11 @@ const TRANSLATIONS = {
     'dl.mac.meta': 'macOS 11 或更高版本 · Intel & Apple Silicon',
     'dl.linux.meta': 'Ubuntu、Debian、Fedora 等 · 64位',
     'dl.btn': '⬇ 下载',
+    'dl.mac.arm': '⬇ Apple Silicon',
+    'dl.mac.intel': '⬇ Intel',
+    'dl.linux.tar': '⬇ tar.gz',
+    'dl.linux.deb': '⬇ .deb',
+    'dl.release-notes': 'Release notes →',
     'dl.note': '所有下载文件在 <a href="https://github.com/leandrodaf/pianalyze/releases" target="_blank" rel="noopener">GitHub releases 页面</a>。<br/>MIT 开源许可——无追踪，无强制遥测。',
     'cta.title': '准备好终于理解你的钢琴了吗？',
     'cta.desc': '免费下载，打开，连接钢琴，弹奏。就这么简单。',
@@ -1263,6 +1318,37 @@ function closeLightbox() {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// ── RELEASE DOWNLOAD LINKS ─────────────────────────────────────────────────
+(async function () {
+  try {
+    const res = await fetch('./release.json');
+    if (!res.ok) return;
+    const d = await res.json();
+
+    const badge = document.getElementById('dl-version-badge');
+    if (badge && d.version) {
+      document.getElementById('dl-version-text').textContent = 'v' + d.version;
+      document.getElementById('dl-release-url').href = d.release_url || '#';
+      badge.style.display = '';
+    }
+
+    const setLink = (id, asset) => {
+      if (!asset) return;
+      const el = document.getElementById(id);
+      if (el) el.href = asset.url;
+    };
+
+    setLink('dl-win-btn', d.windows);
+    setLink('dl-mac-arm64-btn', d.darwin_arm64);
+    setLink('dl-mac-amd64-btn', d.darwin_amd64);
+    setLink('dl-linux-tar-btn', d.linux_tar);
+    setLink('dl-linux-deb-btn', d.linux_deb);
+
+    const winSize = document.getElementById('dl-win-size');
+    if (winSize && d.windows) winSize.textContent = d.windows.size_mb + ' MB';
+  } catch (_) {}
+}());
 </script>
 </body>
 </html>

@@ -155,3 +155,75 @@ jobs:
             --title "Pianalyze ${{ github.ref_name }}" \
             --generate-notes \
             artifacts/*
+
+  # ── Update GitHub Pages download links ─────────────────────────────────────
+  update-pages:
+    name: Update GitHub Pages
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Generate docs/release.json
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PYEOF'
+          import json, subprocess, os
+
+          tag = os.environ['TAG']
+          result = subprocess.run(
+              ['gh', 'release', 'view', tag, '--json', 'assets,tagName,publishedAt,url'],
+              capture_output=True, text=True, check=True,
+          )
+          data = json.loads(result.stdout)
+          version = data['tagName'].lstrip('v')
+          out = {
+              'version': version,
+              'tag': data['tagName'],
+              'published_at': data['publishedAt'],
+              'release_url': data['url'],
+          }
+
+          def mb(size):
+              return f"{size / 1024 / 1024:.2f}"
+
+          for a in data['assets']:
+              name = a['name']
+              entry = {
+                  'name': name,
+                  'url': a['url'],
+                  'size_mb': mb(a['size']),
+                  'sha256': a.get('digest', '').removeprefix('sha256:'),
+              }
+              if name.endswith('_windows-amd64.zip'):
+                  out['windows'] = entry
+              elif name.endswith('_darwin-arm64.tar.gz'):
+                  out['darwin_arm64'] = entry
+              elif name.endswith('_darwin-amd64.tar.gz'):
+                  out['darwin_amd64'] = entry
+              elif name.endswith('_linux-amd64.tar.gz'):
+                  out['linux_tar'] = entry
+              elif name.endswith('_amd64.deb'):
+                  out['linux_deb'] = entry
+
+          with open('docs/release.json', 'w') as f:
+              json.dump(out, f, indent=2)
+              f.write('\n')
+
+          print(json.dumps(out, indent=2))
+          PYEOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/release.json
+          git diff --cached --quiet || git commit -m "chore: update release.json for ${{ github.ref_name }}"
+          git push
