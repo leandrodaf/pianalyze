@@ -828,10 +828,11 @@
     <h2 class="section-title" data-i18n="dl.title">Escolha seu sistema operacional</h2>
     <p class="section-desc" data-i18n="dl.desc">Disponível para Windows, macOS e Linux. Instale em segundos, sem criar conta.</p>
 
-    <p class="download-version-badge" id="dl-version-badge" style="display:none">
-      <strong id="dl-version-text"></strong>
+    <!-- DL-VERSION-BADGE -->
+    <p class="download-version-badge">
+      <strong>v0.1.1</strong>
       &nbsp;·&nbsp;
-      <a id="dl-release-url" href="#" target="_blank" rel="noopener" data-i18n="dl.release-notes">Release notes →</a>
+      <a href="https://github.com/leandrodaf/pianalyze/releases/tag/v0.1.1" target="_blank" rel="noopener" data-i18n="dl.release-notes">Release notes →</a>
     </p>
 
     <div class="download-grid">
@@ -839,8 +840,9 @@
         <div class="download-os">🪟</div>
         <div class="download-name">Windows</div>
         <div class="download-meta" data-i18n="dl.win.meta">Windows 10 ou superior · 64-bit</div>
-        <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" id="dl-win-btn" target="_blank" rel="noopener" data-i18n="dl.btn">⬇ Baixar</a>
-        <div class="download-size" id="dl-win-size"></div>
+        <!-- DL-WIN -->
+        <a href="https://github.com/leandrodaf/pianalyze/releases/download/v0.1.1/pianalyze_0.1.1_windows-amd64.zip" class="btn-download" target="_blank" rel="noopener" data-i18n="dl.btn">⬇ Baixar</a>
+        <div class="download-size">9.90 MB</div>
       </div>
 
       <div class="download-card">
@@ -848,8 +850,10 @@
         <div class="download-name">macOS</div>
         <div class="download-meta" data-i18n="dl.mac.meta">macOS 11 ou superior · Intel &amp; Apple Silicon</div>
         <div class="dl-multi">
-          <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" id="dl-mac-arm64-btn" target="_blank" rel="noopener" data-i18n="dl.mac.arm">⬇ Apple Silicon</a>
-          <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download btn-download-alt" id="dl-mac-amd64-btn" target="_blank" rel="noopener" data-i18n="dl.mac.intel">⬇ Intel</a>
+          <!-- DL-MAC-ARM64 -->
+          <a href="https://github.com/leandrodaf/pianalyze/releases/download/v0.1.1/pianalyze_0.1.1_darwin-arm64.tar.gz" class="btn-download" target="_blank" rel="noopener" data-i18n="dl.mac.arm">⬇ Apple Silicon</a>
+          <!-- DL-MAC-AMD64 -->
+          <a href="https://github.com/leandrodaf/pianalyze/releases/download/v0.1.1/pianalyze_0.1.1_darwin-amd64.tar.gz" class="btn-download btn-download-alt" target="_blank" rel="noopener" data-i18n="dl.mac.intel">⬇ Intel</a>
         </div>
       </div>
 
@@ -858,8 +862,10 @@
         <div class="download-name">Linux</div>
         <div class="download-meta" data-i18n="dl.linux.meta">Ubuntu, Debian, Fedora e outras · 64-bit</div>
         <div class="dl-multi">
-          <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download" id="dl-linux-tar-btn" target="_blank" rel="noopener" data-i18n="dl.linux.tar">⬇ tar.gz</a>
-          <a href="https://github.com/leandrodaf/pianalyze/releases/latest" class="btn-download btn-download-alt" id="dl-linux-deb-btn" target="_blank" rel="noopener" data-i18n="dl.linux.deb">⬇ .deb</a>
+          <!-- DL-LINUX-TAR -->
+          <a href="https://github.com/leandrodaf/pianalyze/releases/download/v0.1.1/pianalyze_0.1.1_linux-amd64.tar.gz" class="btn-download" target="_blank" rel="noopener" data-i18n="dl.linux.tar">⬇ tar.gz</a>
+          <!-- DL-LINUX-DEB -->
+          <a href="https://github.com/leandrodaf/pianalyze/releases/download/v0.1.1/pianalyze_0.1.1_amd64.deb" class="btn-download btn-download-alt" target="_blank" rel="noopener" data-i18n="dl.linux.deb">⬇ .deb</a>
         </div>
       </div>
     </div>
@@ -1318,37 +1324,6 @@ function closeLightbox() {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-
-// ── RELEASE DOWNLOAD LINKS ─────────────────────────────────────────────────
-(async function () {
-  try {
-    const res = await fetch('./release.json');
-    if (!res.ok) return;
-    const d = await res.json();
-
-    const badge = document.getElementById('dl-version-badge');
-    if (badge && d.version) {
-      document.getElementById('dl-version-text').textContent = 'v' + d.version;
-      document.getElementById('dl-release-url').href = d.release_url || '#';
-      badge.style.display = '';
-    }
-
-    const setLink = (id, asset) => {
-      if (!asset) return;
-      const el = document.getElementById(id);
-      if (el) el.href = asset.url;
-    };
-
-    setLink('dl-win-btn', d.windows);
-    setLink('dl-mac-arm64-btn', d.darwin_arm64);
-    setLink('dl-mac-amd64-btn', d.darwin_amd64);
-    setLink('dl-linux-tar-btn', d.linux_tar);
-    setLink('dl-linux-deb-btn', d.linux_deb);
-
-    const winSize = document.getElementById('dl-win-size');
-    if (winSize && d.windows) winSize.textContent = d.windows.size_mb + ' MB';
-  } catch (_) {}
-}());
 </script>
 </body>
 </html>

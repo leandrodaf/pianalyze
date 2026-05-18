@@ -169,13 +169,13 @@ jobs:
         with:
           ref: main
 
-      - name: Generate docs/release.json
+      - name: Generate docs/release.json and update index.html
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.ref_name }}
         run: |
           python3 - <<'PYEOF'
-          import json, subprocess, os
+          import json, re, subprocess, os
 
           tag = os.environ['TAG']
           result = subprocess.run(
@@ -217,13 +217,53 @@ jobs:
               json.dump(out, f, indent=2)
               f.write('\n')
 
-          print(json.dumps(out, indent=2))
+          # Update href attributes and version badge in index.html
+          with open('docs/index.html', 'r') as f:
+              html = f.read()
+
+          # Version badge
+          html = re.sub(
+              r'(<!-- DL-VERSION-BADGE -->.*?<strong>)[^<]*(</strong>.*?href=")[^"]*(")',
+              lambda m: m.group(1) + 'v' + version + m.group(2) + out['release_url'] + m.group(3),
+              html, flags=re.DOTALL
+          )
+
+          replacements = {
+              'DL-WIN':       out.get('windows', {}).get('url', ''),
+              'DL-MAC-ARM64': out.get('darwin_arm64', {}).get('url', ''),
+              'DL-MAC-AMD64': out.get('darwin_amd64', {}).get('url', ''),
+              'DL-LINUX-TAR': out.get('linux_tar', {}).get('url', ''),
+              'DL-LINUX-DEB': out.get('linux_deb', {}).get('url', ''),
+          }
+
+          for marker, url in replacements.items():
+              if not url:
+                  continue
+              html = re.sub(
+                  r'(<!-- ' + marker + r' -->\s*<a href=")[^"]*(")',
+                  r'\g<1>' + url + r'\2',
+                  html
+              )
+
+          # Windows file size
+          win_size = out.get('windows', {}).get('size_mb', '')
+          if win_size:
+              html = re.sub(
+                  r'(<!-- DL-WIN -->.*?<div class="download-size">)[^<]*(</div>)',
+                  r'\g<1>' + win_size + r' MB\2',
+                  html, flags=re.DOTALL
+              )
+
+          with open('docs/index.html', 'w') as f:
+              f.write(html)
+
+          print('Updated docs/release.json and docs/index.html for', tag)
           PYEOF
 
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/release.json
-          git diff --cached --quiet || git commit -m "chore: update release.json for ${{ github.ref_name }}"
+          git add docs/release.json docs/index.html
+          git diff --cached --quiet || git commit -m "chore: update download links for ${{ github.ref_name }}"
           git push
