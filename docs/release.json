@@ -1,36 +1,36 @@
 {
-  "version": "0.1.1",
-  "tag": "v0.1.1",
-  "published_at": "2026-05-18T10:42:07Z",
-  "release_url": "https://github.com/leandrodaf/pianalyze/releases/tag/v0.1.1",
+  "version": "0.1.2",
+  "tag": "v0.1.2",
+  "published_at": "2026-05-24T14:05:39Z",
+  "release_url": "https://github.com/leandrodaf/pianalyze/releases/tag/v0.1.2",
   "linux_deb": {
-    "name": "pianalyze_0.1.1_amd64.deb",
-    "url": "https://github.com/leandrodaf/pianalyze/releases/download/v0.1.1/pianalyze_0.1.1_amd64.deb",
+    "name": "pianalyze_0.1.2_amd64.deb",
+    "url": "https://github.com/leandrodaf/pianalyze/releases/download/v0.1.2/pianalyze_0.1.2_amd64.deb",
     "size_mb": "9.72",
-    "sha256": "4a41d2d91698add041edefe80f0ffd7a5f56ad7c5842e294556d06b3de436cb5"
+    "sha256": "7aaa2b7fd7b9f40ec4c08f19d728d0049cb2c03c7075ce2688ac4a6c43ebe6de"
   },
   "darwin_amd64": {
-    "name": "pianalyze_0.1.1_darwin-amd64.tar.gz",
-    "url": "https://github.com/leandrodaf/pianalyze/releases/download/v0.1.1/pianalyze_0.1.1_darwin-amd64.tar.gz",
-    "size_mb": "9.50",
-    "sha256": "580bfd45d67a0fe8e2666eedf65a556a955bb28d81ac00cbf1a81957eec8e83b"
+    "name": "pianalyze_0.1.2_darwin-amd64.tar.gz",
+    "url": "https://github.com/leandrodaf/pianalyze/releases/download/v0.1.2/pianalyze_0.1.2_darwin-amd64.tar.gz",
+    "size_mb": "9.51",
+    "sha256": "24ed3c75aa87c62602b2e623129bc1f5e8ed1d0005c26b054f1733fe3c92fe15"
   },
   "darwin_arm64": {
-    "name": "pianalyze_0.1.1_darwin-arm64.tar.gz",
-    "url": "https://github.com/leandrodaf/pianalyze/releases/download/v0.1.1/pianalyze_0.1.1_darwin-arm64.tar.gz",
+    "name": "pianalyze_0.1.2_darwin-arm64.tar.gz",
+    "url": "https://github.com/leandrodaf/pianalyze/releases/download/v0.1.2/pianalyze_0.1.2_darwin-arm64.tar.gz",
     "size_mb": "9.42",
-    "sha256": "6c6483b9864650566450246140fb3efa4fd889e3ee0de82583da1bb97c123d45"
+    "sha256": "0a8e4d82fbefc41796ab4fa7a259d4da45c698149a9d54ca34867ee1cf2858a1"
   },
   "linux_tar": {
-    "name": "pianalyze_0.1.1_linux-amd64.tar.gz",
-    "url": "https://github.com/leandrodaf/pianalyze/releases/download/v0.1.1/pianalyze_0.1.1_linux-amd64.tar.gz",
+    "name": "pianalyze_0.1.2_linux-amd64.tar.gz",
+    "url": "https://github.com/leandrodaf/pianalyze/releases/download/v0.1.2/pianalyze_0.1.2_linux-amd64.tar.gz",
     "size_mb": "9.66",
-    "sha256": "330e1f1a1104cd16992b813f01152b03217eb011709fe153b4c8fcb26e4d93ef"
+    "sha256": "6ab1912ae18dabfc56a9314e85131e01fc0903101a92935c14709ee049a96c3e"
   },
   "windows": {
-    "name": "pianalyze_0.1.1_windows-amd64.zip",
-    "url": "https://github.com/leandrodaf/pianalyze/releases/download/v0.1.1/pianalyze_0.1.1_windows-amd64.zip",
+    "name": "pianalyze_0.1.2_windows-amd64.zip",
+    "url": "https://github.com/leandrodaf/pianalyze/releases/download/v0.1.2/pianalyze_0.1.2_windows-amd64.zip",
     "size_mb": "9.90",
-    "sha256": "e293b4f37746327a5391b126b8076f47bfed250451604de1f1eac5369c179130"
+    "sha256": "b7b4c73fa37e1855cf144dbe15a47f6c454ff75d18aec58f824ed740bbe0d05c"
   }
 }
