@@ -148,6 +148,20 @@ func (g *Grader) Stop() {
 	clear(g.heldNotes)
 }
 
+// IsActive returns whether the grader is currently active.
+func (g *Grader) IsActive() bool {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	return g.active
+}
+
+// IntervalCount returns the number of loaded intervals.
+func (g *Grader) IntervalCount() int {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	return len(g.intervals)
+}
+
 // NoteOn grades a note-on event. vel is the student's actual MIDI velocity,
 // used when the active Profile has CheckVelocity enabled (G2).
 // ok is false when grading is inactive or no matching interval is found.
