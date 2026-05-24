@@ -468,6 +468,15 @@ func (a *App) StartCapture() error {
 			a.mu.Unlock()
 		}()
 		for event := range eventChannel {
+			// Emit a lightweight note event immediately, before pipeline analysis,
+			// to minimise frontend audio latency. CC events (sustain pedal etc.)
+			// are excluded — only NoteOn/NoteOff need immediate audio scheduling.
+			if event.Command != midiCC {
+				runtime.EventsEmit(a.ctx, "midi:note", map[string]any{
+					"note": int(event.Note),
+					"vel":  int(event.Velocity),
+				})
+			}
 			pCtx := pipelinectx.NewPipelineContext(captureCtx, event)
 			if err := processor.Process(pCtx); err != nil {
 				a.logger.Error(constants.MsgMIDIProcessingError, zap.Error(err))

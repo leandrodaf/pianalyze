@@ -1,5 +1,6 @@
 import * as Tone from 'tone'
 import { writable, get } from 'svelte/store'
+import { EventsOn } from '../../wailsjs/runtime/runtime'
 
 export interface AudioState {
   status: 'unloaded' | 'loading' | 'ready' | 'error'
@@ -138,5 +139,19 @@ export function setHandVolume(hand: 'left' | 'right', vol: number): void {
     }
     savePersisted(next)
     return next
+  })
+}
+
+/** Wire live MIDI note events (midi:note) directly to the audio engine for
+ *  minimum-latency playback. Returns the unsubscribe function. Must be called
+ *  after initAudio() has resolved at least once; notes arriving before the
+ *  sampler is ready are silently dropped (playNote/stopNote guard). */
+export function connectLiveMidiAudio(): () => void {
+  return EventsOn('midi:note', (n: { note: number; vel: number }) => {
+    if (n.vel > 0) {
+      playNote(n.note, n.vel)
+    } else {
+      stopNote(n.note)
+    }
   })
 }

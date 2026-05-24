@@ -3,6 +3,7 @@
   import { Environment, EventsOn, EventsOff } from '../wailsjs/runtime/runtime'
   import { connectMidiStore, midiStore } from './stores/midi'
   import { loadRecording, setPractice, play, stop, clearLoop, playbackStore, noteIntervals, setDifficultyPreset } from './stores/playback'
+  import { connectLiveMidiAudio, initAudio } from './stores/audio'
   import { bpmAt, timeSigAt, measureAt, DIFFICULTY_PRESETS } from './lib/recording-types'
   import { get } from 'svelte/store'
   import type { DifficultyPreset } from './lib/recording-types'
@@ -113,6 +114,7 @@
 
   onMount(() => {
     const unsubMidi = connectMidiStore()
+    const unsubLiveAudio = connectLiveMidiAudio()
     Environment().then(env => {
       document.body.dataset.platform = env.platform
     }).catch(() => {})
@@ -137,6 +139,7 @@
 
     return () => {
       unsubMidi()
+      unsubLiveAudio()
       EventsOff('menu:set-language')
       EventsOff('menu:set-chord-mode')
       EventsOff('menu:set-skill-level')
@@ -194,6 +197,9 @@
     if (!deviceReady) {
       addToast($t('toast.no.device'), 'warning')
     }
+    // Pre-warm the audio engine from this user-gesture context so the
+    // Salamander sampler is ready before the first live note arrives.
+    initAudio().catch(() => {})
     activeExercise = exercise
     if (exercise?.data) {
       loadRecording(exercise.data)
