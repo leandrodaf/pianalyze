@@ -40,7 +40,7 @@
     })
 
     const unsubMidi = midiStore.subscribe(state => {
-      if (!piano) return
+      if (!piano || state == null) return
       // Show all pressed keys regardless of mode
       piano.updateKeys(state.pressedNotes, state.velocity)
 

@@ -20,6 +20,7 @@ export const midiStore = writable<MIDIState>(initial)
  *  function — pass it to onDestroy or return it from onMount for automatic cleanup. */
 export function connectMidiStore(): () => void {
   return EventsOn('midi:state', (state: MIDIState) => {
+    if (state == null) return
     midiStore.set(state)
   })
 }

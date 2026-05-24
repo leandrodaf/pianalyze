@@ -1166,8 +1166,12 @@ func (a *App) StopPractice() {
 // frontend, grades incoming notes, and appends to the recording buffer when
 // a recording session is active.
 func (a *App) handleEvent(pCtx *pipelinectx.PipelineContext) {
+	pressedNotes := pCtx.PressedNotes
+	if pressedNotes == nil {
+		pressedNotes = []int{}
+	}
 	runtime.EventsEmit(a.ctx, "midi:state", MIDIState{
-		PressedNotes: pCtx.PressedNotes,
+		PressedNotes: pressedNotes,
 		CurrentKey:   pCtx.CurrentKey,
 		Chord:        pCtx.Chord,
 		Inversion:    pCtx.Inversion,
