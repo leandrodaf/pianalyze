@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { t } from '../lib/i18n'
+  import Icon from './Icon.svelte'
   import { addToast } from '../stores/toast'
   import { ListBuiltinLibrary, LoadBuiltinPiece } from '../../wailsjs/go/main/App'
   import type { main } from '../../wailsjs/go/models'
@@ -89,7 +90,7 @@
   <!-- ── Filters ─────────────────────────────────────────────────────────────── -->
   <div class="filters">
     <div class="search-wrap">
-      <span class="search-icon">🔍</span>
+      <span class="search-icon"><Icon name="search" size={14}/></span>
       <input
         class="search-input"
         type="search"
@@ -125,13 +126,13 @@
 
   {:else if loadError}
     <div class="state-center">
-      <span class="state-icon">⚠</span>
+      <span class="state-icon"><Icon name="alert-triangle" size={40}/></span>
       <p class="state-msg error">{loadError}</p>
     </div>
 
   {:else if filtered.length === 0}
     <div class="state-center">
-      <span class="state-icon">🎵</span>
+      <span class="state-icon"><Icon name="music-note" size={40}/></span>
       <p class="state-msg">{$t('builtin.noResults')}</p>
     </div>
 
@@ -150,7 +151,7 @@
                   {#if item.coverUrl}
                     <img src={item.coverUrl} alt={item.title} loading="lazy" />
                   {:else}
-                    <span class="cover-placeholder">🎼</span>
+                    <span class="cover-placeholder"><Icon name="music-note" size={40}/></span>
                   {/if}
                   <div class="play-overlay">
                     <span class="play-icon">▶</span>
@@ -318,7 +319,7 @@
     animation: spin 0.7s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .state-icon { font-size: 2.5rem; }
+  .state-icon { font-size: 2.5rem; color: rgba(255,255,255,0.18); }
   .state-msg {
     margin: 0;
     font-size: 0.88rem;
@@ -399,7 +400,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.5rem;
     color: rgba(255,255,255,0.12);
   }
   .play-overlay {

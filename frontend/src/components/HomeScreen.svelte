@@ -19,6 +19,7 @@
   import SettingsModal from './SettingsModal.svelte'
   import RecordingsPage from './RecordingsPage.svelte'
   import LibraryPage from './LibraryPage.svelte'
+  import Icon from './Icon.svelte'
 
   export let onPlay: (exercise: Exercise | null) => void
   export let onDeviceReady: (deviceId: number) => void
@@ -301,7 +302,7 @@
         <span class="nav-ic">◉</span> {$t('nav.recordings')}
       </button>
       <button class="nav-item nav-settings" on:click={() => settingsOpen = true}>
-        <span class="nav-ic">⚙</span> {$t('settings.title')}
+        <span class="nav-ic"><Icon name="settings" size={15}/></span> {$t('settings.title')}
       </button>
     </nav>
 
@@ -335,7 +336,7 @@
               aria-selected={selectedId === dev.id}
               tabindex="0"
             >
-              <span class="device-ic">🎹</span>
+              <span class="device-ic"><Icon name="midi" size={14}/></span>
               <div class="device-info">
                 <span class="device-item-name">{dev.name}</span>
                 {#if dev.manufacturer}<span class="device-mfr">{dev.manufacturer}</span>{/if}
@@ -359,7 +360,7 @@
       <span class="sb-label">{$t('tools.label')}</span>
       <div class="tools-actions">
         <button class="tool-btn" on:click={openImportAny}>
-          <span class="tool-icon">📥</span>
+          <span class="tool-icon"><Icon name="download" size={14}/></span>
           <span>{$t('tools.import')}</span>
         </button>
       </div>
@@ -389,7 +390,7 @@
       <div class="quick-pills">
 
         <button class="quick-pill continue-pill" on:click={handleContinue}>
-          <span class="pill-icon">▶</span>
+          <span class="pill-icon"><Icon name="play" size={16}/></span>
           <div class="pill-text">
             <span class="pill-label">{$t('quick.continue')}</span>
             <span class="pill-sub">{lastExercise ? lastExercise.title : $t('quick.freeplay')}</span>
@@ -397,7 +398,7 @@
         </button>
 
         <button class="quick-pill random-pill" on:click={handleRandom}>
-          <span class="pill-icon">🎲</span>
+          <span class="pill-icon"><Icon name="shuffle" size={16}/></span>
           <div class="pill-text">
             <span class="pill-label">{$t('quick.random')}</span>
             <span class="pill-sub">{$t('quick.randomSub')}</span>
@@ -405,7 +406,7 @@
         </button>
 
         <button class="quick-pill rec-pill" on:click={handleStartRecording} disabled={!onStartRecording}>
-          <span class="pill-icon">🔴</span>
+          <span class="pill-icon"><Icon name="record" size={14}/></span>
           <div class="pill-text">
             <span class="pill-label">{$t('quick.record')}</span>
             <span class="pill-sub">{$t('quick.recordSub')}</span>
@@ -418,7 +419,7 @@
     <!-- ── Search & Filter bar ─────────────────────────────────────────────── -->
     <div class="home-filters">
       <div class="hf-search-wrap">
-        <span class="hf-search-icon">🔍</span>
+        <span class="hf-search-icon"><Icon name="search" size={14}/></span>
         <input
           class="hf-search-input"
           type="search"
@@ -466,7 +467,7 @@
     <!-- Exercise sections -->
     {#if hasFilter && filteredSections.length === 0}
       <div class="hf-empty">
-        <span class="hf-empty-icon">🎵</span>
+        <span class="hf-empty-icon"><Icon name="music-note" size={40}/></span>
         <p class="hf-empty-msg">{$t('home.filter.noResults')}</p>
         <button class="hf-chip hf-chip-clear" on:click={clearFilters}>
           ✕ {$t('home.filter.clear')}
@@ -572,7 +573,7 @@
           {#if detail.author.contact || (detail.author.links && detail.author.links.length > 0)}
             <div class="contributor-links">
               {#if detail.author.contact}
-                <span class="contributor-contact">✉ {detail.author.contact}</span>
+                <span class="contributor-contact"><Icon name="mail" size={11}/> {detail.author.contact}</span>
               {/if}
               {#each detail.author.links ?? [] as link}
                 <a class="contributor-link-chip" href={link.url} target="_blank" rel="noopener">
@@ -611,9 +612,10 @@
 
           <div class="stat-box">
             <span class="stat-label">{$t('stats.hands')}</span>
-            <span class="stat-big">
-              {detail.stats.hands === 'both' ? '🤲' :
-               detail.stats.hands === 'right' ? '🤚' : '🫲'}
+            <span class="stat-big stat-big-icon">
+              {#if detail.stats.hands === 'both'}<Icon name="hands-both" size={28}/>
+              {:else if detail.stats.hands === 'right'}<Icon name="hand-right" size={28}/>
+              {:else}<Icon name="hand-left" size={28}/>{/if}
             </span>
             <span class="stat-value">
               {detail.stats.hands ? $t('hands.' + detail.stats.hands) : '—'}
@@ -832,7 +834,7 @@
 }
 .device-item:hover,.device-item:focus { background: rgba(123,95,240,.1); border-color: rgba(123,95,240,.3); }
 .device-item.selected { background: rgba(123,95,240,.18); border-color: rgba(123,95,240,.55); }
-.device-ic { font-size: .9rem; }
+.device-ic { display: flex; align-items: center; color: rgba(255,255,255,.55); }
 .device-info { display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
 .device-item-name { font-size: .76rem; font-weight: 600; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .device-mfr { font-size: .6rem; color: rgba(255,255,255,.28); }
@@ -877,8 +879,8 @@
   cursor: not-allowed;
 }
 .tool-icon {
-  width: 1rem;
-  text-align: center;
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
 }
  
@@ -925,7 +927,9 @@
 .random-pill { background: rgba(16,185,129,.1); border-color: rgba(16,185,129,.25); }
 .random-pill:hover { background: rgba(16,185,129,.18); border-color: rgba(16,185,129,.4); }
 
-.pill-icon { font-size: 1rem; line-height: 1; flex-shrink: 0; }
+.rec-pill .pill-icon :global(svg) { color: #cc3030; }
+
+.pill-icon { display: flex; align-items: center; flex-shrink: 0; }
 .pill-text { display: flex; flex-direction: column; gap: 1px; }
 .pill-label { font-size: .82rem; font-weight: 700; color: rgba(255,255,255,.9); line-height: 1.2; }
 .pill-sub { font-size: .65rem; color: rgba(255,255,255,.35); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
@@ -948,9 +952,10 @@
   left: .65rem;
   top: 50%;
   transform: translateY(-50%);
-  font-size: .8rem;
   pointer-events: none;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  color: rgba(255,255,255,.35);
 }
 .hf-search-input {
   width: 100%;
@@ -1047,7 +1052,7 @@
   padding: 4rem 2rem;
   color: rgba(255,255,255,.35);
 }
-.hf-empty-icon { font-size: 2.5rem; line-height: 1; }
+.hf-empty-icon { color: rgba(255,255,255,.25); }
 .hf-empty-msg { margin: 0; font-size: .88rem; text-align: center; }
 
 /* Sections */
@@ -1276,6 +1281,7 @@ a.contributor-name:hover { color: #fff; }
 }
 .stat-label { font-size: .6rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.3); }
 .stat-big { font-size: 1.5rem; line-height: 1; font-weight: 800; color: rgba(255,255,255,.85); }
+.stat-big-icon { font-size: 1rem; color: rgba(255,255,255,.75); }
 .stat-value { font-size: .72rem; color: rgba(255,255,255,.4); font-weight: 500; }
 .time-sig { font-size: 1.3rem; font-family: serif; }
 

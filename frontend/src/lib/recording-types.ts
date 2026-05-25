@@ -151,7 +151,7 @@ export type DifficultyPreset = 'beginner' | 'intermediate' | 'advanced'
 
 export interface DifficultyPresetConfig {
   label: string
-  icon: string
+  icon: 'sprout' | 'music-note' | 'trophy'
   /** Playback speed multiplier. */
   speed: number
   /** Grading profile overrides applied on top of the exercise profile. */
@@ -169,7 +169,7 @@ export interface DifficultyPresetConfig {
 export const DIFFICULTY_PRESETS: Record<DifficultyPreset, DifficultyPresetConfig> = {
   beginner: {
     label: 'difficulty.1',
-    icon: '🌱',
+    icon: 'sprout',
     speed: 0.5,
     profile: {
       earlyToleranceMs: 800,
@@ -180,7 +180,7 @@ export const DIFFICULTY_PRESETS: Record<DifficultyPreset, DifficultyPresetConfig
   },
   intermediate: {
     label: 'difficulty.3',
-    icon: '🎹',
+    icon: 'music-note',
     speed: 0.75,
     profile: {
       earlyToleranceMs: 550,
@@ -191,7 +191,7 @@ export const DIFFICULTY_PRESETS: Record<DifficultyPreset, DifficultyPresetConfig
   },
   advanced: {
     label: 'difficulty.4',
-    icon: '🏆',
+    icon: 'trophy',
     speed: 1.0,
     profile: {
       earlyToleranceMs: 350,

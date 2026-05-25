@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
+  import Icon from './Icon.svelte'
   import {
     playbackStore,
     loadRecording,
@@ -76,7 +77,7 @@
   />
 
   <button class="icon-btn" on:click={openFile} title="Load .pia file">
-    📂
+    <Icon name="folder-open" size={15}/>
   </button>
 
   {#if hasRec}
@@ -88,10 +89,10 @@
       disabled={isDone}
       title={isPlaying ? 'Pause' : 'Play'}
     >
-      {isPlaying ? '⏸' : '▶'}
+      {#if isPlaying}<Icon name="pause" size={14}/>{:else}<Icon name="play" size={14}/>{/if}
     </button>
 
-    <button class="icon-btn" on:click={stop} title="Stop">⏹</button>
+    <button class="icon-btn" on:click={stop} title="Stop"><Icon name="stop" size={14}/></button>
 
     <button
       class="icon-btn practice-btn"
@@ -99,7 +100,7 @@
       on:click={togglePractice}
       title={isPractice ? 'Exit practice mode' : 'Practice mode'}
     >
-      🎯
+      <Icon name="target" size={14}/>
     </button>
 
     <!-- Progress bar -->
