@@ -6,7 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Run (Wails dev mode — hot-reload frontend + Go)
-wails dev -tags webkit2_41
+# Use `make dev` instead of calling wails directly — it sets
+# WEBKIT_DISABLE_COMPOSITING_MODE=1 to prevent the WebKit2GTK compositor
+# from installing a SIGSEGV handler without SA_ONSTACK, which causes:
+#   "fatal error: non-Go code set up signal handler without SA_ONSTACK flag"
+make dev
+# or directly: WEBKIT_DISABLE_COMPOSITING_MODE=1 wails dev -tags webkit2_41
 
 # Build desktop binary → build/bin/pianalyze
 wails build -tags webkit2_41

@@ -82,9 +82,12 @@ func main() {
 		Linux: &linux.Options{
 			// Icon shown in the taskbar and window switcher.
 			Icon: appIcon,
-			// On-demand GPU acceleration is better for audio/MIDI tools; the
-			// Wails default (WebviewGpuPolicyNever) causes unnecessary CPU load.
-			WebviewGpuPolicy: linux.WebviewGpuPolicyOnDemand,
+			// Keep GPU acceleration disabled on Linux. Enabling it (OnDemand or
+			// Always) causes WebKit2GTK to spin up GPU threads that register a
+			// SIGSEGV handler without SA_ONSTACK, which Go 1.23+ fatally aborts:
+			//   "fatal error: non-Go code set up signal handler without SA_ONSTACK flag"
+			// The extra CPU cost of software rendering is negligible for this app.
+			WebviewGpuPolicy: linux.WebviewGpuPolicyNever,
 			// Matches the .desktop file Name so window grouping works correctly.
 			ProgramName: "pianalyze",
 		},
