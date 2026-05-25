@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { midiStore } from '../stores/midi'
-  import { playbackStore, noteIntervals, buildGradingIntervals, seekTo } from '../stores/playback'
+  import { playbackStore, noteIntervals, buildGradingIntervals, pause, play } from '../stores/playback'
   import { createWaterfallCanvas, type WaterfallCanvas } from '../lib/waterfall-canvas'
   import { HAND_SPLIT, MIDI_MIN, MIDI_MAX, DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
   import { bpmAt } from '../lib/recording-types'
@@ -24,6 +24,8 @@
 
   const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
   const STEP_CHORD_WINDOW_MS = 50
+  // Grace window: how many ms past the note's golden-line time before we gate.
+  const STEP_GATE_MS = 100
 
   let container: HTMLDivElement
   let canvasEl: HTMLCanvasElement
@@ -31,8 +33,11 @@
   let prevPressed = new Set<number>()
 
   // ── Step mode ──────────────────────────────────────────────────────────────
+  // stepGroups: all note groups for the piece, sorted by startMs.
+  // stepWaitIdx: index of the group we are currently waiting for the student to play.
+  // stepHit: notes already played in the current wait group.
   let stepGroups: NoteInterval[][] = []
-  let stepIndex = 0
+  let stepWaitIdx = 0
   let stepHit = new Set<number>()
 
   function buildStepGroups(ivs: NoteInterval[]): NoteInterval[][] {
@@ -53,37 +58,37 @@
     return groups
   }
 
-  function activateStep(ivs: NoteInterval[], fromMs = 0) {
+  // Called when step mode is toggled on; positions the wait index near the
+  // current playback position so we don't immediately gate on a past note.
+  function initStep(ivs: NoteInterval[], posMs: number) {
     stepGroups = buildStepGroups(ivs)
-    // Find the first group at or after fromMs
-    stepIndex = stepGroups.findIndex(g => g[0].startMs + LEAD_MS >= fromMs)
-    if (stepIndex < 0) stepIndex = 0
+    // positionMs = musical_time + LEAD_MS, so musical_time = posMs - LEAD_MS
+    const musicalNow = posMs - LEAD_MS
+    stepWaitIdx = stepGroups.findIndex(g => g[0].startMs >= musicalNow)
+    if (stepWaitIdx < 0) stepWaitIdx = stepGroups.length
     stepHit = new Set()
-    positionAtStep(stepIndex)
   }
 
-  function positionAtStep(idx: number) {
-    if (idx < stepGroups.length) {
-      seekTo(stepGroups[idx][0].startMs + LEAD_MS)
-    }
-  }
-
+  // Called when the student plays a note while step mode is active.
+  // Accepts notes regardless of timing — the gate (below) handles late detection.
   function onStepNoteOn(note: number, vel: number) {
-    if (stepIndex >= stepGroups.length) return
-    const group = stepGroups[stepIndex]
+    if (stepWaitIdx >= stepGroups.length) return
+    const group = stepGroups[stepWaitIdx]
     const groupNotes = new Set(group.map(iv => iv.note))
     if (!groupNotes.has(note) || stepHit.has(note)) return
 
     stepHit.add(note)
-    // Play the note immediately with the student's velocity as audio confirmation
     playNote(note, vel || 80)
     waterfall!.noteHeld(note)
     waterfall!.showGrade(note, 'perfect')
 
     if (stepHit.size >= groupNotes.size) {
-      stepIndex++
+      stepWaitIdx++
       stepHit = new Set()
-      positionAtStep(stepIndex)
+      // If playback was gated (paused waiting for this note), resume.
+      if (get(playbackStore).status === 'paused') {
+        play()
+      }
     }
   }
 
@@ -196,15 +201,30 @@
         waterfall.setPracticeTime(state.positionMs - waterfall.getLeadTime() * 1000)
       }
 
-      // Step mode: activate / deactivate when the flag changes
+      // Step mode: initialise when the flag turns on; tear down when it turns off.
       if (state.stepMode !== prevStepMode) {
         prevStepMode = state.stepMode
         if (state.stepMode && state.practice && hasRecording) {
-          activateStep(get(noteIntervals), state.positionMs)
+          initStep(get(noteIntervals), state.positionMs)
         } else if (!state.stepMode) {
           stepGroups = []
-          stepIndex = 0
+          stepWaitIdx = 0
           stepHit = new Set()
+        }
+      }
+
+      // Step gate: while playing in step mode, check if the student has missed a
+      // note group deadline. positionMs = musical_time + LEAD_MS, so the golden-line
+      // deadline for a group is group[0].startMs + LEAD_MS. We give STEP_GATE_MS of
+      // grace before pausing, so the student has a small window to play on time.
+      if (state.stepMode && state.practice && hasRecording && state.status === 'playing') {
+        if (stepWaitIdx < stepGroups.length) {
+          const group = stepGroups[stepWaitIdx]
+          const groupNotes = new Set(group.map(iv => iv.note))
+          const allPlayed = [...groupNotes].every(n => stepHit.has(n))
+          if (!allPlayed && state.positionMs >= group[0].startMs + LEAD_MS + STEP_GATE_MS) {
+            pause()
+          }
         }
       }
 

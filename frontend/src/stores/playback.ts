@@ -343,7 +343,7 @@ export function setPractice(on: boolean): void {
 
 export async function play(): Promise<void> {
   const state = get(playbackStore)
-  if (!state.recording || state.status === 'playing' || state.stepMode) return
+  if (!state.recording || state.status === 'playing') return
 
   // Must be called from a user gesture — initializes Web Audio on first play.
   await initAudio()
@@ -455,15 +455,7 @@ export function setLoop(start: number, end: number): void {
 }
 
 export function setStepMode(on: boolean): void {
-  const state = get(playbackStore)
-  if (state.status === 'playing') {
-    cancelAll(); releaseAll()
-  }
-  playbackStore.update(s => ({
-    ...s,
-    stepMode: on,
-    status: on ? 'paused' : s.status,
-  }))
+  playbackStore.update(s => ({ ...s, stepMode: on }))
 }
 
 export function clearLoop(): void {
