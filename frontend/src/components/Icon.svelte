@@ -44,6 +44,7 @@
   stroke-linecap="round"
   stroke-linejoin="round"
   aria-hidden="true"
+  data-icon={name}
 >
   {#if name === 'music-note'}
     <path d="M9 18V5l12-2v13"/>

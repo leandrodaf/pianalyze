@@ -39,28 +39,36 @@ describe('Toast component — single toast', () => {
     expect(screen.getByText('Device disconnected')).toBeTruthy()
   })
 
-  it('renders the info icon (🎹) for type "info"', () => {
+  it('renders an SVG icon for type "info"', () => {
     addToast('Info toast', 'info')
     const { container } = render(Toast)
-    expect(container.querySelector('.toast-icon')?.textContent).toBe('🎹')
+    const svg = container.querySelector('.toast-icon svg')
+    expect(svg).not.toBeNull()
+    expect(svg?.getAttribute('data-icon')).toBe('music-note')
   })
 
-  it('renders the success icon (✅) for type "success"', () => {
+  it('renders an SVG icon for type "success"', () => {
     addToast('Success toast', 'success')
     const { container } = render(Toast)
-    expect(container.querySelector('.toast-icon')?.textContent).toBe('✅')
+    const svg = container.querySelector('.toast-icon svg')
+    expect(svg).not.toBeNull()
+    expect(svg?.getAttribute('data-icon')).toBe('check')
   })
 
-  it('renders the warning icon (⚠️) for type "warning"', () => {
+  it('renders an SVG icon for type "warning"', () => {
     addToast('Warning toast', 'warning')
     const { container } = render(Toast)
-    expect(container.querySelector('.toast-icon')?.textContent).toBe('⚠️')
+    const svg = container.querySelector('.toast-icon svg')
+    expect(svg).not.toBeNull()
+    expect(svg?.getAttribute('data-icon')).toBe('alert-triangle')
   })
 
-  it('renders the error icon (❌) for type "error"', () => {
+  it('renders an SVG icon for type "error"', () => {
     addToast('Error toast', 'error')
     const { container } = render(Toast)
-    expect(container.querySelector('.toast-icon')?.textContent).toBe('❌')
+    const svg = container.querySelector('.toast-icon svg')
+    expect(svg).not.toBeNull()
+    expect(svg?.getAttribute('data-icon')).toBe('x')
   })
 
   it('renders a dismiss button', () => {
