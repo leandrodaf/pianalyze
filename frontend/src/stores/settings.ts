@@ -7,6 +7,8 @@ export interface Settings {
   chordDisplayMode: ChordDisplayMode
   /** Preferred skill level; null = no preference (no auto-preset applied). */
   skillLevel: DifficultyPreset | null
+  /** Auto-activate step mode when starting a practice exercise. */
+  stepMode: boolean
   /** Directory where recordings are auto-saved. Empty = use OS default. */
   savePath: string
   /** ID of the last successfully connected MIDI device (for auto-reconnect). */
@@ -26,6 +28,7 @@ function loadSettings(): Settings {
 const defaults: Settings = {
   chordDisplayMode: 'full',
   skillLevel: null,
+  stepMode: false,
   savePath: '',
   lastDeviceId: null,
 }
@@ -48,6 +51,9 @@ function createSettingsStore() {
     },
     setSkillLevel(level: DifficultyPreset | null) {
       update(s => persist({ ...s, skillLevel: level }))
+    },
+    toggleStepMode() {
+      update(s => persist({ ...s, stepMode: !s.stepMode }))
     },
     patch(partial: Partial<Settings>) {
       update(s => persist({ ...s, ...partial }))
