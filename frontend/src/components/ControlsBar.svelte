@@ -61,11 +61,11 @@
 
 <div class="controls-bar">
   <div class="group">
-    <button class="btn" on:click={rewind} disabled={!hasRec || stepMode || locked} title="Rewind"><Icon name="skip-back" size={14}/></button>
+    <button class="btn" on:click={rewind} disabled={!hasRec || locked} title="Rewind"><Icon name="skip-back" size={14}/></button>
     <button
       class="btn"
       on:click={() => isPlaying ? pause() : play()}
-      disabled={!hasRec || stepMode || locked}
+      disabled={!hasRec || locked}
       title={isPlaying ? 'Pause' : 'Play'}
     >
       {#if isPlaying}<Icon name="pause" size={14}/>{:else}<Icon name="play" size={14}/>{/if}

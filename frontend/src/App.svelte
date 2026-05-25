@@ -240,6 +240,7 @@
     prepActive = false
     prepStore.deactivate()
     setStepMode($settingsStore.stepMode)
+    play()
   }
 
   function handleImportRecording(recording: unknown) {
