@@ -233,7 +233,7 @@
     prepActive = false
     prepStore.deactivate()
     setStepMode($settingsStore.stepMode)
-    play()  // no-op when step mode is on
+    play()  // starts playback; step-mode gate handles auto-pausing on missed notes
   }
 
   function handlePrepSkip() {
