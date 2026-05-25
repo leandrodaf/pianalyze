@@ -37,6 +37,8 @@ export interface PlaybackState {
    * Supersedes the exercise's own gradingProfile when non-null.
    */
   gradingProfileOverride: GradingProfile | null
+  /** Step mode: playback frozen; student advances note-by-note. */
+  stepMode: boolean
 }
 
 export const playbackStore = writable<PlaybackState>({
@@ -51,6 +53,7 @@ export const playbackStore = writable<PlaybackState>({
   loopEnd: null,
   difficultyPreset: null,
   gradingProfileOverride: null,
+  stepMode: false,
 })
 
 // Pre-processed note intervals (noteOn→noteOff pairs) for practice grading.
@@ -340,7 +343,7 @@ export function setPractice(on: boolean): void {
 
 export async function play(): Promise<void> {
   const state = get(playbackStore)
-  if (!state.recording || state.status === 'playing') return
+  if (!state.recording || state.status === 'playing' || state.stepMode) return
 
   // Must be called from a user gesture — initializes Web Audio on first play.
   await initAudio()
@@ -448,6 +451,18 @@ export function setLoop(start: number, end: number): void {
     loopStart,
     loopEnd,
     loopEnabled: loopEnd > loopStart,
+  }))
+}
+
+export function setStepMode(on: boolean): void {
+  const state = get(playbackStore)
+  if (state.status === 'playing') {
+    cancelAll(); releaseAll()
+  }
+  playbackStore.update(s => ({
+    ...s,
+    stepMode: on,
+    status: on ? 'paused' : s.status,
   }))
 }
 

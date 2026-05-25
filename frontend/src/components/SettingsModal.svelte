@@ -1,5 +1,6 @@
 <script lang="ts">
   import { t, locale, LOCALE_NAMES, type Locale } from '../lib/i18n'
+  import Icon from './Icon.svelte'
   import { settingsStore } from '../stores/settings'
   import { DIFFICULTY_PRESETS, type DifficultyPreset } from '../lib/recording-types'
   import { loadFromUrl } from '../stores/exercises'
@@ -109,8 +110,8 @@
 <div class="modal" role="dialog" aria-modal="true" aria-label={$t('settings.title')}>
 
   <div class="modal-header">
-    <span class="modal-title">⚙ {$t('settings.title')}</span>
-    <button class="close-btn" on:click={onClose} aria-label={$t('settings.close')}>✕</button>
+    <span class="modal-title"><Icon name="settings" size={15}/> {$t('settings.title')}</span>
+    <button class="close-btn" on:click={onClose} aria-label={$t('settings.close')}><Icon name="x" size={14}/></button>
   </div>
 
   <div class="modal-body">
@@ -126,11 +127,31 @@
             class:active={$settingsStore.skillLevel === key}
             on:click={() => settingsStore.setSkillLevel($settingsStore.skillLevel === key ? null : key)}
           >
-            <span class="pc-icon">{cfg.icon}</span>
+            <span class="pc-icon"><Icon name={cfg.icon} size={22}/></span>
             <span class="pc-label">{$t(cfg.label)}</span>
             <span class="pc-speed">{cfg.speed * 100 | 0}%</span>
           </button>
         {/each}
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── Prática ───────────────────────────────────────────────────── -->
+    <section class="settings-section">
+      <div class="section-label">{$t('settings.practice')}</div>
+      <p class="section-hint">{$t('settings.step.hint')}</p>
+      <div class="row-setting">
+        <span class="row-label">{$t('settings.step.mode')}</span>
+        <button
+          class="toggle-switch"
+          class:on={$settingsStore.stepMode}
+          on:click={() => settingsStore.toggleStepMode()}
+          aria-pressed={$settingsStore.stepMode}
+          aria-label={$t('settings.step.mode')}
+        >
+          <span class="ts-thumb"></span>
+        </button>
       </div>
     </section>
 
@@ -242,7 +263,7 @@
           disabled={pathLoading}
           title={$t('settings.savepath.change')}
         >
-          {#if pathLoading}<span class="spin">⟳</span>{:else}📂{/if}
+          {#if pathLoading}<span class="spin">⟳</span>{:else}<Icon name="folder-open" size={15}/>{/if}
         </button>
         {#if localSavePath}
           <button
@@ -350,9 +371,36 @@
     background: rgba(99,102,241,0.22);
     border-color: rgba(99,102,241,0.65);
   }
-  .pc-icon { font-size: 1.5rem; }
+  .pc-icon { display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); }
   .pc-label { font-size: 0.75rem; font-weight: 600; color: #fff; }
   .pc-speed { font-size: 0.65rem; color: rgba(255,255,255,0.4); }
+
+  /* Practice toggle switch */
+  .toggle-switch {
+    position: relative;
+    width: 40px; height: 22px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+    padding: 0;
+  }
+  .toggle-switch.on {
+    background: rgba(99,102,241,0.75);
+    border-color: rgba(99,102,241,0.9);
+  }
+  .ts-thumb {
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 16px; height: 16px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 50%;
+    transition: transform 0.2s;
+    display: block;
+  }
+  .toggle-switch.on .ts-thumb { transform: translateX(18px); }
 
   /* Chord mode toggle */
   .row-setting { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
