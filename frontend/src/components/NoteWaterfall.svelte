@@ -18,14 +18,17 @@
     StopPractice,
   } from '../../wailsjs/go/main/App'
   import { t } from '../lib/i18n'
+  import {
+    initStepState,
+    shouldGatePause,
+    registerNoteOn,
+    type StepState,
+  } from '../lib/step-mode'
 
   /** Currently selected musical key (e.g. "C", "Am", "F#"). Empty = none. */
   export let scaleKey: string = ''
 
   const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
-  const STEP_CHORD_WINDOW_MS = 50
-  // Grace window: how many ms past the note's golden-line time before we gate.
-  const STEP_GATE_MS = 100
 
   let container: HTMLDivElement
   let canvasEl: HTMLCanvasElement
@@ -33,62 +36,18 @@
   let prevPressed = new Set<number>()
 
   // ── Step mode ──────────────────────────────────────────────────────────────
-  // stepGroups: all note groups for the piece, sorted by startMs.
-  // stepWaitIdx: index of the group we are currently waiting for the student to play.
-  // stepHit: notes already played in the current wait group.
-  let stepGroups: NoteInterval[][] = []
-  let stepWaitIdx = 0
-  let stepHit = new Set<number>()
+  let stepState: StepState = { groups: [], waitIdx: 0, hit: new Set() }
 
-  function buildStepGroups(ivs: NoteInterval[]): NoteInterval[][] {
-    const sorted = [...ivs].sort((a, b) => a.startMs - b.startMs)
-    const groups: NoteInterval[][] = []
-    let current: NoteInterval[] = []
-    let groupStart = -Infinity
-    for (const iv of sorted) {
-      if (iv.startMs - groupStart > STEP_CHORD_WINDOW_MS) {
-        if (current.length > 0) groups.push(current)
-        current = [iv]
-        groupStart = iv.startMs
-      } else {
-        current.push(iv)
-      }
-    }
-    if (current.length > 0) groups.push(current)
-    return groups
-  }
-
-  // Called when step mode is toggled on; positions the wait index near the
-  // current playback position so we don't immediately gate on a past note.
-  function initStep(ivs: NoteInterval[], posMs: number) {
-    stepGroups = buildStepGroups(ivs)
-    // positionMs = musical_time + LEAD_MS, so musical_time = posMs - LEAD_MS
-    const musicalNow = posMs - LEAD_MS
-    stepWaitIdx = stepGroups.findIndex(g => g[0].startMs >= musicalNow)
-    if (stepWaitIdx < 0) stepWaitIdx = stepGroups.length
-    stepHit = new Set()
-  }
-
-  // Called when the student plays a note while step mode is active.
-  // Accepts notes regardless of timing — the gate (below) handles late detection.
   function onStepNoteOn(note: number, vel: number) {
-    if (stepWaitIdx >= stepGroups.length) return
-    const group = stepGroups[stepWaitIdx]
-    const groupNotes = new Set(group.map(iv => iv.note))
-    if (!groupNotes.has(note) || stepHit.has(note)) return
+    const result = registerNoteOn(stepState, note)
+    if (result === 'ignored') return
 
-    stepHit.add(note)
     playNote(note, vel || 80)
     waterfall!.noteHeld(note)
     waterfall!.showGrade(note, 'perfect')
 
-    if (stepHit.size >= groupNotes.size) {
-      stepWaitIdx++
-      stepHit = new Set()
-      // If playback was gated (paused waiting for this note), resume.
-      if (get(playbackStore).status === 'paused') {
-        play()
-      }
+    if (result === 'group_complete' && get(playbackStore).status === 'paused') {
+      play()
     }
   }
 
@@ -205,11 +164,9 @@
       if (state.stepMode !== prevStepMode) {
         prevStepMode = state.stepMode
         if (state.stepMode && state.practice && hasRecording) {
-          initStep(get(noteIntervals), state.positionMs)
+          stepState = initStepState(get(noteIntervals), state.positionMs, LEAD_MS)
         } else if (!state.stepMode) {
-          stepGroups = []
-          stepWaitIdx = 0
-          stepHit = new Set()
+          stepState = { groups: [], waitIdx: 0, hit: new Set() }
         }
       }
 
@@ -218,13 +175,8 @@
       // deadline for a group is group[0].startMs + LEAD_MS. We give STEP_GATE_MS of
       // grace before pausing, so the student has a small window to play on time.
       if (state.stepMode && state.practice && hasRecording && state.status === 'playing') {
-        if (stepWaitIdx < stepGroups.length) {
-          const group = stepGroups[stepWaitIdx]
-          const groupNotes = new Set(group.map(iv => iv.note))
-          const allPlayed = [...groupNotes].every(n => stepHit.has(n))
-          if (!allPlayed && state.positionMs >= group[0].startMs + LEAD_MS + STEP_GATE_MS) {
-            pause()
-          }
+        if (shouldGatePause(stepState, state.positionMs, LEAD_MS)) {
+          pause()
         }
       }
 
@@ -248,8 +200,14 @@
       const hasRecording = !!pb.recording
 
       for (const n of prevPressed) {
-        if (!next.has(n) && !hasRecording) {
-          waterfall.noteOff(n)
+        if (!next.has(n)) {
+          if (!hasRecording) {
+            waterfall.noteOff(n)
+          } else if (pb.stepMode && pb.practice) {
+            // Step mode: Go grader is disabled, so noteReleased is never fired via
+            // grade:hold — clear the holding flag manually on key-up.
+            waterfall.noteReleased(n, 1.0)
+          }
         }
       }
       for (const n of next) {
