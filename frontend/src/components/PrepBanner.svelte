@@ -2,6 +2,7 @@
   import { onDestroy } from 'svelte'
   import { prepStore } from '../stores/prep'
   import { t } from '../lib/i18n'
+  import Icon from './Icon.svelte'
 
   export let onComplete: () => void
   export let onSkip:    () => void
@@ -28,7 +29,7 @@
 <div class="prep-banner">
   <div class="prep-top">
     <div class="prep-titles">
-      <span class="prep-icon">🎹</span>
+      <span class="prep-icon"><Icon name="music-note" size={22}/></span>
       <div>
         <div class="prep-title">{$t('prep.title')}</div>
         <div class="prep-sub">{$t('prep.sub')}</div>

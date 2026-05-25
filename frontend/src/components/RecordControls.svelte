@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
+  import Icon from './Icon.svelte'
   import { StartRecording, StopRecording, SaveRecording, AutoSaveRecording, PauseRecording, ResumeRecording } from '../../wailsjs/go/main/App'
   import { t } from '../lib/i18n'
   import type { Recording } from '../lib/recording-types'
@@ -153,7 +154,7 @@
       on:click={togglePause}
       title={isPaused ? $t('rec.resume') : $t('rec.pause')}
     >
-      {isPaused ? '▶' : '⏸'}
+      {#if isPaused}<Icon name="play" size={13}/>{:else}<Icon name="pause" size={13}/>{/if}
     </button>
 
     <span class="timer" class:timer-paused={isPaused}>{fmt(elapsed)}</span>
@@ -161,7 +162,7 @@
   {:else}
     <!-- Saved state / empty warning -->
     {#if emptyWarning}
-      <span class="save-status warn">⚠ {$t('rec.empty.warning')}</span>
+      <span class="save-status warn"><Icon name="alert-triangle" size={13}/> {$t('rec.empty.warning')}</span>
       {#if onDone}
         <button class="done-btn" on:click={onDone}>{$t('rec.done')}</button>
       {/if}

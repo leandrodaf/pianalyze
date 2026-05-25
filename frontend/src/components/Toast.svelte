@@ -2,12 +2,15 @@
   import { fly, fade } from 'svelte/transition'
   import { flip } from 'svelte/animate'
   import { toasts, removeToast, type Toast } from '../stores/toast'
+  import Icon from './Icon.svelte'
 
-  const ICONS: Record<Toast['type'], string> = {
-    info:    '🎹',
-    success: '✅',
-    warning: '⚠️',
-    error:   '❌',
+  type IconName = 'music-note' | 'check' | 'alert-triangle' | 'x'
+
+  const ICON_MAP: Record<Toast['type'], IconName> = {
+    info:    'music-note',
+    success: 'check',
+    warning: 'alert-triangle',
+    error:   'x',
   }
 
   const COLORS: Record<Toast['type'], string> = {
@@ -28,9 +31,11 @@
       out:fade={{ duration: 200 }}
       role="status"
     >
-      <span class="toast-icon">{ICONS[toast.type]}</span>
+      <span class="toast-icon"><Icon name={ICON_MAP[toast.type]} size={15}/></span>
       <span class="toast-msg">{toast.message}</span>
-      <button class="toast-close" on:click={() => removeToast(toast.id)} aria-label="Dismiss">✕</button>
+      <button class="toast-close" on:click={() => removeToast(toast.id)} aria-label="Dismiss">
+        <Icon name="x" size={12} strokeWidth={2.5}/>
+      </button>
     </div>
   {/each}
 </div>
@@ -66,7 +71,9 @@
   }
 
   .toast-icon {
-    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    color: var(--accent);
     flex-shrink: 0;
   }
 
@@ -79,10 +86,11 @@
   }
 
   .toast-close {
+    display: flex;
+    align-items: center;
     background: none;
     border: none;
     color: rgba(255,255,255,0.3);
-    font-size: 0.7rem;
     cursor: pointer;
     padding: 2px 4px;
     border-radius: 4px;
