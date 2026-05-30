@@ -7,6 +7,7 @@
   import { FINGER_COLORS } from '../lib/finger-colors'
   import { noteColor } from '../lib/note-colors'
   import { t } from '../lib/i18n'
+  import Icon from './Icon.svelte'
 
   export let onComplete: () => void
   export let onSkip:    () => void
@@ -87,7 +88,7 @@
 <div class="prep-screen">
   <div class="prep-top">
     <div class="prep-titles">
-      <span class="prep-icon">🎹</span>
+      <span class="prep-icon"><Icon name="music-note" size={28}/></span>
       <div>
         <div class="prep-title">{$t('prep.title')}</div>
         <div class="prep-sub">{$t('prep.sub')}</div>
@@ -151,7 +152,7 @@
     flex: 1;
   }
 
-  .prep-icon { font-size: 1.8rem; }
+  .prep-icon { display: flex; align-items: center; color: rgba(255,255,255,.75); }
 
   .prep-title {
     font-size: 1.15rem;

@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { midiStore } from '../stores/midi'
-  import { playbackStore, noteIntervals, buildGradingIntervals } from '../stores/playback'
+  import { playbackStore, noteIntervals, buildGradingIntervals, pause, play } from '../stores/playback'
   import { createWaterfallCanvas, type WaterfallCanvas } from '../lib/waterfall-canvas'
-  import { HAND_SPLIT, MIDI_MIN, MIDI_MAX } from '../lib/waterfall-layout'
+  import { HAND_SPLIT, MIDI_MIN, MIDI_MAX, DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
   import { bpmAt } from '../lib/recording-types'
+  import type { NoteInterval } from '../lib/recording-types'
+  import { playNote } from '../stores/audio'
   import { keyToPitchClasses } from '../lib/key-utils'
   import { get } from 'svelte/store'
   import { EventsOn } from '../../wailsjs/runtime/runtime'
@@ -16,14 +18,38 @@
     StopPractice,
   } from '../../wailsjs/go/main/App'
   import { t } from '../lib/i18n'
+  import {
+    initStepState,
+    shouldGatePause,
+    registerNoteOn,
+    type StepState,
+  } from '../lib/step-mode'
 
   /** Currently selected musical key (e.g. "C", "Am", "F#"). Empty = none. */
   export let scaleKey: string = ''
+
+  const LEAD_MS = DEFAULT_LEAD_TIME_SEC * 1000
 
   let container: HTMLDivElement
   let canvasEl: HTMLCanvasElement
   let waterfall: WaterfallCanvas | null = null
   let prevPressed = new Set<number>()
+
+  // ── Step mode ──────────────────────────────────────────────────────────────
+  let stepState: StepState = { groups: [], waitIdx: 0, hit: new Set() }
+
+  function onStepNoteOn(note: number, vel: number) {
+    const result = registerNoteOn(stepState, note)
+    if (result === 'ignored') return
+
+    playNote(note, vel || 80)
+    waterfall!.noteHeld(note)
+    waterfall!.showGrade(note, 'perfect')
+
+    if (result === 'group_complete' && get(playbackStore).status === 'paused') {
+      play()
+    }
+  }
 
   $: if (waterfall && $t) {
     waterfall.setGradeLabels({
@@ -46,6 +72,7 @@
   let prevStatus = ''
   let prevSpeed = 1
   let prevProfileOverride: unknown = undefined
+  let prevStepMode = false
 
   onMount(() => {
     waterfall = createWaterfallCanvas(canvasEl)
@@ -133,8 +160,28 @@
         waterfall.setPracticeTime(state.positionMs - waterfall.getLeadTime() * 1000)
       }
 
-      // Sync grading engine with playback transitions
-      if (state.practice && hasRecording) {
+      // Step mode: initialise when the flag turns on; tear down when it turns off.
+      if (state.stepMode !== prevStepMode) {
+        prevStepMode = state.stepMode
+        if (state.stepMode && state.practice && hasRecording) {
+          stepState = initStepState(get(noteIntervals), state.positionMs, LEAD_MS)
+        } else if (!state.stepMode) {
+          stepState = { groups: [], waitIdx: 0, hit: new Set() }
+        }
+      }
+
+      // Step gate: while playing in step mode, check if the student has missed a
+      // note group deadline. positionMs = musical_time + LEAD_MS, so the golden-line
+      // deadline for a group is group[0].startMs + LEAD_MS. We give STEP_GATE_MS of
+      // grace before pausing, so the student has a small window to play on time.
+      if (state.stepMode && state.practice && hasRecording && state.status === 'playing') {
+        if (shouldGatePause(stepState, state.positionMs, LEAD_MS)) {
+          pause()
+        }
+      }
+
+      // Sync grading engine with playback transitions (skip in step mode — time-based grading not used)
+      if (state.practice && hasRecording && !state.stepMode) {
         const speedChanged = Math.abs(state.speedMultiplier - prevSpeed) > 0.001
         if (state.status === 'playing' && (prevStatus !== 'playing' || speedChanged)) {
           StartPractice(state.positionMs, state.speedMultiplier).catch(() => {})
@@ -153,17 +200,26 @@
       const hasRecording = !!pb.recording
 
       for (const n of prevPressed) {
-        if (!next.has(n) && !hasRecording) {
-          waterfall.noteOff(n)
+        if (!next.has(n)) {
+          if (!hasRecording) {
+            waterfall.noteOff(n)
+          } else if (pb.stepMode && pb.practice) {
+            // Step mode: Go grader is disabled, so noteReleased is never fired via
+            // grade:hold — clear the holding flag manually on key-up.
+            waterfall.noteReleased(n, 1.0)
+          }
         }
       }
       for (const n of next) {
         if (!prevPressed.has(n)) {
-          if (!hasRecording) {
+          if (pb.stepMode && pb.practice && hasRecording) {
+            // Step mode: match note against expected group, frontend-only
+            onStepNoteOn(n, state.velocity)
+          } else if (!hasRecording) {
             // Freeplay: show live bar
             waterfall.noteOn(n, state.velocity)
           }
-          // Practice/review: grading handled by Go backend via grade:result event
+          // Normal practice/review: grading handled by Go backend via grade:result event
         }
       }
 

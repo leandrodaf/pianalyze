@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
   import { Environment, EventsOn, EventsOff } from '../wailsjs/runtime/runtime'
   import { connectMidiStore, midiStore } from './stores/midi'
-  import { loadRecording, setPractice, play, stop, clearLoop, playbackStore, noteIntervals, setDifficultyPreset } from './stores/playback'
+  import { loadRecording, setPractice, play, stop, clearLoop, playbackStore, noteIntervals, setDifficultyPreset, setStepMode } from './stores/playback'
   import { connectLiveMidiAudio, initAudio } from './stores/audio'
   import { bpmAt, timeSigAt, measureAt, DIFFICULTY_PRESETS } from './lib/recording-types'
   import { get } from 'svelte/store'
@@ -19,6 +19,7 @@
   import { locale } from './lib/i18n'
   import type { Locale } from './lib/i18n'
   import Toast from './components/Toast.svelte'
+  import Icon from './components/Icon.svelte'
   import { addToast } from './stores/toast'
   import { prepStore } from './stores/prep'
   import { FINGER_COLORS } from './lib/finger-colors'
@@ -215,8 +216,11 @@
         }
         prepStore.activate(keys)
         prepActive = true
+        // Step mode is applied after prep completes (handlePrepComplete / handlePrepSkip)
       } else {
         prepActive = false
+        // No prep screen — apply step mode setting immediately
+        setStepMode($settingsStore.stepMode)
       }
     } else {
       clearLoadedRecording()
@@ -228,12 +232,15 @@
   function handlePrepComplete() {
     prepActive = false
     prepStore.deactivate()
-    play()
+    setStepMode($settingsStore.stepMode)
+    play()  // starts playback; step-mode gate handles auto-pausing on missed notes
   }
 
   function handlePrepSkip() {
     prepActive = false
     prepStore.deactivate()
+    setStepMode($settingsStore.stepMode)
+    play()
   }
 
   function handleImportRecording(recording: unknown) {
@@ -260,6 +267,7 @@
   function goHome() {
     stop()
     clearLoop()
+    setStepMode(false)
     prepActive = false
     prepStore.deactivate()
     activeExercise = null
@@ -310,7 +318,7 @@
             </div>
           {:else}
             <div class="rec-ready-tag">
-              🔴 {$t('rec.ready')}
+              <Icon name="record" size={10}/> {$t('rec.ready')}
             </div>
           {/if}
         {:else if recTitle}
@@ -319,7 +327,7 @@
             {#if recComposer}<span class="rec-composer">{recComposer}</span>{/if}
           </div>
         {:else}
-          <span class="freeplay-tag">🎧 {$t('app.freeplay')}</span>
+          <span class="freeplay-tag"><Icon name="headphones" size={13}/> {$t('app.freeplay')}</span>
         {/if}
         <!-- Right side: record controls OR key picker + meta chips + presets -->
         <div class="top-bar-right">
@@ -376,7 +384,7 @@
                     on:click={() => applyPreset(key)}
                     title="{$t(cfg.label)} — {cfg.speed * 100 | 0}% {$t('controls.speed')}"
                   >
-                    <span class="preset-icon">{cfg.icon}</span>
+                    <span class="preset-icon"><Icon name={cfg.icon} size={13}/></span>
                     <span class="preset-name">{$t(cfg.label)}</span>
                   </button>
                 {/each}
@@ -432,7 +440,7 @@
 
     <div class="timeline-area"><Timeline /></div>
 
-    <div class="controls-bar"><ControlsBar /></div>
+    <div class="controls-bar"><ControlsBar locked={prepActive} /></div>
 
     <div class="piano-area"><Piano /></div>
 
@@ -506,6 +514,9 @@
   }
 
   .freeplay-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
     font-size: 0.82rem;
     color: rgba(255,255,255,0.45);
     font-weight: 500;
@@ -522,11 +533,15 @@
   }
 
   .rec-ready-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
     font-size: 0.78rem;
     font-weight: 600;
     color: rgba(255,255,255,0.45);
     letter-spacing: 0.04em;
   }
+  .rec-ready-tag :global(svg) { color: #cc3030; }
 
   .rec-live-dot {
     width: 8px; height: 8px;
@@ -608,7 +623,7 @@
     font-weight: 800;
   }
 
-  .preset-icon { font-size: 0.78rem; line-height: 1; }
+  .preset-icon { display: flex; align-items: center; }
   .preset-name { font-size: 0.66rem; }
   .meta-chip {
     font-size: 0.68rem;

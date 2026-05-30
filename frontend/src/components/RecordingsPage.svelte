@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { t } from '../lib/i18n'
+  import Icon from './Icon.svelte'
   import { settingsStore } from '../stores/settings'
   import { addToast } from '../stores/toast'
   import {
@@ -165,7 +166,7 @@
   {#if needsSetup}
     <!-- ── First-run: ask user where to store recordings ── -->
     <div class="setup-card">
-      <div class="setup-icon">📁</div>
+      <div class="setup-icon"><Icon name="folder" size={40}/></div>
       <h3 class="setup-title">{$t('library.setup.title')}</h3>
       <p class="setup-desc">{$t('library.setup.desc')}</p>
       <div class="setup-actions">
@@ -187,7 +188,7 @@
 
   {:else if items.length === 0}
     <div class="lib-empty">
-      <span class="empty-icon">🎹</span>
+      <span class="empty-icon"><Icon name="music-note" size={40}/></span>
       <p class="empty-msg">{$t('library.empty')}</p>
       <p class="empty-hint">{$t('library.empty.hint')}</p>
     </div>
@@ -223,7 +224,7 @@
           {:else if confirmDelete?.path === item.path}
             <!-- ── Delete confirm ── -->
             <div class="confirm-row">
-              <span class="confirm-msg">🗑 {$t('library.delete.confirm')}</span>
+              <span class="confirm-msg"><Icon name="trash" size={14}/> {$t('library.delete.confirm')}</span>
               <button class="btn-del-confirm" on:click={() => handleDelete(item)}>✓</button>
               <button class="btn-cancel" on:click={() => confirmDelete = null}>{$t('library.cancel')}</button>
             </div>
@@ -234,7 +235,7 @@
               {#if item.coverUrl}
                 <img class="card-cover" src={item.coverUrl} alt={item.title} loading="lazy" />
               {:else}
-                <div class="card-cover card-cover-placeholder">🎵</div>
+                <div class="card-cover card-cover-placeholder"><Icon name="music-note" size={22}/></div>
               {/if}
               <div class="card-left">
                 <span class="card-title">{item.title || item.filename}</span>
@@ -263,11 +264,11 @@
               </div>
               <div class="card-actions">
                 {#if onLoad}
-                  <button class="act-btn act-load" on:click={() => handleLoad(item)} title={$t('library.play')}>▶</button>
+                  <button class="act-btn act-load" on:click={() => handleLoad(item)} title={$t('library.play')}><Icon name="play" size={14}/></button>
                 {/if}
-                <button class="act-btn act-edit" on:click={() => startEdit(item)} title={$t('library.edit')}>✏</button>
-                <button class="act-btn act-folder" on:click={() => handleOpenFolder(item)} title={$t('library.open.folder')}>📂</button>
-                <button class="act-btn act-del" on:click={() => confirmDelete = item} title={$t('library.delete')}>🗑</button>
+                <button class="act-btn act-edit" on:click={() => startEdit(item)} title={$t('library.edit')}><Icon name="edit" size={14}/></button>
+                <button class="act-btn act-folder" on:click={() => handleOpenFolder(item)} title={$t('library.open.folder')}><Icon name="folder-open" size={14}/></button>
+                <button class="act-btn act-del" on:click={() => confirmDelete = item} title={$t('library.delete')}><Icon name="trash" size={14}/></button>
               </div>
             </div>
           {/if}
@@ -340,7 +341,7 @@
     border-radius: 14px;
     padding: 2rem 1.5rem;
   }
-  .setup-icon { font-size: 2.5rem; }
+  .setup-icon { color: rgba(255,255,255,0.3); }
   .setup-title {
     margin: 0;
     font-size: 1rem;
@@ -394,7 +395,7 @@
     margin: 3rem auto;
     text-align: center;
   }
-  .empty-icon { font-size: 2.5rem; }
+  .empty-icon { color: rgba(255,255,255,0.3); }
   .empty-msg { color: rgba(255,255,255,0.7); font-size: 1rem; margin: 0; }
   .empty-hint { color: rgba(255,255,255,0.35); font-size: 0.82rem; margin: 0; }
 
@@ -433,7 +434,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
     color: rgba(255,255,255,0.25);
   }
 

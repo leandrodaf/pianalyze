@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { playbackStore, noteIntervals, play, pause, stop, rewind, setSpeed, toggleLoop, seekTo, setLoop } from '../stores/playback'
+  import { playbackStore, noteIntervals, play, pause, stop, rewind, setSpeed, toggleLoop, seekTo, setLoop, setStepMode } from '../stores/playback'
+  import Icon from './Icon.svelte'
+
+  /** When true (prep screen active), transport controls are disabled. */
+  export let locked = false
   import { audioStore, setVolume, toggleMute, setHandVolume } from '../stores/audio'
   import { HAND_SPLIT } from '../lib/waterfall-layout'
   import { bpmAt } from '../lib/recording-types'
@@ -13,6 +17,8 @@
   $: s = $playbackStore
   $: isPlaying   = s.status === 'playing'
   $: hasRec      = !!s.recording
+  $: isPractice  = s.practice
+  $: stepMode    = s.stepMode
   $: speed       = s.speedMultiplier
   $: loopEnabled = s.loopEnabled
   $: hasLoop     = s.loopStart != null && s.loopEnd != null && s.loopEnd > s.loopStart
@@ -55,16 +61,16 @@
 
 <div class="controls-bar">
   <div class="group">
-    <button class="btn" on:click={rewind} disabled={!hasRec} title="Rewind">⏮</button>
+    <button class="btn" on:click={rewind} disabled={!hasRec || locked} title="Rewind"><Icon name="skip-back" size={14}/></button>
     <button
       class="btn"
       on:click={() => isPlaying ? pause() : play()}
-      disabled={!hasRec}
+      disabled={!hasRec || locked}
       title={isPlaying ? 'Pause' : 'Play'}
     >
-      {isPlaying ? '⏸' : '▶'}
+      {#if isPlaying}<Icon name="pause" size={14}/>{:else}<Icon name="play" size={14}/>{/if}
     </button>
-    <button class="btn" on:click={stop} disabled={!hasRec} title="Stop">⏹</button>
+    <button class="btn" on:click={stop} disabled={!hasRec || locked} title="Stop"><Icon name="stop" size={14}/></button>
   </div>
 
   <div class="sep"></div>
@@ -75,6 +81,7 @@
       <button
         class="speed-pill"
         class:active={Math.abs(speed - x) < 0.01}
+        disabled={stepMode || locked}
         on:click={() => setSpeed(x)}
         title="{x}× {liveBpm ? `(${Math.round(liveBpm * x)} BPM)` : ''}"
       >
@@ -102,6 +109,23 @@
       <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
     </svg>
   </button>
+
+  {#if isPractice}
+    <button
+      class="btn step-btn"
+      class:active={stepMode}
+      disabled={!hasRec || locked}
+      on:click={() => setStepMode(!stepMode)}
+      title={stepMode ? $t('controls.step.disable') : $t('controls.step.enable')}
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="14 7 19 12 14 17"/>
+        <line x1="5" y1="5" x2="5" y2="19"/>
+      </svg>
+    </button>
+  {/if}
+
   <div class="sep"></div>
 
   {#if hasBothHands}
