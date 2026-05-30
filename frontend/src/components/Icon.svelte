@@ -1,4 +1,4 @@
-<script lang="ts">
+<script module lang="ts">
   export type IconName =
     | 'music-note'
     | 'search'
@@ -28,7 +28,9 @@
     | 'hands-both'
     | 'sprout'
     | 'trophy'
+</script>
 
+<script lang="ts">
   export let name: IconName
   export let size: number = 16
   export let strokeWidth: number = 2
