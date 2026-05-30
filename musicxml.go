@@ -54,6 +54,8 @@ import (
 	"time"
 
 	"go.uber.org/zap"
+	"golang.org/x/text/encoding/unicode"
+	"golang.org/x/text/transform"
 )
 
 // ── MusicXML XML types ────────────────────────────────────────────────────────
@@ -540,9 +542,61 @@ func extractMXL(data []byte) ([]byte, error) {
 			return nil, fmt.Errorf("read MXL entry %q: %w", name, err)
 		}
 		defer rc.Close() //nolint:errcheck
-		return io.ReadAll(rc)
+		raw, err := io.ReadAll(rc)
+		if err != nil {
+			return nil, fmt.Errorf("read MXL entry %q: %w", name, err)
+		}
+		return transcodeToUTF8(raw)
 	}
 	return nil, fmt.Errorf("no MusicXML content found in MXL archive")
+}
+
+// transcodeToUTF8 converts UTF-16 LE/BE (with or without BOM) XML to UTF-8.
+// UTF-8 data (with or without BOM) is returned as-is after stripping the BOM.
+// The XML declaration encoding attribute is rewritten to "UTF-8" when present.
+func transcodeToUTF8(data []byte) ([]byte, error) {
+	var out []byte
+	if len(data) < 2 {
+		return data, nil
+	}
+	switch {
+	case data[0] == 0xff && data[1] == 0xfe: // UTF-16 LE BOM
+		var err error
+		out, _, err = transform.Bytes(unicode.UTF16(unicode.LittleEndian, unicode.UseBOM).NewDecoder(), data)
+		if err != nil {
+			return nil, err
+		}
+	case data[0] == 0xfe && data[1] == 0xff: // UTF-16 BE BOM
+		var err error
+		out, _, err = transform.Bytes(unicode.UTF16(unicode.BigEndian, unicode.UseBOM).NewDecoder(), data)
+		if err != nil {
+			return nil, err
+		}
+	case len(data) >= 3 && data[0] == 0xef && data[1] == 0xbb && data[2] == 0xbf: // UTF-8 BOM
+		return data[3:], nil
+	default:
+		return data, nil
+	}
+	// Rewrite encoding declaration so Go's XML parser accepts the now-UTF-8 bytes.
+	out = rewriteXMLEncoding(out)
+	return out, nil
+}
+
+// rewriteXMLEncoding replaces the encoding attribute in the XML prolog with "UTF-8".
+func rewriteXMLEncoding(data []byte) []byte {
+	// Only scan the first 200 bytes where the prolog lives.
+	limit := 200
+	if len(data) < limit {
+		limit = len(data)
+	}
+	head := string(data[:limit])
+	// Replace encoding='UTF-16' or encoding="UTF-16" (case-insensitive variants).
+	for _, old := range []string{`encoding='UTF-16'`, `encoding="UTF-16"`, `encoding='utf-16'`, `encoding="utf-16"`} {
+		if idx := strings.Index(head, old); idx >= 0 {
+			return append([]byte(head[:idx]+`encoding="UTF-8"`+head[idx+len(old):]), data[limit:]...)
+		}
+	}
+	return data
 }
 
 // ── Part converter ────────────────────────────────────────────────────────────

@@ -686,6 +686,26 @@ func (a *App) ListBuiltinLibrary() ([]RecordingSummary, error) {
 				sum.Composer = partial.Meta.Composer
 				sum.Copyright = partial.Meta.Copyright
 				sum.CoverURL = coverDataURI(partial.Meta.CoverURL)
+				// Fallback: local cover image matching the filename stem
+				if sum.CoverURL == "" {
+					stem := strings.TrimSuffix(strings.TrimSuffix(e.Name(), ".pia.gz"), ".pia")
+					for _, ext := range []string{".jpg", ".png", ".webp", ".svg"} {
+						embedPath := "data/library/covers/" + stem + ext
+						if data, err := libCovers.ReadFile(embedPath); err == nil {
+							mime := "image/jpeg"
+							switch ext {
+							case ".png":
+								mime = "image/png"
+							case ".webp":
+								mime = "image/webp"
+							case ".svg":
+								mime = "image/svg+xml"
+							}
+							sum.CoverURL = "data:" + mime + ";base64," + base64.StdEncoding.EncodeToString(data)
+							break
+						}
+					}
+				}
 				sum.Difficulty = partial.Meta.Difficulty
 				sum.Tags = partial.Meta.Tags
 				sum.RecordedAt = partial.RecordedAt
