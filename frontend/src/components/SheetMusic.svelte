@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { playbackStore, noteIntervals } from '../stores/playback'
+  import type { Recording } from '../lib/recording-types'
   import { SheetCanvas } from '../lib/sheet-canvas'
   import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-layout'
   import { get } from 'svelte/store'
@@ -13,6 +14,10 @@
   let container: HTMLDivElement
   let sheet: SheetCanvas | null = null
   let rafId = 0
+  // Tracks which Recording object was last rendered so we don't re-render on
+  // every rAF tick and also so we catch a new recording even when noteIntervals
+  // fires before playbackStore updates (they always change together in loadRecording).
+  let lastRenderedRecording: Recording | null = null
 
   function musicMs(positionMs: number): number {
     return positionMs - LEAD_MS
@@ -39,25 +44,45 @@
     })
     ro.observe(container)
 
-    // Rebuild the score whenever intervals are (re)loaded
+    // noteIntervals and playbackStore.recording always change together inside
+    // loadRecording(), but noteIntervals.set() fires *before* playbackStore.update().
+    // So when the noteIntervals subscriber runs, recording is still null and we
+    // must not call setData yet — just mark that the rendered state is stale so the
+    // playbackStore subscriber (which fires next) calls setData with both values ready.
     const unsubIntervals = noteIntervals.subscribe(ivs => {
       const state = get(playbackStore)
       if (!sheet) return
       if (ivs.length === 0 || !state.recording) {
         sheet.clearData()
+        lastRenderedRecording = null
         return
       }
+      // Both stores are already in sync (e.g. noteIntervals was updated independently).
       sheet.setData(ivs, state.recording)
+      lastRenderedRecording = state.recording
     })
 
-    // Clear score when recording is unloaded; update cursor on every tick
+    // Clear score when recording is unloaded; render when recording is (re)loaded;
+    // update cursor on every tick.
     const unsubPlayback = playbackStore.subscribe(state => {
       if (!sheet) return
 
       if (!state.recording) {
         sheet.clearData()
         stopRaf()
+        lastRenderedRecording = null
         return
+      }
+
+      // Render (or re-render) whenever the recording object changes.
+      // This handles the common load path where noteIntervals fired first but
+      // couldn't render because recording was still null at that point.
+      if (state.recording !== lastRenderedRecording) {
+        const ivs = get(noteIntervals)
+        if (ivs.length > 0) {
+          sheet.setData(ivs, state.recording)
+        }
+        lastRenderedRecording = state.recording
       }
 
       // Cursor update
