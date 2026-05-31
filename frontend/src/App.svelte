@@ -11,6 +11,7 @@
   import PrepBanner from './components/PrepBanner.svelte'
   import Piano from './components/Piano.svelte'
   import NoteWaterfall from './components/NoteWaterfall.svelte'
+  import SheetMusic from './components/SheetMusic.svelte'
   import Timeline from './components/Timeline.svelte'
   import ControlsBar from './components/ControlsBar.svelte'
   import RecordControls from './components/RecordControls.svelte'
@@ -397,7 +398,29 @@
 
     <!-- Waterfall, timeline, controls and piano stay mounted permanently -->
     <div class="waterfall-area">
-      <NoteWaterfall scaleKey={freeplayKey} />
+      {#if $settingsStore.displayMode === 'sheet'}
+        <SheetMusic />
+      {:else}
+        <NoteWaterfall scaleKey={freeplayKey} />
+      {/if}
+
+      <!-- View mode toggle (visible when recording is loaded) -->
+      {#if rec}
+        <div class="view-toggle">
+          <button
+            class="view-btn"
+            class:active={$settingsStore.displayMode === 'waterfall'}
+            on:click={() => settingsStore.setDisplayMode('waterfall')}
+            title="Piano roll"
+          ><Icon name="waterfall-view" size={14}/></button>
+          <button
+            class="view-btn"
+            class:active={$settingsStore.displayMode === 'sheet'}
+            on:click={() => settingsStore.setDisplayMode('sheet')}
+            title="Partitura"
+          ><Icon name="sheet-view" size={14}/></button>
+        </div>
+      {/if}
 
       <!-- Analysis HUD -->
       <div class="hud" class:hud-active={hasChord}>
@@ -670,6 +693,46 @@
     flex: 1;
     min-height: 0;
     position: relative;
+  }
+
+  /* ── View mode toggle ────────────────────────────────────────────────────── */
+  .view-toggle {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    display: flex;
+    gap: 2px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 7px;
+    padding: 3px;
+    z-index: 20;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .view-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 22px;
+    background: transparent;
+    border: none;
+    border-radius: 5px;
+    color: rgba(255,255,255,0.38);
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+  }
+
+  .view-btn:hover {
+    background: rgba(255,255,255,0.10);
+    color: rgba(255,255,255,0.75);
+  }
+
+  .view-btn.active {
+    background: rgba(123,95,240,0.28);
+    color: #c4aef8;
   }
 
   /* ── Analysis HUD ────────────────────────────────────────────────────────── */

@@ -107,6 +107,20 @@ type Section struct {
 	Difficulty    int    `json:"difficulty,omitempty"`    // 1–5 per-section difficulty (G3)
 }
 
+// KeySigEvent is one entry in the key-signature map; emitted on every key change mid-piece.
+type KeySigEvent struct {
+	AtMs  int64  `json:"atMs"`
+	Value string `json:"value"` // e.g. "G", "Dm", "Bb"
+}
+
+// Ending is a volta bracket (1st-ending / 2nd-ending) as it appears in the score (F1).
+type Ending struct {
+	// "1", "2", "1,2", etc. — matches the MusicXML <ending number="…"> attribute.
+	Number  string `json:"number"`
+	StartMs int64  `json:"startMs"`
+	EndMs   int64  `json:"endMs,omitempty"`
+}
+
 // RepeatType is the kind of repeat / navigation marker in the score (F1).
 type RepeatType = string
 
@@ -117,6 +131,8 @@ type Repeat struct {
 	Type       RepeatType `json:"type"`                 // "repeat-open"|"repeat-close"|"segno"|"coda"|"fine"|"ds"|"dc"|"ds-coda"|"dc-coda"
 	AtMs       int64      `json:"atMs"`                 // position of this marker in the recording (ms)
 	TargetAtMs *int64     `json:"targetAtMs,omitempty"` // jump target for ds/dc/coda/repeat-close
+	// How many times to play before moving on (0 = default, i.e. 2 for repeat-close).
+	Times int `json:"times,omitempty"`
 }
 
 // Recording is the serialisable container for a captured performance (.pia v2).
@@ -130,14 +146,19 @@ type Recording struct {
 	BPM              *float64       `json:"bpm,omitempty"` // deprecated v1 compat
 	TimeSignatureMap []TimeSigEvent `json:"timeSignatureMap,omitempty"`
 	TimeSignature    string         `json:"timeSignature,omitempty"` // deprecated v1 compat
-	KeySignature     string         `json:"keySignature,omitempty"`
-	Pickup           bool           `json:"pickup,omitempty"`
+	KeySignature    string        `json:"keySignature,omitempty"`
+	// Key-signature changes mid-piece, sorted by AtMs ascending.
+	// KeySignature holds the initial value; this map adds subsequent changes.
+	KeySignatureMap []KeySigEvent `json:"keySignatureMap,omitempty"`
+	Pickup          bool          `json:"pickup,omitempty"`
 
 	Sections   []Section      `json:"sections,omitempty"`
 	MeasureMap []MeasureEntry `json:"measureMap,omitempty"`
 	Hairpins   []Hairpin      `json:"hairpins,omitempty"`
 	// Repeats are retained as metadata after a converter unrolls them into Events (F1).
 	Repeats []Repeat `json:"repeats,omitempty"`
+	// Endings holds volta bracket regions (1st/2nd endings), sorted by StartMs ascending.
+	Endings []Ending `json:"endings,omitempty"`
 
 	GradingProfile *grading.Profile `json:"gradingProfile,omitempty"`
 

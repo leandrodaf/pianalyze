@@ -13,12 +13,15 @@ package main
 //   <rights>                        → Meta.Copyright
 //   <tempo> / <metronome>           → TempoMap  (incl. dotted-beat metronomes)
 //   <time>                          → TimeSignatureMap
-//   <key>                           → KeySignature  (first one found; changes tracked)
+//   <key>                           → KeySignature (initial) + KeySignatureMap (all changes)
 //   <measure number=…>              → MeasureMap
 //   <wedge> hairpins                → Hairpins
-//   <repeat>                        → Repeats  (open / close)
+//   <barline><repeat times=…>       → Repeat.Times
+//   <barline><ending>               → Endings  (volta brackets — 1st/2nd endings)
+//   <barline><coda> / <segno>       → Repeats  (barline coda/segno signs)
 //   <coda> / <segno> directions     → Repeats  (coda / segno)
 //   <dal-segno> / <da-capo> words   → Repeats  (ds / dc)
+//   Anacrusis (measure 0)           → Recording.Pickup = true
 //   Rehearsal marks                 → Sections  (type="rehearsal")
 //   Tempo-expression words          → Sections  (type="tempo-text")
 //   <dynamics> ppp/pp/p/mp/mf/f/ff/fff → RecordedEvent.Dynamic + velocity
@@ -617,6 +620,8 @@ func convertPart(part mxPart, logger *zap.Logger) (
 	sections []Section,
 	keySignature string,
 	firstTimeSig string,
+	keySigMap []KeySigEvent,
+	endings []Ending,
 ) {
 	divisions := 1
 	bpm := 120.0
@@ -630,6 +635,9 @@ func convertPart(part mxPart, logger *zap.Logger) (
 
 	// active hairpin wedges by wedge-number
 	wedges := map[int]*mxWedgeState{}
+
+	// volta bracket tracking: endingNumber → startMs
+	openEndings := map[string]int64{}
 
 	ticksToMs := func(ticks int) int64 {
 		if divisions <= 0 || bpm <= 0 {
@@ -655,6 +663,8 @@ func convertPart(part mxPart, logger *zap.Logger) (
 		var lastNoteTick int64
 
 		var hasForwardRepeat, hasBackwardRepeat bool
+		var backwardRepeatTimes int
+		var endingsToClose []string // ending numbers to close at this measure's end
 
 		for _, item := range measure.Items {
 			switch item.Kind {
@@ -670,8 +680,12 @@ func convertPart(part mxPart, logger *zap.Logger) (
 				}
 				for _, k := range attr.Keys {
 					ks := mxFifthsToKey(k.Fifths, k.Mode)
+					kMs := measureStartMs + ticksToMs(int(tick))
 					if keySignature == "" {
 						keySignature = ks
+					}
+					if len(keySigMap) == 0 || keySigMap[len(keySigMap)-1].Value != ks {
+						keySigMap = append(keySigMap, KeySigEvent{AtMs: kMs, Value: ks})
 					}
 				}
 				for _, ts := range attr.Times {
@@ -827,14 +841,23 @@ func convertPart(part mxPart, logger *zap.Logger) (
 						hasForwardRepeat = true
 					case "backward":
 						hasBackwardRepeat = true
+						backwardRepeatTimes = bl.Repeat.Times
 					}
 				}
+				blMs := measureStartMs + ticksToMs(int(tick))
 				if bl.Coda != nil {
-					// defer until after posMs is computed
-					_ = bl.Coda
+					repeats = append(repeats, Repeat{Type: "coda", AtMs: blMs})
 				}
 				if bl.Segno != nil {
-					_ = bl.Segno
+					repeats = append(repeats, Repeat{Type: "segno", AtMs: blMs})
+				}
+				if bl.Ending != nil {
+					switch bl.Ending.Type {
+					case "start":
+						openEndings[bl.Ending.Number] = blMs
+					case "stop", "discontinue":
+						endingsToClose = append(endingsToClose, bl.Ending.Number)
+					}
 				}
 
 			// ── note ────────────────────────────────────────────────────────
@@ -1039,8 +1062,21 @@ func convertPart(part mxPart, logger *zap.Logger) (
 			repeats = append(repeats, Repeat{Type: "repeat-open", AtMs: measureStartMs})
 		}
 		if hasBackwardRepeat {
-			repeats = append(repeats, Repeat{Type: "repeat-close", AtMs: posMs})
+			repeats = append(repeats, Repeat{Type: "repeat-close", AtMs: posMs, Times: backwardRepeatTimes})
 		}
+
+		// Close volta brackets that ended at this measure's right barline
+		for _, num := range endingsToClose {
+			if startMs, ok := openEndings[num]; ok {
+				endings = append(endings, Ending{Number: num, StartMs: startMs, EndMs: posMs})
+				delete(openEndings, num)
+			}
+		}
+	}
+
+	// Close any volta brackets that were never explicitly stopped (malformed XML)
+	for num, startMs := range openEndings {
+		endings = append(endings, Ending{Number: num, StartMs: startMs, EndMs: posMs})
 	}
 
 	// Close any dangling tied notes (malformed XML edge case)
@@ -1245,26 +1281,31 @@ func convertMusicXML(xmlData []byte, filename string, logger *zap.Logger) (*Reco
 	var hairpins []Hairpin
 	var repeats []Repeat
 	var sections []Section
+	var keySigMap []KeySigEvent
+	var endings []Ending
 	keySignature := ""
 	firstTimeSig := ""
 
 	for partIdx, part := range score.Parts {
-		pevs, pTempo, pTimeSig, pMeasure, pHairpins, pRepeats, pSections, pKey, pFirstTS :=
+		pevs, pTempo, pTimeSig, pMeasure, pHairpins, pRepeats, pSections, pKey, pFirstTS, pKeySigMap, pEndings :=
 			convertPart(part, logger)
 		allEvents = append(allEvents, pevs...)
 		if partIdx == 0 {
-			tempoMap    = pTempo
-			timeSigMap  = pTimeSig
-			measureMap  = pMeasure
-			hairpins    = pHairpins
-			repeats     = pRepeats
-			sections    = pSections
+			tempoMap     = pTempo
+			timeSigMap   = pTimeSig
+			measureMap   = pMeasure
+			hairpins     = pHairpins
+			repeats      = pRepeats
+			sections     = pSections
 			keySignature = pKey
 			firstTimeSig = pFirstTS
+			keySigMap    = pKeySigMap
+			endings      = pEndings
 		} else {
 			// For additional parts, fill gaps in structural data from part 0
 			if keySignature == "" && pKey != "" {
 				keySignature = pKey
+				keySigMap = pKeySigMap
 			}
 			if firstTimeSig == "" && pFirstTS != "" {
 				firstTimeSig = pFirstTS
@@ -1294,6 +1335,18 @@ func convertMusicXML(xmlData []byte, filename string, logger *zap.Logger) (*Reco
 	if keySignature == "" {
 		keySignature = "C"
 	}
+	if len(keySigMap) == 0 {
+		keySigMap = append(keySigMap, KeySigEvent{AtMs: 0, Value: keySignature})
+	}
+
+	// Detect anacrusis: measure 0 exists → pickup
+	pickup := false
+	for _, m := range measureMap {
+		if m.Measure == 0 {
+			pickup = true
+			break
+		}
+	}
 
 	// ── Sort events: time ascending; NoteOn before NoteOff at same ms ─────
 	sort.SliceStable(allEvents, func(i, j int) bool {
@@ -1318,13 +1371,16 @@ func convertMusicXML(xmlData []byte, filename string, logger *zap.Logger) (*Reco
 				ImportedAt: now,
 			},
 		},
-		TempoMap:         tempoMap,
+		TempoMap:        tempoMap,
 		TimeSignatureMap: timeSigMap,
-		KeySignature:     keySignature,
-		MeasureMap:       measureMap,
-		Hairpins:         hairpins,
-		Repeats:          repeats,
-		Sections:         sections,
+		KeySignature:    keySignature,
+		KeySignatureMap: keySigMap,
+		Pickup:          pickup,
+		MeasureMap:      measureMap,
+		Hairpins:        hairpins,
+		Repeats:         repeats,
+		Endings:         endings,
+		Sections:        sections,
 		Events:           allEvents,
 	}, nil
 }

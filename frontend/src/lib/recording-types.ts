@@ -5,7 +5,7 @@ export type Finger = 1 | 2 | 3 | 4 | 5
 export type Hand = 'left' | 'right'
 
 export type Dynamic = 'ppp' | 'pp' | 'p' | 'mp' | 'mf' | 'f' | 'ff' | 'fff'
-export type Articulation = 'legato' | 'staccato' | 'tenuto' | 'accent'
+export type Articulation = 'legato' | 'staccato' | 'tenuto' | 'accent' | 'trill' | 'mordent' | 'inverted-mordent' | 'turn' | 'tremolo'
 
 /** Voice within the staff (1 = melody, 2 = accompaniment, etc.). */
 export type Voice = 1 | 2 | 3 | 4
@@ -57,6 +57,25 @@ export interface Repeat {
    * recording position in ms. Required when events are NOT pre-unrolled.
    */
   targetAtMs?: number
+  /** How many times to play before moving on (absent = default, i.e. 2 for repeat-close). */
+  times?: number
+}
+
+/** A key-signature change at a specific recording position. */
+export interface KeySigEvent {
+  /** Recording position where this key signature takes effect (ms). */
+  atMs: number
+  /** Key name, e.g. "C", "G", "Dm", "Bb". */
+  value: string
+}
+
+/** A volta bracket (1st/2nd ending) in the score (F1). */
+export interface Ending {
+  /** Ending label, e.g. "1", "2", "1,2". Matches the MusicXML number attribute. */
+  number: string
+  startMs: number
+  /** End of the bracket in ms. 0 = open-ended (rare, malformed input). */
+  endMs?: number
 }
 
 // ── Metadata (M1, M2, M3) ─────────────────────────────────────────────────────
@@ -305,6 +324,12 @@ export interface Recording {
   timeSignature?: string
   /** Initial key signature, e.g. "C", "G", "Dm", "Am". */
   keySignature?: string
+  /**
+   * Key-signature changes mid-piece, sorted by atMs ascending.
+   * The first entry always has atMs=0 and matches keySignature.
+   * Use keySigAt() to look up the key at any position.
+   */
+  keySignatureMap?: KeySigEvent[]
   /** True if the first measure is an anacrusis / pickup (T5). */
   pickup?: boolean
 
@@ -321,6 +346,8 @@ export interface Recording {
    * is retained as metadata. The app always plays events linearly.
    */
   repeats?: Repeat[]
+  /** Volta brackets (1st/2nd endings), sorted by startMs ascending (F1). */
+  endings?: Ending[]
 
   // ── Pedagogy ──────────────────────────────────────────────────────────────
   /** Per-exercise grading tolerances. Absent = defaults. */
@@ -384,6 +411,22 @@ export function bpmAt(recording: Recording, posMs: number): number {
 export function timeSigAt(recording: Recording, posMs: number): string {
   const map = recording.timeSignatureMap
   if (!map || map.length === 0) return recording.timeSignature ?? '4/4'
+
+  let active = map[0]
+  for (const ev of map) {
+    if (ev.atMs <= posMs) active = ev
+    else break
+  }
+  return active.value
+}
+
+/**
+ * Return the key signature string at a given playback position.
+ * Falls back to keySignature field or "C".
+ */
+export function keySigAt(recording: Recording, posMs: number): string {
+  const map = recording.keySignatureMap
+  if (!map || map.length === 0) return recording.keySignature ?? 'C'
 
   let active = map[0]
   for (const ev of map) {
