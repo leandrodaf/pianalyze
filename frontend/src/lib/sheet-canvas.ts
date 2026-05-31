@@ -76,7 +76,8 @@ export class SheetCanvas {
   private _highlighted: TrackedNote[]   = []
   private _lastTargetMs: number | null  = null
   private _svgOutDiv: HTMLDivElement | null = null
-  private _cursorX   = 0
+  private _cursorX     = 0
+  private _lastMusicMs = -LEAD_MS
   private vfKey = 'C'
   private _w = 0
 
@@ -112,6 +113,7 @@ export class SheetCanvas {
    * Negative values (before first note) are handled gracefully.
    */
   setPosition(musicMs: number): void {
+    this._lastMusicMs = musicMs
     this._moveCursor(musicMs)
     this._updateHighlight(musicMs)
   }
@@ -230,7 +232,6 @@ export class SheetCanvas {
         Carregue uma gravação para visualizar a partitura
       </div>`
     this._svgOutDiv    = null
-
     this._notes        = []
     this._highlighted  = []
     this._lastTargetMs = null
@@ -240,7 +241,6 @@ export class SheetCanvas {
   private _render(): void {
     this.wrap.innerHTML = ''
     this._svgOutDiv    = null
-
     this._notes        = []
     this._highlighted  = []
     this._lastTargetMs = null
@@ -252,7 +252,16 @@ export class SheetCanvas {
     const trebleY  = MARGIN_T
     const bassY    = trebleY + STAVE_H + GAP_TB
     const svgH     = MARGIN_T + STAVE_H * 2 + GAP_TB + 30
-    const logicalW = MARGIN_L + LEADIN_W + measures.length * MEASURE_W + 20
+
+    // Compute lead-in pixel width to match the first measure's px/ms rate so
+    // the cursor sweeps at constant apparent speed from lead-in into the piece.
+    const firstM   = measures[0]
+    const { beats: fBeats, beatValue: fBeatValue } = parseTimeSig(firstM.timeSig)
+    const firstMeasureDurationMs = fBeats * (60000 / firstM.bpm) * (4 / fBeatValue)
+    const pxPerMs  = MEASURE_W / firstMeasureDurationMs
+    const leadinW  = Math.max(LEADIN_W, Math.round(LEAD_MS * pxPerMs))
+
+    const logicalW = MARGIN_L + leadinW + measures.length * MEASURE_W + 20
 
     // Scrolling container — translateX drives the tape movement
     const outDiv = document.createElement('div')
@@ -273,16 +282,16 @@ export class SheetCanvas {
     svgEl.style.transform       = `scale(${SHEET_SCALE})`
     svgEl.style.transformOrigin = 'top left'
 
-    // Lead-in blank staves — the cursor sweeps across these during the 4-second prep
-    const liT = new Stave(MARGIN_L, trebleY, LEADIN_W)
-    const liB = new Stave(MARGIN_L, bassY,   LEADIN_W)
+    // Lead-in blank staves — the cursor sweeps across these during the lead-in prep
+    const liT = new Stave(MARGIN_L, trebleY, leadinW)
+    const liB = new Stave(MARGIN_L, bassY,   leadinW)
     liT.setContext(ctx).draw()
     liB.setContext(ctx).draw()
     try {
       new StaveConnector(liT, liB).setType('singleLeft').setContext(ctx).draw()
     } catch { /* skip */ }
 
-    let xCursor = MARGIN_L + LEADIN_W
+    let xCursor = MARGIN_L + leadinW
 
     const recording = this._recording
     // Track the active VexFlow key so we can emit mid-piece key changes.
@@ -366,7 +375,11 @@ export class SheetCanvas {
 
       this.layouts.push({
         measure: qm.measure, startMs: qm.startMs, endMs: qm.endMs,
-        noteX, noteW, trebleY, bassY,
+        // Use measure-start x and full MEASURE_W so the cursor advances at
+        // a constant px/ms rate across every measure (including the first,
+        // which otherwise loses noteW to the clef/key-sig area).
+        noteX: x, noteW: MEASURE_W,
+        trebleY, bassY,
       })
 
       xCursor += MEASURE_W
@@ -390,8 +403,8 @@ export class SheetCanvas {
     ].join(';')
     this.wrap.appendChild(cursorDiv)
 
-    // Seat the tape at the very beginning of the lead-in
-    this._moveCursor(-LEAD_MS)
+    // Restore current playback position — prevents a jump on window resize.
+    this._moveCursor(this._lastMusicMs)
   }
 
   private _collectNoteEls(vfNotes: StaveNote[], qNotes: QuantizedNote[]): void {
