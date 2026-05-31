@@ -31,6 +31,8 @@ const CLEF_W      = 95    // space consumed by clef + key sig + time sig (first 
 const LEAD_MS     = DEFAULT_LEAD_TIME_SEC * 1000
 // Render at logical (smaller) width then scale up so note heads are legible
 const SHEET_SCALE = 1.6
+// Blank stave zone before measure 1 that the cursor sweeps during the lead-in
+const LEADIN_W    = 260
 
 // Default rendering color — white-ish on dark background
 const LINE_COLOR   = 'rgba(200,200,200,0.78)'
@@ -272,11 +274,16 @@ export class SheetCanvas {
     // Render at a smaller logical width, then scale up so note heads are legible
     const logicalW  = Math.floor(this._w / SHEET_SCALE)
     const avail     = logicalW - MARGIN_L - MARGIN_R
+    // Row 0 has a lead-in zone (LEADIN_W) so it fits fewer measures
+    const perRow0   = Math.max(1, Math.floor((avail - LEADIN_W) / 220))
     const perRow    = Math.max(1, Math.floor(avail / 220))
-    const rows      = Math.ceil(measures.length / perRow)
     const measureW  = Math.floor(avail / perRow)
     const rowH      = STAVE_H * 2 + GAP_TB + GAP_ROW
-    const svgH      = MARGIN_T + rows * rowH + 30
+    // Compute row count and start-index per row
+    const rowStarts: number[] = [0]
+    for (let i = perRow0; i < measures.length; i += perRow) rowStarts.push(i)
+    const numRows   = rowStarts.length
+    const svgH      = MARGIN_T + numRows * rowH + 30
 
     const outDiv = document.createElement('div')
     outDiv.style.cssText = `width:100%;flex-shrink:0;height:${svgH * SHEET_SCALE}px;`
@@ -295,12 +302,25 @@ export class SheetCanvas {
     svgEl.style.transform       = `scale(${SHEET_SCALE})`
     svgEl.style.transformOrigin = 'top left'
 
-    for (let rowIdx = 0; rowIdx < rows; rowIdx++) {
-      const rowStart = rowIdx * perRow
-      const rowSlice = measures.slice(rowStart, Math.min(rowStart + perRow, measures.length))
-      const trebleY  = MARGIN_T + rowIdx * rowH
-      const bassY    = trebleY + STAVE_H + GAP_TB
-      let xCursor    = MARGIN_L
+    for (let rowIdx = 0; rowIdx < numRows; rowIdx++) {
+      const rowStart     = rowStarts[rowIdx]
+      const rowLen       = rowIdx === 0 ? perRow0 : perRow
+      const rowSlice     = measures.slice(rowStart, Math.min(rowStart + rowLen, measures.length))
+      const trebleY      = MARGIN_T + rowIdx * rowH
+      const bassY        = trebleY + STAVE_H + GAP_TB
+
+      // Row 0: draw blank lead-in staves so the cursor has a visible runway
+      let xCursor = MARGIN_L
+      if (rowIdx === 0) {
+        const liT = new Stave(MARGIN_L, trebleY, LEADIN_W)
+        const liB = new Stave(MARGIN_L, bassY,   LEADIN_W)
+        liT.setContext(ctx).draw()
+        liB.setContext(ctx).draw()
+        try {
+          new StaveConnector(liT, liB).setType('singleLeft').setContext(ctx).draw()
+        } catch { /* skip */ }
+        xCursor = MARGIN_L + LEADIN_W
+      }
 
       for (let mi = 0; mi < rowSlice.length; mi++) {
         const qm      = rowSlice[mi]
