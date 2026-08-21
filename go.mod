@@ -7,7 +7,7 @@ require (
 	github.com/leandrodaf/midi/v2 v2.3.1
 	github.com/wailsapp/wails/v2 v2.12.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/text v0.22.0
+	golang.org/x/text v0.41.0
 )
 
 require (
