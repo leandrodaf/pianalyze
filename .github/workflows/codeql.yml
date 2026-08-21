@@ -32,7 +32,7 @@ jobs:
             build-mode: none
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Install system deps (Linux, needed for Go autobuild)
         if: matrix.language == 'go'
