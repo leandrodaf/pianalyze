@@ -908,6 +908,43 @@ func TestSustainPedal(t *testing.T) {
 	}
 }
 
+// TestSostenutoPedal verifies that a sostenuto marking is emitted as CC 66,
+// not mislabeled as sustain (CC 64) — and that its "stop" correctly closes
+// CC 66 rather than CC 64.
+func TestSostenutoPedal(t *testing.T) {
+	sostOn := `<direction><direction-type><pedal type="sostenuto"/></direction-type></direction>`
+	sostOff := `<direction><direction-type><pedal type="stop"/></direction-type></direction>`
+	m1 := measure(1, attrs(4, 0, "major", "4", "4")+sostOn+note("C", 4, 4)+sostOff)
+	r := mustConvert(t, score(m1))
+
+	var cc66On, cc66Off, cc64Seen bool
+	for _, ev := range r.Events {
+		if ev.Cmd != 0xB0 {
+			continue
+		}
+		switch ev.Note {
+		case 66:
+			if ev.Vel == 127 {
+				cc66On = true
+			}
+			if ev.Vel == 0 {
+				cc66Off = true
+			}
+		case 64:
+			cc64Seen = true
+		}
+	}
+	if !cc66On {
+		t.Error("sostenuto pedal CC 66 vel=127 not found")
+	}
+	if !cc66Off {
+		t.Error("sostenuto pedal CC 66 vel=0 (stop) not found")
+	}
+	if cc64Seen {
+		t.Error("sostenuto pedal must not be emitted as CC 64 (sustain)")
+	}
+}
+
 // ── Multi-part ────────────────────────────────────────────────────────────────
 
 // TestMultiPartEvents verifies that notes from both parts are merged and

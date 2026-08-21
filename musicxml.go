@@ -639,6 +639,10 @@ func convertPart(part mxPart, logger *zap.Logger) (
 	// volta bracket tracking: endingNumber → startMs
 	openEndings := map[string]int64{}
 
+	// true while a sostenuto pedal marking is open, so a subsequent generic
+	// "stop" pedal direction closes CC 66 instead of being mislabeled as CC 64.
+	var sostenutoHeld bool
+
 	ticksToMs := func(ticks int) int64 {
 		if divisions <= 0 || bpm <= 0 {
 			return 0
@@ -763,24 +767,29 @@ func convertPart(part mxPart, logger *zap.Logger) (
 						}
 					}
 
-					// Sustain pedal → CC 64
+					// Sustain pedal → CC 64. Sostenuto → CC 66 (distinct from sustain —
+					// a "stop" only ends whichever one was actually open).
 					if dt.Pedal != nil {
-						var vel byte
 						switch dt.Pedal.Type {
-						case "start", "sostenuto":
-							vel = 127
+						case "start":
+							events = append(events, RecordedEvent{T: dirMs, Cmd: 0xB0, Note: 64, Vel: 127})
+						case "sostenuto":
+							sostenutoHeld = true
+							events = append(events, RecordedEvent{T: dirMs, Cmd: 0xB0, Note: 66, Vel: 127})
 						case "stop":
-							vel = 0
+							ccNum := byte(64)
+							if sostenutoHeld {
+								ccNum = 66
+								sostenutoHeld = false
+							}
+							events = append(events, RecordedEvent{T: dirMs, Cmd: 0xB0, Note: ccNum, Vel: 0})
 						case "change":
-							// change = stop then start; emit both
+							// change = stop then start; emit both (sustain only — "change" is
+							// specific to the damper pedal in the MusicXML spec)
 							events = append(events,
 								RecordedEvent{T: dirMs, Cmd: 0xB0, Note: 64, Vel: 0},
 								RecordedEvent{T: dirMs, Cmd: 0xB0, Note: 64, Vel: 127},
 							)
-							continue
-						}
-						if dt.Pedal.Type == "start" || dt.Pedal.Type == "stop" || dt.Pedal.Type == "sostenuto" {
-							events = append(events, RecordedEvent{T: dirMs, Cmd: 0xB0, Note: 64, Vel: vel})
 						}
 					}
 
