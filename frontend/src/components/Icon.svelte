@@ -1,5 +1,7 @@
 <script module lang="ts">
   export type IconName =
+    | 'waterfall-view'
+    | 'sheet-view'
     | 'music-note'
     | 'search'
     | 'download'
@@ -173,6 +175,21 @@
     <path d="M14.5 9.4c-1.1.8-1.8 2-2 3.3"/>
     <path d="M11 20c-5.5-2.5-.8-6.4-3-10"/>
     <path d="M14 4c0 2-1 3.5-2 4.5"/>
+
+  {:else if name === 'waterfall-view'}
+    <!-- Vertical piano-roll bars -->
+    <rect x="3"  y="8"  width="4" height="13" rx="1"/>
+    <rect x="10" y="4"  width="4" height="17" rx="1"/>
+    <rect x="17" y="11" width="4" height="10" rx="1"/>
+
+  {:else if name === 'sheet-view'}
+    <!-- Staff lines with a note head -->
+    <line x1="3" y1="7"  x2="21" y2="7"/>
+    <line x1="3" y1="11" x2="21" y2="11"/>
+    <line x1="3" y1="15" x2="21" y2="15"/>
+    <line x1="3" y1="19" x2="21" y2="19"/>
+    <ellipse cx="9" cy="15" rx="3" ry="2" fill="currentColor" stroke="none"/>
+    <line x1="12" y1="15" x2="12" y2="5" stroke-width="1.8"/>
 
   {:else if name === 'trophy'}
     <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>

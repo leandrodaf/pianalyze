@@ -3,6 +3,8 @@ import type { DifficultyPreset } from '../lib/recording-types'
 
 export type ChordDisplayMode = 'full' | 'short'
 
+export type DisplayMode = 'waterfall' | 'sheet'
+
 export interface Settings {
   chordDisplayMode: ChordDisplayMode
   /** Preferred skill level; null = no preference (no auto-preset applied). */
@@ -13,6 +15,8 @@ export interface Settings {
   savePath: string
   /** ID of the last successfully connected MIDI device (for auto-reconnect). */
   lastDeviceId: number | null
+  /** Visual display mode for playback: piano-roll waterfall or sheet music. */
+  displayMode: DisplayMode
 }
 
 const STORAGE_KEY = 'pianalyze.settings'
@@ -31,6 +35,7 @@ const defaults: Settings = {
   stepMode: false,
   savePath: '',
   lastDeviceId: null,
+  displayMode: 'waterfall',
 }
 
 function createSettingsStore() {
@@ -57,6 +62,9 @@ function createSettingsStore() {
     },
     patch(partial: Partial<Settings>) {
       update(s => persist({ ...s, ...partial }))
+    },
+    setDisplayMode(mode: DisplayMode) {
+      update(s => persist({ ...s, displayMode: mode }))
     },
   }
 }
