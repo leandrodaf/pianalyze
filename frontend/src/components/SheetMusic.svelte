@@ -46,6 +46,7 @@
       }
       // Both stores are already in sync (e.g. noteIntervals was updated independently).
       sheet.setData(ivs, state.recording)
+      sheet.setHairpins(state.recording.hairpins ?? [])
       lastRenderedRecording = state.recording
     })
 
@@ -67,6 +68,7 @@
         const ivs = get(noteIntervals)
         if (ivs.length > 0) {
           sheet.setData(ivs, state.recording)
+          sheet.setHairpins(state.recording.hairpins ?? [])
         }
         lastRenderedRecording = state.recording
       }

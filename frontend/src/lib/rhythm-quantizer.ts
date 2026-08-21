@@ -1,4 +1,4 @@
-import type { NoteInterval, Recording } from './recording-types'
+import type { NoteInterval, Recording, TupletInfo } from './recording-types'
 import { bpmAt, timeSigAt } from './recording-types'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -16,6 +16,8 @@ export interface QuantizedNote {
   dynamic?: string
   finger?: number
   hand?: 'left' | 'right'
+  /** Tuplet ratio (e.g. triplet = {actualNotes:3, normalNotes:2}) for notation grouping. */
+  tuplet?: TupletInfo
 }
 
 export interface QuantizedMeasure {
@@ -240,7 +242,15 @@ function buildVoiceNotes(
     }
 
     const onsetBeats = Math.max((slotEnd - gStart) / msPerBeat, 0.125)
-    const durInfo    = nearestDuration(onsetBeats)
+    // A tupleted note's onset is already compressed by the tuplet ratio (a
+    // triplet eighth sounds for 1/3 of a beat instead of 1/2) — recover the
+    // notated ("normal") duration before matching against the fixed-value
+    // DURATIONS table, otherwise it misquantizes to the nearest regular value.
+    const tuplet = group[0].tuplet
+    const nominalBeats = tuplet
+      ? onsetBeats * (tuplet.actualNotes / tuplet.normalNotes)
+      : onsetBeats
+    const durInfo = nearestDuration(nominalBeats)
 
     result.push({
       keys:         group.sort((a, b) => a.note - b.note).map(iv => midiToVfKey(iv.note)),
@@ -253,6 +263,7 @@ function buildVoiceNotes(
       dynamic:      group[0].dynamic,
       finger:       group[0].finger,
       hand:         group[0].hand,
+      tuplet,
     })
 
     cursor = gStart + durInfo.beats * msPerBeat

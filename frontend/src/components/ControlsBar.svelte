@@ -24,6 +24,12 @@
   $: hasLoop     = s.loopStart != null && s.loopEnd != null && s.loopEnd > s.loopStart
   $: sections    = s.recording?.sections ?? []
 
+  // Playback always plays events linearly — repeats/D.C./D.S. markers are stored
+  // as metadata only and never unrolled (see musicxml.go header). Surface that
+  // to the user instead of silently skipping notated repeat structure (#17).
+  const UNPLAYED_REPEAT_TYPES = new Set(['repeat-open', 'repeat-close', 'ds', 'dc', 'ds-coda', 'dc-coda'])
+  $: hasUnplayedStructure = (s.recording?.repeats ?? []).some(r => UNPLAYED_REPEAT_TYPES.has(r.type))
+
   $: liveBpm    = s.recording ? bpmAt(s.recording, s.positionMs) : null
   $: currentBpm = liveBpm ? Math.round(liveBpm * speed) : null
 
@@ -72,6 +78,12 @@
     </button>
     <button class="btn" on:click={stop} disabled={!hasRec || locked} title="Stop"><Icon name="stop" size={14}/></button>
   </div>
+
+  {#if hasUnplayedStructure}
+    <span class="repeat-notice" title={$t('controls.hasRepeats')}>
+      <Icon name="alert-triangle" size={14}/>
+    </span>
+  {/if}
 
   <div class="sep"></div>
 
@@ -411,6 +423,16 @@
     background: rgba(255,255,255,0.08);
     flex-shrink: 0;
     margin: 0 0.1rem;
+  }
+
+  .repeat-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #ffb84d;
+    opacity: 0.85;
+    cursor: help;
   }
 
   /* ── Hand balance ───────────────────────────────────────────────────────── */

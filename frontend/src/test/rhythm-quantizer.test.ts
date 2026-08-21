@@ -935,4 +935,33 @@ describe('quantizeRecording', () => {
       expect(m1.trebleVoices[0].filter(n => !n.isRest).length).toBe(2)
     })
   })
+
+  describe('tuplets (#17)', () => {
+    it('quantizes a triplet eighth note to "8", not the nearest regular value', () => {
+      // 3 triplet eighths fill one beat (500ms at 120bpm): each sounds for 1/3 beat.
+      const third = 500 / 3
+      const tupletInfo = { actualNotes: 3, normalNotes: 2 }
+      const intervals = [
+        ni(72, 0,           third,     { hand: 'right', tuplet: tupletInfo }),
+        ni(74, third,        2 * third, { hand: 'right', tuplet: tupletInfo }),
+        ni(76, 2 * third,    500,       { hand: 'right', tuplet: tupletInfo }),
+      ]
+      const measures = quantizeRecording(intervals, REC_120_44)
+      const m1 = measures.find(m => m.measure === 1)!
+      const notes = m1.treble.filter(n => !n.isRest)
+      expect(notes.length).toBe(3)
+      for (const n of notes) {
+        expect(n.duration).toBe('8')
+        expect(n.tuplet).toEqual(tupletInfo)
+      }
+    })
+
+    it('leaves non-tuplet notes without a tuplet field', () => {
+      const intervals = [ni(72, 0, 500, { hand: 'right' })]
+      const measures = quantizeRecording(intervals, REC_120_44)
+      const m1 = measures.find(m => m.measure === 1)!
+      const note = m1.treble.find(n => !n.isRest)!
+      expect(note.tuplet).toBeUndefined()
+    })
+  })
 })

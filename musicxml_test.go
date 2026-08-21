@@ -973,6 +973,117 @@ func TestMultiPartEvents(t *testing.T) {
 	}
 }
 
+// TestTwoPartPianoHandFallback verifies that a 2-part score with no <staff>
+// markers falls back to part-index-based hand assignment (part 0 → right,
+// part 1 → left).
+func TestTwoPartPianoHandFallback(t *testing.T) {
+	p1 := measure(1, attrs(4, 0, "major", "4", "4")+note("C", 5, 4)) // right hand part
+	p2 := measure(1, attrs(4, 0, "major", "4", "4")+note("C", 3, 4)) // left hand part
+
+	r := mustConvert(t, score(p1, p2))
+
+	var rightFound, leftFound bool
+	for _, ev := range r.Events {
+		if ev.Cmd != 0x90 {
+			continue
+		}
+		if ev.Note == 72 && ev.Hand == "right" {
+			rightFound = true
+		}
+		if ev.Note == 48 && ev.Hand == "left" {
+			leftFound = true
+		}
+	}
+	if !rightFound {
+		t.Error("note from part 0 should have Hand=right")
+	}
+	if !leftFound {
+		t.Error("note from part 1 (no <staff>) should fall back to Hand=left")
+	}
+}
+
+// TestThreePartNoHandFallback verifies the 2-part fallback does NOT kick in
+// for scores with more than 2 parts (ambiguous — stays "right" by default).
+func TestThreePartNoHandFallback(t *testing.T) {
+	p1 := measure(1, attrs(4, 0, "major", "4", "4")+note("C", 5, 4))
+	p2 := measure(1, attrs(4, 0, "major", "4", "4")+note("C", 3, 4))
+	p3 := measure(1, attrs(4, 0, "major", "4", "4")+note("E", 3, 4))
+
+	r := mustConvert(t, score(p1, p2, p3))
+
+	for _, ev := range r.Events {
+		if ev.Cmd == 0x90 && ev.Note == 48 && ev.Hand == "left" {
+			t.Error("3-part score should not trigger the 2-part hand fallback")
+		}
+	}
+}
+
+// ── Additive / compound time signatures ─────────────────────────────────────
+
+// TestAdditiveTimeSignature verifies a <time> with multiple <beats>/<beat-type>
+// pairs (e.g. 3+2/8) is captured in full instead of only the last pair.
+func TestAdditiveTimeSignature(t *testing.T) {
+	m1 := measure(1, `<attributes><divisions>4</divisions>
+		<time><beats>3</beats><beat-type>8</beat-type><beats>2</beats><beat-type>8</beat-type></time>
+		</attributes>`+note("C", 4, 4))
+	r := mustConvert(t, score(m1))
+
+	if len(r.TimeSignatureMap) == 0 {
+		t.Fatal("timeSignatureMap is empty")
+	}
+	if got := r.TimeSignatureMap[0].Value; got != "3+2/8" {
+		t.Errorf("TimeSignatureMap[0].Value = %q, want 3+2/8", got)
+	}
+}
+
+// TestAdditiveTimeSignatureMixedDenominators verifies additive meters whose
+// pairs don't share a denominator render as full "n/d+n/d" fragments.
+func TestAdditiveTimeSignatureMixedDenominators(t *testing.T) {
+	m1 := measure(1, `<attributes><divisions>4</divisions>
+		<time><beats>3</beats><beat-type>8</beat-type><beats>2</beats><beat-type>4</beat-type></time>
+		</attributes>`+note("C", 4, 4))
+	r := mustConvert(t, score(m1))
+
+	if got := r.TimeSignatureMap[0].Value; got != "3/8+2/4" {
+		t.Errorf("TimeSignatureMap[0].Value = %q, want 3/8+2/4", got)
+	}
+}
+
+// ── Tuplets ───────────────────────────────────────────────────────────────────
+
+// TestTupletTimeModification verifies <time-modification> is captured as
+// RecordedEvent.Tuplet on the NoteOn event.
+func TestTupletTimeModification(t *testing.T) {
+	tm := `<time-modification><actual-notes>3</actual-notes><normal-notes>2</normal-notes></time-modification>`
+	m1 := measure(1, attrs(4, 0, "major", "4", "4")+noteWith("C", 4, 4, tm))
+	r := mustConvert(t, score(m1))
+
+	ev := noteOnEvent(r)
+	if ev == nil {
+		t.Fatal("NoteOn event not found")
+	}
+	if ev.Tuplet == nil {
+		t.Fatal("Tuplet is nil, want {3 2}")
+	}
+	if ev.Tuplet.ActualNotes != 3 || ev.Tuplet.NormalNotes != 2 {
+		t.Errorf("Tuplet = %+v, want {3 2}", *ev.Tuplet)
+	}
+}
+
+// TestNoTupletWithoutTimeModification verifies plain notes have no Tuplet set.
+func TestNoTupletWithoutTimeModification(t *testing.T) {
+	m1 := measure(1, attrs(4, 0, "major", "4", "4")+note("C", 4, 4))
+	r := mustConvert(t, score(m1))
+
+	ev := noteOnEvent(r)
+	if ev == nil {
+		t.Fatal("NoteOn event not found")
+	}
+	if ev.Tuplet != nil {
+		t.Errorf("Tuplet = %+v, want nil", *ev.Tuplet)
+	}
+}
+
 // ── Metadata ──────────────────────────────────────────────────────────────────
 
 func TestMetadata(t *testing.T) {

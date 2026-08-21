@@ -257,6 +257,7 @@
   "controls.goto": "Ir para",
   "controls.step.enable": "Modo passo a passo: toque nota por nota",
   "controls.step.disable": "Desativar modo passo a passo",
+  "controls.hasRepeats": "Esta partitura contém repetições/D.C./D.S. que não são reproduzidas — a reprodução é sempre linear",
   "hud.show.fullname": "Mostrar nome completo",
   "hud.show.symbol": "Mostrar cifra",
   "key.major.abbr": "M",

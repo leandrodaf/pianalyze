@@ -33,21 +33,29 @@ const midiCC byte = 0xB0
 // RecordedEvent is one MIDI event captured during a recording session.
 // cmd = 0x90 NoteOn, 0x80 NoteOff, 0xB0 Control Change (pedal).
 type RecordedEvent struct {
-	T            int64  `json:"t"`                      // wall-clock offset in ms from recording start
-	Cmd          byte   `json:"cmd"`                    // raw MIDI command byte
-	Note         byte   `json:"note"`                   // MIDI note 0–127 or CC controller number
-	Vel          byte   `json:"vel"`                    // velocity / CC value 0–127
-	Finger       *byte  `json:"finger,omitempty"`       // 1–5 (optional)
-	Hand         string `json:"hand,omitempty"`         // "left" | "right" (optional)
-	Dynamic      string `json:"dynamic,omitempty"`      // "ppp"|"pp"|"p"|"mp"|"mf"|"f"|"ff"|"fff" (optional)
-	Articulation string `json:"articulation,omitempty"` // "legato"|"staccato"|"tenuto"|"accent"
-	Grace        bool   `json:"grace,omitempty"`        // true = grace note (E4)
-	Tip          string `json:"tip,omitempty"`          // pedagogical tip (G5)
-	HandPosition string `json:"handPosition,omitempty"` // keyboard position hint (G5)
-	Voice        *byte  `json:"voice,omitempty"`        // voice within staff 1–4 (E7)
-	Fermata      bool   `json:"fermata,omitempty"`      // fermata over this note (T5)
-	Slur         string `json:"slur,omitempty"`         // "start"|"end"|"continue" — slur boundary (E4)
-	Channel      *byte  `json:"channel,omitempty"`      // MIDI channel 0–15 (P2)
+	T            int64       `json:"t"`                      // wall-clock offset in ms from recording start
+	Cmd          byte        `json:"cmd"`                    // raw MIDI command byte
+	Note         byte        `json:"note"`                   // MIDI note 0–127 or CC controller number
+	Vel          byte        `json:"vel"`                    // velocity / CC value 0–127
+	Finger       *byte       `json:"finger,omitempty"`       // 1–5 (optional)
+	Hand         string      `json:"hand,omitempty"`         // "left" | "right" (optional)
+	Dynamic      string      `json:"dynamic,omitempty"`      // "ppp"|"pp"|"p"|"mp"|"mf"|"f"|"ff"|"fff" (optional)
+	Articulation string      `json:"articulation,omitempty"` // "legato"|"staccato"|"tenuto"|"accent"
+	Grace        bool        `json:"grace,omitempty"`        // true = grace note (E4)
+	Tip          string      `json:"tip,omitempty"`          // pedagogical tip (G5)
+	HandPosition string      `json:"handPosition,omitempty"` // keyboard position hint (G5)
+	Voice        *byte       `json:"voice,omitempty"`        // voice within staff 1–4 (E7)
+	Fermata      bool        `json:"fermata,omitempty"`      // fermata over this note (T5)
+	Slur         string      `json:"slur,omitempty"`         // "start"|"end"|"continue" — slur boundary (E4)
+	Tuplet       *TupletInfo `json:"tuplet,omitempty"`       // tuplet ratio for notation display (issue #17)
+}
+
+// TupletInfo describes the notated ratio of a tuplet (e.g. triplet = 3:2),
+// carried purely for display — the event's timing already reflects the
+// compressed MusicXML <duration> ticks.
+type TupletInfo struct {
+	ActualNotes byte `json:"actualNotes"` // e.g. 3 for a triplet
+	NormalNotes byte `json:"normalNotes"` // e.g. 2 for a triplet
 }
 
 // RecordingMeta holds title, composer, and provenance metadata (M1, M2).

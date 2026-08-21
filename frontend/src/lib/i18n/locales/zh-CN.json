@@ -257,6 +257,7 @@
   "controls.goto": "跳转到",
   "controls.step.enable": "逐音符模式：逐个演奏音符",
   "controls.step.disable": "关闭逐音符模式",
+  "controls.hasRepeats": "该乐谱包含反复记号/D.C./D.S. 标记，播放不会执行——播放始终是线性的",
   "hud.show.fullname": "显示全名",
   "hud.show.symbol": "显示符号",
   "key.major.abbr": "大",
