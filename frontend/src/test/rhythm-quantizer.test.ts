@@ -894,4 +894,45 @@ describe('quantizeRecording', () => {
       expect(measures[0].timeSig).toBe('3/4')
     })
   })
+
+  // ── polyphonic voices within one clef ────────────────────────────────────────
+
+  describe('independent MusicXML voices within a clef', () => {
+    it('single-voice content collapses to one entry in trebleVoices/bassVoices (backward compat)', () => {
+      const intervals = [ni(72, 0, 400, { hand: 'right' }), ni(48, 0, 1900, { hand: 'left' })]
+      const measures = quantizeRecording(intervals, REC_120_44)
+      const m1 = measures.find(m => m.measure === 1)!
+      expect(m1.trebleVoices.length).toBe(1)
+      expect(m1.bassVoices.length).toBe(1)
+      expect(m1.treble).toBe(m1.trebleVoices[0])
+      expect(m1.bass).toBe(m1.bassVoices[0])
+    })
+
+    it('splits two independent voices in the same clef into separate streams', () => {
+      // Voice 1: two quarter notes (melody). Voice 2: one half note (sustained).
+      const intervals = [
+        ni(72, 0, 500, { hand: 'right', voice: 1 }),
+        ni(74, 500, 1000, { hand: 'right', voice: 1 }),
+        ni(60, 0, 1000, { hand: 'right', voice: 2 }),
+      ]
+      const measures = quantizeRecording(intervals, REC_120_44)
+      const m1 = measures.find(m => m.measure === 1)!
+      expect(m1.trebleVoices.length).toBe(2)
+
+      const v1Notes = m1.trebleVoices[0].filter(n => !n.isRest)
+      const v2Notes = m1.trebleVoices[1].filter(n => !n.isRest)
+      expect(v1Notes.length).toBe(2)
+      expect(v2Notes.length).toBe(1)
+      // Voice 2's half note must not be merged/clustered with voice 1's onsets.
+      expect(v2Notes[0].duration).toBe('h')
+    })
+
+    it('groups voice-less notes as voice 1, matching pre-voice-split behaviour', () => {
+      const intervals = [ni(72, 0, 500, { hand: 'right' }), ni(74, 500, 1000, { hand: 'right' })]
+      const measures = quantizeRecording(intervals, REC_120_44)
+      const m1 = measures.find(m => m.measure === 1)!
+      expect(m1.trebleVoices.length).toBe(1)
+      expect(m1.trebleVoices[0].filter(n => !n.isRest).length).toBe(2)
+    })
+  })
 })

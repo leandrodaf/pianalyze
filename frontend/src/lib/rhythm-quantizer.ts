@@ -24,8 +24,17 @@ export interface QuantizedMeasure {
   endMs: number
   timeSig: string   // e.g. '4/4'
   bpm: number
+  /** Primary (first) musical voice in each clef — kept for callers that don't care about polyphony. */
   treble: QuantizedNote[]
   bass: QuantizedNote[]
+  /**
+   * All independent musical voices (MusicXML <voice> numbers) present in each
+   * clef, sorted by voice number ascending. Length 1 in the common
+   * monophonic-per-staff case, in which case treble === trebleVoices[0].
+   * Notes with no voice number (e.g. live recordings) are all grouped as voice 1.
+   */
+  trebleVoices: QuantizedNote[][]
+  bassVoices: QuantizedNote[][]
 }
 
 // ── MIDI → VexFlow pitch ──────────────────────────────────────────────────────
@@ -129,14 +138,19 @@ export function quantizeRecording(
 
     const mNotes = intervals.filter(iv => iv.startMs >= startMs && iv.startMs < endMs)
 
+    const trebleVoices = buildClefVoices(mNotes, 'treble', startMs, endMs, msPerBeat, quarterBeatsInMeasure)
+    const bassVoices   = buildClefVoices(mNotes, 'bass',   startMs, endMs, msPerBeat, quarterBeatsInMeasure)
+
     result.push({
       measure: entry.measure,
       startMs,
       endMs,
       timeSig: ts,
       bpm,
-      treble: buildVoice(mNotes, 'treble', startMs, endMs, msPerBeat, quarterBeatsInMeasure),
-      bass:   buildVoice(mNotes, 'bass',   startMs, endMs, msPerBeat, quarterBeatsInMeasure),
+      treble: trebleVoices[0],
+      bass:   bassVoices[0],
+      trebleVoices,
+      bassVoices,
     })
   }
 
@@ -157,14 +171,20 @@ function buildSyntheticMap(
   return out
 }
 
-function buildVoice(
+/**
+ * Split a clef's notes into independent musical voices (MusicXML <voice>
+ * numbers) and quantize each one separately. Notes with no voice number
+ * (e.g. live recordings without MusicXML provenance) are all treated as a
+ * single voice 1, which reproduces the previous single-stream behaviour.
+ */
+function buildClefVoices(
   notes: NoteInterval[],
   clef: 'treble' | 'bass',
   startMs: number,
   endMs: number,
   msPerBeat: number,
   totalBeats: number,
-): QuantizedNote[] {
+): QuantizedNote[][] {
   const voiced = notes.filter(iv =>
     clef === 'treble'
       ? (iv.hand === 'right' || (!iv.hand && iv.note >= 60))
@@ -172,9 +192,29 @@ function buildVoice(
   )
 
   if (voiced.length === 0) {
-    return [makeRest(startMs, endMs, Math.max(totalBeats, 0.125))]
+    return [[makeRest(startMs, endMs, Math.max(totalBeats, 0.125))]]
   }
 
+  const byVoice = new Map<number, NoteInterval[]>()
+  for (const iv of voiced) {
+    const vn = iv.voice ?? 1
+    const group = byVoice.get(vn)
+    if (group) group.push(iv)
+    else byVoice.set(vn, [iv])
+  }
+
+  return [...byVoice.keys()]
+    .sort((a, b) => a - b)
+    .map(vn => buildVoiceNotes(byVoice.get(vn)!, startMs, endMs, msPerBeat, totalBeats))
+}
+
+function buildVoiceNotes(
+  voiced: NoteInterval[],
+  startMs: number,
+  endMs: number,
+  msPerBeat: number,
+  totalBeats: number,
+): QuantizedNote[] {
   const groups = clusterChords(voiced)
   const result: QuantizedNote[] = []
   let cursor = startMs

@@ -7,6 +7,7 @@ import {
   Beam,
   Accidental,
   StaveConnector,
+  Stem,
 } from 'vexflow'
 import type { NoteInterval, Recording, Finger } from './recording-types'
 import { keySigAt } from './recording-types'
@@ -342,36 +343,51 @@ export class SheetCanvas {
       }
 
       const { beats, beatValue } = parseTimeSig(qm.timeSig)
-      const tn = qm.treble.map(qn => buildNote(qn, 'treble'))
-      const bn = qm.bass.map(qn   => buildNote(qn, 'bass'))
 
-      const tv = new Voice({ numBeats: beats, beatValue })
-      const bv = new Voice({ numBeats: beats, beatValue })
-      tv.setMode(2); bv.setMode(2)
-      tv.addTickables(tn)
-      bv.addTickables(bn)
+      // Build one VexFlow Voice per independent musical voice (MusicXML
+      // <voice> number) in each clef, so polyphonic staves (e.g. a sustained
+      // note under a moving line, common in chorales and Bach-style
+      // counterpoint) render as separate rhythmic streams instead of being
+      // flattened into one. Voice 1 stems up, subsequent voices stem down —
+      // the standard notation convention — only when there is more than one.
+      const buildClefVoices = (qNotesArr: QuantizedNote[][], clef: 'treble' | 'bass') =>
+        qNotesArr.map((qNotes, vi) => {
+          const stemDirection = qNotesArr.length > 1 ? (vi === 0 ? Stem.UP : Stem.DOWN) : undefined
+          const staveNotes = qNotes.map(qn => buildNote(qn, clef, stemDirection))
+          const voice = new Voice({ numBeats: beats, beatValue })
+          voice.setMode(2)
+          voice.addTickables(staveNotes)
+          return { voice, staveNotes, qNotes }
+        })
 
-      try { Accidental.applyAccidentals([tv, bv], measureVfKey) } catch { /* skip */ }
+      const trebleVoices = buildClefVoices(qm.trebleVoices, 'treble')
+      const bassVoices   = buildClefVoices(qm.bassVoices,   'bass')
+      const allEntries   = [...trebleVoices, ...bassVoices]
+      const allVoices    = allEntries.map(e => e.voice)
+
+      try { Accidental.applyAccidentals(allVoices, measureVfKey) } catch { /* skip */ }
 
       try {
-        new Formatter()
-          .joinVoices([tv]).joinVoices([bv])
-          .format([tv, bv], noteW)
+        const formatter = new Formatter()
+        allVoices.forEach(v => formatter.joinVoices([v]))
+        formatter.format(allVoices, noteW)
       } catch {
-        try { new Formatter().joinVoices([tv]).format([tv], noteW) } catch { /* skip */ }
-        try { new Formatter().joinVoices([bv]).format([bv], noteW) } catch { /* skip */ }
+        for (const v of allVoices) {
+          try { new Formatter().joinVoices([v]).format([v], noteW) } catch { /* skip */ }
+        }
       }
 
-      tv.draw(ctx, ts)
-      bv.draw(ctx, bs)
+      for (const { voice } of trebleVoices) voice.draw(ctx, ts)
+      for (const { voice } of bassVoices) voice.draw(ctx, bs)
 
-      this._collectNoteEls(tn, qm.treble)
-      this._collectNoteEls(bn, qm.bass)
+      for (const { staveNotes, qNotes } of allEntries) {
+        this._collectNoteEls(staveNotes, qNotes)
+      }
 
-      const beamT = tn.filter(n => !n.isRest() && BEAMABLE.has(safeGetDur(n)))
-      const beamB = bn.filter(n => !n.isRest() && BEAMABLE.has(safeGetDur(n)))
-      try { Beam.generateBeams(beamT).forEach(b => b.setContext(ctx).draw()) } catch { /* skip */ }
-      try { Beam.generateBeams(beamB).forEach(b => b.setContext(ctx).draw()) } catch { /* skip */ }
+      for (const { staveNotes } of allEntries) {
+        const beamable = staveNotes.filter(n => !n.isRest() && BEAMABLE.has(safeGetDur(n)))
+        try { Beam.generateBeams(beamable).forEach(b => b.setContext(ctx).draw()) } catch { /* skip */ }
+      }
 
       this.layouts.push({
         measure: qm.measure, startMs: qm.startMs, endMs: qm.endMs,
@@ -435,12 +451,13 @@ export class SheetCanvas {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function buildNote(qn: QuantizedNote, clef: 'treble' | 'bass'): StaveNote {
+function buildNote(qn: QuantizedNote, clef: 'treble' | 'bass', stemDirection?: number): StaveNote {
   return new StaveNote({
     keys:     qn.keys,
     duration: qn.duration,
     type:     qn.isRest ? 'r' : undefined,
     clef,
+    stemDirection,
   })
 }
 
