@@ -64,18 +64,18 @@ import (
 // ── MusicXML XML types ────────────────────────────────────────────────────────
 
 type mxScore struct {
-	XMLName         xml.Name    `xml:"score-partwise"`
-	MovementNumber  string      `xml:"movement-number"`
-	MovementTitle   string      `xml:"movement-title"`
-	Work            mxWork      `xml:"work"`
-	Identification  mxIdentify  `xml:"identification"`
-	Credits         []mxCredit  `xml:"credit"`
-	PartList        mxPartList  `xml:"part-list"`
-	Parts           []mxPart    `xml:"part"`
+	XMLName        xml.Name   `xml:"score-partwise"`
+	MovementNumber string     `xml:"movement-number"`
+	MovementTitle  string     `xml:"movement-title"`
+	Work           mxWork     `xml:"work"`
+	Identification mxIdentify `xml:"identification"`
+	Credits        []mxCredit `xml:"credit"`
+	PartList       mxPartList `xml:"part-list"`
+	Parts          []mxPart   `xml:"part"`
 }
 
 type mxCredit struct {
-	Page  int             `xml:"page,attr"`
+	Page  int            `xml:"page,attr"`
 	Words []mxCreditWord `xml:"credit-words"`
 }
 
@@ -209,22 +209,22 @@ type mxTranspose struct {
 }
 
 type mxDirection struct {
-	Staff int        `xml:"staff"`
+	Staff int         `xml:"staff"`
 	Types []mxDirType `xml:"direction-type"`
-	Sound *mxSound   `xml:"sound"`
+	Sound *mxSound    `xml:"sound"`
 }
 
 type mxDirType struct {
-	Dynamics    *mxDynamics  `xml:"dynamics"`
-	Metronome   *mxMetronome `xml:"metronome"`
-	Wedge       *mxWedge     `xml:"wedge"`
-	Words       string       `xml:"words"`
-	Rehearsal   string       `xml:"rehearsal"`
-	Pedal       *mxPedal     `xml:"pedal"`
-	Coda        *struct{}    `xml:"coda"`
-	Segno       *struct{}    `xml:"segno"`
-	DalSegno    *struct{}    `xml:"dal-segno"`
-	DaCapo      *struct{}    `xml:"da-capo"`
+	Dynamics  *mxDynamics  `xml:"dynamics"`
+	Metronome *mxMetronome `xml:"metronome"`
+	Wedge     *mxWedge     `xml:"wedge"`
+	Words     string       `xml:"words"`
+	Rehearsal string       `xml:"rehearsal"`
+	Pedal     *mxPedal     `xml:"pedal"`
+	Coda      *struct{}    `xml:"coda"`
+	Segno     *struct{}    `xml:"segno"`
+	DalSegno  *struct{}    `xml:"dal-segno"`
+	DaCapo    *struct{}    `xml:"da-capo"`
 }
 
 type mxDynamics struct {
@@ -1192,7 +1192,6 @@ func extractMetaFromCredits(credits []mxCredit) (title, composer string) {
 	return
 }
 
-
 // Recording v2, ready for JSON marshalling.
 func convertMusicXML(xmlData []byte, filename string, logger *zap.Logger) (*Recording, error) {
 	var score mxScore
@@ -1291,16 +1290,16 @@ func convertMusicXML(xmlData []byte, filename string, logger *zap.Logger) (*Reco
 			convertPart(part, logger)
 		allEvents = append(allEvents, pevs...)
 		if partIdx == 0 {
-			tempoMap     = pTempo
-			timeSigMap   = pTimeSig
-			measureMap   = pMeasure
-			hairpins     = pHairpins
-			repeats      = pRepeats
-			sections     = pSections
+			tempoMap = pTempo
+			timeSigMap = pTimeSig
+			measureMap = pMeasure
+			hairpins = pHairpins
+			repeats = pRepeats
+			sections = pSections
 			keySignature = pKey
 			firstTimeSig = pFirstTS
-			keySigMap    = pKeySigMap
-			endings      = pEndings
+			keySigMap = pKeySigMap
+			endings = pEndings
 		} else {
 			// For additional parts, fill gaps in structural data from part 0
 			if keySignature == "" && pKey != "" {
@@ -1371,16 +1370,16 @@ func convertMusicXML(xmlData []byte, filename string, logger *zap.Logger) (*Reco
 				ImportedAt: now,
 			},
 		},
-		TempoMap:        tempoMap,
+		TempoMap:         tempoMap,
 		TimeSignatureMap: timeSigMap,
-		KeySignature:    keySignature,
-		KeySignatureMap: keySigMap,
-		Pickup:          pickup,
-		MeasureMap:      measureMap,
-		Hairpins:        hairpins,
-		Repeats:         repeats,
-		Endings:         endings,
-		Sections:        sections,
+		KeySignature:     keySignature,
+		KeySignatureMap:  keySigMap,
+		Pickup:           pickup,
+		MeasureMap:       measureMap,
+		Hairpins:         hairpins,
+		Repeats:          repeats,
+		Endings:          endings,
+		Sections:         sections,
 		Events:           allEvents,
 	}, nil
 }

@@ -146,7 +146,7 @@ type Recording struct {
 	BPM              *float64       `json:"bpm,omitempty"` // deprecated v1 compat
 	TimeSignatureMap []TimeSigEvent `json:"timeSignatureMap,omitempty"`
 	TimeSignature    string         `json:"timeSignature,omitempty"` // deprecated v1 compat
-	KeySignature    string        `json:"keySignature,omitempty"`
+	KeySignature     string         `json:"keySignature,omitempty"`
 	// Key-signature changes mid-piece, sorted by AtMs ascending.
 	// KeySignature holds the initial value; this map adds subsequent changes.
 	KeySignatureMap []KeySigEvent `json:"keySignatureMap,omitempty"`

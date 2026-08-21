@@ -110,7 +110,7 @@ func TestMxPitchToMidi(t *testing.T) {
 		octave int
 		want   int
 	}{
-		{"C", 0, 4, 60},  // middle C
+		{"C", 0, 4, 60}, // middle C
 		{"D", 0, 4, 62},
 		{"E", 0, 4, 64},
 		{"F", 0, 4, 65},
@@ -322,19 +322,19 @@ func TestRepeatOpenClose(t *testing.T) {
 	m1 := measure(1, attrs(4, 0, "major", "4", "4")+barOpen+note("C", 4, 4)+barClose)
 	r := mustConvert(t, score(m1))
 
-	var open, close_ bool
+	var open, closed bool
 	for _, rep := range r.Repeats {
 		if rep.Type == "repeat-open" {
 			open = true
 		}
 		if rep.Type == "repeat-close" {
-			close_ = true
+			closed = true
 		}
 	}
 	if !open {
 		t.Error("repeat-open not found in Repeats")
 	}
-	if !close_ {
+	if !closed {
 		t.Error("repeat-close not found in Repeats")
 	}
 }
@@ -655,9 +655,10 @@ func TestTie(t *testing.T) {
 	var ons, offs []RecordedEvent
 	for _, ev := range r.Events {
 		if ev.Note == 60 {
-			if ev.Cmd == 0x90 {
+			switch ev.Cmd {
+			case 0x90:
 				ons = append(ons, ev)
-			} else if ev.Cmd == 0x80 {
+			case 0x80:
 				offs = append(offs, ev)
 			}
 		}

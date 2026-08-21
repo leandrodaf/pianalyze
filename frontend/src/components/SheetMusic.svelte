@@ -13,26 +13,13 @@
 
   let container: HTMLDivElement
   let sheet: SheetCanvas | null = null
-  let rafId = 0
   // Tracks which Recording object was last rendered so we don't re-render on
-  // every rAF tick and also so we catch a new recording even when noteIntervals
+  // every store tick and also so we catch a new recording even when noteIntervals
   // fires before playbackStore updates (they always change together in loadRecording).
   let lastRenderedRecording: Recording | null = null
 
   function musicMs(positionMs: number): number {
     return positionMs - LEAD_MS
-  }
-
-  function tick() {
-    const state = get(playbackStore)
-    sheet?.setPosition(musicMs(state.positionMs))
-    if (state.status === 'playing') {
-      rafId = requestAnimationFrame(tick)
-    }
-  }
-
-  function stopRaf() {
-    if (rafId) { cancelAnimationFrame(rafId); rafId = 0 }
   }
 
   onMount(() => {
@@ -69,7 +56,6 @@
 
       if (!state.recording) {
         sheet.clearData()
-        stopRaf()
         lastRenderedRecording = null
         return
       }
@@ -85,18 +71,12 @@
         lastRenderedRecording = state.recording
       }
 
-      // Cursor update
+      // Cursor update — playback.ts's own rAF loop drives a playbackStore update
+      // on every frame while playing, so no separate rAF loop is needed here.
       sheet.setPosition(musicMs(state.positionMs))
-
-      // Drive rAF loop while playing for smooth cursor animation
-      stopRaf()
-      if (state.status === 'playing') {
-        rafId = requestAnimationFrame(tick)
-      }
     })
 
     return () => {
-      stopRaf()
       ro.disconnect()
       unsubIntervals()
       unsubPlayback()
