@@ -25,10 +25,15 @@
   $: sections    = s.recording?.sections ?? []
 
   // Playback always plays events linearly — repeats/D.C./D.S. markers are stored
-  // as metadata only and never unrolled (see musicxml.go header). Surface that
-  // to the user instead of silently skipping notated repeat structure (#17).
+  // as metadata only and never unrolled (see musicxml.go header). Volta brackets
+  // (endings) imply the same gap: the written-out events pass through the 1st
+  // and 2nd ending back-to-back instead of actually repeating the bracketed
+  // section, so their presence also means the notated form differs from what
+  // gets played. Surface both instead of silently skipping structure (#17).
   const UNPLAYED_REPEAT_TYPES = new Set(['repeat-open', 'repeat-close', 'ds', 'dc', 'ds-coda', 'dc-coda'])
-  $: hasUnplayedStructure = (s.recording?.repeats ?? []).some(r => UNPLAYED_REPEAT_TYPES.has(r.type))
+  $: hasUnplayedStructure =
+    (s.recording?.repeats ?? []).some(r => UNPLAYED_REPEAT_TYPES.has(r.type)) ||
+    (s.recording?.endings ?? []).length > 0
 
   $: liveBpm    = s.recording ? bpmAt(s.recording, s.positionMs) : null
   $: currentBpm = liveBpm ? Math.round(liveBpm * speed) : null

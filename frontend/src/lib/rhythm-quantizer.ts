@@ -78,7 +78,30 @@ function nearestDuration(beats: number): DurInfo {
 
 // ── Time signature helpers ────────────────────────────────────────────────────
 
+/**
+ * Parse a time-signature string into total beats + beat value for measure-
+ * duration math. Handles the two additive/compound forms the MusicXML
+ * importer can emit (#17):
+ *   - Shared denominator: "3+2/8"   (numerators joined by "+", one "/den")
+ *   - Mixed denominators:  "3/8+2/4" (full "n/d" fragments joined by "+")
+ * A plain "4/4" round-trips exactly as before.
+ */
 export function parseTimeSig(ts: string): { beats: number; beatValue: number } {
+  if (ts.includes('+')) {
+    const slashCount = (ts.match(/\//g) ?? []).length
+    if (slashCount === 1) {
+      const [numsPart, dPart] = ts.split('/')
+      const d = Number(dPart) || 4
+      const total = numsPart.split('+').reduce((sum, s) => sum + (Number(s) || 0), 0)
+      return { beats: total || 4, beatValue: d }
+    }
+    // Mixed denominators — normalize every fragment to quarter-note beats.
+    const totalQuarters = ts.split('+').reduce((sum, frag) => {
+      const [n, d] = frag.split('/').map(Number)
+      return n && d ? sum + n * (4 / d) : sum
+    }, 0)
+    return { beats: totalQuarters || 4, beatValue: 4 }
+  }
   const [n, d] = ts.split('/').map(Number)
   return { beats: n || 4, beatValue: d || 4 }
 }
