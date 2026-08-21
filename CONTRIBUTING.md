@@ -81,7 +81,6 @@ gofmt -l .   # should print nothing
 
 - CI runs automatically (`Lint`, `Test / ubuntu-latest`, `Test / macos-latest`,
   `Test / windows-latest`, `Frontend`) — all must pass before merge.
-- The PR needs at least one approving review before it can be merged.
 - PRs are merged via **squash merge** — your branch's commits become a single commit
   on `main`, so don't worry about a tidy commit-by-commit history; do worry about a
   good final PR title/description, since that becomes the squash commit message.
