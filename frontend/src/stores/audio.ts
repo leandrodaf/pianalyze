@@ -146,9 +146,14 @@ export function setHandVolume(hand: 'left' | 'right', vol: number): void {
  *  minimum-latency playback. Returns the unsubscribe function. Must be called
  *  after initAudio() has resolved at least once; notes arriving before the
  *  sampler is ready are silently dropped (playNote/stopNote guard). */
+const CMD_NOTE_ON = 0x90
+const CMD_NOTE_OFF = 0x80
+
 export function connectLiveMidiAudio(): () => void {
-  return EventsOn('midi:note', (n: { note: number; vel: number }) => {
-    if (n.vel > 0) {
+  return EventsOn('midi:note', (n: { note: number; vel: number; cmd: number }) => {
+    // 0x90 vel>0 = NoteOn; 0x90 vel=0 or 0x80 any vel = NoteOff
+    const isNoteOn = n.cmd === CMD_NOTE_ON && n.vel > 0
+    if (isNoteOn) {
       playNote(n.note, n.vel)
     } else {
       stopNote(n.note)

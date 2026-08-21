@@ -475,6 +475,7 @@ func (a *App) StartCapture() error {
 				runtime.EventsEmit(a.ctx, "midi:note", map[string]any{
 					"note": int(event.Note),
 					"vel":  int(event.Velocity),
+					"cmd":  int(event.Command),
 				})
 			}
 			pCtx := pipelinectx.NewPipelineContext(captureCtx, event)
