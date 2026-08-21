@@ -17,6 +17,6 @@ import "os"
 // Setting these here (in an init function, before main) ensures they are
 // visible to WebKit when it initialises inside wails.Run.
 func init() {
-	os.Setenv("WEBKIT_DISABLE_COMPOSITING_MODE", "1")
-	os.Setenv("WEBKIT_FORCE_SANDBOX", "0")
+	_ = os.Setenv("WEBKIT_DISABLE_COMPOSITING_MODE", "1")
+	_ = os.Setenv("WEBKIT_FORCE_SANDBOX", "0")
 }
