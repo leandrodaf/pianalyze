@@ -3,10 +3,10 @@ module github.com/leandrodaf/pianalyze
 go 1.26.0
 
 require (
-	github.com/getsentry/sentry-go v0.46.2
+	github.com/getsentry/sentry-go v0.48.0
 	github.com/leandrodaf/midi/v2 v2.3.1
-	github.com/wailsapp/wails/v2 v2.12.0
-	go.uber.org/zap v1.27.0
+	github.com/wailsapp/wails/v2 v2.15.0
+	go.uber.org/zap v1.28.0
 	golang.org/x/text v0.41.0
 )
 
@@ -36,7 +36,7 @@ require (
 	github.com/wailsapp/go-webview2 v1.0.22 // indirect
 	github.com/wailsapp/mimetype v1.4.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/crypto v0.33.0 // indirect
-	golang.org/x/net v0.35.0 // indirect
-	golang.org/x/sys v0.44.0 // indirect
+	golang.org/x/crypto v0.53.0 // indirect
+	golang.org/x/net v0.56.0 // indirect
+	golang.org/x/sys v0.46.0 // indirect
 )
