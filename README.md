@@ -346,14 +346,16 @@ data/                   Built-in exercise definitions
 
 ## 🤝 Contributing
 
-Contributions are welcome!
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for branch naming,
+commit conventions, the checks to run before opening a PR, and what happens after
+you open one (CI, required review, squash merge).
+
+Quick version:
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
+2. Create a branch: `git checkout -b feat/my-feature`
 3. Commit your changes following [Conventional Commits](https://www.conventionalcommits.org/)
-4. Push and open a Pull Request
-
-Please make sure `go test -race -tags webkit2_41 ./...` and `golangci-lint run --build-tags webkit2_41 ./...` pass before submitting.
+4. Push and open a Pull Request against `main`
 
 ---
 

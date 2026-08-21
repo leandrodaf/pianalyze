@@ -1,14 +1,20 @@
-## What does this PR do?
+## Summary
 
-<!-- Short description of the change and why it's needed -->
+<!-- What does this PR do, and why? -->
 
-## How was this tested?
+## Related issue
 
-<!-- go test -race / npm test / manual steps -->
+<!-- Fixes #123 — leave blank if none -->
 
-## Checklist
+## Test plan
 
-- [ ] `go vet` and `golangci-lint` pass (`--build-tags webkit2_41`)
-- [ ] `go test -race ./...` passes
-- [ ] Frontend: `npm run check` and `npm test` pass (if `frontend/` was touched)
-- [ ] Added/updated tests for the behavior change
+<!-- How did you verify this? Check what applies, delete what doesn't. -->
+
+- [ ] `go test -race -tags webkit2_41 ./...` passes
+- [ ] `golangci-lint run --build-tags webkit2_41 ./...` passes
+- [ ] `npm run check && npm test && npm run build` passes (frontend/)
+- [ ] Manually tested in the running app (describe how below)
+
+## Screenshots / recordings
+
+<!-- For UI changes, a screenshot or GIF makes review much faster. Delete if not applicable. -->
