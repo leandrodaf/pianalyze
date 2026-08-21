@@ -43,6 +43,7 @@ build/bin/
 
 # Code coverage
 coverage.out
+frontend/coverage/
 
 # Other project-specific directories
 /shelf/

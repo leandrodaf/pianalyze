@@ -521,7 +521,7 @@ func extractMXL(data []byte) ([]byte, error) {
 		if err := xml.NewDecoder(rc).Decode(&c); err == nil && len(c.Rootfiles) > 0 {
 			rootFile = c.Rootfiles[0].FullPath
 		}
-		rc.Close() //nolint:errcheck
+		rc.Close() //nolint:errcheck,gosec // best-effort close; read already completed
 	}
 
 	for _, f := range r.File {
@@ -1045,7 +1045,9 @@ func convertPart(part mxPart, logger *zap.Logger) (
 
 	// Close any dangling tied notes (malformed XML edge case)
 	for tk, onMs := range tieOnMs {
-		midiNote := byte(tk % 1_000)
+		// tk was built by tieKey as staff*1_000_000 + voice*1_000 + note, so
+		// tk % 1_000 recovers the original MIDI note (0-127) exactly.
+		midiNote := byte(tk % 1_000) //nolint:gosec
 		events = append(events, RecordedEvent{
 			T: onMs + 500, Cmd: 0x80, Note: midiNote, Vel: 0,
 		})

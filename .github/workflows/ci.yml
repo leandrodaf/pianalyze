@@ -51,10 +51,21 @@ jobs:
         run: go vet -tags "${{ matrix.go-tags }}" ./...
 
       - name: Test (race detector)
-        run: go test -race -tags "${{ matrix.go-tags }}" -timeout 120s -count=1 ./...
+        run: go test -race -tags "${{ matrix.go-tags }}" -timeout 120s -count=1 -coverprofile=coverage.out -covermode=atomic ./...
 
       - name: Benchmark (smoke)
         run: go test -tags "${{ matrix.go-tags }}" -run='^$' -bench=. -benchtime=1x ./...
+
+      # Coverage is only representative on the Linux leg (the other OSes skip
+      # MIDI/webkit-gated code paths), so upload once to avoid double-counting.
+      - name: Upload coverage to Codecov
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.out
+          flags: go
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
 
   lint:
     name: Lint
@@ -79,6 +90,12 @@ jobs:
       - name: Lint
         run: golangci-lint run --build-tags webkit2_41 ./...
 
+      - name: govulncheck
+        uses: golang/govulncheck-action@v1
+        with:
+          go-version-file: go.mod
+          go-package: ./...
+
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
@@ -100,6 +117,17 @@ jobs:
 
       - name: Type-check (svelte-check)
         run: npm run check
+
+      - name: Test coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          directory: ./frontend/coverage
+          flags: frontend
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
 
       - name: Build
         run: npm run build

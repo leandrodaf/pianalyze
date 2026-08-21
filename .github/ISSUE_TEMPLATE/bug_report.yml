@@ -1,0 +1,47 @@
+name: Bug report
+description: Report a problem with Pianalyze
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: OS / version
+      placeholder: "e.g. macOS 15.1, Windows 11, Ubuntu 24.04"
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: Pianalyze version
+    validations:
+      required: true
+
+  - type: input
+    id: midi-device
+    attributes:
+      label: MIDI device (if relevant)
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      render: shell

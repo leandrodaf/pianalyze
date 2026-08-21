@@ -5,32 +5,37 @@ linters:
   enable:
     - errcheck       # erros de retorno ignorados
     - govet          # análise estática do compilador
+    - gosec          # vulnerabilidades comuns (creds hardcoded, crypto fraco, etc.)
     - ineffassign    # atribuições sem efeito
     - misspell       # erros de ortografia em comentários/strings
     - revive         # estilo e boas práticas Go
     - staticcheck    # análise estática avançada (SA, S1, QF)
     - unused         # identificadores não usados
-
-linters-settings:
-  revive:
+  settings:
+    revive:
+      rules:
+        - name: package-comments
+        - name: error-return
+        - name: var-naming
+        - name: unused-parameter
+          arguments:
+            - allowRegex: "^_"
+  exclusions:
     rules:
-      - name: package-comments
-      - name: error-return
-      - name: var-naming
-      - name: unused-parameter
-        arguments:
-          - allowRegex: "^_"
+      # errcheck em arquivos de teste gera falsos positivos (b.Loop, t.Error etc.)
+      - path: "_test\\.go"
+        linters:
+          - errcheck
+      # gosec sinaliza math/rand e afins em testes, onde não há risco de segurança real
+      - path: "_test\\.go"
+        linters:
+          - gosec
+      # unused-parameter é idiomático em assinaturas de teste (t *testing.T sem uso direto)
+      - path: "_test\\.go"
+        linters:
+          - revive
+        text: "unused-parameter"
 
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
-  exclude-rules:
-    # errcheck em arquivos de teste gera falsos positivos (b.Loop, t.Error etc.)
-    - path: "_test\\.go"
-      linters:
-        - errcheck
-    # unused-parameter é idiomático em assinaturas de teste (t *testing.T sem uso direto)
-    - path: "_test\\.go"
-      linters:
-        - revive
-      text: "unused-parameter"
