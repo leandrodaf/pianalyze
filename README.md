@@ -18,6 +18,14 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/leandrodaf/pianalyze/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/leandrodaf/pianalyze/ci.yml?branch=main&style=flat-square&label=CI"/></a>
+  <a href="https://github.com/leandrodaf/pianalyze/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://img.shields.io/github/actions/workflow/status/leandrodaf/pianalyze/codeql.yml?branch=main&style=flat-square&label=CodeQL"/></a>
+  <a href="https://codecov.io/gh/leandrodaf/pianalyze"><img alt="Coverage" src="https://img.shields.io/codecov/c/github/leandrodaf/pianalyze?style=flat-square&logo=codecov"/></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=leandrodaf_pianalyze"><img alt="Quality Gate" src="https://img.shields.io/sonar/quality_gate/leandrodaf_pianalyze?server=https%3A%2F%2Fsonarcloud.io&style=flat-square"/></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/leandrodaf/pianalyze"><img alt="OpenSSF Scorecard" src="https://api.scorecard.dev/projects/github.com/leandrodaf/pianalyze/badge"/></a>
+</p>
+
+<p align="center">
   <a href="https://leandrodaf.github.io/pianalyze/">🌐 Website</a>
 </p>
 
