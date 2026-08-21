@@ -184,9 +184,9 @@
       if (state.practice && hasRecording && !state.stepMode) {
         const speedChanged = Math.abs(state.speedMultiplier - prevSpeed) > 0.001
         if (state.status === 'playing' && (prevStatus !== 'playing' || speedChanged)) {
-          StartPractice(state.positionMs, state.speedMultiplier).catch(() => {})
+          StartPractice(Math.round(state.positionMs), state.speedMultiplier).catch(err => console.error('StartPractice failed', err))
         } else if (state.status !== 'playing' && prevStatus === 'playing') {
-          PausePractice(state.positionMs).catch(() => {})
+          PausePractice(Math.round(state.positionMs)).catch(err => console.error('PausePractice failed', err))
         }
       }
       prevStatus = state.status

@@ -299,6 +299,12 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
 
     playbackStore.update(s => ({ ...s, positionMs: pos }))
 
+    // cancelAll() sets rafId = 0. If a subscriber called cancelAll() (e.g. the step-mode
+    // gate called pause()) during the update above, we must NOT register a new RAF —
+    // doing so would create a dangling loop that keeps advancing positionMs while paused,
+    // causing wrong pause positions and incorrect "miss" grades.
+    if (rafId === 0) return
+
     if (pos < durationMs) {
       rafId = requestAnimationFrame(tick)
     } else {
