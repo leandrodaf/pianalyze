@@ -31,7 +31,7 @@ jobs:
       - name: Go coverage
         run: go test -tags webkit2_41 -coverprofile=coverage.out -covermode=atomic ./...
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: "npm"
