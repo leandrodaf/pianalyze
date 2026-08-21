@@ -41,13 +41,15 @@ The app **automatically detects** whether a file is compressed by the magic byte
   "meta": { ... },        // optional — title, composer, provenance
   "tempoMap": [ ... ],    // optional — tempo map (replaces "bpm")
   "timeSignatureMap": [ ... ], // optional — time signature map (replaces "timeSignature")
-  "keySignature": "...",  // optional — key signature
+  "keySignature": "...",  // optional — initial key signature
+  "keySignatureMap": [ ... ], // optional — key-signature changes mid-piece
   "pickup": false,        // optional — true if the first measure is a pickup (anacrusis)
 
   "sections": [ ... ],    // optional — named sections (intro, verse, chorus…)
   "measureMap": [ ... ],  // optional — start position of each measure
   "hairpins": [ ... ],    // optional — crescendos and decrescendos
   "repeats": [ ... ],     // optional — repeat markers and navigation
+  "endings": [ ... ],     // optional — volta brackets (1st/2nd endings)
 
   "gradingProfile": { ... }, // optional — custom grading tolerances
 
@@ -148,8 +150,25 @@ Allows the app to position the metronome and navigate by measure number.
 
 ### `keySignature`
 
-Key signature in compact notation: `"C"`, `"G"`, `"D"`, `"F"`, `"Bb"`, `"Am"`, `"Dm"`.
+Initial key signature in compact notation: `"C"`, `"G"`, `"D"`, `"F"`, `"Bb"`, `"Am"`, `"Dm"`.
 Informational only — does not affect MIDI playback.
+
+### `keySignatureMap` — Key-signature changes
+
+Array of key-signature changes sorted by `atMs`. The first entry always has `atMs: 0`
+and matches `keySignature`; use it to look up mid-piece modulations.
+
+```jsonc
+[
+  { "atMs": 0,     "value": "C" },
+  { "atMs": 16000, "value": "G" }
+]
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `atMs` | `number` | Recording position where this key signature takes effect (ms) |
+| `value` | `string` | Key name, e.g. `"C"`, `"G"`, `"Dm"`, `"Bb"` |
 
 ### `pickup`
 
@@ -225,6 +244,24 @@ Crescendo and decrescendo between two points.
 ]
 ```
 
+### `endings` — Volta brackets (1st/2nd endings)
+
+Sorted by `startMs` ascending. Each entry spans a first/second (or further) ending
+bracket in the score, matching the MusicXML `<ending number="…">` attribute.
+
+```jsonc
+[
+  { "number": "1", "startMs": 20000, "endMs": 24000 },
+  { "number": "2", "startMs": 24000, "endMs": 28000 }
+]
+```
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `number` | `string` | ✅ | Ending label, e.g. `"1"`, `"2"`, `"1,2"` |
+| `startMs` | `number` | ✅ | Start of the bracket (ms) |
+| `endMs` | `number` | — | End of the bracket (ms). Absent/0 = open-ended (malformed input) |
+
 ---
 
 ## MIDI events — `events`
@@ -264,9 +301,14 @@ The heart of the format. A flat array of events sorted by `t` (ms since recordin
   "slur":         "start",     // slur: "start" | "continue" | "end"
   "tip":          "cross thumb here",   // pedagogical hint shown on the judgment line
   "handPosition": "Middle C",           // hand position on the keyboard
-  "channel":      0            // MIDI channel 0–15 (multi-instrument)
+  "tuplet":       { "actualNotes": 3, "normalNotes": 2 }  // tuplet ratio for notation display
 }
 ```
+
+> **Note:** `tuplet` is display-only metadata — `actualNotes` notes occupy the
+> space normally taken by `normalNotes` (e.g. a triplet is `{3, 2}`). The
+> event's `t`/duration already reflect the compressed timing, so playback is
+> unaffected; this field only drives notation grouping in the Sheet Music view.
 
 ### MIDI note reference
 
@@ -465,7 +507,7 @@ v1 files work at every entry point of the app.
     { "t": 0,   "cmd": 144, "note": 62, "vel": 40,  "finger": 2, "hand": "right", "dynamic": "p", "slur": "start" },
     { "t": 303, "cmd": 144, "note": 65, "vel": 38,  "finger": 3, "hand": "right", "dynamic": "p", "slur": "continue" },
     { "t": 606, "cmd": 144, "note": 67, "vel": 55,  "finger": 4, "hand": "right", "dynamic": "mp", "slur": "end" },
-    { "t": 0,   "cmd": 144, "note": 46, "vel": 55,  "finger": 5, "hand": "left",  "dynamic": "p",  "channel": 1 },
+    { "t": 0,   "cmd": 144, "note": 46, "vel": 55,  "finger": 5, "hand": "left",  "dynamic": "p" },
     { "t": 0,   "cmd": 176, "note": 64, "vel": 127 },
     { "t": 3000,"cmd": 176, "note": 64, "vel": 0 }
   ]
@@ -538,12 +580,14 @@ order in a single read pass.
 | `meta` | `object` | — | Title, composer, tags, provenance |
 | `tempoMap` | `array` | — | Tempo map with ramp support |
 | `timeSignatureMap` | `array` | — | Time signature changes |
-| `keySignature` | `string` | — | Key signature: `"C"`, `"G"`, `"Am"` etc. |
+| `keySignature` | `string` | — | Initial key signature: `"C"`, `"G"`, `"Am"` etc. |
+| `keySignatureMap` | `array` | — | Key-signature changes mid-piece |
 | `pickup` | `boolean` | — | `true` if the first measure is a pickup |
 | `sections` | `array` | — | Named sections with structural roles |
 | `measureMap` | `array` | — | Start position of each measure |
 | `hairpins` | `array` | — | Crescendos and decrescendos |
 | `repeats` | `array` | — | Repeat markers (post-unroll metadata) |
+| `endings` | `array` | — | Volta brackets (1st/2nd endings) |
 | `gradingProfile` | `object` | — | Custom grading tolerances |
 | `events` | `array` | ✅ | MIDI events in chronological order |
 | `bpm` | `number` | — | ⚠️ Legacy v1 — use `tempoMap` |
@@ -567,4 +611,4 @@ order in a single read pass.
 | `slur` | `string` | — | `"start"`, `"continue"`, `"end"` |
 | `tip` | `string` | — | Pedagogical hint shown on the judgment line |
 | `handPosition` | `string` | — | Hand position on the keyboard |
-| `channel` | `number` | — | MIDI channel 0–15 for multi-instrument |
+| `tuplet` | `object` | — | `{ actualNotes, normalNotes }` tuplet ratio for notation display |

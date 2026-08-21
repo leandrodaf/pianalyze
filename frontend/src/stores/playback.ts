@@ -13,7 +13,7 @@ import { midiStore } from './midi'
 import { initAudio, playNote, stopNote, stopAllNotes, audioStore } from './audio'
 import type {
   Recording, RecordedEvent, NoteInterval, Hand, Dynamic, Articulation,
-  GradingProfile, DifficultyPreset,
+  GradingProfile, DifficultyPreset, TupletInfo,
 } from '../lib/recording-types'
 import { migrateRecording, dynamicToVelocity, DIFFICULTY_PRESETS } from '../lib/recording-types'
 import { DEFAULT_LEAD_TIME_SEC } from '../lib/waterfall-canvas'
@@ -71,6 +71,20 @@ let liveNotes = new Set<number>()
 let audioPedalHeld = false
 const audioPedalSustained = new Set<number>()
 
+// Notes currently sounding in the audio scheduler (all modes) — used to snapshot
+// "notes already sounding" when the sostenuto pedal is pressed.
+const audioActiveNotes = new Set<number>()
+
+// Audio sostenuto pedal state (CC 66): only notes sounding at press time are
+// sustained through a key release — new notes struck afterward behave normally.
+let audioSostenutoHeld = false
+let audioSostenutoFrozen = new Set<number>()
+const audioSostenutoSustained = new Set<number>()
+
+// Audio una corda pedal state (CC 67): volume reduction while held.
+let audioUnaCordaHeld = false
+const UNA_CORDA_FACTOR = 0.75
+
 function cancelAll() {
   for (const t of pending) clearTimeout(t)
   pending = []
@@ -78,6 +92,11 @@ function cancelAll() {
   rafId = 0
   audioPedalHeld = false
   audioPedalSustained.clear()
+  audioActiveNotes.clear()
+  audioSostenutoHeld = false
+  audioSostenutoFrozen = new Set()
+  audioSostenutoSustained.clear()
+  audioUnaCordaHeld = false
   stopAllNotes()
 }
 
@@ -112,6 +131,7 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
   const CMD_NOTE_OFF = 0x80
   const CMD_CC = 0xB0
   const CC_SUSTAIN = 64
+  const CC_SOSTENUTO = 66
 
   type Active = {
     startMs: number
@@ -125,6 +145,7 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
     handPosition?: string
     fermata?: boolean
     slur?: NoteInterval['slur']
+    tuplet?: TupletInfo
   }
 
   function pushInterval(note: number, entry: Active, endMs: number) {
@@ -142,6 +163,7 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
       handPosition: entry.handPosition,
       fermata: entry.fermata,
       slur: entry.slur,
+      tuplet: entry.tuplet,
     })
   }
 
@@ -152,6 +174,12 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
   let sustainHeld = false
   // Notes with key released while pedal held — note → key-release time
   const pedalSustained = new Map<number, number>()
+
+  // Sostenuto pedal state (CC 66) — only notes already sounding at press time
+  // are sustained through a key release; notes struck afterward release normally.
+  let sostenutoHeld = false
+  let sostenutoFrozen = new Set<number>()
+  const sostenutoSustained = new Map<number, number>()
 
   for (const ev of events) {
     if (ev.cmd === CMD_CC) {
@@ -167,6 +195,19 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
           }
           pedalSustained.clear()
         }
+      } else if (ev.note === CC_SOSTENUTO) {
+        if (ev.vel >= 64) {
+          sostenutoHeld = true
+          sostenutoFrozen = new Set(active.keys())
+        } else {
+          sostenutoHeld = false
+          for (const [note] of sostenutoSustained) {
+            const entry = active.get(note)
+            if (entry) { pushInterval(note, entry, ev.t); active.delete(note) }
+          }
+          sostenutoSustained.clear()
+          sostenutoFrozen = new Set()
+        }
       }
       continue
     }
@@ -179,8 +220,9 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
       // Re-striking a note that is already active (trill, or pedal-held re-press)
       if (active.has(ev.note)) {
         const prev = active.get(ev.note)!
-        pushInterval(ev.note, prev, pedalSustained.get(ev.note) ?? ev.t)
+        pushInterval(ev.note, prev, pedalSustained.get(ev.note) ?? sostenutoSustained.get(ev.note) ?? ev.t)
         pedalSustained.delete(ev.note)
+        sostenutoSustained.delete(ev.note)
         active.delete(ev.note)
       }
       active.set(ev.note, {
@@ -195,13 +237,17 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
         handPosition: ev.handPosition,
         fermata: ev.fermata,
         slur: ev.slur,
+        tuplet: ev.tuplet,
       })
     } else if (isNoteOff) {
       const entry = active.get(ev.note)
       if (entry !== undefined) {
         if (sustainHeld) {
-          // Defer release — pedal extends the note
+          // Defer release — sustain pedal extends the note
           pedalSustained.set(ev.note, ev.t)
+        } else if (sostenutoHeld && sostenutoFrozen.has(ev.note)) {
+          // Defer release — sostenuto only extends notes already sounding at press time
+          sostenutoSustained.set(ev.note, ev.t)
         } else {
           pushInterval(ev.note, entry, ev.t)
           active.delete(ev.note)
@@ -214,7 +260,9 @@ function buildIntervals(events: RecordedEvent[]): NoteInterval[] {
   for (const [note, entry] of active) {
     const endMs = pedalSustained.has(note)
       ? pedalSustained.get(note)! + 500
-      : entry.startMs + 500
+      : sostenutoSustained.has(note)
+        ? sostenutoSustained.get(note)! + 500
+        : entry.startMs + 500
     pushInterval(note, entry, endMs)
   }
   return out
@@ -238,9 +286,10 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
     if (delay < 0) continue
 
     const tid = setTimeout(() => {
-      // Sustain pedal (CC 64): tracked for audio; never injected into visual store.
+      // Pedal CCs: tracked for audio; never injected into visual store.
       if (ev.cmd === 0xB0) {
         if (ev.note === 64) {
+          // Sustain
           if (ev.vel >= 64) {
             audioPedalHeld = true
           } else {
@@ -248,6 +297,20 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
             for (const note of audioPedalSustained) stopNote(note)
             audioPedalSustained.clear()
           }
+        } else if (ev.note === 66) {
+          // Sostenuto — only notes already sounding at press time are sustained.
+          if (ev.vel >= 64) {
+            audioSostenutoHeld = true
+            audioSostenutoFrozen = new Set(audioActiveNotes)
+          } else {
+            audioSostenutoHeld = false
+            for (const note of audioSostenutoSustained) stopNote(note)
+            audioSostenutoSustained.clear()
+            audioSostenutoFrozen = new Set()
+          }
+        } else if (ev.note === 67) {
+          // Una corda — volume/timbre reduction while held.
+          audioUnaCordaHeld = ev.vel >= 64
         }
         return
       }
@@ -258,15 +321,24 @@ function scheduleFrom(events: RecordedEvent[], fromMs: number) {
 
       // Audio: plays in both review and practice modes.
       if (on) {
-        // Scale velocity by per-hand volume (read at fire-time so slider changes apply immediately).
+        // Scale velocity by per-hand volume (read at fire-time so slider changes apply immediately)
+        // and by una corda when held.
         const hand = ev.hand ?? (ev.note >= 60 ? 'right' : 'left')
         const hvol = get(audioStore).handVolumes[hand]
-        if (hvol > 0) playNote(ev.note, Math.round(ev.vel * hvol / 100))
-        audioPedalSustained.delete(ev.note)  // re-strike clears pending release
-      } else if (audioPedalHeld) {
-        audioPedalSustained.add(ev.note)     // defer release until pedal lifts
+        const unaCordaScale = audioUnaCordaHeld ? UNA_CORDA_FACTOR : 1
+        if (hvol > 0) playNote(ev.note, Math.round(ev.vel * hvol / 100 * unaCordaScale))
+        audioActiveNotes.add(ev.note)
+        audioPedalSustained.delete(ev.note)     // re-strike clears pending release
+        audioSostenutoSustained.delete(ev.note)
       } else {
-        stopNote(ev.note)
+        audioActiveNotes.delete(ev.note)
+        if (audioPedalHeld) {
+          audioPedalSustained.add(ev.note)      // defer release until sustain pedal lifts
+        } else if (audioSostenutoHeld && audioSostenutoFrozen.has(ev.note)) {
+          audioSostenutoSustained.add(ev.note)  // defer release until sostenuto lifts
+        } else {
+          stopNote(ev.note)
+        }
       }
 
       // Visual MIDI injection: review mode only.

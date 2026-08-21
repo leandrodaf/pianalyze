@@ -1,4 +1,4 @@
-import type { NoteInterval, Recording } from './recording-types'
+import type { NoteInterval, Recording, TupletInfo } from './recording-types'
 import { bpmAt, timeSigAt } from './recording-types'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -16,6 +16,8 @@ export interface QuantizedNote {
   dynamic?: string
   finger?: number
   hand?: 'left' | 'right'
+  /** Tuplet ratio (e.g. triplet = {actualNotes:3, normalNotes:2}) for notation grouping. */
+  tuplet?: TupletInfo
 }
 
 export interface QuantizedMeasure {
@@ -76,7 +78,30 @@ function nearestDuration(beats: number): DurInfo {
 
 // ── Time signature helpers ────────────────────────────────────────────────────
 
+/**
+ * Parse a time-signature string into total beats + beat value for measure-
+ * duration math. Handles the two additive/compound forms the MusicXML
+ * importer can emit (#17):
+ *   - Shared denominator: "3+2/8"   (numerators joined by "+", one "/den")
+ *   - Mixed denominators:  "3/8+2/4" (full "n/d" fragments joined by "+")
+ * A plain "4/4" round-trips exactly as before.
+ */
 export function parseTimeSig(ts: string): { beats: number; beatValue: number } {
+  if (ts.includes('+')) {
+    const slashCount = (ts.match(/\//g) ?? []).length
+    if (slashCount === 1) {
+      const [numsPart, dPart] = ts.split('/')
+      const d = Number(dPart) || 4
+      const total = numsPart.split('+').reduce((sum, s) => sum + (Number(s) || 0), 0)
+      return { beats: total || 4, beatValue: d }
+    }
+    // Mixed denominators — normalize every fragment to quarter-note beats.
+    const totalQuarters = ts.split('+').reduce((sum, frag) => {
+      const [n, d] = frag.split('/').map(Number)
+      return n && d ? sum + n * (4 / d) : sum
+    }, 0)
+    return { beats: totalQuarters || 4, beatValue: 4 }
+  }
   const [n, d] = ts.split('/').map(Number)
   return { beats: n || 4, beatValue: d || 4 }
 }
@@ -240,7 +265,15 @@ function buildVoiceNotes(
     }
 
     const onsetBeats = Math.max((slotEnd - gStart) / msPerBeat, 0.125)
-    const durInfo    = nearestDuration(onsetBeats)
+    // A tupleted note's onset is already compressed by the tuplet ratio (a
+    // triplet eighth sounds for 1/3 of a beat instead of 1/2) — recover the
+    // notated ("normal") duration before matching against the fixed-value
+    // DURATIONS table, otherwise it misquantizes to the nearest regular value.
+    const tuplet = group[0].tuplet
+    const nominalBeats = tuplet
+      ? onsetBeats * (tuplet.actualNotes / tuplet.normalNotes)
+      : onsetBeats
+    const durInfo = nearestDuration(nominalBeats)
 
     result.push({
       keys:         group.sort((a, b) => a.note - b.note).map(iv => midiToVfKey(iv.note)),
@@ -253,6 +286,7 @@ function buildVoiceNotes(
       dynamic:      group[0].dynamic,
       finger:       group[0].finger,
       hand:         group[0].hand,
+      tuplet,
     })
 
     cursor = gStart + durInfo.beats * msPerBeat

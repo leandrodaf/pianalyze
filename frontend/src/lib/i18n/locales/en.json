@@ -257,6 +257,7 @@
   "controls.goto": "Go to",
   "controls.step.enable": "Step mode: play note by note",
   "controls.step.disable": "Disable step mode",
+  "controls.hasRepeats": "This score contains repeat/D.C./D.S. markings that are not played back — playback is always linear",
   "hud.show.fullname": "Show full name",
   "hud.show.symbol": "Show symbol",
   "key.major.abbr": "Maj",
