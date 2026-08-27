@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@sentry/vite-plugin": "^5.4.0",
-    "@wailsio/runtime": "^3.0.0-beta.9",
+    "@wailsio/runtime": "^3.0.0-beta.12",
     "tone": "^15.1.22",
     "vexflow": "^5.0.0"
   },
@@ -25,10 +25,10 @@
     "@tsconfig/svelte": "^5.0.0",
     "@vitest/coverage-v8": "^4.1.11",
     "jsdom": "^30.0.1",
-    "svelte": "^5.56.9",
+    "svelte": "^5.56.10",
     "svelte-check": "^4.7.6",
     "tslib": "^2.6.0",
-    "typescript": "^5.0.0",
+    "typescript": "^7.0.2",
     "vite": "^8.0.13",
     "vitest": "^4.1.6"
   }
