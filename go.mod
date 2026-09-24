@@ -3,11 +3,11 @@ module github.com/leandrodaf/pianalyze
 go 1.26.0
 
 require (
-	github.com/getsentry/sentry-go v0.48.0
+	github.com/getsentry/sentry-go v0.49.0
 	github.com/leandrodaf/midi/v2 v2.3.1
-	github.com/wailsapp/wails/v2 v2.15.0
+	github.com/wailsapp/wails/v2 v2.16.0
 	go.uber.org/zap v1.28.0
-	golang.org/x/text v0.41.0
+	golang.org/x/text v0.42.0
 )
 
 require (
