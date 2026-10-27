@@ -274,8 +274,18 @@ export interface RecordedEvent {
    * 'start' = first note of slur, 'end' = last note, 'continue' = middle note.
    */
   slur?: 'start' | 'end' | 'continue'
-  /** MIDI channel 0–15 for multi-instrument recordings (P2). */
-  channel?: number
+  /** Tuplet ratio for notation display (e.g. triplet = {actualNotes:3, normalNotes:2}). */
+  tuplet?: TupletInfo
+}
+
+/**
+ * Notated tuplet ratio (e.g. a triplet is {actualNotes:3, normalNotes:2}).
+ * Timing is unaffected — the event's `t`/duration already reflect the
+ * compressed MusicXML `<duration>` ticks. This is display-only metadata.
+ */
+export interface TupletInfo {
+  actualNotes: number
+  normalNotes: number
 }
 
 /** A note-on → note-off pair extracted from a Recording. */
@@ -297,6 +307,8 @@ export interface NoteInterval {
   fermata?: boolean
   /** Slur boundary marker (E4). */
   slur?: 'start' | 'end' | 'continue'
+  /** Tuplet ratio for notation display (E4/#17). */
+  tuplet?: TupletInfo
 }
 
 // ── Recording (root) ─────────────────────────────────────────────────────────

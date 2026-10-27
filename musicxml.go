@@ -38,10 +38,15 @@ package main
 //   Fermata                         → RecordedEvent.Fermata
 //   <lyric> text                    → RecordedEvent.Tip  (first lyric line only)
 //   <pedal type=start/stop>         → CC 64 (sustain) NoteOn/Off events
+//   <pedal type=sostenuto>          → CC 66 (sostenuto) NoteOn/Off events
+//   <time-modification>             → RecordedEvent.Tuplet (actual/normal notes)
+//   Additive/compound <time> (e.g. 3+2/8) → TimeSignatureMap value "3+2/8"
 //
 // Limitations
 //   • score-timewise format not supported (very rare)
 //   • Repeats are stored as metadata only (not unrolled into events)
+//   • Two-part piano scores (one <part> per hand, no <staff>) fall back to
+//     part-index-based hand assignment only when the score has exactly 2 parts
 
 import (
 	"archive/zip"
@@ -197,9 +202,89 @@ type mxKey struct {
 	Mode   string `xml:"mode"`
 }
 
+// mxTime captures a <time> element, including additive/compound meters where
+// multiple sibling <beats>/<beat-type> pairs appear inside one <time> (e.g.
+// 3+2/8). Beats/BeatType hold the first pair for simple callers; Pairs holds
+// every pair in document order.
 type mxTime struct {
-	Beats    int `xml:"beats"`
-	BeatType int `xml:"beat-type"`
+	Pairs []mxTimePair
+}
+
+type mxTimePair struct {
+	Beats    int
+	BeatType int
+}
+
+func (t *mxTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	var pendingBeats *int
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+		switch tt := tok.(type) {
+		case xml.EndElement:
+			if tt.Name.Local == start.Name.Local {
+				return nil
+			}
+		case xml.StartElement:
+			switch tt.Name.Local {
+			case "beats":
+				var v string
+				if err := d.DecodeElement(&v, &tt); err != nil {
+					return err
+				}
+				n, _ := strconv.Atoi(strings.TrimSpace(v))
+				pendingBeats = &n
+			case "beat-type":
+				var v string
+				if err := d.DecodeElement(&v, &tt); err != nil {
+					return err
+				}
+				n, _ := strconv.Atoi(strings.TrimSpace(v))
+				if pendingBeats != nil {
+					t.Pairs = append(t.Pairs, mxTimePair{Beats: *pendingBeats, BeatType: n})
+					pendingBeats = nil
+				}
+			default:
+				if err := d.Skip(); err != nil {
+					return err
+				}
+			}
+		}
+	}
+}
+
+// signature renders the time signature as a string, joining additive pairs
+// with "+" (e.g. "3+2/8" when all pairs share a denominator, "3/8+2/4" when
+// they don't).
+func (t mxTime) signature() string {
+	if len(t.Pairs) == 0 {
+		return ""
+	}
+	if len(t.Pairs) == 1 {
+		p := t.Pairs[0]
+		return fmt.Sprintf("%d/%d", p.Beats, p.BeatType)
+	}
+	sameDenom := true
+	for _, p := range t.Pairs[1:] {
+		if p.BeatType != t.Pairs[0].BeatType {
+			sameDenom = false
+			break
+		}
+	}
+	if sameDenom {
+		nums := make([]string, len(t.Pairs))
+		for i, p := range t.Pairs {
+			nums[i] = strconv.Itoa(p.Beats)
+		}
+		return strings.Join(nums, "+") + "/" + strconv.Itoa(t.Pairs[0].BeatType)
+	}
+	parts := make([]string, len(t.Pairs))
+	for i, p := range t.Pairs {
+		parts[i] = fmt.Sprintf("%d/%d", p.Beats, p.BeatType)
+	}
+	return strings.Join(parts, "+")
 }
 
 type mxTranspose struct {
@@ -261,16 +346,24 @@ type mxSound struct {
 }
 
 type mxNote struct {
-	Grace     *struct{}    `xml:"grace"`
-	Chord     *struct{}    `xml:"chord"`
-	Rest      *struct{}    `xml:"rest"`
-	Pitch     *mxPitch     `xml:"pitch"`
-	Duration  int          `xml:"duration"`
-	Ties      []mxTie      `xml:"tie"`
-	Voice     string       `xml:"voice"`
-	Staff     int          `xml:"staff"`
-	Notations *mxNotations `xml:"notations"`
-	Lyrics    []mxLyric    `xml:"lyric"`
+	Grace            *struct{}           `xml:"grace"`
+	Chord            *struct{}           `xml:"chord"`
+	Rest             *struct{}           `xml:"rest"`
+	Pitch            *mxPitch            `xml:"pitch"`
+	Duration         int                 `xml:"duration"`
+	Ties             []mxTie             `xml:"tie"`
+	Voice            string              `xml:"voice"`
+	Staff            int                 `xml:"staff"`
+	Notations        *mxNotations        `xml:"notations"`
+	Lyrics           []mxLyric           `xml:"lyric"`
+	TimeModification *mxTimeModification `xml:"time-modification"`
+}
+
+// mxTimeModification is <time-modification>, marking a note as part of a
+// tuplet (e.g. actual-notes=3, normal-notes=2 for a triplet).
+type mxTimeModification struct {
+	ActualNotes int `xml:"actual-notes"`
+	NormalNotes int `xml:"normal-notes"`
 }
 
 type mxPitch struct {
@@ -610,7 +703,10 @@ type mxWedgeState struct {
 }
 
 // convertPart converts a single <part> into events and structural metadata.
-func convertPart(part mxPart, logger *zap.Logger) (
+// partIdx/numParts let the two-part-piano fallback (see hand assignment below)
+// tell a right-hand part from a left-hand part when the score doesn't use
+// <staff> markers within a single part.
+func convertPart(part mxPart, partIdx, numParts int, logger *zap.Logger) (
 	events []RecordedEvent,
 	tempoMap []TempoEvent,
 	timeSigMap []TimeSigEvent,
@@ -693,7 +789,10 @@ func convertPart(part mxPart, logger *zap.Logger) (
 					}
 				}
 				for _, ts := range attr.Times {
-					sig := fmt.Sprintf("%d/%d", ts.Beats, ts.BeatType)
+					sig := ts.signature()
+					if sig == "" {
+						continue
+					}
 					if firstTimeSig == "" {
 						firstTimeSig = sig
 					}
@@ -1031,6 +1130,17 @@ func convertPart(part mxPart, logger *zap.Logger) (
 				hand := "right"
 				if staff == 2 {
 					hand = "left"
+				} else if numParts == 2 && staff <= 1 && partIdx == 1 {
+					// Two-part piano export (one <part> per hand, no <staff>
+					// markers) — fall back to part index for hand assignment.
+					hand = "left"
+				}
+
+				var tuplet *TupletInfo
+				if tm := note.TimeModification; tm != nil &&
+					tm.ActualNotes > 0 && tm.ActualNotes <= 255 &&
+					tm.NormalNotes > 0 && tm.NormalNotes <= 255 {
+					tuplet = &TupletInfo{ActualNotes: byte(tm.ActualNotes), NormalNotes: byte(tm.NormalNotes)} //nolint:gosec // bounds checked above
 				}
 
 				vb := byte(voice)
@@ -1048,6 +1158,7 @@ func convertPart(part mxPart, logger *zap.Logger) (
 					Finger:       finger,
 					Voice:        &vb,
 					Tip:          tipText,
+					Tuplet:       tuplet,
 				}
 				events = append(events, ev)
 
@@ -1298,7 +1409,7 @@ func convertMusicXML(xmlData []byte, filename string, logger *zap.Logger) (*Reco
 
 	for partIdx, part := range score.Parts {
 		pevs, pTempo, pTimeSig, pMeasure, pHairpins, pRepeats, pSections, pKey, pFirstTS, pKeySigMap, pEndings :=
-			convertPart(part, logger)
+			convertPart(part, partIdx, len(score.Parts), logger)
 		allEvents = append(allEvents, pevs...)
 		if partIdx == 0 {
 			tempoMap = pTempo

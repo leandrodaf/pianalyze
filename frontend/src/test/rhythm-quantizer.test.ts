@@ -146,6 +146,15 @@ describe('parseTimeSig', () => {
     expect(beats).toBeGreaterThan(0)
     expect(beatValue).toBeGreaterThan(0)
   })
+
+  // Additive/compound meters (#17) — must not NaN out measure-duration math.
+  it('shared-denominator additive "3+2/8" → beats=5, beatValue=8', () => {
+    expect(parseTimeSig('3+2/8')).toEqual({ beats: 5, beatValue: 8 })
+  })
+  it('mixed-denominator additive "3/8+2/4" → normalized to quarter-note beats', () => {
+    // 3/8 = 1.5 quarter notes, 2/4 = 2 quarter notes → 3.5 total
+    expect(parseTimeSig('3/8+2/4')).toEqual({ beats: 3.5, beatValue: 4 })
+  })
 })
 
 // ── toVexFlowKey ──────────────────────────────────────────────────────────────
@@ -933,6 +942,51 @@ describe('quantizeRecording', () => {
       const m1 = measures.find(m => m.measure === 1)!
       expect(m1.trebleVoices.length).toBe(1)
       expect(m1.trebleVoices[0].filter(n => !n.isRest).length).toBe(2)
+    })
+  })
+
+  describe('tuplets (#17)', () => {
+    it('quantizes a triplet eighth note to "8", not the nearest regular value', () => {
+      // 3 triplet eighths fill one beat (500ms at 120bpm): each sounds for 1/3 beat.
+      const third = 500 / 3
+      const tupletInfo = { actualNotes: 3, normalNotes: 2 }
+      const intervals = [
+        ni(72, 0,           third,     { hand: 'right', tuplet: tupletInfo }),
+        ni(74, third,        2 * third, { hand: 'right', tuplet: tupletInfo }),
+        ni(76, 2 * third,    500,       { hand: 'right', tuplet: tupletInfo }),
+      ]
+      const measures = quantizeRecording(intervals, REC_120_44)
+      const m1 = measures.find(m => m.measure === 1)!
+      const notes = m1.treble.filter(n => !n.isRest)
+      expect(notes.length).toBe(3)
+      for (const n of notes) {
+        expect(n.duration).toBe('8')
+        expect(n.tuplet).toEqual(tupletInfo)
+      }
+    })
+
+    it('leaves non-tuplet notes without a tuplet field', () => {
+      const intervals = [ni(72, 0, 500, { hand: 'right' })]
+      const measures = quantizeRecording(intervals, REC_120_44)
+      const m1 = measures.find(m => m.measure === 1)!
+      const note = m1.treble.find(n => !n.isRest)!
+      expect(note.tuplet).toBeUndefined()
+    })
+  })
+
+  describe('additive time signatures (#17)', () => {
+    it('quantizes a measure in "3+2/8" without producing NaN durations', () => {
+      const rec = makeRecording(120, '3+2/8', [{ measure: 1, atMs: 0 }])
+      const intervals = [ni(60, 0, 500, { hand: 'right' })]
+      const measures = quantizeRecording(intervals, rec)
+      const m1 = measures.find(m => m.measure === 1)!
+      expect(m1.timeSig).toBe('3+2/8')
+      expect(Number.isNaN(m1.startMs)).toBe(false)
+      expect(Number.isNaN(m1.endMs)).toBe(false)
+      for (const n of [...m1.treble, ...m1.bass]) {
+        expect(Number.isNaN(n.startMs)).toBe(false)
+        expect(Number.isNaN(n.endMs)).toBe(false)
+      }
     })
   })
 })

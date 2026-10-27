@@ -8,8 +8,12 @@ import {
   Accidental,
   StaveConnector,
   Stem,
+  Barline,
+  VoltaType,
+  Tuplet,
 } from 'vexflow'
-import type { NoteInterval, Recording, Finger } from './recording-types'
+import type { RenderContext } from 'vexflow'
+import type { NoteInterval, Recording, Finger, Hairpin, Dynamic } from './recording-types'
 import { keySigAt } from './recording-types'
 import { FINGER_COLORS } from './finger-colors'
 import { DEFAULT_LEAD_TIME_SEC } from './waterfall-layout'
@@ -44,6 +48,14 @@ const CURSOR_COLOR      = 'rgba(255,200,0,0.92)'
 
 // Duration codes VexFlow can auto-beam
 const BEAMABLE = new Set(['8', '8d', '16', '16d', '32'])
+
+// Vertical position/height of the hairpin (crescendo/decrescendo) wedge, drawn
+// below the bass staff.
+const HAIRPIN_Y_OFFSET = 12
+const HAIRPIN_HALF_H   = 5
+
+const DYN_ORDER: Dynamic[] = ['ppp', 'pp', 'p', 'mp', 'mf', 'f', 'ff', 'fff']
+function dynOrder(d: Dynamic): number { return DYN_ORDER.indexOf(d) }
 
 // ── Internal types ────────────────────────────────────────────────────────────
 
@@ -81,6 +93,7 @@ export class SheetCanvas {
   private _lastMusicMs = -LEAD_MS
   private vfKey = 'C'
   private _w = 0
+  private _hairpins: Hairpin[] = []
 
   constructor(container: HTMLElement) {
     this.wrap = container
@@ -103,9 +116,16 @@ export class SheetCanvas {
     this._render()
   }
 
+  /** Dynamic hairpins (crescendo/decrescendo) to render below the bass staff (#17). */
+  setHairpins(hairpins: Hairpin[]): void {
+    this._hairpins = hairpins
+    if (this.measures.length > 0) this._render()
+  }
+
   clearData(): void {
     this.measures   = []
     this._recording = null
+    this._hairpins  = []
     this._renderEmpty()
   }
 
@@ -138,10 +158,15 @@ export class SheetCanvas {
 
   private _moveCursor(musicMs: number): void {
     if (!this._svgOutDiv || this.layouts.length === 0) return
+    const cx = this._msToX(musicMs)
+    const tx = this._cursorX - cx * SHEET_SCALE
+    this._svgOutDiv.style.transform = `translateX(${Math.round(tx)}px)`
+  }
 
+  /** Map a musical-position timestamp to its x coordinate in logical (pre-SHEET_SCALE) units. */
+  private _msToX(musicMs: number): number {
     const first = this.layouts[0]
     const last  = this.layouts[this.layouts.length - 1]
-    let cx: number
 
     let layout: MeasureLayout | null = null
     for (const l of this.layouts) {
@@ -152,19 +177,16 @@ export class SheetCanvas {
       const frac = Math.max(0, Math.min(1,
         (musicMs - layout.startMs) / (layout.endMs - layout.startMs)
       ))
-      cx = layout.noteX + frac * layout.noteW
+      return layout.noteX + frac * layout.noteW
     } else if (musicMs < first.startMs) {
       // Lead-in: cursor sweeps from left edge of lead-in zone to first note
       const msUntilFirst = first.startMs - musicMs
       const frac = Math.max(0, 1 - msUntilFirst / LEAD_MS)
-      cx = MARGIN_L + frac * (first.noteX - MARGIN_L)
+      return MARGIN_L + frac * (first.noteX - MARGIN_L)
     } else {
       // Past the end — park at end of last measure
-      cx = last.noteX + last.noteW
+      return last.noteX + last.noteW
     }
-
-    const tx = this._cursorX - cx * SHEET_SCALE
-    this._svgOutDiv.style.transform = `translateX(${Math.round(tx)}px)`
   }
 
   // ── Highlight ────────────────────────────────────────────────────────────────
@@ -295,6 +317,8 @@ export class SheetCanvas {
     let xCursor = MARGIN_L + leadinW
 
     const recording = this._recording
+    const repeats   = recording?.repeats ?? []
+    const endings   = recording?.endings ?? []
     // Track the active VexFlow key so we can emit mid-piece key changes.
     let prevVfKey = this.vfKey
 
@@ -333,8 +357,44 @@ export class SheetCanvas {
 
       prevVfKey = measureVfKey
 
+      // Repeat barlines (#17): a repeat-open marker at this measure's start, or
+      // a repeat-close marker at its end, draws the standard VexFlow repeat glyph.
+      const repeatOpen  = repeats.find(r => r.type === 'repeat-open'  && r.atMs === qm.startMs)
+      const repeatClose = repeats.find(r => r.type === 'repeat-close' && r.atMs === qm.endMs)
+      if (repeatOpen) {
+        ts.setBegBarType(Barline.type.REPEAT_BEGIN)
+        bs.setBegBarType(Barline.type.REPEAT_BEGIN)
+      }
+      if (repeatClose) {
+        ts.setEndBarType(Barline.type.REPEAT_END)
+        bs.setEndBarType(Barline.type.REPEAT_END)
+      }
+
+      // Volta brackets (1st/2nd endings) — rendered on the treble staff only,
+      // the conventional placement in piano grand-staff editions (#17).
+      for (const e of endings) {
+        const eEndMs = e.endMs || e.startMs
+        if (qm.startMs >= eEndMs || qm.endMs <= e.startMs) continue
+        const isBeginMeasure = qm.startMs <= e.startMs
+        const isEndMeasure   = qm.endMs >= eEndMs
+        const vtype = isBeginMeasure && isEndMeasure ? VoltaType.BEGIN_END
+          : isBeginMeasure ? VoltaType.BEGIN
+          : isEndMeasure ? VoltaType.END
+          : VoltaType.MID
+        try { ts.setVoltaType(vtype, isBeginMeasure ? `${e.number}.` : '', -20) } catch { /* skip */ }
+      }
+
       ts.setContext(ctx).draw()
       bs.setContext(ctx).draw()
+
+      // Repeat-close count label ("×N") above the end barline.
+      if (repeatClose && repeatClose.times) {
+        try { ctx.fillText(`×${repeatClose.times}`, x + MEASURE_W - 26, trebleY - 6) } catch { /* skip */ }
+      }
+
+      // Measure number — parenthesized for the anacrusis/pickup measure (#17).
+      const measureLabel = recording?.pickup && qm.measure === 0 ? '(0)' : String(qm.measure)
+      try { ctx.fillText(measureLabel, noteX, trebleY - 6) } catch { /* skip */ }
 
       if (isFirst) {
         try {
@@ -389,6 +449,10 @@ export class SheetCanvas {
         try { Beam.generateBeams(beamable).forEach(b => b.setContext(ctx).draw()) } catch { /* skip */ }
       }
 
+      for (const { staveNotes, qNotes } of allEntries) {
+        this._drawTuplets(staveNotes, qNotes, ctx)
+      }
+
       this.layouts.push({
         measure: qm.measure, startMs: qm.startMs, endMs: qm.endMs,
         // Use measure-start x and full MEASURE_W so the cursor advances at
@@ -400,6 +464,8 @@ export class SheetCanvas {
 
       xCursor += MEASURE_W
     }
+
+    this._drawHairpins(ctx, bassY)
 
     // Fixed cursor bar — stays at cursorX while the tape slides behind it
     this._cursorX = Math.floor(this._w * 0.30)
@@ -421,6 +487,59 @@ export class SheetCanvas {
 
     // Restore current playback position — prevents a jump on window resize.
     this._moveCursor(this._lastMusicMs)
+  }
+
+  /** Draw crescendo/decrescendo wedges below the bass staff (#17), ported from waterfall-canvas.ts. */
+  private _drawHairpins(ctx: RenderContext, bassY: number): void {
+    if (this._hairpins.length === 0 || this.layouts.length === 0) return
+    const y = bassY + STAVE_H + HAIRPIN_Y_OFFSET
+
+    for (const h of this._hairpins) {
+      const x1 = this._msToX(h.startMs)
+      const x2 = this._msToX(h.endMs)
+      if (x2 <= x1) continue
+      const isCrescendo = dynOrder(h.from) < dynOrder(h.to)
+
+      try {
+        ctx.save()
+        ctx.setStrokeStyle('rgba(200,200,200,0.55)')
+        ctx.setLineWidth(1.2)
+        if (isCrescendo) {
+          ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(x2, y - HAIRPIN_HALF_H); ctx.stroke()
+          ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(x2, y + HAIRPIN_HALF_H); ctx.stroke()
+        } else {
+          ctx.beginPath(); ctx.moveTo(x1, y - HAIRPIN_HALF_H); ctx.lineTo(x2, y); ctx.stroke()
+          ctx.beginPath(); ctx.moveTo(x1, y + HAIRPIN_HALF_H); ctx.lineTo(x2, y); ctx.stroke()
+        }
+        ctx.restore()
+      } catch { /* skip */ }
+    }
+  }
+
+  /**
+   * Group consecutive notes sharing the same tuplet ratio (e.g. a run of
+   * triplet eighths) and wrap each run in a VexFlow Tuplet bracket (#17).
+   */
+  private _drawTuplets(staveNotes: StaveNote[], qNotes: QuantizedNote[], ctx: RenderContext): void {
+    let i = 0
+    while (i < qNotes.length) {
+      const t = qNotes[i].tuplet
+      if (!t) { i++; continue }
+      let j = i + 1
+      while (
+        j < qNotes.length &&
+        qNotes[j].tuplet?.actualNotes === t.actualNotes &&
+        qNotes[j].tuplet?.normalNotes === t.normalNotes
+      ) j++
+
+      if (j - i >= 2) {
+        try {
+          new Tuplet(staveNotes.slice(i, j), { numNotes: t.actualNotes, notesOccupied: t.normalNotes })
+            .setContext(ctx).draw()
+        } catch { /* skip */ }
+      }
+      i = j
+    }
   }
 
   private _collectNoteEls(vfNotes: StaveNote[], qNotes: QuantizedNote[]): void {
